@@ -1,0 +1,71 @@
+#cloud-config
+autoinstall:
+  version: 1
+  refresh-installer:
+    update: true
+  identity:
+    hostname: ubuntu-server
+    username: antoine
+    realname: Antoine
+    password: $6$YFcDNyiNNMIZPwwA$RdGFRARUZY8BRsxt5HdBlQkM6CCIml56K8IMc47bPPFrG.8ho.ZnXfMSdMauSAlam9a/VIJqGKxbKHd2RJn/I/
+  ssh:
+    install-server: true
+    authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPveFNeWn+aFO3WyMfA+bX9D6iVurO5VfbqbzjO0G0J3 earth@milkyway.laniakea
+  storage:
+    swap:
+      size: 0
+    config:
+    # on Intel NUC8i5BEH nvme0n1 is M.2. slot and sda is 2.5" bay
+    - id: disk-nvme0n1
+      type: disk
+      path: /dev/nvme0n1
+      wipe: superblock-recursive
+      preserve: false
+      grub_device: false
+      name: ''
+      ptable: gpt
+    - id: disk-sda
+      type: disk
+      path: /dev/sda
+      wipe: superblock-recursive
+      preserve: false
+      grub_device: false
+      name: ''
+      ptable: gpt
+    - id: partition-0
+      type: partition
+      device: disk-sda
+      size: 512M
+      wipe: superblock
+      flag: boot
+      number: 1
+      preserve: false
+      grub_device: true
+    - id: format-0
+      type: format
+      fstype: fat32
+      volume: partition-0
+      preserve: false
+    - id: partition-1
+      type: partition
+      device: disk-sda
+      size: -1
+      wipe: superblock
+      flag: ''
+      number: 2
+      preserve: false
+    - id: format-1
+      type: format
+      fstype: ext4
+      volume: partition-1
+      preserve: false
+    - id: mount-0
+      type: mount
+      device: format-0
+      path: /boot/efi
+    - id: mount-1
+      type: mount
+      device: format-1
+      path: /
+
