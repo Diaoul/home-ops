@@ -1,0 +1,16 @@
+---
+- name: kernel | enable modules
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - br_netfilter
+    - overlay
+
+- name: kernel | enable modules on boot
+  copy:
+    content: "{{ item }}"
+    dest: "/etc/modules-load.d/{{ item }}.conf"
+  loop:
+    - br_netfilter
+    - overlay

@@ -1,0 +1,35 @@
+---
+- name: packages | upgrade all packages
+  apt:
+    upgrade: full
+    update_cache: yes
+    cache_valid_time: 3600
+    autoclean: yes
+    autoremove: yes
+
+- name: packages | install packages
+  apt:
+    name: "{{ packages.install }}"
+    update_cache: yes
+    cache_valid_time: 3600
+    autoclean: yes
+  when: packages.install
+
+- name: packages | remove snapd
+  apt:
+    name: snapd
+    state: absent
+    autoremove: yes
+    purge: yes
+
+#- name: packages | remove snapd leftovers
+#  file:
+#    state: absent
+#    path: "{{ item }}"
+#  loop:
+#    - "/home/{{ ansible_user }}/.snap"
+#    - "/snap"
+#    - "/var/snap"
+#    - "/var/lib/snapd"
+#    - "/var/cache/snapd"
+#    - "/usr/lib/snapd"

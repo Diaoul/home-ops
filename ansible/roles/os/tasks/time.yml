@@ -1,0 +1,5 @@
+---
+- name: time | set timezone
+  community.general.timezone:
+    name: "{{ timezone }}"
+  notify: systemd-timesyncd configuration changed
