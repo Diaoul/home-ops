@@ -14,4 +14,3 @@
     path: /usr/sbin/{{ item }}-legacy
   loop:
     - "ip6tables"
-

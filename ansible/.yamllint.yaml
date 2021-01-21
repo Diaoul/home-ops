@@ -1,0 +1,13 @@
+---
+extends: default
+
+ignore: |
+  .yamllint.yml
+
+rules:
+  truthy:
+    allowed-values: ['yes', 'no']
+  indentation:
+    spaces: 2
+    indent-sequences: true
+  line-length: disable

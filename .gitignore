@@ -1,1 +1,3 @@
+ansible/roles/xanmanning.k3s/
 os/amd64/*/
+os/amd64/*.iso

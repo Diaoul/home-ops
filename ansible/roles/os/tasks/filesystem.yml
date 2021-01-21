@@ -7,7 +7,6 @@
     sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
 
 - name: filesystem | mount bpffs
-  become: true
   ansible.posix.mount:
     src: bpffs
     path: /sys/fs/bpf
@@ -16,16 +15,15 @@
     opts: rw,nosuid,nodev,noexec,relatime,mode=700
 
 - name: filesystem | swap
-  become: true
   block:
-  - name: filesystem | disable swap
-    command: swapoff -a
-    when: ansible_swaptotal_mb > 0
-  - name: filesystem | disable swap system start
-    ansible.posix.mount:
-      name: "{{ item }}"
-      fstype: swap
-      state: absent
-    loop:
-      - swap
-      - none
+    - name: filesystem | disable swap
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+    - name: filesystem | disable swap system start
+      ansible.posix.mount:
+        name: "{{ item }}"
+        fstype: swap
+        state: absent
+      loop:
+        - swap
+        - none

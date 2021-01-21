@@ -1,19 +1,18 @@
 ---
 - hosts:
     - server
-#    - agent
   vars_prompt:
     - name: "restart_confirmation"
-      prompt: "Restart nodes when complete? [Y/n]"
-      default: "n"
+      prompt: "Restart nodes when complete? [y/N]"
+      default: "N"
       private: no
   roles:
     - os
   tasks:
     - name: reboot
-      ignore_errors: true
+      ignore_errors: yes
       reboot:
         msg: "Nodes are being rebooted..."
-      when: restart_confirmation == "Y"
+      when: restart_confirmation | lower == "y"
       tags:
         - always

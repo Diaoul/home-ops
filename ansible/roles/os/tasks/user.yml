@@ -11,4 +11,3 @@
     key: "{{ item }}"
   loop: "{{ ssh_authorized_keys }}"
   when: ssh_authorized_keys is defined
-

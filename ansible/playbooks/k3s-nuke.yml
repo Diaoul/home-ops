@@ -1,50 +1,27 @@
 ---
-
 - hosts:
-  - master
-  - worker
-  become: true
-  gather_facts: true
+    - server
+    - agent
   vars_prompt:
     name: "run_confirmation"
-    prompt: "This will DESTROY your cluster. Do you wish to continue? [Y/n]"
-    default: "n"
+    prompt: "This will DESTROY your cluster. Do you wish to continue? [y/N]"
+    default: "N"
     private: no
+  vars:
+    k3s_state: uninstalled
   any_errors_fatal: yes
-  
+
   pre_tasks:
-  - name: cluster-nuke | check confirmation
-    fail:
-      msg: "Abort."
-    when: run_confirmation != "Y"
-  
+    - name: cluster-nuke | check confirmation
+      fail:
+        msg: "Abort."
+      when: run_confirmation | lower != "y"
+
+  roles:
+    - xanmanning.k3s
+
   tasks:
-  - name: cluster-nuke | kill k3s
-    command: /usr/local/bin/k3s-killall.sh
-
-  - name: cluster-nuke | uninstall k3s
-    command:
-      cmd: /usr/local/bin/k3s-uninstall.sh
-      removes: /usr/local/bin/k3s-uninstall.sh
-
-  - name: cluster-nuke | uninstall k3s agent
-    command:
-      cmd: /usr/local/bin/k3s-agent-uninstall.sh
-      removes: /usr/local/bin/k3s-agent-uninstall.sh
-
-  - name: cluster-nuke | gather list of CNI files to delete
-    find:
-      paths: /etc/cni/net.d
-      patterns: "*"
-    register: files_to_delete
-
-  - name: cluster-nuke | delete CNI files
-    file:
-      path: "{{ item.path }}"
-      state: absent
-    loop: "{{ files_to_delete.files }}"
-
-  - name: cluster-nuke | reboot
-    reboot:
-      msg: "Nodes are being rebooted..."
-    ignore_errors: true
+    - name: cluster-nuke | reboot
+      reboot:
+        msg: "Nodes are being rebooted..."
+      ignore_errors: yes

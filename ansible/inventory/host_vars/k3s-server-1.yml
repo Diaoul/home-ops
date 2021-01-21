@@ -1,0 +1,5 @@
+---
+rook_ceph:
+  enabled: no
+  devices:
+    - /dev/nvme0n1

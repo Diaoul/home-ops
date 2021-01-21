@@ -1,17 +1,25 @@
 #!/bin/bash
 set -euo pipefail
 
-url=https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso
+url='https://releases.ubuntu.com/20.04/ubuntu-20.04.1-live-server-amd64.iso'
+grub_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed'
+server='${pxe_default_server}'
+tftp_root='/tftp'
 iso=$(basename $url)
+
 echo "Preparing for $iso"
 
 # download the iso
-mkdir -p www
-if [ ! -f www/$iso ]; then
+if [ ! -f $iso ]; then
     echo "Download ISO..."
-    curl -sfLO --output-dir www/ \
-        $url
+    curl -sfLo $iso $url
 fi
+
+# copy cloud-init files
+mkdir -p www
+echo "Copy iso and cloud-init files..."
+cp -f $iso www/$iso
+cp -f user-data.yaml www/user-data
 
 # copy kernel and initramfs from iso
 mkdir -p tftp
@@ -28,18 +36,15 @@ fi
 # download grub image
 if [ ! -f tftp/pxelinux.0 ]; then
     echo "Download GRUB image..."
-    curl -sfLo tftp/pxelinux.0 \
-        http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed
+    curl -sfLo tftp/pxelinux.0 $grub_url
 fi
 
 # copy grub configuration
 echo "Copy GRUB configuration..."
 mkdir -p tftp/grub
-cp -f grub.cfg tftp/grub/
-
-# copy cloud-init files
-echo "Copy cloud-init files..."
-cp -f meta-data.yaml www/meta-data
-cp -f user-data.yaml www/user-data
+sed -e "s|{{server}}|$server|g" \
+    -e "s|{{root}}|$tftp_root|g" \
+    -e "s|{{iso}}|$iso|g" \
+    grub.cfg > tftp/grub/grub.cfg
 
 echo "Done!"

@@ -3,12 +3,12 @@
   lineinfile:
     dest: /etc/apt/apt.conf.d/10periodic
     regex: 'APT::Periodic::AutocleanInterval'
-    line: 'APT::Periodic::AutocleanInterval "7";' 
+    line: 'APT::Periodic::AutocleanInterval "7";'
   notify: unattended-upgrades configuration changed
 
 - name: unattended-upgrades | configure unattended upgrades to remove unused dependencies
   lineinfile:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
     regex: 'Unattended-Upgrade::Remove-Unused-Dependencies'
-    line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";' 
+    line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'
   notify: unattended-upgrades configuration changed

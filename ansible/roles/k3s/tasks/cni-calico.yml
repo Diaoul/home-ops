@@ -1,5 +1,4 @@
 ---
-
 - name: cluster | calico | get all calicoctl releases
   get_url:
     url: https://api.github.com/repos/projectcalico/calicoctl/releases
@@ -18,17 +17,17 @@
     mode: 0755
 
 - name: cluster | calico | deploy tigera operator to k3s manifest directory
-  become: true
+  become: yes
   get_url:
     url: "{{ calico.operator_manifest }}"
     dest: "{{ k3s_server_manifests_dir }}/tigera-operator.yaml"
     mode: 0644
 
 - name: cluster | calico | deploy configuration to k3s manifest directory
-  become: true
+  become: yes
   blockinfile:
     path: "{{ k3s_server_manifests_dir }}/calico-installation.yaml"
-    create: true
+    create: yes
     block: |
       ---
       apiVersion: operator.tigera.io/v1
@@ -38,17 +37,17 @@
       spec:
         calicoNetwork:
           ipPools:
-          - blockSize: 26
-            cidr: "{{ k3s_service_cidr }}"
-            encapsulation: IPIPCrossSubnet
-            natOutgoing: Enabled
-            nodeSelector: all()
+            - blockSize: 26
+              cidr: "{{ k3s_service_cidr }}"
+              encapsulation: IPIPCrossSubnet
+              natOutgoing: Enabled
+              nodeSelector: all()
 
 - name: cluster | calico | deploy BGP-peer to k3s manifest directory
-  become: true
+  become: yes
   blockinfile:
     path: "{{ k3s_server_manifests_dir }}/calico-bgppeer.yaml"
-    create: true
+    create: yes
     block: |
       ---
       apiVersion: crd.projectcalico.org/v1
@@ -58,15 +57,15 @@
       spec:
         peerIP: {{ calico.bgp.peer }}
         asNumber: {{ calico.bgp.as }}
-  when: 
-  - calico.bgp.enabled is defined 
-  - calico.bgp.enabled
+  when:
+    - calico.bgp.enabled is defined
+    - calico.bgp.enabled
 
 - name: cluster | calico | deploy BGP-configuration to k3s manifest directory
-  become: true
+  become: yes
   blockinfile:
     path: "{{ k3s_server_manifests_dir }}/calico-bgpconfiguration.yaml"
-    create: true
+    create: yes
     block: |
       ---
       apiVersion: crd.projectcalico.org/v1
@@ -75,7 +74,7 @@
         name: default
       spec:
         serviceExternalIPs:
-        - cidr: {{ calico.bgp.externalIPs }}
-  when: 
-  - calico.bgp.enabled is defined 
-  - calico.bgp.enabled
+          - cidr: {{ calico.bgp.externalIPs }}
+  when:
+    - calico.bgp.enabled is defined
+    - calico.bgp.enabled

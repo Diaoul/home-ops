@@ -26,7 +26,7 @@
 - name: write to system clock
   command: hwclock --systohc
   listen: systemd-timesyncd configuration changed
-  when: ansible_virtualization_role == "host" 
+  when: ansible_virtualization_role == "host"
         or ansible_virtualization_role == "NA"
 
 - name: grub mkconfig

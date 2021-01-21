@@ -1,9 +1,0 @@
----
-
-#
-# Below vars are for the xanmanning.k3s role
-# ...see https://github.com/PyratLabs/ansible-role-k3s#group-variables
-#
-
-# Define the host as a control plane node
-k3s_control_node: true
