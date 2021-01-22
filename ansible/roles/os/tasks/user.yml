@@ -1,10 +1,4 @@
 ---
-- name: user | add user to the sudoers without password
-  copy:
-    content: "{{ ansible_user }} ALL=(ALL) NOPASSWD:ALL"
-    dest: "/etc/sudoers.d/{{ ansible_user }}-nopasswd"
-    mode: 0440
-
 - name: user | add user SSH public keys
   ansible.posix.authorized_key:
     user: "{{ ansible_user }}"

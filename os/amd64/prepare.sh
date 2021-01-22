@@ -20,6 +20,7 @@ mkdir -p www
 echo "Copy iso and cloud-init files..."
 cp -f $iso www/$iso
 cp -f user-data.yaml www/user-data
+touch www/user-data
 
 # copy kernel and initramfs from iso
 mkdir -p tftp

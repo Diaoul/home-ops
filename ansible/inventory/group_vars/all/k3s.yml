@@ -2,6 +2,7 @@
 k3s_become_for_all: yes
 k3s_install_hard_links: yes
 k3s_etcd_datastore: yes
+k3s_control_node_address: k8s-master
 
 k3s_server:
   flannel-backend: 'none'
@@ -10,6 +11,8 @@ k3s_server:
     - traefik
     - local-storage
     - metrics-server
+  tls-san:
+    - "k8s-master"
   node-label:
     - "k3s-upgrade=true"
 
@@ -17,7 +20,3 @@ k3s_agent:
   with-node-id: true
   node-label:
     - "k3s-upgrade=true"
-
-# Enable any feature-gates
-k3s_kubelet_args:
-  - feature-gates: ExternalPolicyForExternalIP=true

@@ -1,10 +1,10 @@
 ---
 - hosts:
-    - server
+    - master
   vars_prompt:
     - name: "restart_confirmation"
-      prompt: "Restart nodes when complete? [y/N]"
-      default: "N"
+      prompt: "Restart nodes when complete? [Y/n]"
+      default: "n"
       private: no
   roles:
     - os
@@ -13,6 +13,6 @@
       ignore_errors: yes
       reboot:
         msg: "Nodes are being rebooted..."
-      when: restart_confirmation | lower == "y"
+      when: restart_confirmation == "Y"
       tags:
         - always

@@ -7,10 +7,4 @@
     path: /usr/sbin/{{ item }}-legacy
   loop:
     - "iptables"
-
-- name: network | configure nodes to use legacy ip6tables
-  community.general.alternatives:
-    name: "{{ item }}"
-    path: /usr/sbin/{{ item }}-legacy
-  loop:
     - "ip6tables"

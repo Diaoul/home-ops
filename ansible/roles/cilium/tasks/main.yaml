@@ -1,0 +1,29 @@
+---
+- name: add cilium helm repository
+  community.kubernetes.helm_repository:
+    name: cilium
+    repo_url: "https://helm.cilium.io/"
+
+- name: install cilium
+  community.kubernetes.helm:
+    update_repo_cache: yes
+    release_namespace: kube-system
+    name: cilium
+    chart_ref: cilium/cilium
+    chart_version: "{{ cilium_version }}"
+    values: "{{ cilium_values }}"
+
+- name: patch cilium with correct operator image
+  community.kubernetes.k8s:
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: kube-system
+        name: cilium-operator
+      spec:
+        template:
+          spec:
+            containers:
+              - name: cilium-operator
+                image: "docker.io/cilium/operator-dev:v{{ cilium_version }}"

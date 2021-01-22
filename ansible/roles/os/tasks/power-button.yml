@@ -7,4 +7,5 @@
   loop:
     - setting: HandlePowerKey
       value: ignore
+  when: ansible_product_name == 'NUC8i5BEH'
   notify: restart logind

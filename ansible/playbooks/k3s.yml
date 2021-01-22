@@ -1,7 +1,6 @@
 ---
 - hosts:
-    - server
-    - agent
+    - master
   gather_facts: yes
   vars_prompt:
     - name: "run_confirmation"
@@ -10,10 +9,10 @@
       private: no
   any_errors_fatal: yes
   pre_tasks:
-    - name: cluster | check confirmation
+    - name: check confirmation
       fail:
         msg: "Abort."
       when: run_confirmation != "Y"
   roles:
-    - xanmanning.k3s
-    - k3s
+    #    - xanmanning.k3s
+    - kubeconfig
