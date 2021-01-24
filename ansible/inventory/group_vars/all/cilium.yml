@@ -1,7 +1,20 @@
 ---
+kube_router_version: v1.1.1
 cilium_version: 1.9.3
 cilium_values:
+  autoDirectNodeRoutes: true
+  hostServices:
+    enabled: true
+  externalIPs:
+    enabled: true
+  nodePort:
+    enabled: true
+  masquerade: true
+  kubeProxyReplacement: strict
+  kubeProxyReplacementHealthzBindAddr: "0.0.0.0:10256"
+  nativeRoutingCIDR: "10.42.0.0/16"
   ipam:
+    tunnel: disabled
     mode: kubernetes
 
   # use dev images for arm64 support

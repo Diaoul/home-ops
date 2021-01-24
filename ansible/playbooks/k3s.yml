@@ -1,6 +1,7 @@
 ---
 - hosts:
     - master
+    - worker
   gather_facts: yes
   vars_prompt:
     - name: "run_confirmation"
@@ -14,5 +15,5 @@
         msg: "Abort."
       when: run_confirmation != "Y"
   roles:
-    #    - xanmanning.k3s
+    - xanmanning.k3s
     - kubeconfig

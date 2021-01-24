@@ -4,6 +4,18 @@
     name: cilium
     repo_url: "https://helm.cilium.io/"
 
+- name: install kube-router manifests
+  community.kubernetes.k8s:
+    # downloaded from:
+    # https://raw.githubusercontent.com/cloudnativelabs/kube-router/v1.1.1/daemonset/generic-kuberouter-only-advertise-routes.yaml
+    # then modified following cilium's documentation
+    definition: "{{ lookup('file', 'kube-router-' + item + '-' + kube_router_version + '.yml') | from_yaml }}"
+  loop:
+    - daemonset
+    - serviceaccount
+    - clusterrole
+    - clusterrolebinding
+    
 - name: install cilium
   community.kubernetes.helm:
     update_repo_cache: yes

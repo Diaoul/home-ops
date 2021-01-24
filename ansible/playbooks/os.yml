@@ -1,6 +1,7 @@
 ---
 - hosts:
     - master
+    - worker
   vars_prompt:
     - name: "restart_confirmation"
       prompt: "Restart nodes when complete? [Y/n]"
