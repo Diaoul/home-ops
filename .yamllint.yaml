@@ -2,7 +2,8 @@
 extends: default
 
 ignore: |
-  .yamllint.yml
+  .github/
+  user-data.yaml
   ansible/roles/calico/files/tigera-operator.yaml
 
 rules:

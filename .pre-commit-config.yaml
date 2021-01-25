@@ -15,11 +15,6 @@ repos:
     rev: v1.25.0
     hooks:
       - id: yamllint
-        files: ^ansible/
-        args: [-c, ansible/.yamllint.yaml]
-      - id: yamllint
-        files: ^os/
-        args: [-c, os/.yamllint.yaml]
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 2.1.4
     hooks:
