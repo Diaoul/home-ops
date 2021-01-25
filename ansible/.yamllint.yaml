@@ -3,11 +3,12 @@ extends: default
 
 ignore: |
   .yamllint.yml
+  ansible/roles/calico/files/tigera-operator.yaml
 
 rules:
   truthy:
-    allowed-values: ['yes', 'no']
+    allowed-values: ['yes', 'no', 'true', 'false']
   indentation:
     spaces: 2
-    indent-sequences: true
+    indent-sequences: consistent
   line-length: disable

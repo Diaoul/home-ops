@@ -4344,4 +4344,3 @@ spec:
         - name: var-lib-calico
           hostPath:
             path: /var/lib/calico
-
