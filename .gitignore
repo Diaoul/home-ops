@@ -4,3 +4,4 @@ os/amd64/www/
 *.iso
 kubeconfig
 .venv/
+*-secret.yaml
