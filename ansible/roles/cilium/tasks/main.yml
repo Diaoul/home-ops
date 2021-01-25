@@ -1,0 +1,2 @@
+---
+- include_tasks: state-{{ cilium_state }}.yml

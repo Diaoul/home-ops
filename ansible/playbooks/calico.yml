@@ -4,4 +4,4 @@
     - worker
   gather_facts: no
   roles:
-    - cilium
+    - calico

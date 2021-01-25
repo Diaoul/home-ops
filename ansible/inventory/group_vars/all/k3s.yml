@@ -1,8 +1,8 @@
 ---
 k3s_become_for_all: yes
 k3s_install_hard_links: yes
+k3s_control_node_address: k8s-master
 #k3s_etcd_datastore: yes
-#k3s_control_node_address: k8s-master
 
 k3s_server:
   flannel-backend: 'none'
@@ -11,6 +11,9 @@ k3s_server:
     - traefik
     - local-storage
     - metrics-server
+  cluster-cidr: 10.42.0.0/16
+  service-cidr: 10.43.0.0/16
+  cluster-domain: cluster.milkyway
   tls-san:
     - "k8s-master"
   node-label:

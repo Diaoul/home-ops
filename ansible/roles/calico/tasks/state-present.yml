@@ -1,0 +1,75 @@
+---
+- name: retrieve remote manifests
+  ansible.builtin.uri:
+    url: https://docs.projectcalico.org/manifests/tigera-operator.yaml
+    return_content: yes
+  register: calico_remote
+  when: calico_check_manifests
+  run_once: yes
+  delegate_to: localhost
+
+- name: check manifests are the same
+  fail:
+    msg: manifests are different!
+  when:
+    - calico_check_manifests
+    - calico_remote.content | trim | hash('sha1') != lookup('file', 'tigera-operator.yaml') | hash('sha1')
+  run_once: yes
+  delegate_to: localhost
+
+- name: create tigera-operator namespace
+  community.kubernetes.k8s:
+    api_version: v1
+    kind: namespace
+    name: tigera-operator
+  run_once: yes
+  delegate_to: localhost
+
+- name: add service endpoint configuration
+  community.kubernetes.k8s:
+    template: service-endpoint.yaml.j2
+  run_once: yes
+  delegate_to: localhost
+
+- name: install tigera operator
+  community.kubernetes.k8s:
+    definition: "{{ item }}"
+  loop: "{{ lookup('file', 'tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
+  loop_control:
+    label:
+      kind: "{{ item.kind }}"
+      name: "{{ item.metadata.name }}"
+  run_once: yes
+  delegate_to: localhost
+
+- name: enable eBPF mode with DSR
+  community.kubernetes.k8s:
+    api_version: crd.projectcalico.org/v1
+    namespace: tigera-operator
+    kind: felixconfiguration
+    name: default
+    definition:
+      spec:
+        bpfEnabled: true
+        bpfExternalServiceMode: DSR
+  run_once: yes
+  delegate_to: localhost
+
+- name: add tigera operator configuration
+  community.kubernetes.k8s:
+    template: installation.yaml.j2
+  run_once: yes
+  delegate_to: localhost
+
+- name: add bgp configuration
+  community.kubernetes.k8s:
+    template: bgpconfiguration.yaml.j2
+  run_once: yes
+  delegate_to: localhost
+    
+- name: add bgp peers configuration
+  community.kubernetes.k8s:
+    template: bgppeer.yaml.j2
+  loop: "{{ calico_bgp_peers }}"
+  run_once: yes
+  delegate_to: localhost

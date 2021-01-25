@@ -1,0 +1,11 @@
+---
+- hosts:
+    - master
+    - worker
+  vars:
+    calico_state: absent
+    k3s_state: restarted
+  roles:
+    - calico
+    - role: xanmanning.k3s
+      become: yes  # see https://github.com/PyratLabs/ansible-role-k3s/issues/89

@@ -1,0 +1,9 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: kubernetes-services-endpoint
+  namespace: tigera-operator
+data:
+  KUBERNETES_SERVICE_HOST: "{{ calico_kubernetes_service_host }}"
+  KUBERNETES_SERVICE_PORT: "{{ calico_kubernetes_service_port }}"

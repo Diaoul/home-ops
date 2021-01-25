@@ -1,0 +1,34 @@
+# don't forget to remove /etc/cni/net.d/05-cilium.conf when uninstalling
+---
+- name: remove kube-router
+  community.kubernetes.k8s:
+    state: absent
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"
+  run_once: yes
+  delegate_to: localhost
+
+- name: remove cilium
+  community.kubernetes.helm:
+    state: absent
+    update_repo_cache: yes
+    release_namespace: kube-system
+    name: cilium
+    chart_ref: cilium/cilium
+    chart_version: "{{ cilium_version }}"
+    values: "{{ cilium_values }}"
+  run_once: yes
+  delegate_to: localhost
+
+- name: clean up ip links
+  ansible.builtin.shell:
+    cmd: ip link delete cilium_host
+  become: yes
+
+- name: clean up cni files
+  ansible.builtin.file:
+    state: absent
+    path: "{{ item }}"
+  loop:
+    - /etc/cni/net.d/05-cilium.conf
+    - /opt/cni/bin/cilium-cni
+  become: yes

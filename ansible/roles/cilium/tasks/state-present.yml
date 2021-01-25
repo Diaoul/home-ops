@@ -1,0 +1,55 @@
+# don't forget to remove /etc/cni/net.d/05-cilium.conf when uninstalling
+---
+- name: add cilium helm repository
+  community.kubernetes.helm_repository:
+    name: cilium
+    repo_url: "https://helm.cilium.io/"
+  run_once: yes
+  delegate_to: localhost
+
+- name: install kube-router manifests
+  community.kubernetes.k8s:
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"
+  run_once: yes
+  delegate_to: localhost
+
+- name: patch kube-couter configuration
+  community.kubernetes.k8s:
+    api_version: apps/v1
+    kind: DaemonSet
+    name: kube-router
+    namespace: kube-system
+    definition:
+      spec:
+        template:
+          spec:
+            containers:
+              - name: kube-router
+                args:
+                  - "--run-router=true"
+                  - "--run-firewall=false"
+                  - "--run-service-proxy=false"
+                  - "--enable-cni=false"
+                  - "--enable-pod-egress=false"
+                  - "--enable-ibgp=true"
+                  - "--enable-overlay=true"
+                  - "--advertise-cluster-ip=true"
+                  - "--advertise-external-ip=true"
+                  - "--advertise-loadbalancer-ip=true"
+                  - "--bgp-graceful-restart=true"
+                  - "--peer-router-ips=10.0.3.1"
+                  - "--peer-router-asns=64512"
+                  - "--cluster-asn=64513"
+  run_once: yes
+  delegate_to: localhost
+
+- name: install cilium
+  community.kubernetes.helm:
+    update_repo_cache: yes
+    release_namespace: kube-system
+    name: cilium
+    chart_ref: cilium/cilium
+    chart_version: "{{ cilium_version }}"
+    values: "{{ cilium_values }}"
+  run_once: yes
+  delegate_to: localhost

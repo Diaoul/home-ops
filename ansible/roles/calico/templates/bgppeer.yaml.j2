@@ -1,0 +1,8 @@
+---
+apiVersion: crd.projectcalico.org/v1
+kind: BGPPeer
+metadata:
+  name: "{{ item.name }}"
+spec:
+  peerIP: "{{ item.ip }}"
+  asNumber: {{ item.as }}

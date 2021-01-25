@@ -1,40 +1,30 @@
 ---
 kube_router_version: v1.1.1
+cilium_state: present
 cilium_version: 1.9.3
 cilium_values:
+  tunnel: disabled
   autoDirectNodeRoutes: true
-  hostServices:
+  bpf:
+    masquerade: false
+  endpointRoutes:
     enabled: true
   externalIPs:
     enabled: true
+  hostPort:
+    enabled: true
+  hostServices:
+    enabled: true
   nodePort:
     enabled: true
-  masquerade: true
-  kubeProxyReplacement: strict
-  kubeProxyReplacementHealthzBindAddr: "0.0.0.0:10256"
-  nativeRoutingCIDR: "10.42.0.0/16"
-  ipam:
-    tunnel: disabled
-    mode: kubernetes
-
-  # use dev images for arm64 support
-  # enable hubble ui
-  disableEnvoyVersionCheck: true
-  image:
-    repository: docker.io/cilium/cilium-dev
   hubble:
+    enabled: true
     relay:
       enabled: true
-      image:
-        repository: docker.io/cilium/hubble-relay-dev
     ui:
       enabled: true
-      frontend:
-        image:
-          repository: docker.io/mcfio/hubble-ui-dev
-      backend:
-        image:
-          repository: docker.io/mcfio/hubble-ui-backend-dev
-  operator:
-    image:
-      repository: docker.io/cilium/operator-dev
+  ipam:
+    mode: kubernetes
+  kubeProxyReplacement: strict
+  enableIPv4Masquerade: false
+  nativeRoutingCIDR: 10.42.0.0/16
