@@ -23,6 +23,7 @@
   ansible.builtin.shell:
     cmd: ip link delete cilium_host
   become: yes
+  ignore_errors: yes
 
 - name: clean up cni files
   ansible.builtin.file:
