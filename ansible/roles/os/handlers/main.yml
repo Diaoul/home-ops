@@ -23,6 +23,10 @@
     state: restarted
   listen: systemd-timesyncd configuration changed
 
+- name: reload sysctl
+  command: sysctl --system
+  listen: sysctl configuration changed
+
 - name: write to system clock
   command: hwclock --systohc
   listen: systemd-timesyncd configuration changed

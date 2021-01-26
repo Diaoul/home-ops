@@ -9,16 +9,9 @@
     - "iptables"
     - "ip6tables"
 
-- name: network | sysctl
-  blockinfile:
-    path: /etc/sysctl.d/99-kubernetes-cri.conf
-    create: true
-    block: |
+- name: network | sysctl ip forward
+  copy:
+    dest: /etc/sysctl.d/99-kubernetes-cri.conf
+    content: |
       net.ipv4.ip_forward = 1
-      net.bridge.bridge-nf-call-arptables = 1
-      net.bridge.bridge-nf-call-iptables = 1
-  register: sysctl_network
-
-- name: network | reload sysctl
-  shell: sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
-  when: sysctl_network.changed
+  notify: sysctl configuration changed

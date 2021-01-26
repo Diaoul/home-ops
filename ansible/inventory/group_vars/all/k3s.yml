@@ -19,6 +19,5 @@ k3s_server:
     - "k3s-upgrade=true"
 
 k3s_agent:
-  with-node-id: true
   node-label:
     - "k3s-upgrade=true"
