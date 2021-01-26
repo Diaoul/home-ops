@@ -13,6 +13,6 @@ spec:
       version: 1.13.2
       sourceRef:
         kind: HelmRepository
-        name: sealed-secrets-charts
+        name: sealed-secrets
         namespace: flux-system
       interval: 10m
