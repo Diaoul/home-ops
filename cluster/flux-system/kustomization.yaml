@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- gotk-components.yaml
+- gotk-sync.yaml
+- helm-chart-repositories/bitnami-charts.yaml
+- helm-chart-repositories/gitea-charts.yaml
+- helm-chart-repositories/ingress-nginx-charts.yaml
+- helm-chart-repositories/jetstack-charts.yaml
+- helm-chart-repositories/k8s-at-home-charts.yaml
+- helm-chart-repositories/kubernetes-stable-charts.yaml
+- helm-chart-repositories/longhorn-charts.yaml
+- helm-chart-repositories/rook-ceph-charts.yaml
+- helm-chart-repositories/rook-charts.yaml
+- helm-chart-repositories/sealed-secrets-charts.yaml
