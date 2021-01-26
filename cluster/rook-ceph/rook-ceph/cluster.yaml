@@ -12,7 +12,7 @@ spec:
   skipUpgradeChecks: false
   continueUpgradeAfterChecksEvenIfNotHealthy: false
   mon:
-    count: 3
+    count: 1
     allowMultiplePerNode: false
   mgr:
     modules:
