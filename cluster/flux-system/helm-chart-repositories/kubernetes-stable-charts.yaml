@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta1
 kind: HelmRepository
 metadata:
-  name: kubernetes-stable-charts
+  name: kubernetes-stable
   namespace: flux-system
 spec:
   interval: 10m
