@@ -10,7 +10,7 @@ spec:
     branch: main
   secretRef:
     name: flux-system
-  url: ssh://git@github.com/Diaoul/k8s-gitops
+  url: ssh://git@github.com/Diaoul/home-operations
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
@@ -19,7 +19,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./cluster/
+  path: ./cluster
   prune: true
   sourceRef:
     kind: GitRepository
