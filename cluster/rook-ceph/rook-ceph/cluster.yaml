@@ -9,33 +9,33 @@ spec:
     image: ceph/ceph:v15.2.8
     allowUnsupported: true
   dataDirHostPath: /var/lib/rook
-#  skipUpgradeChecks: false
-#  continueUpgradeAfterChecksEvenIfNotHealthy: false
+  skipUpgradeChecks: false
+  continueUpgradeAfterChecksEvenIfNotHealthy: false
   mon:
     count: 1
     allowMultiplePerNode: true
-#  mgr:
-#    modules:
-#      - name: pg_autoscaler
-#        enabled: true
+  mgr:
+    modules:
+      - name: pg_autoscaler
+        enabled: true
   dashboard:
     enabled: true
     port: 8080
     ssl: false
-#  monitoring:
-#    enabled: false
-#    rulesNamespace: rook-ceph
-#  network:
+  monitoring:
+    enabled: false
+    rulesNamespace: rook-ceph
+  network:
   crashCollector:
     disable: true
-#  cleanupPolicy:
-#    confirmation: ""
-#    sanitizeDisks:
-#      method: quick
-#      dataSource: zero
-#      iteration: 1
-#    allowUninstallWithVolumes: false
-#  removeOSDsIfOutAndSafeToRemove: false
+  cleanupPolicy:
+    confirmation: ""
+    sanitizeDisks:
+      method: quick
+      dataSource: zero
+      iteration: 1
+    allowUninstallWithVolumes: false
+  removeOSDsIfOutAndSafeToRemove: false
   storage:
     useAllNodes: false
     useAllDevices: false
@@ -48,32 +48,27 @@ spec:
           - name: "nvme0n1"
             config:
               osdsPerDevice: "5"
-#  disruptionManagement:
-#    managePodBudgets: false
-#    osdMaintenanceTimeout: 30
-#    pgHealthCheckTimeout: 0
-#    manageMachineDisruptionBudgets: false
-#    machineDisruptionBudgetNamespace: openshift-machine-api
+  disruptionManagement:
+    managePodBudgets: false
+    osdMaintenanceTimeout: 30
+    pgHealthCheckTimeout: 0
+    manageMachineDisruptionBudgets: false
+    machineDisruptionBudgetNamespace: openshift-machine-api
   healthCheck:
     daemonHealth:
       mon:
+        disabled: false
         interval: 45s
-        timeout: 600s
-#  healthCheck:
-#    daemonHealth:
-#      mon:
-#        disabled: false
-#        interval: 45s
-#      osd:
-#        disabled: false
-#        interval: 60s
-#      status:
-#        disabled: false
-#        interval: 60s
-#    livenessProbe:
-#      mon:
-#        disabled: false
-#      mgr:
-#        disabled: false
-#      osd:
-#        disabled: false
+      osd:
+        disabled: false
+        interval: 60s
+      status:
+        disabled: false
+        interval: 60s
+    livenessProbe:
+      mon:
+        disabled: false
+      mgr:
+        disabled: false
+      osd:
+        disabled: false
