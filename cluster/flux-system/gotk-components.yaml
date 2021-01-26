@@ -1,4 +1,3 @@
----
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -76,6 +75,7 @@ spec:
                       - HelmRelease
                       - HelmChart
                       - HelmRepository
+                      - ImageRepository
                       type: string
                     name:
                       description: Name of the referent
@@ -1676,7 +1676,7 @@ spec:
                 pattern: ^(http|https)://
                 type: string
               secretRef:
-                description: Secret reference containing the provider webhook URL
+                description: Secret reference containing the provider webhook URL using "address" as data key
                 properties:
                   name:
                     description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?'
@@ -1827,6 +1827,7 @@ spec:
                       - HelmRelease
                       - HelmChart
                       - HelmRepository
+                      - ImageRepository
                       type: string
                     name:
                       description: Name of the referent
@@ -1860,6 +1861,9 @@ spec:
                 - gitlab
                 - bitbucket
                 - harbor
+                - dockerhub
+                - quay
+                - gcr
                 type: string
             required:
             - resources
@@ -2092,14 +2096,14 @@ spec:
         - --events-addr=http://notification-controller/
         - --watch-all-namespaces=true
         - --log-level=info
-        - --log-json
+        - --log-encoding=json
         - --enable-leader-election
         env:
         - name: RUNTIME_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/helm-controller:v0.4.4
+        image: ghcr.io/fluxcd/helm-controller:v0.5.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2130,7 +2134,6 @@ spec:
         - mountPath: /tmp
           name: temp
       nodeSelector:
-        kubernetes.io/arch: amd64
         kubernetes.io/os: linux
       terminationGracePeriodSeconds: 600
       volumes:
@@ -2164,14 +2167,14 @@ spec:
         - --events-addr=http://notification-controller/
         - --watch-all-namespaces=true
         - --log-level=info
-        - --log-json
+        - --log-encoding=json
         - --enable-leader-election
         env:
         - name: RUNTIME_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/kustomize-controller:v0.5.3
+        image: ghcr.io/fluxcd/kustomize-controller:v0.6.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2202,7 +2205,6 @@ spec:
         - mountPath: /tmp
           name: temp
       nodeSelector:
-        kubernetes.io/arch: amd64
         kubernetes.io/os: linux
       securityContext:
         fsGroup: 1337
@@ -2237,14 +2239,14 @@ spec:
       - args:
         - --watch-all-namespaces=true
         - --log-level=info
-        - --log-json
+        - --log-encoding=json
         - --enable-leader-election
         env:
         - name: RUNTIME_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/notification-controller:v0.5.0
+        image: ghcr.io/fluxcd/notification-controller:v0.6.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2279,7 +2281,6 @@ spec:
         - mountPath: /tmp
           name: temp
       nodeSelector:
-        kubernetes.io/arch: amd64
         kubernetes.io/os: linux
       terminationGracePeriodSeconds: 10
       volumes:
@@ -2313,7 +2314,7 @@ spec:
         - --events-addr=http://notification-controller/
         - --watch-all-namespaces=true
         - --log-level=info
-        - --log-json
+        - --log-encoding=json
         - --enable-leader-election
         - --storage-path=/data
         - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.cluster.local.
@@ -2322,7 +2323,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        image: ghcr.io/fluxcd/source-controller:v0.5.6
+        image: ghcr.io/fluxcd/source-controller:v0.6.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -2354,7 +2355,6 @@ spec:
         - mountPath: /tmp
           name: tmp
       nodeSelector:
-        kubernetes.io/arch: amd64
         kubernetes.io/os: linux
       terminationGracePeriodSeconds: 10
       volumes:
@@ -2409,9 +2409,12 @@ metadata:
   name: deny-ingress
   namespace: flux-system
 spec:
+  egress:
+  - {}
   ingress:
   - from:
     - podSelector: {}
   podSelector: {}
   policyTypes:
   - Ingress
+  - Egress
