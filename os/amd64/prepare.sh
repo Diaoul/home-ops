@@ -10,15 +10,15 @@ iso=$(basename $url)
 echo "Preparing for $iso"
 
 # download the iso
-if [ ! -f $iso ]; then
+if [ ! -f "$iso" ]; then
     echo "Download ISO..."
-    curl -sfLo $iso $url
+    curl -sfLo "$iso" "$url"
 fi
 
 # copy cloud-init files
 mkdir -p www
 echo "Copy iso and cloud-init files..."
-cp -f $iso www/$iso
+cp -f "$iso" "www/$iso"
 cp -f user-data.yaml www/user-data
 touch www/user-data
 
@@ -27,7 +27,7 @@ mkdir -p tftp
 if [ ! -f tftp/initrd ] || [ ! -f tftp/vmlinuz ]; then
     echo "Copy kernel and initramfs..."
     mkdir mnt
-    sudo mount -o ro www/$iso mnt/
+    sudo mount -o ro "www/$iso" mnt/
     [ -f tftp/vmlinuz ] || cp -p mnt/casper/vmlinuz tftp/
     [ -f tftp/initrd ] || cp -p mnt/casper/initrd tftp/
     sudo umount mnt/
@@ -37,7 +37,7 @@ fi
 # download grub image
 if [ ! -f tftp/pxelinux.0 ]; then
     echo "Download GRUB image..."
-    curl -sfLo tftp/pxelinux.0 $grub_url
+    curl -sfLo tftp/pxelinux.0 "$grub_url"
 fi
 
 # copy grub configuration
