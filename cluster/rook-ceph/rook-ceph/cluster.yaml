@@ -13,11 +13,11 @@ spec:
   continueUpgradeAfterChecksEvenIfNotHealthy: false
   mon:
     count: 1
-    allowMultiplePerNode: false
-  mgr:
-    modules:
-      - name: pg_autoscaler
-        enabled: true
+    allowMultiplePerNode: true
+    #  mgr:
+    #    modules:
+    #      - name: pg_autoscaler
+    #        enabled: true
   dashboard:
     enabled: true
     port: 8080
@@ -27,7 +27,7 @@ spec:
     rulesNamespace: rook-ceph
   network:
   crashCollector:
-    disable: false
+    disable: true
   cleanupPolicy:
     confirmation: ""
     sanitizeDisks:
