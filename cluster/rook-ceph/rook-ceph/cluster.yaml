@@ -14,10 +14,10 @@ spec:
   mon:
     count: 1
     allowMultiplePerNode: true
-    #  mgr:
-    #    modules:
-    #      - name: pg_autoscaler
-    #        enabled: true
+  mgr:
+    modules:
+      - name: pg_autoscaler
+        enabled: true
   dashboard:
     enabled: true
     port: 8080
@@ -40,12 +40,12 @@ spec:
     useAllNodes: false
     useAllDevices: false
     config:
+      metadataDevice:
+      osdsPerDevice: "1"
     nodes:
       - name: k8s-worker-1
         devices:
           - name: "nvme0n1"
-            config:
-              osdsPerDevice: "5"
   disruptionManagement:
     managePodBudgets: false
     osdMaintenanceTimeout: 30
