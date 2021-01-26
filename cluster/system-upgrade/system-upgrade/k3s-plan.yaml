@@ -8,7 +8,7 @@ metadata:
     k3s-upgrade: server
 spec:
   concurrency: 1
-  channel: stable
+  channel: https://update.k3s.io/v1-release/channels/v1.19
   nodeSelector:
     matchExpressions:
       - key: k3s-upgrade
