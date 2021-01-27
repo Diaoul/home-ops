@@ -30,6 +30,8 @@ spec:
         name: aws
         config:
           region: us-west-1
+      credentials:
+        existingSecret: credentials
       snapshotsEnabled: false
       deployRestic: true
       schedules:
@@ -48,6 +50,23 @@ spec:
         enabled: true  # this is default
         serviceMonitor:
           enabled: true  # this is needed to enable
-  valuesFrom:
-    - kind: Secret
-      name: velero-helm-values
+    caCert: |
+      -----BEGIN CERTIFICATE-----
+      MIIDLDCCAhSgAwIBAgIUfEy1QVVwdlpu6cufTuLd7o0xlrkwDQYJKoZIhvcNAQEL
+      BQAwLjEZMBcGA1UEAwwQTWlsa3lXYXkgUm9vdCBDQTERMA8GA1UECgwITWlsa3lX
+      YXkwHhcNMjAwNTE2MTY1ODUxWhcNNDAwNTExMTY1ODUxWjAuMRkwFwYDVQQDDBBN
+      aWxreVdheSBSb290IENBMREwDwYDVQQKDAhNaWxreVdheTCCASIwDQYJKoZIhvcN
+      AQEBBQADggEPADCCAQoCggEBAKQeqqIOjoJevS6W/27wMznCgWd0niiMGTTjjRji
+      eVZsAMz5a7Y+ElQpCceU+YqHfxxkznxcLVw1V6ybtz1PtSOzY0H9SgxkxUykCVzv
+      XRSrmdPHS/uxWSeo7cpnRjN0ZcrTDixnoY1cuWthnz2IwEDq73gWGIYuZ7ChXozx
+      uBE9fSbyUhhh7xSE0FrV+3xDTHMt/8upfZR9NQfcbqMQdnUMn5KvgEkzc/cKmwNx
+      0lGxgAoZpaBP2H/bAL4daCzxABnlsv8SzDZDDXsy80zMFNl6ApKXlyRFTKyHV4m9
+      Br1DB1dLSRvw2dJACoNNDuh/y0cbc4VbN66bSNXv3O5W2mUCAwEAAaNCMEAwDwYD
+      VR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAgQwHQYDVR0OBBYEFOLxtNCKCKV6
+      6bQnOjn4j00M7+V4MA0GCSqGSIb3DQEBCwUAA4IBAQBVeXyRJagxe7B+rYV77wa0
+      d3XJ+bsGZA9Rpimmw04sJxqaW/gTJpOc2SNXNwX8+p9PH+9Jhr1AGyN+P4ojjIJj
+      A+m6BIwY1m8YUm+w/24HJeCbdN6NE0klNgnsMya+XiELmvnTL3zVpJ0vci9/Jqfu
+      wLfr6zio+/or+/zVf8g8I0TjFGdjNjXS+lbJonn1YAvxFDtYPUPKeXA/toe39rGh
+      h9nxXohstG37MnIicw/xtc3j5RQJntBWFDI/NFXzD2IbjlCWHWAgRn86tIs3wt+J
+      jrbpnNr/0ftTWdi8RSXXND645MwJ+VIrLh9kN7jQmMkUnWKty2cDYbAJDKSOWYUn
+      -----END CERTIFICATE-----
