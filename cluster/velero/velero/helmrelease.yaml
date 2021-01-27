@@ -31,8 +31,8 @@ spec:
         config:
           region: us-west-1
           s3ForcePathStyle: true
-          s3Url: https://singularity.milkyway:9001
-          publicUrl: https://singularity.milkyway:9001
+          s3Url: "https://singularity.milkyway:9001"
+          publicUrl: "https://singularity.milkyway:9001"
       volumeSnapshotLocation:
         name: singularity
         config:
