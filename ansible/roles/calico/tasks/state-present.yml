@@ -10,7 +10,9 @@
 
 - name: check manifests are the same
   fail:
-    msg: manifests are different!
+    msg: |
+      Manifests are different!
+      Check https://docs.projectcalico.org/manifests/tigera-operator.yaml
   when:
     - calico_check_manifests
     - calico_remote.content | trim | hash('sha1') != lookup('file', 'tigera-operator.yaml') | hash('sha1')
