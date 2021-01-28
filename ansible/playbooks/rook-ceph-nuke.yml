@@ -16,32 +16,32 @@
 
   tasks:
     - name: remove /var/lib/rook
-      become: yes
       file:
         state: absent
         path: "/var/lib/rook"
+      become: yes
       when: rook_ceph_enabled is defined and rook_ceph_enabled
 
     - name: zap the drives
-      become: yes
       shell: sgdisk --zap-all {{ item }} || true
       loop:
         - "{{ rook_ceph_devices }}"
+      become: yes
       when: rook_ceph_enabled is defined and rook_ceph_enabled
 
     - name: remove lvm partitions
-      become: yes
-      shell: "{{ item }}"
+      shell: "{{ item }}"  # noqa 305
       loop:
         - ls /dev/mapper/ceph--* | xargs -I% -- fuser --kill %
         - ls /dev/mapper/ceph--* | xargs -I% -- dmsetup clear %
         - ls /dev/mapper/ceph--* | xargs -I% -- dmsetup remove -f %
         - ls /dev/mapper/ceph--* | xargs -I% -- rm -rf %
+      become: yes
       when: rook_ceph_enabled is defined and rook_ceph_enabled
 
     - name: wipe the block device
-      become: yes
       command: "wipefs -af {{ item }}"
       with_items:
         - "{{ rook_ceph_devices }}"
+      become: yes
       when: rook_ceph_enabled is defined and rook_ceph_enabled

@@ -1,0 +1,8 @@
+exclude_paths:
+  - .github/
+  - cluster/
+  - hack/
+  - os/
+  - requirement.yml
+skip_list:
+  - '204'

@@ -9,9 +9,12 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci-skip]')"
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
       - uses: actions/setup-python@v2
       - uses: pre-commit/action@v2.0.0
         with:
-          extra_args: -c .github/workflows-config/.pre-commit-config.yaml
+          extra_args: -c .github/pre-commit-config.yaml

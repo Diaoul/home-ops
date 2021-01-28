@@ -3,14 +3,19 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
-      - id: mixed-line-ending
-        args: [--fix=lf]
+      - id: fix-byte-order-marker
       - id: trailing-whitespace
       - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: [--fix=lf]
+      - id: check-added-large-files
+        args: [--maxkb=2048]
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
   - repo: https://github.com/Lucas-C/pre-commit-hooks
     rev: v1.1.9
     hooks:
-      - id: forbid-tabs
+      - id: remove-tabs
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.25.0
     hooks:
@@ -20,8 +25,9 @@ repos:
     hooks:
       - id: shellcheck
         args: [--severity=error]
-#  - repo: https://github.com/ansible-community/ansible-lint.git
-#    rev: v4.3.7
-#    hooks:
-#      - id: ansible-lint
-#        files: \.(yaml|yml)$
+  - repo: https://github.com/ansible-community/ansible-lint.git
+    rev: v4.3.7
+    hooks:
+      - id: ansible-lint
+        files: ^ansible/
+        always_run: false
