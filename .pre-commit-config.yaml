@@ -30,4 +30,3 @@ repos:
     hooks:
       - id: ansible-lint
         files: ^ansible/
-        always_run: false

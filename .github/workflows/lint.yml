@@ -28,3 +28,5 @@ jobs:
           fetch-depth: 1
       - name: Run shellcheck
         uses: ludeeus/action-shellcheck@master
+        with:
+          severity: error
