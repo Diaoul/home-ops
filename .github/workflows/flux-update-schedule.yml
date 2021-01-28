@@ -33,9 +33,8 @@ jobs:
         branch: "flux/update-${{ steps.update.outputs.flux_version }}"
         delete-branch: true
         title: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }} [ci-skip]"
-        signoff: true
         committer: "Antoine Bertin <Diaoul@users.noreply.github.com>"
-        author: "Devin Buhl <Diaoul@users.noreply.github.com>"
+        author: "Antoine Bertin <Diaoul@users.noreply.github.com>"
         assignees: "Diaoul"
         commit-message: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }} [ci-skip]"
         body: |
