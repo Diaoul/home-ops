@@ -9,7 +9,7 @@ on:
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, '[ci-skip]')"
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Install shellcheck
         run: sudo apt-get install shellcheck
