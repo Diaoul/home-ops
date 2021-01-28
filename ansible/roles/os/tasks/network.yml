@@ -10,9 +10,7 @@
     - "ip6tables"
 
 - name: network | sysctl ip forward
-  copy:
-    dest: /etc/sysctl.d/99-kubernetes-cri.conf
-    content: |
-      net.ipv4.ip_forward = 1
-    mode: 0644
-  notify: sysctl configuration changed
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
