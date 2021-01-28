@@ -1,6 +1,7 @@
 ansible/roles/xanmanning.k3s/
 os/amd64/tftp/
 os/amd64/www/
+bin/
 *.iso
 kubeconfig
 .venv/
