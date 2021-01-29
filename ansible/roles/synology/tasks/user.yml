@@ -1,0 +1,7 @@
+---
+- name: add user to sudoers
+  copy:
+    content: "{{ ansible_user }} ALL=(ALL) NOPASSWD: ALL"
+    dest: "/etc/sudoers.d/{{ ansible_user }}_nopasswd"
+    mode: 0440
+  become: yes
