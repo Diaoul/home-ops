@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: diaoul-fr
+  namespace: cert-manager
+spec:
+  secretName: diaoul-fr-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "diaoul.fr"
+  dnsNames:
+    - "diaoul.fr"
+    - "*.diaoul.fr"
