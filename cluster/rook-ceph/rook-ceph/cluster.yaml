@@ -47,7 +47,7 @@ spec:
         devices:
           - name: "nvme0n1"
             config:
-              osdsPerDevice: "5"
+              osdsPerDevice: "2"
   disruptionManagement:
     managePodBudgets: false
     osdMaintenanceTimeout: 30
