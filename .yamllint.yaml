@@ -7,9 +7,9 @@ ignore: |
   ansible/roles/calico/files/tigera-operator.yaml
 
 rules:
-  truthy:
-    allowed-values: ['yes', 'no', 'true', 'false']
   indentation:
     spaces: 2
     indent-sequences: consistent
   line-length: disable
+  truthy:
+    allowed-values: ['yes', 'no', 'true', 'false']
