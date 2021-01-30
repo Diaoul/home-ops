@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: ingress-nginx-external
+  name: ingress-nginx-internal
   namespace: kube-system
 spec:
   interval: 10m
@@ -17,23 +17,17 @@ spec:
         namespace: flux-system
   values:
     controller:
-      ingressClass: external
+      ingressClass: internal
       replicaCount: 2
       service:
-        externalIPs:
-          - 10.44.0.1
-        externalTrafficPolicy: Local
+        internalIPs:
+          - 10.44.0.2
+        internalTrafficPolicy: Local
       metrics:
         enabled: true
         serviceMonitor:
           enabled: true
           namespace: kube-system
-      config:
-        proxy-body-size: "100m"
-        enable-real-ip: "true"
-        use-forwarded-headers: "true"
-        forwarded-for-header: "CF-Connecting-IP"
-        proxy-real-ip-cidr: "103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,104.16.0.0/12,108.162.192.0/18,131.0.72.0/22,141.101.64.0/18,162.158.0.0/15,172.64.0.0/13,173.245.48.0/20,188.114.96.0/20,190.93.240.0/20,197.234.240.0/22,198.41.128.0/17,2400:cb00::/32,2405:8100::/32,2405:b500::/32,2606:4700::/32,2803:f800::/32,2a06:98c0::/29,2c0f:f248::/32"
       extraArgs:
         default-ssl-certificate: kube-system/diaoul-fr-tls
       resources:
@@ -51,7 +45,7 @@ spec:
                   - key: app.kubernetes.io/name
                     operator: In
                     values:
-                      - ingress-nginx-external
+                      - ingress-nginx-internal
                   - key: app.kubernetes.io/instance
                     operator: In
                     values:

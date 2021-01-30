@@ -21,17 +21,17 @@ spec:
       repository: k8sathome/jackett
       tag: v0.17.401
     ingress:
-      enabled: false
+      enabled: true
       annotations:
         kubernetes.io/ingress.class: internal
       hosts:
-      - host: jackett.diaoul.fr
-        paths:
-        - path: /
-          pathType: Prefix
+        - host: jackett.diaoul.fr
+          paths:
+            - path: /
+              pathType: Prefix
       tls:
-      - hosts:
-        - jackett.diaoul.fr
+        - hosts:
+            - jackett.diaoul.fr
     persistence:
       config:
         enabled: true
