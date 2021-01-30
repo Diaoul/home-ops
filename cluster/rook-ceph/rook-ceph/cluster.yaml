@@ -35,7 +35,6 @@ spec:
       dataSource: zero
       iteration: 1
     allowUninstallWithVolumes: false
-  removeOSDsIfOutAndSafeToRemove: false
   storage:
     useAllNodes: false
     useAllDevices: false
@@ -52,6 +51,7 @@ spec:
     pgHealthCheckTimeout: 0
     manageMachineDisruptionBudgets: false
     machineDisruptionBudgetNamespace: openshift-machine-api
+  removeOSDsIfOutAndSafeToRemove: true
   healthCheck:
     daemonHealth:
       mon:
