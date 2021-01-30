@@ -51,7 +51,7 @@ spec:
     pgHealthCheckTimeout: 0
     manageMachineDisruptionBudgets: false
     machineDisruptionBudgetNamespace: openshift-machine-api
-  removeOSDsIfOutAndSafeToRemove: true
+  removeOSDsIfOutAndSafeToRemove: false
   healthCheck:
     daemonHealth:
       mon:
