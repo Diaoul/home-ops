@@ -46,8 +46,6 @@ spec:
       - name: k8s-worker-1
         devices:
           - name: "nvme0n1"
-            config:
-              osdsPerDevice: "2"
   disruptionManagement:
     managePodBudgets: false
     osdMaintenanceTimeout: 30
