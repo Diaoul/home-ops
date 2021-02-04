@@ -5,7 +5,7 @@ metadata:
   name: longhorn
   namespace: longhorn-system
 spec:
-  releaseName: longhorn
+  interval: 10m
   chart:
     spec:
       # renovate: registryUrl=https://charts.longhorn.io
@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: longhorn
         namespace: flux-system
-      interval: 10m
   values:
     defaultSettings:
       createDefaultDiskLabeledNodes: true
