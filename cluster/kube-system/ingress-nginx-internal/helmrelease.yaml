@@ -20,7 +20,7 @@ spec:
       ingressClass: internal
       replicaCount: 2
       service:
-        internalIPs:
+        externalIPs:
           - 10.44.0.2
         internalTrafficPolicy: Local
       metrics:
