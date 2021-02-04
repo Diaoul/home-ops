@@ -21,7 +21,7 @@ spec:
       repository: k8sathome/jackett
       tag: v0.17.401
     ingress:
-      enabled: true
+      enabled: false
       annotations:
         kubernetes.io/ingress.class: internal
       hosts:
@@ -35,7 +35,6 @@ spec:
     persistence:
       config:
         enabled: true
-        storageClass: rook-ceph-block
         accessMode: ReadWriteOnce
         size: 1Gi
     podAnnotations:
