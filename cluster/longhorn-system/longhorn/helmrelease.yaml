@@ -16,10 +16,15 @@ spec:
         name: longhorn
         namespace: flux-system
   values:
+    persistence:
+      defaultClass: true
+      defaultClassReplicaCount: 1
+      reclaimPolicy: Delete
     defaultSettings:
-      createDefaultDiskLabeledNodes: true
       backupTarget: s3://longhorn@minio/longhorn
       backupTargetCredentialSecret: longhorn-backup
+      createDefaultDiskLabeledNodes: true
+      defaultReplicaCount: 1
     ingress:
       enabled: false
       host: longhorn.diaoul.fr
