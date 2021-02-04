@@ -1,0 +1,31 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: longhorn
+  namespace: longhorn-system
+spec:
+  releaseName: longhorn
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.longhorn.io
+      chart: longhorn
+      version: 1.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn
+        namespace: flux-system
+      interval: 10m
+  values:
+    defaultSettings:
+      createDefaultDiskLabeledNodes: true
+      backupTarget: s3://longhorn@minio/longhorn
+      backupTargetCredentialSecret: longhorn-backup
+    ingress:
+      enabled: false
+      host: longhorn.diaoul.fr
+      tlsSecret: longhorn-cert
+      tls: true
+      annotations:
+        kubernetes.io/ingress.class: nginx-internal
+        cert-manager.io/cluster-issuer: letsencrypt-production
