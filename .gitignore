@@ -1,8 +1,14 @@
+# ansible roles
 ansible/roles/xanmanning.k3s/
+
+# os build directories and files
 os/amd64/tftp/
 os/amd64/www/
-bin/
 *.iso
+
+# k8s
 kubeconfig
-.venv/
 *-secret.yaml
+
+# python venv
+.venv/
