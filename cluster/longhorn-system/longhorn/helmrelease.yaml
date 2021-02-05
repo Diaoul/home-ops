@@ -20,6 +20,23 @@ spec:
       defaultClass: true
       defaultClassReplicaCount: 1
       reclaimPolicy: Delete
+      recurringJobs:
+        enable: true
+        jobList: |
+          [
+              {
+                "name":"snapshot",
+                "task":"snapshot",
+                "cron":"@hourly",
+                "retain": 12
+              },
+              {
+                "name": "backup",
+                "task": "backup",
+                "cron": "@daily",
+                "retain": 10
+              }
+          ]
     defaultSettings:
       backupTarget: s3://longhorn@minio/longhorn
       backupTargetCredentialSecret: longhorn-backup
