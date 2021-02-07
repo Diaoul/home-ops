@@ -16,6 +16,8 @@ spec:
         name: bitnami
         namespace: flux-system
   values:
+    logLevel: debug
+    dryRun: true
     sources:
       - ingress
     provider: cloudflare
@@ -23,7 +25,6 @@ spec:
       secretName: external-dns-cloudflare-api-token
     domainFilters:
       - diaoul.fr
-    annotationFilter: "kubernetes.io/ingress.class=external"
     policy: sync
     resources:
       requests:
