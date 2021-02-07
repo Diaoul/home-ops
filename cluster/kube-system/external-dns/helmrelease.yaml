@@ -16,15 +16,12 @@ spec:
         name: bitnami
         namespace: flux-system
   values:
+    logLevel: debug
     provider: coredns
     domainFilters:
       - diaoul.fr
     crd:
       create: true
-    metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true
     resources:
       requests:
         cpu: 50m
@@ -32,3 +29,7 @@ spec:
       limits:
         cpu: 50m
         memory: 50Mi
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
