@@ -19,7 +19,6 @@ spec:
     provider: coredns
     domainFilters:
       - diaoul.fr
-    logLevel: debug
     policy: sync
     registry: noop
     crd:
