@@ -16,8 +16,6 @@ spec:
         name: bitnami
         namespace: flux-system
   values:
-    logLevel: debug
-    dryRun: true
     sources:
       - ingress
     provider: cloudflare
@@ -35,3 +33,5 @@ spec:
         memory: 50Mi
     metrics:
       enabled: true
+      serviceMonitor:
+        enabled: true
