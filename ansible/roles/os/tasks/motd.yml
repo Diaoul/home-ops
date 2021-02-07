@@ -1,0 +1,6 @@
+---
+- name: motd | disable motd
+  lineinfile:
+    dest: /etc/default/motd-news
+    regexp: '^ENABLED='
+    line: 'ENABLED=0'

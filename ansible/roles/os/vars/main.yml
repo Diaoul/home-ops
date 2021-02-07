@@ -1,0 +1,12 @@
+---
+ansible_become: yes
+packages:
+  install:
+    - apt-transport-https
+    - arptables
+    - ebtables
+    - nfs-common
+    - open-iscsi
+  remove:
+    - apparmor
+    - snapd

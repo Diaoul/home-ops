@@ -1,0 +1,27 @@
+---
+- hosts:
+    - master
+    - worker
+  vars_prompt:
+    name: "run_confirmation"
+    prompt: "This will DESTROY your cluster. Do you wish to continue? [Y/n]"
+    default: "n"
+    private: no
+  vars:
+    k3s_state: uninstalled
+  any_errors_fatal: yes
+
+  pre_tasks:
+    - name: check confirmation
+      fail:
+        msg: "Abort."
+      when: run_confirmation != "Y"
+
+  roles:
+    - xanmanning.k3s
+
+  tasks:
+    - name: reboot
+      reboot:
+        msg: "Nodes are being rebooted..."
+      ignore_errors: yes

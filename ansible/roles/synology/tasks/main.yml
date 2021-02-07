@@ -1,0 +1,8 @@
+---
+- import_tasks: user.yml
+  tags:
+    - user
+
+- import_tasks: prometheus-node-exporter.yml
+  tags:
+    - prometheus-node-exporter

@@ -1,0 +1,33 @@
+---
+- name: install docker and docker-compose python modules
+  pip:
+    name:
+      - docker
+      - docker-compose
+    executable: /usr/local/python3/bin/pip
+  become: yes
+
+- name: install prometheus node-exporter
+  community.general.docker_compose:
+    project_name: node-exporter
+    definition:
+      version: '3.7'
+      services:
+        node-exporter:
+          privileged: true
+          image: quay.io/prometheus/node-exporter:latest
+          container_name: node-exporter
+          restart: unless-stopped
+          network_mode: host
+          pid: host
+          volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+            - /:/rootfs:ro
+          command:
+            - "--path.procfs=/host/proc"
+            - "--path.sysfs=/host/sys"
+            - "--collector.filesystem.ignored-mount-points"
+            - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+
+  become: yes

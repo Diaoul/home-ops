@@ -1,0 +1,32 @@
+---
+- name: kernel | adjust grub cmdline linux default
+  become: yes
+  replace:
+    path: /etc/default/grub
+    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=(?:(?![" ]{{ item.option | regex_escape }}=).)*)(?:[" ]{{ item.option | regex_escape }}=\S+)?(.*")$'
+    replace: '\1 {{ item.option }}={{ item.value }}\2'
+  loop:
+    - option: apparmor
+      value: 0
+    - option: mitigations
+      value: "off"
+    - option: max_loop
+      value: 32
+  notify: grub configuration changed
+
+- name: kernel | enable modules
+  community.general.modprobe:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - br_netfilter
+    - overlay
+
+- name: kernel | enable modules on boot
+  copy:
+    content: "{{ item }}"
+    dest: "/etc/modules-load.d/{{ item }}.conf"
+    mode: 0644
+  loop:
+    - br_netfilter
+    - overlay

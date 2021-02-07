@@ -1,0 +1,2 @@
+---
+- include_tasks: state-{{ calico_state }}.yml

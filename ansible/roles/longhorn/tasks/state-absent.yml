@@ -1,0 +1,13 @@
+---
+- name: unmount
+  ansible.posix.mount:
+    path: /var/lib/longhorn
+    src: "{{ longhorn_device }}1"
+    state: absent
+  become: yes
+
+- name: delete mount directory
+  file:
+    path: /var/lib/longhorn
+    state: absent
+  become: yes

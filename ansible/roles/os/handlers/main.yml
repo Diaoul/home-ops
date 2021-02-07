@@ -1,0 +1,34 @@
+---
+- name: restart logind systemd service
+  systemd:
+    name: systemd-logind.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+  listen: restart logind
+
+- name: restart unattended-upgrades systemd service
+  service:
+    name: unattended-upgrades.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+  listen: unattended-upgrades configuration changed
+
+- name: restart timesyncd systemd service
+  service:
+    name: systemd-timesyncd.service
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+  listen: systemd-timesyncd configuration changed
+
+- name: write to system clock
+  command: hwclock --systohc
+  listen: systemd-timesyncd configuration changed
+  when: ansible_virtualization_role == "host"
+        or ansible_virtualization_role == "NA"
+
+- name: grub mkconfig
+  command: grub-mkconfig -o /boot/grub/grub.cfg
+  listen: grub configuration changed

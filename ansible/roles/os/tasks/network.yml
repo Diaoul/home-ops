@@ -1,0 +1,16 @@
+---
+# k3s recommendes to use legacy iptables
+# https://rancher.com/docs/k3s/latest/en/known-issues/
+- name: network | configure nodes to use legacy iptables
+  community.general.alternatives:
+    name: "{{ item }}"
+    path: /usr/sbin/{{ item }}-legacy
+  loop:
+    - iptables
+    - ip6tables
+
+- name: network | sysctl ip forward
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf

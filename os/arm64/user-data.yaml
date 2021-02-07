@@ -1,0 +1,7 @@
+#cloud-config
+locale: en_US
+
+users:
+  - name: antoine
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPveFNeWn+aFO3WyMfA+bX9D6iVurO5VfbqbzjO0G0J3 earth@milkyway.laniakea

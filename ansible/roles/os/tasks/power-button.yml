@@ -1,0 +1,11 @@
+---
+- name: power-button | disable single power button press shutdown
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: "{{ item.setting }}"
+    line: "{{ item.setting }}={{ item.value }}"
+  loop:
+    - setting: HandlePowerKey
+      value: ignore
+  when: ansible_product_name == 'NUC8i5BEH'
+  notify: restart logind

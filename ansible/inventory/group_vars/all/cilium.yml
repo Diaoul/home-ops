@@ -1,0 +1,30 @@
+---
+kube_router_version: v1.1.1
+cilium_state: present
+cilium_version: 1.9.3
+cilium_values:
+  tunnel: disabled
+  autoDirectNodeRoutes: true
+  bpf:
+    masquerade: false
+  endpointRoutes:
+    enabled: true
+  externalIPs:
+    enabled: true
+  hostPort:
+    enabled: true
+  hostServices:
+    enabled: true
+  nodePort:
+    enabled: true
+  hubble:
+    enabled: true
+    relay:
+      enabled: true
+    ui:
+      enabled: true
+  ipam:
+    mode: kubernetes
+  kubeProxyReplacement: strict
+  enableIPv4Masquerade: false
+  nativeRoutingCIDR: 10.42.0.0/16

@@ -1,0 +1,15 @@
+---
+extends: default
+
+ignore: |
+  .github/
+  user-data.yaml
+  ansible/roles/calico/files/tigera-operator.yaml
+
+rules:
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  line-length: disable
+  truthy:
+    allowed-values: ['yes', 'no', 'true', 'false']

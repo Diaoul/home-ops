@@ -1,0 +1,43 @@
+## :building_construction: Playbooks
+
+### OS Preparation
+With Kubernetes requirements
+```bash
+ansible-playbook ansible/playbooks/os.yml
+```
+
+### K3S Installation
+Using [xanmanning.k3s](https://galaxy.ansible.com/xanmanning/k3s) role
+```bash
+ansible-playbook ansible/playbooks/k3s.yml
+```
+
+### CNI
+[Calico](https://www.projectcalico.org/) or [Cilium](https://cilium.io/)
+available. If using BGP, make sure to configure your router accordingly.
+```bash
+ansible-playbook ansible/playbooks/calico.yml
+```
+
+### CSI
+[Longhorn](https://longhorn.io/) or [Rook (ceph)](https://rook.io/)
+available. This role will prepare the disks to be used with the CSI.
+Be careful!
+```bash
+ansible-playbook ansible/playbooks/longhorn.yml
+```
+
+## :fire: Uninstall Playbooks
+Because sometimes it's the only thing left to do...
+
+Most of the playbooks have an `uninstall` variant that will attempt to
+remove what has been installed, e.g.
+```bash
+ansible-playbook ansible/playbooks/calico-uninstall.yml
+```
+
+## :radioactive: Nuke Playbooks
+:warning: **Unrecoverable data loss!**
+```bash
+ansible-playbook ansible/playbooks/rook-ceph-nuke.yml
+```

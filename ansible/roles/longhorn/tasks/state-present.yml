@@ -1,0 +1,20 @@
+---
+- name: create mount directory
+  file:
+    path: /var/lib/longhorn
+    state: directory
+  become: yes
+
+- name: create filesystem on device
+  community.general.filesystem:
+    fstype: ext4
+    dev: "{{ longhorn_device }}"
+  become: yes
+
+- name: mount to /var/lib/longhorn
+  ansible.posix.mount:
+    path: /var/lib/longhorn
+    src: "{{ longhorn_device }}"
+    fstype: ext4
+    state: mounted
+  become: yes
