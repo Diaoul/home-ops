@@ -24,7 +24,7 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: internal
-        external-dns.alpha.kubernetes.io/hostname: milkyway.diaoul.fr
+        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
       hosts:
         - host: jackett.diaoul.fr
           paths:
