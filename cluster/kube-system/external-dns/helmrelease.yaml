@@ -19,7 +19,6 @@ spec:
     provider: coredns
     domainFilters:
       - diaoul.fr
-    dryRun: true
     logLevel: debug
     policy: sync
     crd:
