@@ -26,8 +26,8 @@ spec:
           - tcp-tls:2b536e.dns2.nextdns.io
       conditional:
         mapping:
-          diaoul.fr: tcp+udp:10.44.0.3
-          milkyway.laniakea-sc.space: tcp+udp:10.44.0.3
+          diaoul.fr: udp:10.44.0.3
+          milkyway.laniakea-sc.space: udp:10.44.0.3
       blocking:
         blackLists:
           base:
