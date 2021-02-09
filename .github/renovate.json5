@@ -6,9 +6,7 @@
   "dependencyDashboardTitle": "Renovate Dashboard",
   "commitMessageSuffix": "[skip ci]",
   "suppressNotifications": ["prIgnoreNotification"],
-  "pre-commit": {
-    "fileMatch": ["\\.github/\\.pre-commit-config\\.yaml$"]
-  },
+  "assignees": ["@Diaoul"],
   "kubernetes": {
     "fileMatch": ["cluster/.+\\.yaml$"],
     "ignorePaths": ["cluster/flux-system/"]
