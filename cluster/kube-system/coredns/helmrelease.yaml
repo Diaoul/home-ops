@@ -24,12 +24,13 @@ spec:
       externalTrafficPolicy: Local
     servers:
       - zones:
+          # only 1 protocol per port so scheme is required here to limit to udp
+          # feature gate MixedProtocolLBService allows multi-protocol per port
+          # for LoadBalancer
           - zone: diaoul.fr.
             scheme: dns://
-            use_tcp: true
           - zone: milkyway.laniakea-sc.space.
             scheme: dns://
-            use_tcp: true
         port: 53
         plugins:
           - name: errors
