@@ -22,8 +22,8 @@ spec:
     config: |
       upstream:
         externalResolvers:
-          - tcp-tls:2b536e.dns1.nextdns.io:853
-          - tcp-tls:2b536e.dns2.nextdns.io:853
+          - tcp-tls:2b536e.dns1.nextdns.io
+          - tcp-tls:2b536e.dns2.nextdns.io
       conditional:
         mapping:
           diaoul.fr: tcp+udp:10.44.0.3

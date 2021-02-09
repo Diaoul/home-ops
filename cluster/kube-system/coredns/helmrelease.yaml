@@ -26,6 +26,10 @@ spec:
       - zones:
           - zone: diaoul.fr.
             scheme: dns://
+            use_tcp: true
+          - zone: milkyway.laniakea-sc.space.
+            scheme: dns://
+            use_tcp: true
         port: 53
         plugins:
           - name: errors
