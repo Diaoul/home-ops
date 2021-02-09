@@ -19,7 +19,6 @@ spec:
     image:
       repository: spx01/blocky
       tag: v0.12
-    replicas: 2
     config: |
       upstream:
         externalResolvers:
@@ -66,16 +65,6 @@ spec:
       enabled: true
     podAnnotations:
       configmap.reloader.stakater.com/reload: blocky
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values:
-                    - blocky
-            topologyKey: kubernetes.io/hostname
     resources:
       requests:
         cpu: 100m
