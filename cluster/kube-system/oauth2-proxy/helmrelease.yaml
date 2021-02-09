@@ -16,6 +16,14 @@ spec:
         name: k8s-at-home
         namespace: flux-system
   values:
+    image:
+      repository: quay.io/oauth2-proxy/oauth2-proxy
+      tag: v6.1.1
+    authenticatedEmailsFile:
+      enabled: true
+      restricted_access: |-
+        ant.bertin@gmail.com
+        maeva.gault@gmail.com
     ingress:
       enabled: true
       path: /oauth2
