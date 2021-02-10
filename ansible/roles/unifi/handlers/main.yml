@@ -1,0 +1,12 @@
+---
+- name: restart unifi
+  service:
+    name: unifi
+    state: restarted
+  become: yes
+  listen: certificate changed
+
+- name: force provision
+  pause:
+    prompt: Configuration has changed, trigger a Provision of the device
+  listen: configuration changed

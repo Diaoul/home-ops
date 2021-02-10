@@ -1,0 +1,178 @@
+{
+    "interfaces": {
+        "ethernet": {
+            "eth0": {
+                "dhcp-options": {
+                    "client-option": [
+                        "retry 60;",
+                        "send vendor-class-identifier &quot;neufbox&quot;;"
+                    ]
+                }
+            }
+        }
+    },
+    "protocols": {
+        "bgp": {
+            "64512": {
+                "neighbor": {
+                    "10.0.3.24": {
+                        "remote-as": "64513"
+                    },
+                    "10.0.3.25": {
+                        "remote-as": "64513"
+                    }
+                },
+                "parameters": {
+                    "router-id": "10.0.3.1"
+                }
+            }
+        }
+    },
+    "service": {
+        "dns": {
+            "dynamic": {
+                "interface": {
+                    "eth0": {
+                        "service": {
+                            "custom-cloudflare": {
+                                "host-name": [
+                                    "milkyway.diaoul.fr"
+                                ],
+                                "login": "ant.bertin@gmail.com",
+                                "options": [
+                                    "zone=diaoul.fr"
+                                ],
+                                "password": "{{ unifi_cloudflare_global_api_key }}",
+                                "protocol": "cloudflare",
+                                "server": "api.cloudflare.com/client/v4"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "system": {
+        "login": {
+            "user": {
+                "admin": {
+                    "authentication": {
+                        "public-keys": {
+                            "earth@milkyway.laniakea": {
+                                "key": "AAAAC3NzaC1lZDI1NTE5AAAAIPveFNeWn+aFO3WyMfA+bX9D6iVurO5VfbqbzjO0G0J3",
+                                "type": "ssh-ed25519"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "static-host-mapping": {
+            "host-name": {
+                "usg.milkyway": {
+                    "inet": [
+                        "10.0.2.1"
+                    ]
+                },
+                "sun.milkyway": {
+                    "inet": [
+                        "10.0.2.2"
+                    ]
+                },
+                "ntp.milkyway": {
+                    "inet": [
+                        "10.0.3.1"
+                    ]
+                },
+                "ariane.milkyway": {
+                    "inet": [
+                        "10.0.3.2"
+                    ]
+                },
+                "starlink.milkyway": {
+                    "inet": [
+                        "10.0.3.3"
+                    ]
+                },
+                "mcc.milkyway": {
+                    "inet": [
+                        "10.0.3.4"
+                    ]
+                },
+                "singularity.milkyway": {
+                    "inet": [
+                        "10.0.3.6"
+                    ]
+                },
+                "k8s-node-1.milkyway": {
+                    "alias": [
+                        "k8s-master.milkyway"
+                    ],
+                    "inet": [
+                        "10.0.3.24"
+                    ]
+                },
+                "k8s-node-2.milkyway": {
+                    "inet": [
+                        "10.0.3.25"
+                    ]
+                },
+                "alarmsensor.milkyway": {
+                    "inet": [
+                        "10.0.5.64"
+                    ]
+                },
+                "magicframe.milkyway": {
+                    "inet": [
+                        "10.0.5.65"
+                    ]
+                },
+                "lisebedlight.milkyway": {
+                    "inet": [
+                        "10.0.5.66"
+                    ]
+                },
+                "abigaellebedlight.milkyway": {
+                    "inet": [
+                        "10.0.5.67"
+                    ]
+                },
+                "deskmonitorlight.milkyway": {
+                    "inet": [
+                        "10.0.5.68"
+                    ]
+                },
+                "columbia.milkyway": {
+                    "inet": [
+                        "10.0.10.16"
+                    ]
+                },
+                "orion.milkyway": {
+                    "inet": [
+                        "10.0.10.17"
+                    ]
+                },
+                "ursamajor.milkyway": {
+                    "inet": [
+                        "10.0.10.24"
+                    ]
+                },
+                "earth.milkyway": {
+                    "inet": [
+                        "10.0.10.32"
+                    ]
+                },
+                "venus.milkyway": {
+                    "inet": [
+                        "10.0.10.34"
+                    ]
+                },
+                "saturn.milkyway": {
+                    "inet": [
+                        "10.0.10.36"
+                    ]
+                }
+            }
+        }
+    }
+}

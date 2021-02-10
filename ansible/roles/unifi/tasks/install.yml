@@ -1,0 +1,61 @@
+---
+- name: install required packages
+  apt:
+    name:
+      - apt-transport-https
+      - openjdk-8-jre-headless
+      - haveged
+  become: yes
+
+- name: add GPG keys
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 06E85760C0A52C50
+  become: yes
+
+- name: add repository
+  apt_repository:
+    repo: deb http://www.ui.com/downloads/unifi/debian stable ubiquiti
+    filename: unifi
+  become: yes
+
+- name: install unifi
+  apt:
+    name: unifi
+    update_cache: yes
+  become: yes
+
+- name: copy certificate store
+  copy:
+    src: "{{ unifi_certificate_store }}"
+    dest: /var/lib/unifi/cert.pfx
+  register: certificate
+  become: yes
+
+- name: install certificate store
+  command: >
+    keytool -importkeystore -noprompt
+    -srckeystore /var/lib/unifi/cert.pfx
+    -srcstoretype PKCS12
+    -srcstorepass "{{ unifi_certificate_password }}"
+    -destkeystore /var/lib/unifi/keystore
+    -deststorepass aircontrolenterprise
+    -destkeypass aircontrolenterprise
+    -alias unifi
+  become: yes
+  when: certificate is changed
+  notify: certificate changed
+
+- name: enable unifi service
+  service:
+    name: unifi
+    enabled: yes
+    state: started
+  become: yes
+
+- name: disable mongo service
+  service:
+    name: mongodb
+    enabled: no
+    state: stopped
+  become: yes

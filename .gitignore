@@ -1,6 +1,9 @@
 # ansible roles
 ansible/roles/xanmanning.k3s/
 
+# ansible vault password file
+ansible/vault_pass
+
 # os build directories and files
 os/amd64/tftp/
 os/amd64/www/

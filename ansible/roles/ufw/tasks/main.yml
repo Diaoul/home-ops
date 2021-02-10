@@ -1,0 +1,42 @@
+---
+- name: install package
+  apt:
+    name: ufw
+  become: yes
+
+- name: reset configuration
+  ufw:
+    state: reset
+  become: yes
+  when: ufw_reset
+
+- name: set logging
+  ufw:
+    logging: "on"
+  become: yes
+
+- name: allow ssh
+  ufw:
+    rule: allow
+    port: ssh
+  become: yes
+
+- name: allow ports
+  ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  loop: "{{ ufw_allow }}"
+  become: yes
+  when: ufw_allow is defined and ufw_allow|length
+
+- name: deny incoming traffic
+  ufw:
+    policy: deny
+    direction: incoming
+  become: yes
+
+- name: enable
+  ufw:
+    state: enabled
+  become: yes

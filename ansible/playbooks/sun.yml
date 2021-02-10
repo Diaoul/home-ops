@@ -1,0 +1,6 @@
+---
+- hosts:
+    - sun
+  roles:
+    - ufw
+    - unifi

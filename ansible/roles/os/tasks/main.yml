@@ -38,3 +38,7 @@
 - import_tasks: user.yml
   tags:
     - user
+
+- import_tasks: terminfo.yml
+  tags:
+    - terminfo
