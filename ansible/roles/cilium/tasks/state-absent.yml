@@ -1,4 +1,3 @@
-# don't forget to remove /etc/cni/net.d/05-cilium.conf when uninstalling
 ---
 - name: remove kube-router
   community.kubernetes.k8s:
@@ -20,13 +19,13 @@
   delegate_to: localhost
 
 - name: clean up ip links
-  ansible.builtin.shell:
-    cmd: ip link delete cilium_host
+  command: ip link delete cilium_host
+  changed_when: yes
   become: yes
   ignore_errors: yes
 
 - name: clean up cni files
-  ansible.builtin.file:
+  file:
     state: absent
     path: "{{ item }}"
   loop:

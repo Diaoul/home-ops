@@ -5,6 +5,7 @@
     dest: /usr/lib/unifi/data/sites/default/config.properties
     owner: unifi
     group: unifi
+    mode: 0644
   become: yes
   notify: configuration changed
 
@@ -14,5 +15,6 @@
     dest: /usr/lib/unifi/data/sites/default/config.gateway.json
     owner: unifi
     group: unifi
+    mode: 0644
   become: yes
   notify: configuration changed

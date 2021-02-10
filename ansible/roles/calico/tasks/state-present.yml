@@ -1,24 +1,4 @@
 ---
-- name: retrieve remote manifests
-  ansible.builtin.uri:
-    url: https://docs.projectcalico.org/manifests/tigera-operator.yaml
-    return_content: yes
-  register: calico_remote
-  when: calico_check_manifests
-  run_once: yes
-  delegate_to: localhost
-
-- name: check manifests are the same
-  fail:
-    msg: |
-      Manifests are different!
-      Check https://docs.projectcalico.org/manifests/tigera-operator.yaml
-  when:
-    - calico_check_manifests
-    - calico_remote.content | trim | hash('sha1') != lookup('file', 'tigera-operator.yaml') | hash('sha1')
-  run_once: yes
-  delegate_to: localhost
-
 - name: create tigera-operator namespace
   community.kubernetes.k8s:
     api_version: v1
@@ -36,7 +16,7 @@
 - name: install tigera operator
   community.kubernetes.k8s:
     definition: "{{ item }}"
-  loop: "{{ lookup('file', 'tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
+  loop: "{{ lookup('url', 'https://docs.projectcalico.org/manifests/tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
   loop_control:
     label:
       kind: "{{ item.kind }}"

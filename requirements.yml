@@ -1,8 +1,8 @@
 ---
 collections:
-  - src: community.general
+  - name: community.general
     version: 1.3.4
-  - src: community.kubernetes
+  - name: community.kubernetes
     version: 1.1.1
 
 roles:

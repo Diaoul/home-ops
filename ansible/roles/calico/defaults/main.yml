@@ -1,6 +1,5 @@
 ---
 calico_state: present
-calico_check_manifests: yes
 calico_installation:
   cidr: 10.42.0.0/16
 calico_bgp_configuration:

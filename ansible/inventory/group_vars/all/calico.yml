@@ -1,5 +1,5 @@
 ---
-calico_kubernetes_service_host: 10.0.3.80  # must be an ip: no name resolution
+calico_kubernetes_service_host: "{{ k3s_control_node_address }}"
 calico_kubernetes_service_port: 6443
 calico_installation:
   cidr: 10.42.0.0/16

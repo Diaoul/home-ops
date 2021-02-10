@@ -10,6 +10,8 @@
   roles:
     - os
   tasks:
+    - name: flush handlers
+      meta: flush_handlers
     - name: reboot
       ignore_errors: yes
       reboot:

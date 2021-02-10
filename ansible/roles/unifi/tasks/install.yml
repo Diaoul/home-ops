@@ -29,6 +29,7 @@
   copy:
     src: "{{ unifi_certificate_store }}"
     dest: /var/lib/unifi/cert.pfx
+    mode: 0644
   register: certificate
   become: yes
 

@@ -28,7 +28,7 @@
   community.kubernetes.k8s:
     state: absent
     definition: "{{ item }}"
-  loop: "{{ lookup('file', 'tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
+  loop: "{{ lookup('url', 'https://docs.projectcalico.org/manifests/tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
   loop_control:
     label:
       kind: "{{ item.kind }}"
@@ -37,12 +37,13 @@
   delegate_to: localhost
 
 - name: clean up ip links
-  ansible.builtin.shell:
+  shell:
     cmd: ip link list | grep cali | awk '{print $2}' | cut -c 1-15 | xargs -I {} ip link delete {}
+  changed_when: yes
   become: yes
 
 - name: clean up cni files
-  ansible.builtin.file:
+  file:
     state: absent
     path: "{{ item }}"
   loop:
