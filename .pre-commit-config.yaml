@@ -33,3 +33,6 @@ repos:
       - id: ansible-lint
         files: ^ansible/
         always_run: false
+        additional_dependencies:
+          - ansible>=2.10,<2.11
+          - yamllint>=1.26,<1.27
