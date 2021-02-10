@@ -28,7 +28,7 @@ repos:
         args: [--severity=error]
         additional_dependencies: []  # see https://github.com/jumanjihouse/pre-commit-hooks/pull/81
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v4.3.7
+    rev: v5.0.0
     hooks:
       - id: ansible-lint
         files: ^ansible/
