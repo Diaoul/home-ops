@@ -1,2 +1,3 @@
 ---
 ansible_python_interpreter: /usr/local/python3/bin/python3
+ansible_user: Antoine

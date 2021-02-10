@@ -1,5 +1,5 @@
 ---
 - hosts:
-    - synology
+    - singularity
   roles:
     - synology
