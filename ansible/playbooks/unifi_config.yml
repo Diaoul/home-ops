@@ -1,7 +1,0 @@
----
-- hosts:
-    - sun
-  roles:
-    - role: unifi
-      tags:
-        - config
