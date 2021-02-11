@@ -1,21 +1,6 @@
 ## :construction: Installation
 
-### All in one
-This will result in a commit on the repository to update the manifests
-
-```bash
-export GITHUB_TOKEN=token
-flux bootstrap github \
-  --owner=Diaoul \
-  --repository=home-operations \
-  --branch=main \
-  --path=./cluster \
-  --personal \
-  --network-policy=false \
-  --cluster-domain=cluster.milkyway
-```
-
-### Manually
+### Manually (recommended)
 Install Flux components
 ```bash
 flux install \
@@ -32,8 +17,25 @@ flux create source git flux-system \
   --interval=1m
 ```
 
-Flux will fail due to missing CRDs, running this several times will ensure
-everything gets created:
+### All in one
+Good fir a first time, although this will result in a commit on the repository
+to update the manifests.
+
+```bash
+export GITHUB_TOKEN=token
+flux bootstrap github \
+  --owner=Diaoul \
+  --repository=home-operations \
+  --branch=main \
+  --path=./cluster \
+  --personal \
+  --network-policy=false \
+  --cluster-domain=cluster.milkyway
+```
+
+## First bootstrap
+Flux automatic reconciliation will fail due to missing CRDs, running this
+several times will ensure everything gets created:
 ```bash
 kustomize build cluster/ | kubectl apply -f -
 ```
