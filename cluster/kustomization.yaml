@@ -9,4 +9,3 @@ resources:
   - longhorn-system
   - velero
   - monitoring
-  - media
