@@ -3,9 +3,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: cert-manager
-  namespace: cert-manager
+  namespace: network-system
 spec:
-  interval: 5m
+  interval: 10m
   chart:
     spec:
       # renovate: registryUrl=https://charts.jetstack.io/
@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-      interval: 5m
   values:
     installCRDs: true
     extraArgs:
