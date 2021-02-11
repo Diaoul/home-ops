@@ -6,7 +6,6 @@
   "dependencyDashboardTitle": "Renovate Dashboard",
   "commitMessageSuffix": "[skip ci]",
   "suppressNotifications": ["prIgnoreNotification"],
-  "assignees": ["@Diaoul"],
   "kubernetes": {
     "fileMatch": ["cluster/.+\\.yaml$"],
     "ignorePaths": ["cluster/flux-system/"]
