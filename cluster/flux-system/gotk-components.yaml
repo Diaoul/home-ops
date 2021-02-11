@@ -1,10 +1,12 @@
 ---
+# GitOps Toolkit revision v0.7.7
+# Components: source-controller,kustomize-controller,helm-controller,notification-controller
 apiVersion: v1
 kind: Namespace
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: flux-system
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -15,7 +17,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: alerts.notification.toolkit.fluxcd.io
 spec:
   group: notification.toolkit.fluxcd.io
@@ -180,7 +182,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: buckets.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -367,7 +369,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: gitrepositories.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -582,7 +584,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: helmcharts.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -773,7 +775,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: helmreleases.helm.toolkit.fluxcd.io
 spec:
   group: helm.toolkit.fluxcd.io
@@ -1191,7 +1193,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: helmrepositories.source.toolkit.fluxcd.io
 spec:
   group: source.toolkit.fluxcd.io
@@ -1358,7 +1360,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: kustomizations.kustomize.toolkit.fluxcd.io
 spec:
   group: kustomize.toolkit.fluxcd.io
@@ -1654,7 +1656,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: providers.notification.toolkit.fluxcd.io
 spec:
   group: notification.toolkit.fluxcd.io
@@ -1797,7 +1799,7 @@ metadata:
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: receivers.notification.toolkit.fluxcd.io
 spec:
   group: notification.toolkit.fluxcd.io
@@ -1971,7 +1973,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: helm-controller
   namespace: flux-system
 ---
@@ -1980,7 +1982,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: kustomize-controller
   namespace: flux-system
 ---
@@ -1989,7 +1991,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: notification-controller
   namespace: flux-system
 ---
@@ -1998,7 +2000,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: source-controller
   namespace: flux-system
 ---
@@ -2007,7 +2009,7 @@ kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: crd-controller-flux-system
 rules:
 - apiGroups:
@@ -2086,7 +2088,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: cluster-reconciler-flux-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -2105,7 +2107,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
   name: crd-controller-flux-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -2136,7 +2138,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: notification-controller
   namespace: flux-system
@@ -2155,7 +2157,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: source-controller
   namespace: flux-system
@@ -2174,7 +2176,7 @@ kind: Service
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: webhook-receiver
   namespace: flux-system
@@ -2193,7 +2195,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: helm-controller
   namespace: flux-system
@@ -2265,7 +2267,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: kustomize-controller
   namespace: flux-system
@@ -2339,7 +2341,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: notification-controller
   namespace: flux-system
@@ -2414,7 +2416,7 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/version: latest
+    app.kubernetes.io/version: v0.7.7
     control-plane: controller
   name: source-controller
   namespace: flux-system
@@ -2489,3 +2491,4 @@ spec:
         name: data
       - emptyDir: {}
         name: tmp
+---
