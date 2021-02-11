@@ -3,6 +3,7 @@
   community.kubernetes.k8s:
     state: absent
     definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"
+    wait: yes
   run_once: yes
   delegate_to: localhost
 
@@ -15,6 +16,7 @@
     chart_ref: cilium/cilium
     chart_version: "{{ cilium_version }}"
     values: "{{ cilium_values }}"
+    wait: yes
   run_once: yes
   delegate_to: localhost
 
