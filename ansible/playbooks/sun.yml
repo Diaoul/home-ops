@@ -3,5 +3,4 @@
     - sun
   roles:
     - os
-    - ufw
     - unifi

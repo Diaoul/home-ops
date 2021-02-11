@@ -18,25 +18,3 @@ unifi_cloudflare_global_api_key: !vault |
   6663623537363237350a643061393064366365363336306531333363336231356138376633303263
   61373766313034396639363039373861393463356436653662356563316537663237383132306233
   3161303061666664653637646632313564343035346238383737
-
-ufw_allow:
-  - port: 3478
-    proto: udp
-  - port: 8080
-    proto: tcp
-  - port: 8443
-    proto: tcp
-  - port: 8880
-    proto: tcp
-  - port: 8843
-    proto: tcp
-  - port: 6789
-    proto: tcp
-  - port: 27117
-    proto: tcp
-  - port: 5656:5699
-    proto: udp
-  - port: 10001
-    proto: udp
-  - port: 1900
-    proto: udp
