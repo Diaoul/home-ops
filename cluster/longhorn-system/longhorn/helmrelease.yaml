@@ -28,6 +28,7 @@ spec:
       backupTargetCredentialSecret: longhorn-backup
       createDefaultDiskLabeledNodes: true
       defaultReplicaCount: 1  # single-node
+      storageMinimalAvailablePercentage: 10
       allowNodeDrainWithLastHealthyReplica: true  # single-node
     ingress:
       enabled: false
