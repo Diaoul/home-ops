@@ -1,0 +1,59 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: node-feature-discovery
+  namespace: kube-system
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: node-feature-discovery
+      version: 2.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: node-feature-discovery
+    image:
+      repository: gcr.io/nfd/node-feature-discovery
+      tag: v0.7.0
+    sources:
+      - custom
+      - pci
+      - usb
+    config: |
+      sources:
+        usb:
+          deviceClassWhitelist:
+            - "02"
+            - "03"
+            - "0e"
+            - "ef"
+            - "fe"
+            - "ff"
+          deviceLabelFields:
+            - "class"
+            - "vendor"
+            - "device"
+        custom:
+          - name: "intel-gpu"
+            matchOn:
+              - pciId:
+                  class: ["0300"]
+                  vendor: ["8086"]
+          - name: "zwave"
+            matchOn:
+              - usbId:
+                  class: ["02"]
+                  vendor: ["0658"]
+                  device: ["0200"]
+          - name: "zigbee"
+            matchOn:
+              - usbId:
+                  class: ["ff"]
+                  vendor: ["1a86"]
+                  device: ["7523"]
