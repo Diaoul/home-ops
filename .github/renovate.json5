@@ -44,7 +44,7 @@
     // update types specific settings
     {
       "matchUpdateTypes": ["major"],
-      "addLabels": ["dependecy/major"],
+      "addLabels": ["dependency/major"],
       "stabilityDays": 3
     },
     {
@@ -53,11 +53,11 @@
     },
     {
       "matchUpdateTypes": ["minor"],
-      "addLabels": ["dependecy/minor"]
+      "addLabels": ["dependency/minor"]
     },
     {
       "matchUpdateTypes": ["patch"],
-      "addLabels": ["dependecy/patch"]
+      "addLabels": ["dependency/patch"]
     },
     // custom versions
     {
