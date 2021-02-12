@@ -1,0 +1,73 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: sonarr
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: sonarr
+      version: 8.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    controllerType: deployment
+    image:
+      repository: ghcr.io/k8s-at-home/sonarr
+      tag: v3.0.4.1126
+    env:
+      TZ: Europe/Paris
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: external
+        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
+      hosts:
+        - host: sonarr.diaoul.fr
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - sonarr.diaoul.fr
+      additionalIngresses:
+        - enabled: true
+          nameSuffix: api
+          annotations:
+            kubernetes.io/ingress.class: external
+            external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+          hosts:
+            - host: sonarr.diaoul.fr
+              paths:
+                - path: /api
+                  pathType: Prefix
+          tls:
+            - hosts:
+                - sonarr.diaoul.fr
+    persistence:
+      config:
+        enabled: true
+        accessMode: ReadWriteOnce
+        size: 20Gi
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+    additionalVolumeMounts:
+      - name: singularity-tvshows
+        mountPath: /tvshows
+    additionalVolumes:
+      - name: singularity-tvshows
+        persistentVolumeClaim:
+          claimName: singularity-tvshows
+    resources:
+      requests:
+        cpu: 500m
+        memory: 250Mi
+      limits:
+        memory: 1500Mi
