@@ -14,7 +14,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home
-        namespace: system-flux
+        namespace: flux-system
   values:
     image:
       repository: intel/intel-gpu-plugin
