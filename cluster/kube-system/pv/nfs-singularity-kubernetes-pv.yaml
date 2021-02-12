@@ -14,9 +14,7 @@ spec:
     server: singularity.milkyway
     path: /volume1/kubernetes
   mountOptions:
-    - nfsvers=3
-    - tcp
-    - intr
+    - nfsvers=4.1
     - hard
     - noatime
     - nodiratime
