@@ -6,3 +6,5 @@ resources:
   - pv
   - reloader
   - sealed-secrets
+  - node-feature-discovery
+  - intel-gpu-plugin
