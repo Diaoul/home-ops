@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - pvc
+  - qbittorrent
   - flaresolverr
   - jackett
   - sonarr
