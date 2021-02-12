@@ -6,3 +6,4 @@ resources:
   - pvc
   - flaresolverr
   - jackett
+  - sonarr
