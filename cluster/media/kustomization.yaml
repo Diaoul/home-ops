@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - pvc
   - qbittorrent
+  - nzbget
   - flaresolverr
   - jackett
   - sonarr
