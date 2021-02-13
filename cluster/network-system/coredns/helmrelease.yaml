@@ -23,10 +23,10 @@ spec:
         - 10.44.0.3
       externalTrafficPolicy: Local
     servers:
+      # only 1 protocol per port so scheme is required here to limit to udp
+      # feature gate MixedProtocolLBService allows multi-protocol per port
+      # for LoadBalancer
       - zones:
-          # only 1 protocol per port so scheme is required here to limit to udp
-          # feature gate MixedProtocolLBService allows multi-protocol per port
-          # for LoadBalancer
           - zone: diaoul.fr.
             scheme: dns://
           - zone: milkyway.laniakea-sc.space.
@@ -38,21 +38,31 @@ spec:
             configBlock: |-
               lameduck 5s
           - name: ready
+          - name: kubernetes
+            parameters: cluster.milkyway in-addr.arpa ip6.arpa
+            configBlock: |-
+              pods insecure
+              fallthrough in-addr.arpa ip6.arpa
+              ttl 30
+          - name: etcd
+            parameters: diaoul.fr milkyway.laniakea-sc.space
+            configBlock: |-
+              stubzones
+              path /skydns
+              endpoint http://etcd-extdns:2379
+          - name: forward
+            parameters: .milkyway 0.10.in-addr.arpa 0.10.ip6.arpa 10.0.3.1
+          - name: forward
+            parameters: . tls://45.90.28.0 tls://45.90.30.0
+            configBlock: |-
+              tls_servername 2b536e.dns.nextdns.io
           - name: prometheus
             parameters: 0.0.0.0:9153
-          - name: forward
-            parameters: . /etc/resolv.conf
           - name: cache
             parameters: 30
           - name: loop
           - name: reload
           - name: loadbalance
-          - name: etcd
-            parameters: diaoul.fr
-            configBlock: |-
-              stubzones
-              path /skydns
-              endpoint http://etcd-extdns:2379
     prometheus:
       service:
         enabled: true
