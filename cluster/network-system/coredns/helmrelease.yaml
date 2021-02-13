@@ -29,10 +29,6 @@ spec:
       - zones:
           - zone: milkyway.
             scheme: dns://
-          - zone: diaoul.fr.
-            scheme: dns://
-          - zone: milkyway.laniakea-sc.space.
-            scheme: dns://
         port: 53
         plugins:
           - name: errors
@@ -46,6 +42,21 @@ spec:
               pods insecure
               fallthrough in-addr.arpa ip6.arpa
               ttl 30
+          - name: forward
+            parameters: . 10.0.3.1
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: cache
+            parameters: 30
+          - name: loop
+          - name: reload
+      - zones:
+          - zone: .
+            scheme: dns://
+        port: 53
+        plugins:
+          - name: errors
+          - name: ready
           - name: etcd
             parameters: diaoul.fr milkyway.laniakea-sc.space
             configBlock: |-
@@ -53,20 +64,15 @@ spec:
               path /skydns
               endpoint http://etcd-extdns:2379
           - name: forward
-            parameters: milkyway 10.0.3.1
-          - name: forward
-            parameters: 0.10.in-addr.arpa 10.0.3.1
-          - name: forward
             parameters: . tls://45.90.28.0 tls://45.90.30.0
             configBlock: |-
               tls_servername 2b536e.dns.nextdns.io
           - name: prometheus
             parameters: 0.0.0.0:9153
           - name: cache
-            parameters: 30
+            parameters: 300
           - name: loop
           - name: reload
-          - name: loadbalance
     prometheus:
       service:
         enabled: true
