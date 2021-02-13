@@ -5,11 +5,10 @@ resources:
   - namespace.yaml
   - cert-manager
   - diaoul-fr-certificate.yaml
-  - coredns
   - etcd-extdns
   - external-dns
   - external-dns-cloudflare
-  - blocky
+  - coredns
   - ingress-nginx-external
   - ingress-nginx-internal
   - oauth2-proxy
