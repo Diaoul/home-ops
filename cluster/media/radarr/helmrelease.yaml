@@ -2,15 +2,15 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: sonarr
+  name: radarr
   namespace: media
 spec:
   interval: 10m
   chart:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
-      chart: sonarr
-      version: 8.3.0
+      chart: radarr
+      version: 8.4.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home
@@ -20,8 +20,8 @@ spec:
     strategy:
       type: RollingUpdate
     image:
-      repository: ghcr.io/k8s-at-home/sonarr
-      tag: v3.0.4.1126
+      repository: ghcr.io/k8s-at-home/radarr
+      tag: v3.0.2.4552
     env:
       TZ: Europe/Paris
     ingress:
@@ -32,13 +32,13 @@ spec:
         nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
         nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
       hosts:
-        - host: sonarr.diaoul.fr
+        - host: radarr.diaoul.fr
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - sonarr.diaoul.fr
+            - radarr.diaoul.fr
       additionalIngresses:
         - enabled: true
           nameSuffix: api
@@ -46,32 +46,31 @@ spec:
             kubernetes.io/ingress.class: external
             external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
           hosts:
-            - host: sonarr.diaoul.fr
+            - host: radarr.diaoul.fr
               paths:
                 - path: /api
                   pathType: Prefix
           tls:
             - hosts:
-                - sonarr.diaoul.fr
+                - radarr.diaoul.fr
     persistence:
       config:
         enabled: true
-        accessMode: ReadWriteOnce
-        size: 20Gi
+        existingClaim: radarr
     podAnnotations:
       backup.velero.io/backup-volumes: config
     additionalVolumeMounts:
       - name: nfs-singularity-downloads
         mountPath: /downloads
-      - name: nfs-singularity-tvshows
-        mountPath: /tvshows
+      - name: nfs-singularity-movies
+        mountPath: /movies
     additionalVolumes:
       - name: nfs-singularity-downloads
         persistentVolumeClaim:
-          claimName: nfs-singularity-downloads
-      - name: nfs-singularity-tvshows
+          claimName: singularity-downloads
+      - name: nfs-singularity-movies
         persistentVolumeClaim:
-          claimName: nfs-singularity-tvshows
+          claimName: nfs-singularity-movies
     resources:
       requests:
         cpu: 500m
