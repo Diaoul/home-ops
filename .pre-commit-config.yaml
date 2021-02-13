@@ -35,3 +35,11 @@ repos:
         always_run: false
         additional_dependencies:
           - ansible>=2.10,<2.11
+  - repo: local
+    hooks:
+      - id: kustomize
+        name: Kustomize
+        files: ^cluster/
+        entry: kustomize build cluster/
+        language: system
+        pass_filenames: false
