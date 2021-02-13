@@ -27,6 +27,8 @@ spec:
       # feature gate MixedProtocolLBService allows multi-protocol per port
       # for LoadBalancer
       - zones:
+          - zone: milkyway.
+            scheme: dns://
           - zone: diaoul.fr.
             scheme: dns://
           - zone: milkyway.laniakea-sc.space.
@@ -51,7 +53,9 @@ spec:
               path /skydns
               endpoint http://etcd-extdns:2379
           - name: forward
-            parameters: .milkyway 0.10.in-addr.arpa 0.10.ip6.arpa 10.0.3.1
+            parameters: milkyway 10.0.3.1
+          - name: forward
+            parameters: 0.10.in-addr.arpa 10.0.3.1
           - name: forward
             parameters: . tls://45.90.28.0 tls://45.90.30.0
             configBlock: |-
