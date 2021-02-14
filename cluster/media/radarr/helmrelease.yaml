@@ -56,7 +56,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: radarr
+        existingClaim: radarr-config
     podAnnotations:
       backup.velero.io/backup-volumes: config
     additionalVolumeMounts:

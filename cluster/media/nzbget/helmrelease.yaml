@@ -40,8 +40,7 @@ spec:
     persistence:
       config:
         enabled: true
-        accessMode: ReadWriteOnce
-        size: 1Gi
+        existingClaim: nzbget-config
     podAnnotations:
       backup.velero.io/backup-volumes: config
     additionalVolumeMounts:
