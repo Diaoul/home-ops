@@ -67,7 +67,7 @@ spec:
     additionalVolumes:
       - name: nfs-singularity-downloads
         persistentVolumeClaim:
-          claimName: singularity-downloads
+          claimName: nfs-singularity-downloads
       - name: nfs-singularity-movies
         persistentVolumeClaim:
           claimName: nfs-singularity-movies
