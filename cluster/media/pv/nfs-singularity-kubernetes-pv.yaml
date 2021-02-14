@@ -4,7 +4,7 @@ kind: PersistentVolume
 metadata:
   name: nfs-singularity-kubernetes
 spec:
-  storageClassName: singularity-kubernetes
+  storageClassName: nfs-singularity-kubernetes
   capacity:
     storage: 1Mi
   accessModes:

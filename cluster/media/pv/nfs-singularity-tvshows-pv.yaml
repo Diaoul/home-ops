@@ -4,7 +4,7 @@ kind: PersistentVolume
 metadata:
   name: nfs-singularity-tvshows
 spec:
-  storageClassName: singularity-tvshows
+  storageClassName: nfs-singularity-tvshows
   capacity:
     storage: 1Mi
   accessModes:

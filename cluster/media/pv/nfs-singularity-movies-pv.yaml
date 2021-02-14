@@ -4,7 +4,7 @@ kind: PersistentVolume
 metadata:
   name: nfs-singularity-movies
 spec:
-  storageClassName: singularity-movies
+  storageClassName: nfs-singularity-movies
   capacity:
     storage: 1Mi
   accessModes:
