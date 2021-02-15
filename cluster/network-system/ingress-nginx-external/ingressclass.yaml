@@ -4,4 +4,4 @@ kind: IngressClass
 metadata:
   name: nginx-external
 spec:
-  controller: k8s.io/ingress-nginx-external
+  controller: k8s.io/ingress-nginx
