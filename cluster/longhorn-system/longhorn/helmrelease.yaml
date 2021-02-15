@@ -31,10 +31,7 @@ spec:
       storageMinimalAvailablePercentage: 10
       allowNodeDrainWithLastHealthyReplica: true  # single-node
     ingress:
-      enabled: false
+      enabled: true
       host: longhorn.diaoul.fr
-      tlsSecret: longhorn-cert
       tls: true
-      annotations:
-        kubernetes.io/ingress.class: internal
-        cert-manager.io/cluster-issuer: letsencrypt-production
+      tlsSecret: longhorn-diaoul-fr-tls

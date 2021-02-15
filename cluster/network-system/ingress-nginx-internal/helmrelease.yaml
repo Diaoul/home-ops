@@ -17,19 +17,18 @@ spec:
         namespace: flux-system
   values:
     controller:
-      ingressClass: internal
-      replicaCount: 2
+      ingressClass: nginx-internal
+      replicaCount: 1
       service:
         externalIPs:
           - 10.44.0.2
-        internalTrafficPolicy: Local
+        enableHttp: false
+        externalTrafficPolicy: Local
       metrics:
         enabled: true
         serviceMonitor:
           enabled: true
           namespace: network-system
-      extraArgs:
-        default-ssl-certificate: network-system/diaoul-fr-tls
       resources:
         requests:
           cpu: 10m
