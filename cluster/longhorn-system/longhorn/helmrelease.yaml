@@ -36,5 +36,5 @@ spec:
       tlsSecret: longhorn-cert
       tls: true
       annotations:
-        kubernetes.io/ingress.class: nginx-internal
+        kubernetes.io/ingress.class: internal
         cert-manager.io/cluster-issuer: letsencrypt-production
