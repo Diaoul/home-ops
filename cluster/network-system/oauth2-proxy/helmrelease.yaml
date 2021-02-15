@@ -26,9 +26,9 @@ spec:
         maeva.gault@gmail.com
     ingress:
       enabled: true
+      ingressClassName: nginx-external
       path: /oauth2
       annotations:
-        kubernetes.io/ingress.class: nginx-external
         external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
