@@ -28,6 +28,7 @@ spec:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: external
+        cert-manager.io/cluster-issuer: letsencrypt-production
         external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
         nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
         nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
@@ -38,7 +39,8 @@ spec:
               pathType: Prefix
       tls:
         - hosts:
-            - sonarr.diaoul.fr
+            - "*.diaoul.fr"
+          secretName: wildcard-diaoul-fr-tls
       additionalIngresses:
         - enabled: true
           nameSuffix: api
@@ -52,7 +54,8 @@ spec:
                   pathType: Prefix
           tls:
             - hosts:
-                - sonarr.diaoul.fr
+                - "*.diaoul.fr"
+              secretName: wildcard-diaoul-fr-tls
     persistence:
       config:
         enabled: true
