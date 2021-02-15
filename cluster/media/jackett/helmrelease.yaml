@@ -36,7 +36,8 @@ spec:
               pathType: Prefix
       tls:
         - hosts:
-            - jackett.diaoul.fr
+            - "*.diaoul.fr"
+          secretName: wildcard-diaoul-fr-tls
     persistence:
       config:
         enabled: true
