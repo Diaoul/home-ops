@@ -32,6 +32,7 @@ spec:
     ingress:
       enabled: true
       annotations:
+        kubernetes.io/ingress.class: nginx-internal
         cert-manager.io/cluster-issuer: letsencrypt-production
       host: longhorn.diaoul.fr
       tls: true
