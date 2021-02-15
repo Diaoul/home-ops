@@ -19,7 +19,6 @@ spec:
     persistence:
       defaultClass: true
       defaultClassReplicaCount: 1  # single-node
-      reclaimPolicy: Delete
       recurringJobs:
         enable: true
         jobList: '[{"name": "snapshot", "task": "snapshot", "cron": "0 * * * *", "retain": 12 }, { "name": "backup", "task": "backup", "cron": "0 2 * * *", "retain": 10}]'
