@@ -24,7 +24,6 @@ spec:
       tag: v0.17.538
     ingress:
       enabled: true
-      ingressClassName: nginx-internal
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
