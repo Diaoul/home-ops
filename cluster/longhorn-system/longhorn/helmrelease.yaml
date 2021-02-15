@@ -31,6 +31,8 @@ spec:
       allowNodeDrainWithLastHealthyReplica: true  # single-node
     ingress:
       enabled: true
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-production
       host: longhorn.diaoul.fr
       tls: true
       tlsSecret: longhorn-diaoul-fr-tls
