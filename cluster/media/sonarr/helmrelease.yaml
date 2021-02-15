@@ -33,14 +33,21 @@ spec:
         nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
         nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
       hosts:
+        - host: sonarr.milkyway.laniakea-sc.space
+          paths:
+            - path: /
+              pathType: Prefix
         - host: sonarr.diaoul.fr
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - "*.diaoul.fr"
-          secretName: wildcard-diaoul-fr-tls
+            - sonarr.milkyway.laniakea-sc.space
+          secretName: sonarr-milkyway-laniakea-sc-space-tls
+        - hosts:
+            - sonarr.diaoul.fr
+          secretName: sonarr-diaoul-fr-tls
       additionalIngresses:
         - enabled: true
           nameSuffix: api
@@ -48,14 +55,21 @@ spec:
             kubernetes.io/ingress.class: external
             external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
           hosts:
+            - host: sonarr.milkyway.laniakea-sc.space
+              paths:
+                - path: /
+                  pathType: Prefix
             - host: sonarr.diaoul.fr
               paths:
                 - path: /api
                   pathType: Prefix
           tls:
             - hosts:
-                - "*.diaoul.fr"
-              secretName: wildcard-diaoul-fr-tls
+                - sonarr.milkyway.laniakea-sc.space
+              secretName: sonarr-milkyway-laniakea-sc-space-tls
+            - hosts:
+                - sonarr.diaoul.fr
+              secretName: sonarr-diaoul-fr-tls
     persistence:
       config:
         enabled: true

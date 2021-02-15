@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: milkyway-laniakea-sc-space
+  namespace: network-system
+spec:
+  secretName: milkyway-laniakea-sc-space-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "milkyway.laniakea-sc.space"
+  dnsNames:
+    - "milkyway.laniakea-sc.space"
+    - "*.milkyway.laniakea-sc.space"
