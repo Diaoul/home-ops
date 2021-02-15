@@ -19,6 +19,8 @@ spec:
     provider: coredns
     domainFilters:
       - diaoul.fr
+      - milkyway.laniakea-sc.space
+      - k8s.milkyway
     policy: sync
     registry: noop
     crd:

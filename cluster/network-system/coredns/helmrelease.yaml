@@ -51,6 +51,8 @@ spec:
           - name: loop
           - name: reload
       - zones:
+          - zone: k8s.milkyway.
+            scheme: dns://
           - zone: .
             scheme: dns://
         port: 53
@@ -58,7 +60,7 @@ spec:
           - name: errors
           - name: ready
           - name: etcd
-            parameters: diaoul.fr milkyway.laniakea-sc.space
+            parameters: k8s.milkyway diaoul.fr milkyway.laniakea-sc.space
             configBlock: |-
               stubzones
               path /skydns
