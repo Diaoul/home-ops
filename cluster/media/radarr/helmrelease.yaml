@@ -26,9 +26,10 @@ spec:
       TZ: Europe/Paris
     ingress:
       enabled: true
+      ingressClassName: nginx-external
       annotations:
-        kubernetes.io/ingress.class: external
         external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        cert-manager.io/cluster-issuer: letsencrypt-production
         nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
         nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
       hosts:
@@ -41,9 +42,9 @@ spec:
             - radarr.diaoul.fr
       additionalIngresses:
         - enabled: true
+          ingressClassName: nginx-external
           nameSuffix: api
           annotations:
-            kubernetes.io/ingress.class: external
             external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
           hosts:
             - host: radarr.diaoul.fr

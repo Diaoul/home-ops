@@ -26,9 +26,10 @@ spec:
       TZ: Europe/Paris
     ingress:
       enabled: true
+      ingressClassName: nginx-external
       annotations:
-        kubernetes.io/ingress.class: external
         external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
         - host: nzbget.diaoul.fr
           paths:
