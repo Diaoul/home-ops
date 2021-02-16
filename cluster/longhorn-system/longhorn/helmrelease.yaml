@@ -32,8 +32,10 @@ spec:
     ingress:
       enabled: true
       annotations:
-        kubernetes.io/ingress.class: nginx-internal
+        kubernetes.io/ingress.class: nginx
         cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
       host: longhorn.diaoul.fr
       tls: true
       tlsSecret: longhorn-diaoul-fr-tls

@@ -23,7 +23,7 @@ spec:
       secretName: external-dns-cloudflare-api-token
     domainFilters:
       - diaoul.fr
-    annotationFilter: "kubernetes.io/ingress.class=external"
+      - milkyway.laniakea-sc.space
     policy: sync
     resources:
       requests:

@@ -26,7 +26,7 @@ spec:
       TZ: Europe/Paris
     ingress:
       enabled: true
-      ingressClassName: nginx-external
+      ingressClassName: nginx
       annotations:
         external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
         cert-manager.io/cluster-issuer: letsencrypt-production

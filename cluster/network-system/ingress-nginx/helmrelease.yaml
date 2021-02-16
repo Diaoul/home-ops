@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: ingress-nginx-external
+  name: ingress-nginx
   namespace: network-system
 spec:
   interval: 10m
@@ -17,7 +17,7 @@ spec:
         namespace: flux-system
   values:
     controller:
-      ingressClass: nginx-external
+      ingressClass: nginx
       replicaCount: 1
       service:
         externalIPs:
@@ -51,7 +51,7 @@ spec:
                   - key: app.kubernetes.io/name
                     operator: In
                     values:
-                      - ingress-nginx-external
+                      - ingress-nginx
                   - key: app.kubernetes.io/instance
                     operator: In
                     values:

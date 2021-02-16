@@ -4,11 +4,9 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - cert-manager
-  - diaoul-fr-certificate.yaml
   - etcd-extdns
   - external-dns
   - external-dns-cloudflare
   - coredns
-  - ingress-nginx-external
-  - ingress-nginx-internal
+  - ingress-nginx
   - oauth2-proxy
