@@ -10,3 +10,4 @@ resources:
   - velero
   - monitoring
   - media
+  - home-automation
