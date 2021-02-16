@@ -52,6 +52,7 @@ spec:
           tls:
             - hosts:
                 - radarr.diaoul.fr
+              secretName: radarr-diaoul-fr-tls
     persistence:
       config:
         enabled: true

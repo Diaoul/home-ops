@@ -52,6 +52,7 @@ spec:
       tls:
         - hosts:
             - qb.diaoul.fr
+          secretName: qb-diaoul-fr-tls
     persistence:
       config:
         enabled: true
