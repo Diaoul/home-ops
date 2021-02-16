@@ -36,6 +36,7 @@ spec:
       tls:
         - hosts:
             - auth.diaoul.fr
+          secretName: auth-diaoul-fr-tls
     extraArgs:
       provider: oidc
       oidc-issuer-url: https://laniakea.eu.auth0.com/
