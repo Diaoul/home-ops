@@ -19,7 +19,7 @@ spec:
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
-          selector:
-            dnsNames:
-              - "*.diaoul.fr"
-              - "*.milkyway.laniakea-sc.space"
+        selector:
+          dnsNames:
+            - "*.diaoul.fr"
+            - "*.milkyway.laniakea-sc.space"
