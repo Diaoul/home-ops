@@ -65,9 +65,25 @@ spec:
         server: mqtt://vernemq
       serial:
         port: /dev/zigbee-coordinator
-      advanced:  # TODO put values here after first run
-        pan_id: GENERATE
-        network_key: GENERATE
+      advanced:
+        network_key:
+          - 206
+          - 120
+          - 216
+          - 75
+          - 36
+          - 22
+          - 179
+          - 163
+          - 216
+          - 178
+          - 26
+          - 126
+          - 50
+          - 109
+          - 66
+          - 185
+        pan_id: 45138
     addons:
       codeserver:
         enabled: true
