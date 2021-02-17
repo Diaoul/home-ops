@@ -32,6 +32,7 @@ spec:
     ingress:
       enabled: true
       annotations:
+        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
         cert-manager.io/cluster-issuer: letsencrypt-production
         nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
         nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
