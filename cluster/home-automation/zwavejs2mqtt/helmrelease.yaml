@@ -1,0 +1,92 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: zwavejs2mqtt
+  namespace: home-automation
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: zwavejs2mqtt
+      version: 2.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    controllerType: statefulset
+    strategy:
+      type: RollingUpdate
+    image:
+      repository: zwavejs/zwavejs2mqtt
+      tag: 1.1.1
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
+      hosts:
+        - host: zwavejs2mqtt.diaoul.fr
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - zwavejs2mqtt.diaoul.fr
+          secretName: zwavejs2mqtt-diaoul-fr-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: zwavejs2mqtt-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+    additionalVolumeMounts:
+      - name: usb
+        mountPath: /dev/zwave-controller
+    additionalVolumes:
+      - name: usb
+        hostPath:
+          path: /dev/serial/by-id/usb-0658_0200-if00
+    securityContext:
+      privileged: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - {key: feature.node.kubernetes.io/custom-zwave, operator: In, values: ["true"]}
+    addons:
+      codeserver:
+        enabled: true
+        image:
+          repository: codercom/code-server
+          tag: 3.9.0
+        workingDir: /config
+        args:
+          - --user-data-dir
+          - /config/.vscode
+          - --auth
+          - none
+        ingress:
+          enabled: true
+          annotations:
+            external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+            cert-manager.io/cluster-issuer: letsencrypt-production
+            nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
+            nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
+          hosts:
+            - host: zwavejs2mqtt-config.diaoul.fr
+              paths:
+                - path: /
+                  pathType: Prefix
+          tls:
+            - hosts:
+                - zwavejs2mqtt-config.diaoul.fr
+              secretName: zwavejs2mqtt-config-diaoul-fr-tls
+        volumeMounts:
+          - name: config
+            mountPath: /config

@@ -5,4 +5,5 @@ resources:
   - namespace.yaml
   - vernemq
   - zigbee2mqtt
+  - zwavejs2mqtt
   - home-assistant
