@@ -10,9 +10,16 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-staging
     solvers:
+      - http01:
+          ingress:
+            class: nginx
       - dns01:
           cloudflare:
-            email: admin@laniakea-sc.space
+            email: ant.bertin@gmail.com
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
+          selector:
+            dnsNames:
+              - "*.diaoul.fr"
+              - "*.milkyway.laniakea-sc.space"
