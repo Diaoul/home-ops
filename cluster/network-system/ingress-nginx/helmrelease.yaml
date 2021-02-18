@@ -21,6 +21,7 @@ spec:
       service:
         externalIPs:
           - 10.44.0.1
+        enableHttp: false
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: milkyway.diaoul.fr
