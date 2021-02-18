@@ -90,8 +90,8 @@ spec:
           - name: config
             mountPath: /config
           - name: deploykey
-            mountPath: /root/.ssh/id_rsa
-            subPath: id_rsa
+            mountPath: /root/.ssh/ed25519
+            subPath: ed25519
     resources:
       requests:
         cpu: 500m
