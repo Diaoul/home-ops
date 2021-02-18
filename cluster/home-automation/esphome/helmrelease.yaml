@@ -20,6 +20,8 @@ spec:
     image:
       repository: esphome/esphome
       tag: 1.16.1
+    env:
+      ESPHOME_DASHBOARD_USE_PING: true
     ingress:
       enabled: true
       annotations:
