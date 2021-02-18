@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - diaoul-fr-certificate.yaml
   - helmrelease.yaml
+  - ingressclass.yaml
