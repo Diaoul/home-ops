@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: zwavejs/zwavejs2mqtt
-      tag: 1.1.1
+      tag: 1.2.1
     ingress:
       enabled: true
       annotations:
