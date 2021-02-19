@@ -59,7 +59,7 @@ spec:
           - name: errors
           - name: ready
           - name: etcd
-            parameters: k8s.milkyway diaoul.fr milkyway.laniakea-sc.space
+            parameters: milkyway.laniakea-sc.space
             configBlock: |-
               stubzones
               path /skydns

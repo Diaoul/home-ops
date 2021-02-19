@@ -28,13 +28,13 @@ spec:
       enabled: true
       path: /oauth2
       annotations:
-        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - auth.diaoul.fr
+        - auth.milkyway.laniakea-sc.space
       tls:
         - hosts:
-            - auth.diaoul.fr
+            - auth.milkyway.laniakea-sc.space
           secretName: auth-diaoul-fr-tls
     extraArgs:
       provider: oidc
@@ -42,8 +42,8 @@ spec:
       skip-provider-button:
       pass-authorization-header:
       email-domain: "*"
-      cookie-domain: .diaoul.fr
-      whitelist-domain: .diaoul.fr
+      cookie-domain: .milkyway.laniakea-sc.space
+      whitelist-domain: .milkyway.laniakea-sc.space
   valuesFrom:
     - kind: Secret
       name: oauth2-proxy-helm-values

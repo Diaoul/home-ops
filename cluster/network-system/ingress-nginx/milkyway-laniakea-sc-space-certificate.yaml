@@ -2,14 +2,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: diaoul-fr
+  name: milkway-laniakea-sc-space-fr
   namespace: network-system
 spec:
-  secretName: diaoul-fr-tls
+  secretName: milkway-laniakea-sc-space-tls
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
   commonName: diaoul.fr
   dnsNames:
-    - "diaoul.fr"
-    - "*.diaoul.fr"
+    - "milkyway.laniakea-sc.space"
+    - "*.milkyway.laniakea-sc.space"

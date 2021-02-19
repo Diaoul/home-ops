@@ -22,7 +22,6 @@ spec:
     cloudflare:
       secretName: external-dns-cloudflare-api-token
     domainFilters:
-      - diaoul.fr
       - milkyway.laniakea-sc.space
     policy: sync
     resources:

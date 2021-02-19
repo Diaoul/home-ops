@@ -36,18 +36,18 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
+        nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
       hosts:
-        - host: hass.diaoul.fr
+        - host: hass.milkyway.laniakea-sc.space
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - hass.diaoul.fr
+            - hass.milkyway.laniakea-sc.space
           secretName: hass-diaoul-fr-tls
     persistence:
       config:
@@ -73,18 +73,18 @@ spec:
         ingress:
           enabled: true
           annotations:
-            external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+            external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
             cert-manager.io/cluster-issuer: letsencrypt-production
-            nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
-            nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
+            nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
+            nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
           hosts:
-            - host: hass-config.diaoul.fr
+            - host: hass-config.milkyway.laniakea-sc.space
               paths:
                 - path: /
                   pathType: Prefix
           tls:
             - hosts:
-                - hass-config.diaoul.fr
+                - hass-config.milkyway.laniakea-sc.space
               secretName: hass-config-diaoul-fr-tls
         volumeMounts:
           - name: config

@@ -22,18 +22,18 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: milkyway.diaoul.fr
+        external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.fr/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.fr/oauth2/start
+        nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
       hosts:
-        - host: zwavejs2mqtt.diaoul.fr
+        - host: zwavejs2mqtt.milkyway.laniakea-sc.space
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - zwavejs2mqtt.diaoul.fr
+            - zwavejs2mqtt.milkyway.laniakea-sc.space
           secretName: zwavejs2mqtt-diaoul-fr-tls
     persistence:
       config:
