@@ -38,8 +38,6 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
       hosts:
         - host: hass.milkyway.laniakea-sc.space
           paths:
