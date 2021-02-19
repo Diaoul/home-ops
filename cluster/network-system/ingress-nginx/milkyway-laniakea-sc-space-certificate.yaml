@@ -9,7 +9,7 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: diaoul.fr
+  commonName: milkyway.laniakea-sc.space
   dnsNames:
     - "milkyway.laniakea-sc.space"
     - "*.milkyway.laniakea-sc.space"
