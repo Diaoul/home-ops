@@ -5,3 +5,4 @@ resources:
   - nfs-singularity-downloads-pvc.yaml
   - nfs-singularity-tvshows-pvc.yaml
   - nfs-singularity-movies-pvc.yaml
+  - nfs-singularity-music-pvc.yaml
