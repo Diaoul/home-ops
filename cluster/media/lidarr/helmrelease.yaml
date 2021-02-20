@@ -1,0 +1,75 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: lidarr
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: lidarr
+      version: 7.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/k8s-at-home/lidarr
+      tag: v0.8.0.2062
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
+      hosts:
+        - host: lidarr.milkyway.laniakea-sc.space
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - lidarr.milkyway.laniakea-sc.space
+          secretName: lidarr-milkyway-laniakea-sc-space-tls
+      additionalIngresses:
+        - enabled: true
+          nameSuffix: api
+          annotations:
+            external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
+          hosts:
+            - host: lidarr.milkyway.laniakea-sc.space
+              paths:
+                - path: /api
+                  pathType: Prefix
+          tls:
+            - hosts:
+                - lidarr.milkyway.laniakea-sc.space
+              secretName: lidarr-milkyway-laniakea-sc-space-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: lidarr-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+    additionalVolumeMounts:
+      - name: nfs-singularity-downloads
+        mountPath: /downloads
+      - name: nfs-singularity-music
+        mountPath: /music
+    additionalVolumes:
+      - name: nfs-singularity-downloads
+        persistentVolumeClaim:
+          claimName: nfs-singularity-downloads
+      - name: nfs-singularity-music
+        persistentVolumeClaim:
+          claimName: nfs-singularity-music
+    resources:
+      requests:
+        cpu: 500m
+        memory: 250Mi
+      limits:
+        memory: 1500Mi
