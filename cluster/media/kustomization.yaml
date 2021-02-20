@@ -11,3 +11,4 @@ resources:
   - jackett
   - sonarr
   - radarr
+  - lidarr
