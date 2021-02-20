@@ -6,3 +6,4 @@ resources:
   - nfs-singularity-tvshows-pvc.yaml
   - nfs-singularity-movies-pvc.yaml
   - nfs-singularity-music-pvc.yaml
+  - nfs-singularity-ebooks-pvc.yaml
