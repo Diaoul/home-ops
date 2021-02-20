@@ -37,7 +37,7 @@ spec:
       tls:
         - hosts:
             - esphome.milkyway.laniakea-sc.space
-          secretName: esphome-diaoul-fr-tls
+          secretName: esphome-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true

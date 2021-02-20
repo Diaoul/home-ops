@@ -32,7 +32,7 @@ spec:
       tls:
         - hosts:
             - nzbget.milkyway.laniakea-sc.space
-          secretName: nzbget-diaoul-fr-tls
+          secretName: nzbget-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true

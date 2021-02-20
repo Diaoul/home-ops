@@ -34,7 +34,7 @@ spec:
       tls:
         - hosts:
             - jackett.milkyway.laniakea-sc.space
-          secretName: jackett-diaoul-fr-tls
+          secretName: jackett-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true

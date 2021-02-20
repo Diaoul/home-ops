@@ -34,7 +34,7 @@ spec:
       tls:
         - hosts:
             - radarr.milkyway.laniakea-sc.space
-          secretName: radarr-diaoul-fr-tls
+          secretName: radarr-milkyway-laniakea-sc-space-tls
       additionalIngresses:
         - enabled: true
           nameSuffix: api
@@ -48,7 +48,7 @@ spec:
           tls:
             - hosts:
                 - radarr.milkyway.laniakea-sc.space
-              secretName: radarr-diaoul-fr-tls
+              secretName: radarr-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true

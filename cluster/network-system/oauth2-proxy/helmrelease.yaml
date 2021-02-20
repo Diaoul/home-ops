@@ -35,7 +35,7 @@ spec:
       tls:
         - hosts:
             - auth.milkyway.laniakea-sc.space
-          secretName: auth-diaoul-fr-tls
+          secretName: auth-milkyway-laniakea-sc-space-tls
     extraArgs:
       provider: oidc
       oidc-issuer-url: https://laniakea.eu.auth0.com/

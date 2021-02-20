@@ -46,7 +46,7 @@ spec:
       tls:
         - hosts:
             - hass.milkyway.laniakea-sc.space
-          secretName: hass-diaoul-fr-tls
+          secretName: hass-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true
@@ -83,7 +83,7 @@ spec:
           tls:
             - hosts:
                 - hass-config.milkyway.laniakea-sc.space
-              secretName: hass-config-diaoul-fr-tls
+              secretName: hass-config-milkyway-laniakea-sc-space-tls
         volumeMounts:
           - name: config
             mountPath: /config

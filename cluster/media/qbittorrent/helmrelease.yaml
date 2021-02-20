@@ -47,7 +47,7 @@ spec:
       tls:
         - hosts:
             - qb.milkyway.laniakea-sc.space
-          secretName: qb-diaoul-fr-tls
+          secretName: qb-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true

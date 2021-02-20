@@ -34,7 +34,7 @@ spec:
       tls:
         - hosts:
             - zigbee2mqtt.milkyway.laniakea-sc.space
-          secretName: zigbee2mqtt-diaoul-fr-tls
+          secretName: zigbee2mqtt-milkyway-laniakea-sc-space-tls
     persistence:
       data:
         enabled: true
@@ -108,7 +108,7 @@ spec:
           tls:
             - hosts:
                 - zigbee2mqtt-config.milkyway.laniakea-sc.space
-              secretName: zigbee2mqtt-config-diaoul-fr-tls
+              secretName: zigbee2mqtt-config-milkyway-laniakea-sc-space-tls
         volumeMounts:
           - name: data
             mountPath: /data

@@ -34,7 +34,7 @@ spec:
       tls:
         - hosts:
             - sonarr.milkyway.laniakea-sc.space
-          secretName: sonarr-diaoul-fr-tls
+          secretName: sonarr-milkyway-laniakea-sc-space-tls
       additionalIngresses:
         - enabled: true
           nameSuffix: api
@@ -48,7 +48,7 @@ spec:
           tls:
             - hosts:
                 - sonarr.milkyway.laniakea-sc.space
-              secretName: sonarr-diaoul-fr-tls
+              secretName: sonarr-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true

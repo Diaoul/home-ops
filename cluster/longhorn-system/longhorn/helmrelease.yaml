@@ -38,4 +38,4 @@ spec:
         nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
       host: longhorn.milkyway.laniakea-sc.space
       tls: true
-      tlsSecret: longhorn-diaoul-fr-tls
+      tlsSecret: longhorn-milkyway-laniakea-sc-space-tls

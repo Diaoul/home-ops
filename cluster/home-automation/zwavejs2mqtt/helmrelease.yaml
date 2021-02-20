@@ -34,7 +34,7 @@ spec:
       tls:
         - hosts:
             - zwavejs2mqtt.milkyway.laniakea-sc.space
-          secretName: zwavejs2mqtt-diaoul-fr-tls
+          secretName: zwavejs2mqtt-milkyway-laniakea-sc-space-tls
     persistence:
       config:
         enabled: true
