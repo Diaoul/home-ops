@@ -21,8 +21,6 @@ spec:
     provider: cloudflare
     cloudflare:
       secretName: external-dns-cloudflare-api-token
-    domainFilters:
-      - milkyway.laniakea-sc.space
     policy: sync
     resources:
       requests:
