@@ -2,10 +2,10 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: milkyway-laniakea-sc-space-tls
+  name: diaoul-io
   namespace: network-system
 spec:
-  secretName: tls
+  secretName: diaoul-io-tls
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer

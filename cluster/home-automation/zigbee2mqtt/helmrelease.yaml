@@ -22,19 +22,19 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
+        external-dns.alpha.kubernetes.io/target: diaoul.io
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
       hosts:
-        - host: zigbee2mqtt.milkyway.laniakea-sc.space
+        - host: zigbee2mqtt.diaoul.io
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - zigbee2mqtt.milkyway.laniakea-sc.space
-          secretName: zigbee2mqtt-milkyway-laniakea-sc-space-tls
+            - zigbee2mqtt.diaoul.io
+          secretName: zigbee2mqtt-tls
     persistence:
       data:
         enabled: true
@@ -96,19 +96,19 @@ spec:
         ingress:
           enabled: true
           annotations:
-            external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
+            external-dns.alpha.kubernetes.io/target: diaoul.io
             cert-manager.io/cluster-issuer: letsencrypt-production
-            nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
-            nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
+            nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+            nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
           hosts:
-            - host: zigbee2mqtt-config.milkyway.laniakea-sc.space
+            - host: zigbee2mqtt-config.diaoul.io
               paths:
                 - path: /
                   pathType: Prefix
           tls:
             - hosts:
-                - zigbee2mqtt-config.milkyway.laniakea-sc.space
-              secretName: zigbee2mqtt-config-milkyway-laniakea-sc-space-tls
+                - zigbee2mqtt-config.diaoul.io
+              secretName: zigbee2mqtt-config-tls
         volumeMounts:
           - name: data
             mountPath: /data

@@ -32,10 +32,10 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
+        external-dns.alpha.kubernetes.io/target: diaoul.io
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
-      host: longhorn.milkyway.laniakea-sc.space
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+      host: longhorn.diaoul.io
       tls: true
-      tlsSecret: longhorn-milkyway-laniakea-sc-space-tls
+      tlsSecret: longhorn-tls

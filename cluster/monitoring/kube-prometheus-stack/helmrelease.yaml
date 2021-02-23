@@ -42,15 +42,15 @@ spec:
       ingress:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: milkyway.laniakea-sc.space
+          external-dns.alpha.kubernetes.io/target: diaoul.io
           cert-manager.io/cluster-issuer: letsencrypt-production
-          nginx.ingress.kubernetes.io/auth-url: https://auth.milkyway.laniakea-sc.space/oauth2/auth
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.milkyway.laniakea-sc.space/oauth2/start
+          nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
         hosts:
-          - prometheus.milkyway.laniakea-sc.space
+          - prometheus.diaoul.io
         tls:
           - hosts:
-              - prometheus.milkyway.laniakea-sc.space
+              - prometheus.diaoul.io
             secretName: prometheus-diaou-fr-tls
       prometheusSpec:
         ruleSelectorNilUsesHelmValues: false
