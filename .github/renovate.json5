@@ -1,4 +1,5 @@
 {
+  "extends": ["docker:enableMajor"],
   "timezone": "Europe/Paris",
   "semanticCommits": "enabled",
   "separateMinorPatch": true,
@@ -40,15 +41,15 @@
       "matchDatasources": ["ansible"],
       "addLabels": ["renovate/ansible"]
     },
+    {
+      "matchDatasources": ["ansible-galaxy"],
+      "addLabels": ["renovate/ansible-galaxy"]
+    },
     // update types specific settings
     {
       "matchUpdateTypes": ["major"],
       "addLabels": ["dependency/major"],
       "stabilityDays": 3
-    },
-    {
-      "matchDatasources": ["ansible-galaxy"],
-      "addLabels": ["renovate/ansible-galaxy"]
     },
     {
       "matchUpdateTypes": ["minor"],
@@ -74,10 +75,14 @@
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackageNames": [
+        "ghcr.io/k8s-at-home/flaresolverr",
         "ghcr.io/k8s-at-home/jackett",
         "ghcr.io/k8s-at-home/nzbget",
+        "ghcr.io/k8s-at-home/qbittorrent",
         "ghcr.io/k8s-at-home/sonarr",
         "ghcr.io/k8s-at-home/radarr",
+        "ghcr.io/k8s-at-home/lidarr",
+        "ghcr.io/k8s-at-home/readarr",
       ],
       "automerge": true,
       "schedule": "after 3am and before 6am",
