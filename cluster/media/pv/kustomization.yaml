@@ -7,3 +7,4 @@ resources:
   - nfs-singularity-movies-pv.yaml
   - nfs-singularity-music-pv.yaml
   - nfs-singularity-ebooks-pv.yaml
+  - nfs-singularity-books-pv.yaml
