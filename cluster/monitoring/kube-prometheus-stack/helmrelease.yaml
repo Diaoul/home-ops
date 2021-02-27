@@ -16,13 +16,44 @@ spec:
         name: prometheus-community
         namespace: flux-system
   values:
-    nodeExporter:
-      serviceMonitor:
-        relabelings:
-          - action: replace
-            sourceLabels:
-              - __meta_kubernetes_pod_node_name
-            targetLabel: kubernetes_node
+    alertManager:
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: diaoul.io
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+        hosts:
+          - alert-manager.diaoul.io
+        tls:
+          - hosts:
+              - alert-manager.diaoul.io
+            secretName: alert-manager-tls
+      alertManagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 10Gi
+    grafana:
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: diaoul.io
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+        hosts:
+          - grafana.diaoul.io
+        tls:
+          - hosts:
+              - grafana.diaoul.io
+            secretName: grafana-tls
+      persistence:
+        enabled: true
+        size: 10Gi
     kubelet:
       serviceMonitor:
         metricRelabelings:
@@ -38,6 +69,14 @@ spec:
       enabled: false
     kubeProxy:
       enabled: false
+    nodeExporter:
+      enabled: true
+      serviceMonitor:
+        relabelings:
+          - action: replace
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: kubernetes_node
     prometheus:
       ingress:
         enabled: true
@@ -51,12 +90,13 @@ spec:
         tls:
           - hosts:
               - prometheus.diaoul.io
-            secretName: prometheus-diaou-fr-tls
+            secretName: prometheus-tls
       prometheusSpec:
+        enableAdminAPI: true
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
-        enableAdminAPI: true
+        retention: 2d
         walCompression: true
         storageSpec:
           volumeClaimTemplate:
