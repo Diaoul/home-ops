@@ -128,3 +128,6 @@ spec:
             static_configs:
               - targets:
                   - singularity.milkyway:9001
+  valuesFrom:
+    - kind: Secret
+      name: kube-prometheus-stack-helm-values
