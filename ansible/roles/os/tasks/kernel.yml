@@ -1,4 +1,9 @@
 ---
+- name: kernel | check that grub exists
+  stat:
+    path: /etc/default/grub
+  register: grub
+
 - name: kernel | adjust grub cmdline linux default
   become: yes
   replace:
@@ -13,6 +18,15 @@
     - option: max_loop
       value: 32
   notify: grub configuration changed
+  when: grub.stat.exists
+
+- name: kernel | adjust cmdline.txt
+  lineinfile:
+    path: /boot/firmware/cmdline.txt
+    backrefs: true
+    regexp: '^(.*splash)$'
+    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+  when: ansible_architecture | regex_search('arm|aarch')
 
 - name: kernel | enable modules
   community.general.modprobe:
