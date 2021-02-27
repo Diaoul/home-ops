@@ -124,7 +124,7 @@ spec:
             metrics_path: /minio/prometheus/metrics
             scheme: https
             tls_config:
-              ca_file: /etc/prometheus/secrets/milkyway-ca
+              ca_file: /etc/prometheus/secrets/tls-config/ca_file
             static_configs:
               - targets:
                   - singularity.milkyway:9001
