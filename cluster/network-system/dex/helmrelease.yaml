@@ -17,8 +17,8 @@ spec:
         namespace: flux-system
   values:
     image:
-      repository: dexidp/dex
-      tag: v2.27.0
+      repository: ghcr.io/dexidp/dex
+      tag: master
     ingress:
       enabled: true
       annotations:
