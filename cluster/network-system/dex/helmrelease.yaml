@@ -9,16 +9,16 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: ./charts/dex
-      version: 1.4.0
+      chart: dex
+      version: 0.0.5
       sourceRef:
-        kind: GitRepository
-        name: mintel-dex
+        kind: HelmRepository
+        name: dex
         namespace: flux-system
   values:
     image:
       repository: dexidp/dex
-      tag: v2.27.0
+      tag: v2.28.0
     ingress:
       enabled: true
       annotations:
@@ -36,6 +36,28 @@ spec:
         memory: 250Mi
       limits:
         memory: 250Mi
+    config:
+      issuer: https://dex.diaoul.io
+      storage:
+        type: kubernetes
+        config:
+          inCluster: true
+      web:
+        http: 0.0.0.0:5556
+      frontend:
+        theme: coreos
+        issuer: Milky Way
+        issuerUrl: https://diaoul.io
+        logoUrl: https://imgur.com/Idzzln9.png
+      expiry:
+        signingKeys: 6h
+        idTokens: 24h
+      logger:
+        level: debug
+        format: json
+      oauth2:
+        responseTypes: ["code", "token", "id_token"]
+        skipApprovalScreen: true
   valuesFrom:
     - kind: Secret
       name: dex-helm-values
