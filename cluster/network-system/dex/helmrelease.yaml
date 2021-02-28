@@ -18,14 +18,16 @@ spec:
   values:
     image:
       repository: dexidp/dex
-      tag: v2.28.0
+      tag: v2.27.0
     ingress:
       enabled: true
       annotations:
         external-dns.alpha.kubernetes.io/target: diaoul.io
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - dex.diaoul.io
+        - host: dex.diaoul.io
+          paths:
+            - path: /
       tls:
         - hosts:
             - dex.diaoul.io
