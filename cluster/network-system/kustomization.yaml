@@ -9,4 +9,5 @@ resources:
   - external-dns-cloudflare
   - coredns
   - ingress-nginx
+  - dex
   - oauth2-proxy

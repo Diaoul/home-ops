@@ -1,0 +1,41 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: dex
+  namespace: network-system
+spec:
+  releaseName: dex
+  interval: 10m
+  chart:
+    spec:
+      chart: ./charts/dex
+      version: 1.4.0
+      sourceRef:
+        kind: GitRepository
+        name: mintel-dex
+        namespace: flux-system
+  values:
+    image:
+      repository: dexidp/dex
+      tag: v2.27.0
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+      hosts:
+        - dex.diaoul.io
+      tls:
+        - hosts:
+            - dex.diaoul.io
+          secretName: dex-tls
+    resources:
+      requests:
+        cpu: 25m
+        memory: 250Mi
+      limits:
+        memory: 250Mi
+  valuesFrom:
+    - kind: Secret
+      name: dex-helm-values
