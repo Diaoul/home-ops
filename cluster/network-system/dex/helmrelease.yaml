@@ -9,6 +9,7 @@ spec:
   interval: 10m
   chart:
     spec:
+      # renovate: registryUrl=https://charts.dexidp.io
       chart: dex
       version: 0.0.5
       sourceRef:
