@@ -38,7 +38,7 @@ spec:
           secretName: auth-tls
     extraArgs:
       provider: oidc
-      oidc-issuer-url: https://dex.diaoul.io/
+      oidc-issuer-url: https://dex.diaoul.io
       skip-provider-button:
       pass-authorization-header:
       email-domain: "*"
