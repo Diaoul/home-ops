@@ -2,24 +2,18 @@
 - name: restart logind systemd service
   systemd:
     name: systemd-logind.service
-    daemon_reload: yes
-    enabled: yes
     state: restarted
   listen: restart logind
 
 - name: restart unattended-upgrades systemd service
   service:
     name: unattended-upgrades.service
-    daemon_reload: yes
-    enabled: yes
     state: restarted
   listen: unattended-upgrades configuration changed
 
 - name: restart timesyncd systemd service
   service:
     name: systemd-timesyncd.service
-    daemon_reload: yes
-    enabled: yes
     state: restarted
   listen: systemd-timesyncd configuration changed
 
