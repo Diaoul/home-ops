@@ -1,0 +1,39 @@
+---
+- hosts: curiosity
+  vars:
+    user: antoine
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPveFNeWn+aFO3WyMfA+bX9D6iVurO5VfbqbzjO0G0J3 earth@milkyway.laniakea
+  become: yes
+  tasks:
+    - name: add user
+      user:
+        name: "{{ user }}"
+        shell: /bin/bash
+
+    - name: add user to sudoers nopasswd
+      copy:
+        dest: /etc/sudoers.d/{{ user }}_nopasswd
+        content: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
+        mode: 0440
+
+    - name: add user SSH public keys
+      ansible.posix.authorized_key:
+        user: "{{ user }}"
+        key: "{{ item }}"
+      notify: restart sshd
+      loop: "{{ ssh_authorized_keys }}"
+
+    - name: disable SSH password authentication
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regex: "^#?PasswordAuthentication"
+        line: "PasswordAuthentication no"
+      notify: restart sshd
+
+  handlers:
+    - name: restart sshd service
+      systemd:
+        name: sshd.service
+        state: restarted
+      listen: restart sshd
