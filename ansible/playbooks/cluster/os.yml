@@ -4,7 +4,7 @@
     - worker
   vars_prompt:
     - name: "restart_confirmation"
-      prompt: "Restart nodes when complete? [Y/n]"
+      prompt: "Restart when complete? [Y/n]"
       default: "n"
       private: no
   roles:
@@ -15,7 +15,7 @@
     - name: reboot
       ignore_errors: yes
       reboot:
-        msg: "Nodes are being rebooted..."
+        msg: "Rebooting..."
       when: restart_confirmation == "Y"
       tags:
         - always
