@@ -1,7 +1,0 @@
----
-- name: user | add user SSH public keys
-  ansible.posix.authorized_key:
-    user: "{{ ansible_user }}"
-    key: "{{ item }}"
-  loop: "{{ ssh_authorized_keys }}"
-  when: ssh_authorized_keys is defined

@@ -18,15 +18,31 @@
     - option: max_loop
       value: 32
   notify: grub configuration changed
-  when: grub.stat.exists
+  when:
+    - grub.stat.exists
+    - '"master" in group_names or "worker" in group_names'
 
-- name: kernel | adjust cmdline.txt
+- name: kernel | adjust cmdline.txt (Ubuntu)
   lineinfile:
     path: /boot/firmware/cmdline.txt
     backrefs: true
     regexp: '^(.*splash)$'
     line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
-  when: ansible_architecture | regex_search('arm|aarch')
+  when:
+    - ansible_architecture | regex_search('arm|aarch')
+    - ansible_distribution == "Ubuntu"
+    - '"master" in group_names or "worker" in group_names'
+
+- name: kernel | adjust cmdline.txt (Debian)
+  lineinfile:
+    path: /boot/cmdline.txt
+    backrefs: true
+    regexp: '^(.*rootwait)$'
+    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+  when:
+    - ansible_architecture | regex_search('arm|aarch')
+    - ansible_distribution == "Debian"
+    - '"master" in group_names or "worker" in group_names'
 
 - name: kernel | enable modules
   community.general.modprobe:
@@ -35,6 +51,7 @@
   loop:
     - br_netfilter
     - overlay
+  when: '"master" in group_names or "worker" in group_names'
 
 - name: kernel | enable modules on boot
   copy:
@@ -44,3 +61,4 @@
   loop:
     - br_netfilter
     - overlay
+  when: '"master" in group_names or "worker" in group_names'

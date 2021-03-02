@@ -4,39 +4,33 @@
     path: /usr/src/kitty
     state: directory
     mode: 0755
-  become: yes
 
 - name: terminfo | download kitty terminfo
   get_url:
     url: https://raw.githubusercontent.com/kovidgoyal/kitty/master/terminfo/kitty.terminfo
     dest: /usr/src/kitty/kitty.info
   register: kitty_terminfo_src
-  become: yes
 
 - name: terminfo | install kitty terminfo
   command:
     cmd: tic -xe xterm-kitty kitty.info
     chdir: /usr/src/kitty
   when: kitty_terminfo_src is changed
-  become: yes
 
 - name: terminfo | create alacritty source directory
   file:
     path: /usr/src/alacritty
     state: directory
     mode: 0755
-  become: yes
 
 - name: terminfo | download alacritty terminfo
   get_url:
     url: https://raw.githubusercontent.com/alacritty/alacritty/master/extra/alacritty.info
     dest: /usr/src/alacritty/alacritty.info
   register: alacritty_terminfo_src
-  become: yes
 
 - name: terminfo | install alacritty terminfo
   command:
     cmd: tic -xe alacritty,alacritty-direct alacritty.info
     chdir: /usr/src/alacritty
   when: alacritty_terminfo_src is changed
-  become: yes
