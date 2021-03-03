@@ -23,14 +23,13 @@ details, see the README of the following directories
 ## :gear: Hardware
 I try to run everything bare metal to get the most out of each device
 
-| Device                  | Count | Storage                  | Purpose                                     |
-|-------------------------|-------|--------------------------|---------------------------------------------|
-| Synology NAS            | 1     | 12TB RAID 5 + 2TB RAID 1 | Main storage                                |
-| Raspberry Pi 2          | 1     | 16GB SD                  | 3D printer with Octoprint                   |
-| Raspberry Pi 3          | 2     | 16GB SD                  | Unifi Controller / DNS Server and LB         |
-| Raspberry Pi 4          | 1     | 8GB SD + 120GB SSD USB   | Kubernetes node                             |
-| VM on Synology NAS      | 1     | 120GB from RAID 1        | Kubernetes node                             |
-| Intel NUC8i5BEH         | 1     | 120GB SSD + 500GB NVMe   | Kubernetes node + storage                   |
+| Device                  | Count | Storage                  | Purpose                                      |
+|-------------------------|-------|--------------------------|----------------------------------------------|
+| Synology NAS            | 1     | 12TB RAID 5 + 2TB RAID 1 | Main storage                                 |
+| Raspberry Pi 3          | 2     | 16GB SD                  | Unifi Controller / 3D Printer with OctoPrint |
+| Raspberry Pi 4          | 1     | 8GB SD + 120GB SSD USB   | Kubernetes node                              |
+| VM on Synology NAS      | 1     | 120GB from RAID 1        | Kubernetes node                              |
+| Intel NUC8i5BEH         | 1     | 120GB SSD + 500GB NVMe   | Kubernetes node + storage                    |
 
 ...and a bunch of retired Rasbpberry Pi 1!
 
