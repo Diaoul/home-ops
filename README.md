@@ -30,8 +30,9 @@ I try to run everything bare metal to get the most out of each device
 | Raspberry Pi 4          | 1     | 8GB SD + 120GB SSD USB   | Kubernetes node                              |
 | VM on Synology NAS      | 1     | 120GB from RAID 1        | Kubernetes node                              |
 | Intel NUC8i5BEH         | 1     | 120GB SSD + 500GB NVMe   | Kubernetes node + storage                    |
+| Intel NUC8i3BEH         | 1     | 120GB SSD + 500GB NVMe   | Kubernetes node + storage                    |
 
-...and a bunch of retired Rasbpberry Pi 1!
+...and a bunch of retired Rasbpberry Pi 1 and 2!
 
 ## :handshake:&nbsp; Thanks
 I learned a lot from the people that have shared their clusters over at
