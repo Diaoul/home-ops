@@ -1,0 +1,8 @@
+---
+- name: pi | apply boot config options
+  lineinfile:
+    path: /boot/config.txt
+    regex: "^#?{{ item.key }}="
+    line: "{{ item.key }}={{ item.value }}"
+  loop: "{{ pi_config | dict2items }}"
+  when: pi_config is defined

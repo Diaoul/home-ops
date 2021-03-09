@@ -31,6 +31,10 @@
   tags:
     - filesystem
 
+- import_tasks: pi.yml
+  tags:
+    - pi
+
 - import_tasks: unattended-upgrades.yml
   tags:
     - unattended-upgrades

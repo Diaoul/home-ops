@@ -1,0 +1,3 @@
+---
+pi_config:
+  disable_camera_led: 1
