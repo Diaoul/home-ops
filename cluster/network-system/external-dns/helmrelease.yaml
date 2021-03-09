@@ -25,10 +25,10 @@ spec:
       create: true
     resources:
       requests:
-        cpu: 50m
+        cpu: 10m
         memory: 50Mi
       limits:
-        cpu: 50m
+        cpu: 10m
         memory: 50Mi
     metrics:
       enabled: true
