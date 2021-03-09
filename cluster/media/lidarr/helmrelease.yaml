@@ -69,7 +69,8 @@ spec:
           claimName: nfs-singularity-music
     resources:
       requests:
-        cpu: 500m
-        memory: 250Mi
+        cpu: 100m
+        memory: 200Mi
       limits:
-        memory: 1500Mi
+        cpu: 200m
+        memory: 200Mi
