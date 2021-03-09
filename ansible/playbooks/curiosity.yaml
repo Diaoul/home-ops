@@ -8,6 +8,7 @@
       private: no
   roles:
     - os
+    - printer3d
   tasks:
     - name: flush handlers
       meta: flush_handlers

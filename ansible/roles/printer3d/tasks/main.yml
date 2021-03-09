@@ -1,0 +1,4 @@
+---
+- name: install avrdude
+  apt:
+    name: avrdude
