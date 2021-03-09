@@ -81,6 +81,13 @@ spec:
           - 66
           - 185
         pan_id: 45138
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 200m
+        memory: 100Mi
     addons:
       codeserver:
         enabled: true
@@ -112,3 +119,10 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /data
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 100m
+          memory: 100Mi
