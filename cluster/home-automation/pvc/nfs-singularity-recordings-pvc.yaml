@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-singularity-recordings
+  namespace: home-automation
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-singularity-recordings
+  resources:
+    requests:
+      storage: 1Mi

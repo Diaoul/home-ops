@@ -1,0 +1,103 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: frigate
+  namespace: home-automation
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://blakeblackshear.github.io/blakeshome-charts/
+      chart: frigate
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: blakeshome
+        namespace: flux-system
+  values:
+    image:
+      repository: blakeblackshear/frigate
+      tag: 0.8.4-amd64
+    shmSize: 1Gi
+    config: |
+      mqtt:
+        host: vernemq
+      database:
+        path: /data/frigate.db
+      detectors:
+        cpu1:
+          type: cpu
+        cpu2:
+          type: cpu
+      objects:
+        track:
+          - person
+          - dog
+          - cat
+      ffmpeg:
+        hwaccel_args:
+          - -hwaccel
+          - vaapi
+          - -hwaccel_device
+          - /dev/dri/renderD128
+          - -hwaccel_output_format
+          - yuv420p
+      cameras:
+        porch:
+          ffmpeg:
+            inputs:
+              - path: rtsp://10.0.4.16:554/s2
+                roles:
+                  - detect
+              - path: rtsp://10.0.4.16:554/s0
+                roles:
+                  - clips
+                  - rtmp
+          width: 1024
+          height: 576
+          fps: 5
+          motion:
+            mask:
+              - 1024,576,1024,347,941,331,796,519,821,576
+          clips:
+            enabled: True
+          snapshots:
+            enabled: True
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+      hosts:
+        - frigate.diaoul.io
+      tls:
+        - hosts:
+            - frigate.diaoul.io
+          secretName: frigate-tls
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: frigate
+    persistence:
+      data:
+        enabled: true
+        existingClaim: frigate-data
+    extraVolumeMounts:
+      - mountPath: /media
+        name: nfs-singularity-recordings
+      - mountPath: /tmp/cache
+        name: cache
+    extraVolumes:
+      - name: nfs-singularity-recordings
+        persistentVolumeClaim:
+          claimName: nfs-singularity-recordings
+      - name: cache
+        emptyDir:
+          medium: Memory
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        memory: 4Gi

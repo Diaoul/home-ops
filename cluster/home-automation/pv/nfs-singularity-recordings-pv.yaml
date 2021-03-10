@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-singularity-recordings
+spec:
+  storageClassName: nfs-singularity-recordings
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: singularity.milkyway
+    path: /volume1/recordings
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - noatime
+    - nodiratime
