@@ -47,19 +47,20 @@ spec:
         porch:
           ffmpeg:
             inputs:
-              - path: rtsp://10.0.4.16:554/s2
+              - path: rtsp://10.0.4.16:554/s1
                 roles:
                   - detect
               - path: rtsp://10.0.4.16:554/s0
                 roles:
                   - clips
                   - rtmp
-          width: 1024
-          height: 576
+          width: 640
+          height: 360
           fps: 5
           motion:
             mask:
-              - 1024,576,1024,347,941,331,796,519,821,576
+              - 640,360,640,217,588,206,495,326,516,360
+              - 120,0,120,11,0,11,0,0
           clips:
             enabled: True
           snapshots:
@@ -95,9 +96,17 @@ spec:
       - name: cache
         emptyDir:
           medium: Memory
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - {key: feature.node.kubernetes.io/custom-intel-gpu, operator: In, values: ["true"]}
     resources:
       requests:
         cpu: 500m
         memory: 1Gi
+        gpu.intel.com/i915: 1
       limits:
         memory: 4Gi
+        gpu.intel.com/i915: 1
