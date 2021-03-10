@@ -46,6 +46,8 @@ spec:
         type: kubernetes
         config:
           inCluster: true
+      web:
+        http: 0.0.0.0:5556
       frontend:
         theme: coreos
         issuer: Milky Way
