@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: ghcr.io/dexidp/dex
-      tag: sha256:6b43e19897405ff71a4c65d31916a19d704ae7fa92d70fe0ec98d2314c70edc6
+      tag: master
     ingress:
       enabled: true
       annotations:
