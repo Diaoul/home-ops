@@ -35,11 +35,11 @@ spec:
           secretName: dex-tls
     resources:
       requests:
-        cpu: 25m
-        memory: 100Mi
+        cpu: 50m
+        memory: 200Mi
       limits:
-        cpu: 25m
-        memory: 100Mi
+        cpu: 50m
+        memory: 200Mi
     config:
       issuer: https://dex.diaoul.io
       storage:
