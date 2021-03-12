@@ -65,6 +65,52 @@ spec:
             enabled: True
           snapshots:
             enabled: True
+        garage:
+          ffmpeg:
+            inputs:
+              - path: rtsp://10.0.4.17:554/s1
+                roles:
+                  - detect
+              - path: rtsp://10.0.4.17:554/s0
+                roles:
+                  - clips
+                  - rtmp
+          width: 640
+          height: 360
+          fps: 5
+          objects:
+            track:
+              - person
+          motion:
+            mask:
+              - 120,0,120,11,0,11,0,0
+          clips:
+            enabled: True
+          snapshots:
+            enabled: True
+        living_room:
+          ffmpeg:
+            inputs:
+              - path: rtsp://10.0.4.18:554/s1
+                roles:
+                  - detect
+              - path: rtsp://10.0.4.18:554/s0
+                roles:
+                  - clips
+                  - rtmp
+          width: 640
+          height: 360
+          fps: 5
+          objects:
+            track:
+              - person
+          motion:
+            mask:
+              - 120,0,120,11,0,11,0,0
+          clips:
+            enabled: True
+          snapshots:
+            enabled: True
     ingress:
       enabled: true
       annotations:
