@@ -107,6 +107,7 @@ spec:
           motion:
             mask:
               - 120,0,120,11,0,11,0,0
+              - 640,360,482,360,640,193
           clips:
             enabled: True
           snapshots:
