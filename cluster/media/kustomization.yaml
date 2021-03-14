@@ -6,6 +6,7 @@ resources:
   - pv
   - pvc
   - qbittorrent
+  - flood
   - nzbget
   - flaresolverr
   - jackett
