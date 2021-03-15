@@ -33,7 +33,7 @@ repos:
         files: ^ansible/
         always_run: false
         additional_dependencies:
-          - ansible>=2.10,<2.11
+          - ansible>=3.1,<3.2
   - repo: local
     hooks:
       - id: kustomize
