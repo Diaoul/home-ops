@@ -14,3 +14,4 @@ resources:
   - radarr
   - lidarr
   - readarr
+  - jellyfin

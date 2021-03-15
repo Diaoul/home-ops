@@ -1,0 +1,73 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: jellyfin
+      version: 5.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: jellyfin/jellyfin
+      tag: 10.7.0
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+      hosts:
+        - host: jellyfin.diaoul.io
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - jellyfin.diaoul.io
+          secretName: jellyfin-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: jellyfin-config
+    additionalVolumeMounts:
+      - name: nfs-singularity-movies
+        mountPath: /media/movies
+      - name: nfs-singularity-tvshows
+        mountPath: /media/tvshows
+      - name: nfs-singularity-music
+        mountPath: /media/music
+    additionalVolumes:
+      - name: nfs-singularity-movies
+        persistentVolumeClaim:
+          claimName: nfs-singularity-movies
+      - name: nfs-singularity-tvshows
+        persistentVolumeClaim:
+          claimName: nfs-singularity-tvshows
+      - name: nfs-singularity-music
+        persistentVolumeClaim:
+          claimName: nfs-singularity-music
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - {key: feature.node.kubernetes.io/custom-intel-gpu, operator: In, values: ["true"]}
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
+        gpu.intel.com/i915: 1
+      limits:
+        cpu: 2
+        memory: 3Gi
+        gpu.intel.com/i915: 1
