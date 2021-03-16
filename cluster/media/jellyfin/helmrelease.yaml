@@ -44,6 +44,8 @@ spec:
         mountPath: /media/tvshows
       - name: nfs-singularity-music
         mountPath: /media/music
+      - name: nfs-singularity-anime
+        mountPath: /media/anime
     additionalVolumes:
       - name: nfs-singularity-movies
         persistentVolumeClaim:
@@ -54,6 +56,9 @@ spec:
       - name: nfs-singularity-music
         persistentVolumeClaim:
           claimName: nfs-singularity-music
+      - name: nfs-singularity-anime
+        persistentVolumeClaim:
+          claimName: nfs-singularity-anime
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:

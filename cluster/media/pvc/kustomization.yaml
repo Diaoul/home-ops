@@ -8,3 +8,4 @@ resources:
   - nfs-singularity-music-pvc.yaml
   - nfs-singularity-ebooks-pvc.yaml
   - nfs-singularity-books-pvc.yaml
+  - nfs-singularity-anime-pvc.yaml
