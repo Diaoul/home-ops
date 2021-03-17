@@ -3,6 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - nfs-singularity-downloads-pvc.yaml
+  - nfs-singularity-media-pvc.yaml
   - nfs-singularity-tvshows-pvc.yaml
   - nfs-singularity-movies-pvc.yaml
   - nfs-singularity-music-pvc.yaml
