@@ -38,27 +38,12 @@ spec:
         enabled: true
         existingClaim: jellyfin-config
     additionalVolumeMounts:
-      - name: nfs-singularity-movies
-        mountPath: /media/movies
-      - name: nfs-singularity-tvshows
-        mountPath: /media/tvshows
-      - name: nfs-singularity-music
-        mountPath: /media/music
-      - name: nfs-singularity-anime
-        mountPath: /media/anime
+      - name: nfs-singularity-media
+        mountPath: /media
     additionalVolumes:
-      - name: nfs-singularity-movies
+      - name: nfs-singularity-media
         persistentVolumeClaim:
-          claimName: nfs-singularity-movies
-      - name: nfs-singularity-tvshows
-        persistentVolumeClaim:
-          claimName: nfs-singularity-tvshows
-      - name: nfs-singularity-music
-        persistentVolumeClaim:
-          claimName: nfs-singularity-music
-      - name: nfs-singularity-anime
-        persistentVolumeClaim:
-          claimName: nfs-singularity-anime
+          claimName: nfs-singularity-media
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
