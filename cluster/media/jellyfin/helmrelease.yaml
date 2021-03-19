@@ -19,6 +19,13 @@ spec:
     image:
       repository: jellyfin/jellyfin
       tag: 10.7.0
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      supplementalGroups:
+        - 44
+        - 109
     ingress:
       enabled: true
       annotations:
