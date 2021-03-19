@@ -38,6 +38,7 @@ spec:
       tls:
         - hosts:
             - flood.diaoul.io
+          secretName: flood-tls
     persistence:
       data:
         enabled: true
