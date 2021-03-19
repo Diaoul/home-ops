@@ -4,9 +4,3 @@ kind: Kustomization
 resources:
   - nfs-singularity-downloads-pvc.yaml
   - nfs-singularity-media-pvc.yaml
-  - nfs-singularity-tvshows-pvc.yaml
-  - nfs-singularity-movies-pvc.yaml
-  - nfs-singularity-music-pvc.yaml
-  - nfs-singularity-ebooks-pvc.yaml
-  - nfs-singularity-books-pvc.yaml
-  - nfs-singularity-anime-pvc.yaml

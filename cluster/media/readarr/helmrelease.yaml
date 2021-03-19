@@ -61,15 +61,15 @@ spec:
     additionalVolumeMounts:
       - name: nfs-singularity-downloads
         mountPath: /downloads
-      - name: nfs-singularity-books
-        mountPath: /books
+      - name: nfs-singularity-media
+        mountPath: /media
     additionalVolumes:
       - name: nfs-singularity-downloads
         persistentVolumeClaim:
           claimName: nfs-singularity-downloads
-      - name: nfs-singularity-books
+      - name: nfs-singularity-media
         persistentVolumeClaim:
-          claimName: nfs-singularity-books
+          claimName: nfs-singularity-media
     resources:
       requests:
         cpu: 100m
