@@ -37,6 +37,9 @@ spec:
       config:
         enabled: true
         existingClaim: jellyfin-config
+      cache:
+        enabled: true
+        existingClaim: jellyfin-cache
     additionalVolumeMounts:
       - name: nfs-singularity-media
         mountPath: /media
