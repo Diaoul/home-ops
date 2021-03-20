@@ -66,6 +66,11 @@
       "extractVersion": "^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$"
     },
     {
+      "datasources": ["docker"],
+      "versionScheme": "regex:^nightly-0\\.(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+      "packageNames": ["hotio/readarr"]
+    },
+    {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["minio/minio"],
       "extractVersion": "^RELEASE\\.(?<major>\\d{4})-(?<minor>\\d{2})-(?<patch>\\d{2})"
@@ -82,7 +87,7 @@
         "ghcr.io/k8s-at-home/sonarr",
         "ghcr.io/k8s-at-home/radarr",
         "ghcr.io/k8s-at-home/lidarr",
-        "ghcr.io/k8s-at-home/readarr",
+        "hotio/readarr",
       ],
       "automerge": true,
       "schedule": "after 3am and before 6am",
