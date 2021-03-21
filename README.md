@@ -28,7 +28,6 @@ I try to run everything bare metal to get the most out of each device
 | Synology NAS            | 1     | 12TB RAID 5 + 2TB RAID 1 | Main storage                                 |
 | Raspberry Pi 3          | 2     | 16GB SD                  | Unifi Controller / 3D Printer with OctoPrint |
 | Raspberry Pi 4          | 1     | 8GB SD + 120GB SSD USB   | Kubernetes node                              |
-| VM on Synology NAS      | 1     | 120GB from RAID 1        | Kubernetes node                              |
 | Intel NUC8i5BEH         | 1     | 120GB SSD + 500GB NVMe   | Kubernetes node + storage                    |
 | Intel NUC8i3BEH         | 1     | 120GB SSD + 500GB NVMe   | Kubernetes node + storage                    |
 
