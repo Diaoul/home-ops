@@ -18,17 +18,16 @@ spec:
   values:
     persistence:
       defaultClass: true
-      defaultClassReplicaCount: 1  # single-node
+      defaultClassReplicaCount: 2
       recurringJobs:
         enable: true
-        jobList: '[{"name": "snapshot", "task": "snapshot", "cron": "0 * * * *", "retain": 12 }, { "name": "backup", "task": "backup", "cron": "0 2 * * *", "retain": 10}]'
+        jobList: '[{"name": "snapshot", "task": "snapshot", "cron": "0 */6 * * *", "retain": 4 }, { "name": "backup", "task": "backup", "cron": "0 2 * * *", "retain": 7}]'
     defaultSettings:
       backupTarget: s3://longhorn@minio/longhorn
       backupTargetCredentialSecret: longhorn-backup
       createDefaultDiskLabeledNodes: true
-      defaultReplicaCount: 1  # single-node
+      defaultReplicaCount: 2
       storageMinimalAvailablePercentage: 10
-      allowNodeDrainWithLastHealthyReplica: true  # single-node
     ingress:
       enabled: true
       annotations:
