@@ -33,7 +33,8 @@ flux bootstrap github \
   --cluster-domain=cluster.milkyway
 ```
 
-## First bootstrap
+## :checkered_flag: First bootstrap
+### CRDs
 Flux automatic reconciliation will fail due to missing CRDs, running this
 several times will ensure everything gets created:
 ```bash
