@@ -45,10 +45,10 @@ spec:
         existingClaim: flood-data
     resources:
       requests:
-        cpu: 25m
+        cpu: 50m
         memory: 50Mi
       limits:
-        cpu: 25m
+        cpu: 50m
         memory: 100Mi
   valuesFrom:
     - kind: Secret
