@@ -6,3 +6,4 @@ resources:
   - unifi-poller
   - loki
   - kube-prometheus-stack
+  - grafana

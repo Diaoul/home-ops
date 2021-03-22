@@ -1,0 +1,134 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://grafana.github.io/helm-charts
+      chart: grafana
+      version: 6.6.4
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+  values:
+    deploymentStrategy:
+      type: Recreate
+    env:
+      GF_EXPLORE_ENABLED: true
+      GF_PANELS_DISABLE_SANITIZE_HTML: true
+      GF_LOG_FILTERS: rendering:debug
+    grafana.ini:
+      server:
+        root_url: https://grafana.diaoul.io
+      paths:
+        data: /var/lib/grafana/data
+        logs: /var/log/grafana
+        plugins: /var/lib/grafana/plugins
+        provisioning: /etc/grafana/provisioning
+      analytics:
+        check_for_updates: false
+      log:
+        mode: console
+      grafana_net:
+        url: https://grafana.net
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: Prometheus
+            type: prometheus
+            url: http://prometheus-operated:9090
+            access: proxy
+            isDefault: true
+          - name: Loki
+            type: loki
+            access: proxy
+            url: http://loki:3100
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: default
+            orgId: 1
+            folder: ""
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+    dashboards:
+      default:
+        vernemq:
+          url: https://raw.githubusercontent.com/vernemq/vernemq/master/metrics_scripts/grafana/VerneMQ%20Node%20Metrics.json
+          datasource: Prometheus
+        nginx-dashboard:
+          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/11315
+        unifi-client-insights:
+          gnetId: 11315
+          revision: 8
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/11311
+        unifi-network-sites:
+          gnetId: 11311
+          revision: 4
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/11314
+        unifi-uap-insights:
+          gnetId: 11314
+          revision: 9
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/11312
+        unifi-usw-insights:
+          gnetId: 11312
+          revision: 8
+          datasource: Prometheus
+        flux-cluster:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/cluster.json
+          datasource: Prometheus
+        flux-control-plane:
+          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json
+          datasource: Prometheus
+    sidecar:
+      dashboards:
+        enabled: true
+        searchNamespace: ALL
+      datasources:
+        enabled: true
+        searchNamespace: ALL
+    plugins:
+      - natel-discrete-panel
+      - pr0ps-trackmap-panel
+      - grafana-piechart-panel
+      - vonage-status-panel
+      - grafana-worldmap-panel
+      - grafana-clock-panel
+    serviceMonitor:
+      enabled: true
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+      hosts:
+        - grafana.diaoul.io
+      tls:
+        - hosts:
+            - grafana.diaoul.io
+          secretName: grafana-tls
+    persistence:
+      enabled: true
+      existingClaim: grafana-data
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: grafana
+  valuesFrom:
+    - kind: Secret
+      name: grafana-helm-values

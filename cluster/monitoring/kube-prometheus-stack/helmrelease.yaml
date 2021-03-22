@@ -38,22 +38,7 @@ spec:
                 requests:
                   storage: 10Gi
     grafana:
-      ingress:
-        enabled: true
-        annotations:
-          external-dns.alpha.kubernetes.io/target: diaoul.io
-          cert-manager.io/cluster-issuer: letsencrypt-production
-          nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
-        hosts:
-          - grafana.diaoul.io
-        tls:
-          - hosts:
-              - grafana.diaoul.io
-            secretName: grafana-tls
-      persistence:
-        enabled: true
-        size: 10Gi
+      enabled: false
     kubelet:
       serviceMonitor:
         metricRelabelings:
@@ -128,6 +113,3 @@ spec:
             static_configs:
               - targets:
                   - singularity.milkyway:9001
-  valuesFrom:
-    - kind: Secret
-      name: kube-prometheus-stack-helm-values
