@@ -7,3 +7,4 @@ resources:
   - sealed-secrets
   - node-feature-discovery
   - intel-gpu-plugin
+  - descheduler
