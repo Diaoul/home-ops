@@ -38,7 +38,7 @@ spec:
         cpu: 50m
         memory: 200Mi
       limits:
-        cpu: 50m
+        cpu: 200m
         memory: 200Mi
     config:
       issuer: https://dex.diaoul.io

@@ -58,8 +58,8 @@ spec:
                 - {key: feature.node.kubernetes.io/custom-zwave, operator: In, values: ["true"]}
     resources:
       requests:
-        cpu: 100m
+        cpu: 200m
         memory: 200Mi
       limits:
-        cpu: 200m
+        cpu: 500m
         memory: 200Mi
