@@ -1,0 +1,30 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: unifi-poller
+  namespace: monitoring
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: unifi-poller
+      version: 6.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: golift/unifi-poller
+      tag: 2.1.0
+    env:
+      UP_UNIFI_DEFAULT_URL: "https://sun.milkyway:8443/"
+      UP_INFLUXDB_DISABLE: true
+    envFrom:
+      - secretRef:
+          name: unifi-poller-credentials
+    prometheus:
+      serviceMonitor:
+        enabled: true
