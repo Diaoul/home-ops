@@ -24,10 +24,10 @@ spec:
     policy: sync
     resources:
       requests:
-        cpu: 10m
+        cpu: 50m
         memory: 50Mi
       limits:
-        cpu: 10m
+        cpu: 50m
         memory: 50Mi
     metrics:
       enabled: true
