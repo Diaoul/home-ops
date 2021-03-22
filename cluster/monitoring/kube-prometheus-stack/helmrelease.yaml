@@ -31,6 +31,7 @@ spec:
               - alert-manager.diaoul.io
             secretName: alert-manager-tls
       alertManagerSpec:
+        externalUrl: https://alert-manager.diaoul.io/
         storage:
           volumeClaimTemplate:
             spec:
@@ -78,6 +79,7 @@ spec:
             secretName: prometheus-tls
       prometheusSpec:
         enableAdminAPI: true
+        externalUrl: https://prometheus.diaoul.io/
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
