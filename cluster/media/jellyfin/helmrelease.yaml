@@ -48,8 +48,8 @@ spec:
         existingClaim: jellyfin-config
       transcode:
         enabled: true
-        emptyDir: true
-        mountPath: /transcode
+        emptyDir:
+          enabled: true
     additionalVolumeMounts:
       - name: nfs-singularity-media
         mountPath: /media
