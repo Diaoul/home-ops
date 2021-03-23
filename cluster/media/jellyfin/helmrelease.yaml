@@ -19,6 +19,8 @@ spec:
     image:
       repository: jellyfin/jellyfin
       tag: 10.7.1
+    env:
+      JELLYFIN_CACHE_DIR: /config/cache
     podSecurityContext:
       runAsUser: 568
       runAsGroup: 568
@@ -44,9 +46,6 @@ spec:
       config:
         enabled: true
         existingClaim: jellyfin-config
-      cache:
-        enabled: true
-        existingClaim: jellyfin-cache
       transcode:
         enabled: true
         emptyDir: true
