@@ -1,0 +1,59 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: bazarr
+  namespace: media
+spec:
+  releaseName: bazarr
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: bazarr
+      version: 7.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: linuxserver/bazarr
+      tag: v0.9.0.2-ls89
+    env:
+      PUID: 568
+      PGID: 568
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+      hosts:
+        - host: bazarr.diaoul.io
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - bazarr.diaoul.io
+          secretName: bazarr-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: bazarr-config
+    additionalVolumeMounts:
+      - name: nfs-singularity-media
+        mountPath: /media
+    additionalVolumes:
+      - name: nfs-singularity-media
+        persistentVolumeClaim:
+          claimName: nfs-singularity-media
+    resources:
+      requests:
+        cpu: 100m
+        memory: 600Mi
+      limits:
+        cpu: 200m
+        memory: 600Mi
