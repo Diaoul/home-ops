@@ -49,6 +49,7 @@ spec:
       transcode:
         enabled: true
         emptyDir: true
+        mountPath: /transcode
     additionalVolumeMounts:
       - name: nfs-singularity-media
         mountPath: /media
