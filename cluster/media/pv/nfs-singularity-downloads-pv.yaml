@@ -13,8 +13,3 @@ spec:
   nfs:
     server: singularity.milkyway
     path: /volume1/downloads
-  mountOptions:
-    - nfsvers=4.1
-    - hard
-    - noatime
-    - nodiratime
