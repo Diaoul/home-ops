@@ -22,5 +22,5 @@ spec:
     serviceMonitor:
       enabled: true
       targets:
-        - hostname: nut-server.network-system
+        - hostname: nut-server-garage.network-system
           port: 3493

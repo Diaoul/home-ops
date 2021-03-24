@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: nut-server
+  name: nut-server-garage
   namespace: network-system
 spec:
   interval: 10m
@@ -19,7 +19,7 @@ spec:
     image:
       repository: ghcr.io/k8s-at-home/network-ups-tools
       tag: v2.7.4-2124-g9defa7a9
-    nameOverride: nut-server
+    nameOverride: nut-server-garage
     service:
       type: LoadBalancer
       externalIPs:
@@ -29,7 +29,7 @@ spec:
       mode: values
       files:
         ups.conf: |
-          [ups]
+          [garage]
             driver = usbhid-ups
             port = auto
             desc = "APC Back-UPS RS 900G"
