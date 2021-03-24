@@ -101,3 +101,14 @@ spec:
             static_configs:
               - targets:
                   - singularity.milkyway:9000
+          - job_name: nut
+            metrics_path: /nut
+            static_configs:
+              - targets: ["nut-server.network-system:3493"]
+            relabel_configs:
+              - source_labels: [__address__]
+                target_label: __param_target
+              - source_labels: [__param_target]
+                target_label: instance
+              - target_label: __address__
+                replacement: prometheus-nut-exporter:9995
