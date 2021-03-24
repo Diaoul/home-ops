@@ -61,3 +61,8 @@ spec:
                       class: ["02"]
                       vendor: ["0451"]
                       device: ["16a8"]
+              - name: ups-apc
+                matchOn:
+                  - usbId:
+                      vendor: ["051d"]
+                      device: ["0002"]

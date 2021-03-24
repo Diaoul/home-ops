@@ -11,3 +11,4 @@ resources:
   - ingress-nginx
   - dex
   - oauth2-proxy
+  - nut-server
