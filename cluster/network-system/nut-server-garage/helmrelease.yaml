@@ -16,6 +16,8 @@ spec:
         name: k8s-at-home
         namespace: flux-system
   values:
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: nut-server-garage-config
     image:
       repository: ghcr.io/k8s-at-home/network-ups-tools
       tag: v2.7.4-2124-g9defa7a9
