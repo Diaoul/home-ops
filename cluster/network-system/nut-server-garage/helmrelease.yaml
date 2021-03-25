@@ -29,13 +29,13 @@ spec:
       mode: values
       files:
         ups.conf: |
-          [garage]
+          [ups]
             driver = usbhid-ups
             port = auto
             desc = "APC Back-UPS RS 900G"
             serial = 3B1227X00136
             vendorid = 051d
-            pollfreq = 30
+            pollfreq = 10
         upsd.users: |
           [monuser]
             password = secret
