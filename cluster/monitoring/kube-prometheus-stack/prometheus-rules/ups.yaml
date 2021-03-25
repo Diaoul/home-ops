@@ -1,0 +1,112 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: k8s
+    role: alert-rules
+  name: ups-rules
+  namespace: monitoring
+spec:
+  groups:
+    - name: ups.rules
+      rules:
+        - alert: UPSLowBatteryCharge
+          annotations:
+            description: UPS battery charge is low
+            summary: UPS {{$labels.ups}} battery under 30% charge.
+          expr: nut_battery_charge <= 0.30
+          for: 10s
+          labels:
+            severity: warning
+        - alert: UPSLowBatteryCharge
+          annotations:
+            description: UPS battery charge is low
+            summary: UPS {{$labels.ups}} battery under 20% charge.
+          expr: nut_battery_charge <= 0.20
+          for: 10s
+          labels:
+            severity: error
+        - alert: UPSLowBatteryCharge
+          annotations:
+            description: UPS battery charge is low
+            summary: UPS {{$labels.ups}} battery under 10% charge.
+          expr: nut_battery_charge <= 0.10
+          for: 10s
+          labels:
+            severity: critical
+        - alert: UPSUnderHeavyLoad
+          annotations:
+            description: UPS is under heavy load
+            summary: UPS {{$labels.ups}} has a load over 75%.
+          expr: nut_load >= 0.75
+          for: 10s
+          labels:
+            severity: error
+        - alert: UPSUnderHeavyLoad
+          annotations:
+            description: UPS is under heavy load
+            summary: UPS {{$labels.ups}} has a load over 90%.
+          expr: nut_load >= 0.90
+          for: 10s
+          labels:
+            severity: critical
+        - alert: UPSAlmostDepleted
+          annotations:
+            description: UPS almost depleted
+            summary: UPS {{$labels.ups}} has less than 10 minutes of battery
+              left.
+          expr: nut_battery_runtime_seconds/60 <= 10
+          for: 10s
+          labels:
+            severity: warning
+        - alert: UPSAlmostDepleted
+          annotations:
+            description: UPS almost depleted
+            summary: UPS {{$labels.ups}} has less than 5 minutes of battery
+              left.
+          expr: nut_battery_runtime_seconds/60 <= 5
+          for: 10s
+          labels:
+            severity: error
+        - alert: UPSAlmostDepleted
+          annotations:
+            description: UPS almost depleted
+            summary: UPS {{$labels.ups}} has less than 2 minutes of battery
+              left.
+          expr: nut_battery_runtime_seconds/60 <= 2
+          for: 10s
+          labels:
+            severity: critical
+        - alert: UPSOnBattery
+          annotations:
+            description: UPS is on battery
+            summary: UPS {{$labels.ups}} is running on battery.
+          expr: nut_status >= 2
+          for: 20s
+          labels:
+            severity: warning
+        - alert: UPSOnBattery
+          annotations:
+            description: UPS is on battery
+            summary: UPS {{$labels.ups}} is running on battery.
+          expr: nut_status >= 2
+          for: 2m
+          labels:
+            severity: error
+        - alert: UPSOnBattery
+          annotations:
+            description: UPS is on battery
+            summary: UPS {{$labels.ups}} is running on battery.
+          expr: nut_status >= 3
+          for: 20s
+          labels:
+            severity: critical
+        - alert: UPSUnknownStatus
+          annotations:
+            description: UPS status is unknown
+            summary: UPS {{$labels.ups}} status is unknown.
+          expr: nut_status == 0
+          for: 10s
+          labels:
+            severity: critical
