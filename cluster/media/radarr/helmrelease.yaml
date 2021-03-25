@@ -69,8 +69,8 @@ spec:
           claimName: nfs-singularity-media
     resources:
       requests:
-        cpu: 100m
+        cpu: 200m
         memory: 300Mi
       limits:
-        cpu: 200m
+        cpu: 300m
         memory: 300Mi
