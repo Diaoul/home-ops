@@ -101,3 +101,11 @@ spec:
             static_configs:
               - targets:
                   - singularity.milkyway:9000
+          - job_name: octoprint
+            scrape_interval: 5s
+            metrics_path: /plugin/prometheus_exporter/metrics
+            params:
+              apikey: [8DF4068556C84F8FBBE4224DB8EEA1B7]
+            static_configs:
+              - targets:
+                  - curiosity.milkyway:80
