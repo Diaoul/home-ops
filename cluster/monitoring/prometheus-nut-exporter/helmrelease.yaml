@@ -25,5 +25,5 @@ spec:
         targets:
           - hostname: nut-server-garage.network-system
             port: 3493
-            interval: 20s
-            scrameTimeout: 10s
+            interval: 30s
+            scrapeTimeout: 10s

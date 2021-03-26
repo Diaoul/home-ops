@@ -35,9 +35,9 @@ spec:
             driver = usbhid-ups
             port = auto
             desc = "APC Back-UPS RS 900G"
-            serial = 3B1227X00136
             vendorid = 051d
-            pollfreq = 10
+            productid = 0002
+            serial = 3B1227X00136
         upsd.users: |
           [monuser]
             password = secret
