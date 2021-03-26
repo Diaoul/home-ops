@@ -1,0 +1,7 @@
+---
+- name: restart nut-monitor
+  service:
+    name: nut-monitor
+    state: restarted
+  become: yes
+  listen: configuration changed

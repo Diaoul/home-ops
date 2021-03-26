@@ -1,0 +1,30 @@
+---
+- name: install nut package
+  apt:
+    name:
+      - nut
+  become: yes
+
+- name: set netclient mode in nut.conf
+  lineinfile:
+    dest: /etc/nut/nut.conf
+    regex: "^MODE="
+    line: "MODE=netclient"
+  become: yes
+  notify: configuration changed
+
+- name: set MONITOR in upsmon.conf
+  lineinfile:
+    dest: /etc/nut/upsmon.conf
+    insertafter: "^# MONITOR"
+    regex: "^MONITOR"
+    line: "MONITOR {{ upsmon_upsname }}@{{ upsmon_host }} {{ upsmon_powervalue }} {{ upsmon_username }} {{ upsmon_password }} {{ upsmon_mode }}"
+  become: yes
+  notify: configuration changed
+
+- name: enable nut-monitor service
+  service:
+    name: nut-monitor
+    enabled: yes
+    state: started
+  become: yes
