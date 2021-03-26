@@ -14,8 +14,8 @@ spec:
         - alert: UPSLowBatteryCharge
           annotations:
             description: UPS battery charge is low
-            summary: UPS {{$labels.ups}} battery under 30% charge.
-          expr: nut_battery_charge <= 0.30
+            summary: UPS {{$labels.ups}} battery under 50% charge.
+          expr: nut_battery_charge <= 0.50
           for: 10s
           labels:
             severity: warning
@@ -26,14 +26,6 @@ spec:
           expr: nut_battery_charge <= 0.20
           for: 10s
           labels:
-            severity: error
-        - alert: UPSLowBatteryCharge
-          annotations:
-            description: UPS battery charge is low
-            summary: UPS {{$labels.ups}} battery under 10% charge.
-          expr: nut_battery_charge <= 0.10
-          for: 10s
-          labels:
             severity: critical
         - alert: UPSUnderHeavyLoad
           annotations:
@@ -42,7 +34,7 @@ spec:
           expr: nut_load >= 0.75
           for: 10s
           labels:
-            severity: error
+            severity: warning
         - alert: UPSUnderHeavyLoad
           annotations:
             description: UPS is under heavy load
@@ -63,15 +55,6 @@ spec:
         - alert: UPSAlmostDepleted
           annotations:
             description: UPS almost depleted
-            summary: UPS {{$labels.ups}} has less than 5 minutes of battery
-              left.
-          expr: nut_battery_runtime_seconds/60 <= 5
-          for: 10s
-          labels:
-            severity: error
-        - alert: UPSAlmostDepleted
-          annotations:
-            description: UPS almost depleted
             summary: UPS {{$labels.ups}} has less than 2 minutes of battery
               left.
           expr: nut_battery_runtime_seconds/60 <= 2
@@ -86,14 +69,6 @@ spec:
           for: 20s
           labels:
             severity: warning
-        - alert: UPSOnBattery
-          annotations:
-            description: UPS is on battery
-            summary: UPS {{$labels.ups}} is running on battery.
-          expr: nut_status >= 2
-          for: 2m
-          labels:
-            severity: error
         - alert: UPSOnBattery
           annotations:
             description: UPS is on battery
