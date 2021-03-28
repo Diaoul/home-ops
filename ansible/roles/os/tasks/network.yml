@@ -1,10 +1,8 @@
 ---
-# k3s recommendes to use legacy iptables
-# https://rancher.com/docs/k3s/latest/en/known-issues/
-- name: network | configure nodes to use legacy iptables
+- name: network | configure nodes to use iptables nft
   community.general.alternatives:
     name: "{{ item }}"
-    path: /usr/sbin/{{ item }}-legacy
+    path: /usr/sbin/{{ item }}-nft
   loop:
     - iptables
     - ip6tables
