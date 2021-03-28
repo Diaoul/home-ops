@@ -39,11 +39,11 @@
                         "service": {
                             "custom-cloudflare": {
                                 "host-name": [
-                                    "milkyway.laniakea-sc.space"
+                                    "diaoul.io"
                                 ],
                                 "login": "ant.bertin@gmail.com",
                                 "options": [
-                                    "zone=laniakea-sc.space"
+                                    "zone=diaoul.io"
                                 ],
                                 "password": "{{ unifi_cloudflare_global_api_key }}",
                                 "protocol": "cloudflare",
@@ -52,6 +52,13 @@
                         }
                     }
                 }
+            },
+            "forwarding": {
+                "options": [
+                    "server=/diaoul.io/10.44.0.3",
+                    "server=1.1.1.1",
+                    "server=1.0.0.1"
+                ]
             }
         }
     },
@@ -71,21 +78,6 @@
                 "ntp.milkyway": {
                     "inet": [
                         "10.0.3.1"
-                    ]
-                },
-                "ariane.milkyway": {
-                    "inet": [
-                        "10.0.3.2"
-                    ]
-                },
-                "starlink.milkyway": {
-                    "inet": [
-                        "10.0.3.3"
-                    ]
-                },
-                "mcc.milkyway": {
-                    "inet": [
-                        "10.0.3.4"
                     ]
                 },
                 "singularity.milkyway": {
