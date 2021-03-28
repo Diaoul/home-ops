@@ -50,8 +50,6 @@ spec:
           - name: loop
           - name: reload
       - zones:
-          - zone: k8s.milkyway.
-            scheme: dns://
           - zone: .
             scheme: dns://
         port: 53
