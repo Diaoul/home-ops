@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-url='https://releases.ubuntu.com/20.10/ubuntu-20.10-live-server-amd64.iso'
-grub_url='http://archive.ubuntu.com/ubuntu/dists/groovy/main/uefi/grub2-amd64/current/grubnetx64.efi.signed'
+url='https://releases.ubuntu.com/20.04/ubuntu-20.04.2-live-server-amd64.iso'
+grub_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed'
 # shellcheck disable=SC2016
 server='${pxe_default_server}'
 tftp_root='/tftp'
@@ -21,7 +21,7 @@ mkdir -p www
 echo "Copy iso and cloud-init files..."
 cp -f "$iso" "www/$iso"
 cp -f user-data.yaml www/user-data
-touch www/user-data
+touch www/meta-data
 
 # copy kernel and initramfs from iso
 mkdir -p tftp
