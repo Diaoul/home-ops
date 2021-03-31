@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: intel/intel-gpu-plugin
-      tag: 0.19.0
+      tag: 0.20.0
     sharedDeviceNumber: 2
     securityContext:
       readOnlyRootFilesystem: true
