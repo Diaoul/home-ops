@@ -1,4 +1,11 @@
 ---
+longhorn_enabled: yes
+longhorn_device: /dev/nvme0n1
+
+rook_ceph_enabled: no
+rook_ceph_devices:
+  - /dev/nvme0n1
+
 nut_monitor_enabled: yes
 upsmon_upsname: ups
 upsmon_host: 10.44.0.6
