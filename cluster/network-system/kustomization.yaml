@@ -8,6 +8,7 @@ resources:
   - external-dns
   - external-dns-cloudflare
   - coredns
+  - blocky
   - ingress-nginx
   - dex
   - oauth2-proxy

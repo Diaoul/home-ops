@@ -1,0 +1,95 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: blocky
+  namespace: network-system
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: blocky
+      version: 6.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: spx01/blocky
+      tag: v0.13
+    replicas: 2
+    config: |
+      httpPort: 4000
+      upstream:
+        externalResolvers:
+          - tcp-tls:1.1.1.1
+          - tcp-tls:dns.google
+          - tcp-tls:dns10.quad9.net
+      conditional:
+        mapping:
+          diaoul.io: udp:10.44.0.3
+          milkyway: udp:10.44.0.3
+      clientLookup:
+        upstream: udp:10.0.3.1
+        clients:
+          kids:
+            - 10.0.10.36  # asus vivobook
+            - 10.0.10.82  # iphone 5s
+            - 10.0.10.83  # honor 8
+      blocking:
+        blackLists:
+          ads:
+            - https://dbl.oisd.nl/
+            - https://block.energized.pro/basic/formats/hosts
+          adult:
+            - https://block.energized.pro/porn/formats/hosts
+        whiteLists:
+          ads:
+            - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+        clientGroupsBlock:
+          default:
+            - ads
+          kids:
+            - ads
+            - adult
+      prometheus:
+        enable: true
+    service:
+      port:
+        port: 4000
+      additionalServices:
+        - nameSuffix: dns-tcp
+          enabled: true
+          type: LoadBalancer
+          externalIPs:
+            - 10.44.0.12
+          port:
+            port: 53
+            name: dns-tcp
+            protocol: TCP
+            targetPort: 53
+          externalTrafficPolicy: Local
+        - nameSuffix: dns-udp
+          enabled: true
+          type: LoadBalancer
+          externalIPs:
+            - 10.44.0.12
+          port:
+            port: 53
+            name: dns-udp
+            protocol: UDP
+            targetPort: 53
+          externalTrafficPolicy: Local
+    prometheus:
+      serviceMonitor:
+        enabled: true
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: blocky-config
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 750Mi
