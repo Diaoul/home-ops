@@ -6,15 +6,6 @@
     sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
   when: '"master" in group_names or "worker" in group_names'
 
-- name: filesystem | mount bpffs
-  ansible.posix.mount:
-    src: bpffs
-    path: /sys/fs/bpf
-    fstype: bpf
-    state: mounted
-    opts: rw,nosuid,nodev,noexec,relatime,mode=700
-  when: '"master" in group_names or "worker" in group_names'
-
 - name: filesystem | swap
   block:
     - name: filesystem | disable swap

@@ -7,12 +7,6 @@
   run_once: yes
   delegate_to: localhost
 
-- name: add service endpoint configuration
-  community.kubernetes.k8s:
-    template: service-endpoint.yaml.j2
-  run_once: yes
-  delegate_to: localhost
-
 - name: install tigera operator
   community.kubernetes.k8s:
     definition: "{{ item }}"
@@ -21,20 +15,6 @@
     label:
       kind: "{{ item.kind }}"
       name: "{{ item.metadata.name }}"
-  run_once: yes
-  delegate_to: localhost
-
-- name: disable eBPF mode with DSR
-  community.kubernetes.k8s:
-    api_version: crd.projectcalico.org/v1
-    namespace: tigera-operator
-    kind: felixconfiguration
-    name: default
-    definition:
-      spec:
-        bpfEnabled: false
-        bpfExternalServiceMode: DSR
-        bpfLogLevel: Info
   run_once: yes
   delegate_to: localhost
 
