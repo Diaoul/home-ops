@@ -8,6 +8,6 @@ spec:
     ipPools:
     - blockSize: 26
       cidr: {{ calico_installation.cidr }}
-      encapsulation: VXLANCrossSubnet
+      encapsulation: None
       natOutgoing: Enabled
       nodeSelector: all()
