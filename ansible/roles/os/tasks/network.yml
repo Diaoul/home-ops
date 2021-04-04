@@ -1,13 +1,4 @@
 ---
-- name: network | configure nodes to use iptables nft
-  community.general.alternatives:
-    name: "{{ item }}"
-    path: /usr/sbin/{{ item }}-nft
-  loop:
-    - iptables
-    - ip6tables
-  when: '"master" in group_names or "worker" in group_names'
-
 - name: network | sysctl ip forward
   ansible.posix.sysctl:
     name: net.ipv4.ip_forward
