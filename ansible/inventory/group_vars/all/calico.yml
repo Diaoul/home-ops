@@ -4,7 +4,7 @@ calico_kubernetes_service_port: 6443
 calico_installation:
   cidr: 10.42.0.0/16
 calico_bgp_configuration:
-  as: 64513
+  as: 64512
   service_cluster_ips_cidr: 10.43.0.0/16
   service_external_ips_cidr: 10.44.0.0/16
 calico_bgp_peers:
