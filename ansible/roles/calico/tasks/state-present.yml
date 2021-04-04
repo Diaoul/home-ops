@@ -34,6 +34,7 @@
       spec:
         bpfEnabled: false
         bpfExternalServiceMode: DSR
+        bpfLogLevel: Info
   run_once: yes
   delegate_to: localhost
 
