@@ -15,8 +15,8 @@
       value: 0
     - option: mitigations
       value: "off"
-    - option: max_loop
-      value: 32
+    - option: pti
+      value: "off"
   notify: grub configuration changed
   when:
     - grub.stat.exists
