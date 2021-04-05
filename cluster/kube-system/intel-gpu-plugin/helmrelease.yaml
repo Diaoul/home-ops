@@ -19,7 +19,6 @@ spec:
     image:
       repository: intel/intel-gpu-plugin
       tag: 0.20.0
-    sharedDeviceNumber: 2
     securityContext:
       readOnlyRootFilesystem: true
     affinity:
