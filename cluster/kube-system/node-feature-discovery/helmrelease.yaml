@@ -19,50 +19,48 @@ spec:
     podAnnotations:
       configmap.reloader.stakater.com/reload: nfd-worker-conf
     image:
-      repository: raspbernetes/node-feature-discovery
-      tag: v0.8.0
-    # indentation to fix with new release
-    # see https://github.com/kubernetes-sigs/node-feature-discovery/pull/496
+      repository: k8s.gcr.io/nfd/node-feature-discovery
+      tag: v0.8.1
     worker:
       config: |-
         core:
-            sources:
-              - custom
-              - pci
-              - usb
           sources:
-            usb:
-              deviceClassWhitelist:
-                - "02"
-                - "03"
-                - "0e"
-                - "ef"
-                - "fe"
-                - "ff"
-              deviceLabelFields:
-                - class
-                - vendor
-                - device
-            custom:
-              - name: intel-gpu
-                matchOn:
-                  - pciId:
-                      class: ["0300"]
-                      vendor: ["8086"]
-              - name: zwave
-                matchOn:
-                  - usbId:
-                      class: ["02"]
-                      vendor: ["0658"]
-                      device: ["0200"]
-              - name: zigbee
-                matchOn:
-                  - usbId:
-                      class: ["02"]
-                      vendor: ["0451"]
-                      device: ["16a8"]
-              - name: ups-apc
-                matchOn:
-                  - usbId:
-                      vendor: ["051d"]
-                      device: ["0002"]
+            - custom
+            - pci
+            - usb
+        sources:
+          usb:
+            deviceClassWhitelist:
+              - "02"
+              - "03"
+              - "0e"
+              - "ef"
+              - "fe"
+              - "ff"
+            deviceLabelFields:
+              - class
+              - vendor
+              - device
+          custom:
+            - name: intel-gpu
+              matchOn:
+                - pciId:
+                    class: ["0300"]
+                    vendor: ["8086"]
+            - name: zwave
+              matchOn:
+                - usbId:
+                    class: ["02"]
+                    vendor: ["0658"]
+                    device: ["0200"]
+            - name: zigbee
+              matchOn:
+                - usbId:
+                    class: ["02"]
+                    vendor: ["0451"]
+                    device: ["16a8"]
+            - name: ups-apc
+              matchOn:
+                - usbId:
+                    vendor: ["051d"]
+                    device: ["0002"]
