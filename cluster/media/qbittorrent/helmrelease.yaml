@@ -25,7 +25,7 @@ spec:
           nameSuffix: bittorrent
           type: LoadBalancer
           externalIPs:
-            - 10.44.0.5
+            - 10.44.0.64
           port:
             port: 50413
             name: bittorrent
