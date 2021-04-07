@@ -17,7 +17,7 @@ spec:
         namespace: flux-system
   values:
     controller:
-      replicaCount: 1
+      replicaCount: 2
       service:
         externalIPs:
           - 10.44.0.1
