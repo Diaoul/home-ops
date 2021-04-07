@@ -16,7 +16,7 @@ spec:
         name: coredns
         namespace: flux-system
   values:
-    replicas: 2
+    replicaCount: 2
     isClusterService: false
     serviceType: LoadBalancer
     service:
