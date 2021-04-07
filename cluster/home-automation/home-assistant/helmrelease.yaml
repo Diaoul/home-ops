@@ -28,11 +28,6 @@ spec:
         enabled: false
       startup:
         enabled: false
-    service:
-      type: LoadBalancer
-      externalIPs:
-        - 10.44.0.16
-      externalTrafficPolicy: Local
     ingress:
       enabled: true
       annotations:
