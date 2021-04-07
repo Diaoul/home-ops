@@ -29,8 +29,9 @@ spec:
           - tcp-tls:dns10.quad9.net
       conditional:
         mapping:
-          diaoul.io: udp:10.44.0.3
-          milkyway: udp:10.44.0.3
+          diaoul.io: udp:10.44.0.4
+          cluster.milkyway: udp:10.44.0.4
+          milkyway: udp:10.0.3.1
       clientLookup:
         upstream: udp:10.0.3.1
         clients:
@@ -60,22 +61,11 @@ spec:
       port:
         port: 4000
       additionalServices:
-        - nameSuffix: dns-tcp
-          enabled: true
-          type: LoadBalancer
-          externalIPs:
-            - 10.44.0.12
-          port:
-            port: 53
-            name: dns-tcp
-            protocol: TCP
-            targetPort: 53
-          externalTrafficPolicy: Local
         - nameSuffix: dns-udp
           enabled: true
           type: LoadBalancer
           externalIPs:
-            - 10.44.0.12
+            - 10.44.0.5
           port:
             port: 53
             name: dns-udp
@@ -87,9 +77,20 @@ spec:
         enabled: true
     podAnnotations:
       configmap.reloader.stakater.com/reload: blocky-config
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - blocky
+            topologyKey: kubernetes.io/hostname
     resources:
       requests:
         cpu: 100m
         memory: 100Mi
       limits:
-        memory: 750Mi
+        cpu: 500m
+        memory: 300Mi
