@@ -8,7 +8,7 @@ rook_ceph_devices:
 
 nut_monitor_enabled: yes
 upsmon_upsname: ups
-upsmon_host: 10.44.0.6
+upsmon_host: 10.44.0.8
 upsmon_powervalue: 1
 upsmon_username: monmaster
 upsmon_password: secret

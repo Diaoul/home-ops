@@ -25,7 +25,7 @@ spec:
     service:
       type: LoadBalancer
       externalIPs:
-        - 10.44.0.6
+        - 10.44.0.8
       externalTrafficPolicy: Local
     config:
       mode: values
@@ -52,7 +52,10 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - {key: feature.node.kubernetes.io/custom-ups-apc, operator: In, values: ["true"]}
+                - key: feature.node.kubernetes.io/custom-ups-apc
+                  operator: In
+                  values:
+                    - "true"
     resources:
       requests:
         cpu: 25m
