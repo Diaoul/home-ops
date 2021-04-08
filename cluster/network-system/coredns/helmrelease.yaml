@@ -69,7 +69,11 @@ spec:
                 - key: app.kubernetes.io/name
                   operator: In
                   values:
-                    - blocky
+                    - coredns
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - coredns
             topologyKey: kubernetes.io/hostname
     resources:
       requests:

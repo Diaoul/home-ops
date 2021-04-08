@@ -86,6 +86,10 @@ spec:
                   operator: In
                   values:
                     - blocky
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - blocky
             topologyKey: kubernetes.io/hostname
     resources:
       requests:
