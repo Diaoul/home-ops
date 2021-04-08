@@ -17,6 +17,12 @@
     state: restarted
   listen: systemd-timesyncd configuration changed
 
+- name: restart journald systemd service
+  systemd:
+    name: systemd-journald.service
+    state: restarted
+  listen: systemd-journald configuration changed
+
 - name: write to system clock
   command: hwclock --systohc
   listen: systemd-timesyncd configuration changed

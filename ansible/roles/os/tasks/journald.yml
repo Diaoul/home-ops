@@ -1,0 +1,7 @@
+---
+- name: journald | limit size to 1GB
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regex: "^#?SystemMaxUse="
+    line: "SystemMaxUse=1G"
+  notify: systemd-journald configuration changed

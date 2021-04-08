@@ -35,6 +35,10 @@
   tags:
     - pi
 
+- import_tasks: journald.yml
+  tags:
+    - journald
+
 - import_tasks: unattended-upgrades.yml
   tags:
     - unattended-upgrades
