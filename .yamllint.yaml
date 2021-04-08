@@ -3,7 +3,7 @@ extends: default
 
 ignore: |
   .github/
-  user-data.yaml
+  user-data*.yaml
   ansible/roles/calico/files/tigera-operator.yaml
 
 rules:
