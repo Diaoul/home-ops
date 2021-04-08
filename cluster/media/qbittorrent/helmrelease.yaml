@@ -55,12 +55,12 @@ spec:
     podAnnotations:
       backup.velero.io/backup-volumes: config
     additionalVolumeMounts:
-      - name: nfs-singularity-downloads
-        mountPath: /downloads
+      - name: nfs-singularity-media
+        mountPath: /media
     additionalVolumes:
-      - name: nfs-singularity-downloads
+      - name: nfs-singularity-media
         persistentVolumeClaim:
-          claimName: nfs-singularity-downloads
+          claimName: nfs-singularity-media
     resources:
       requests:
         cpu: 500m
