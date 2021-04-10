@@ -8,3 +8,4 @@ resources:
   - node-feature-discovery
   - intel-gpu-plugin
   - descheduler
+  - external-snapshotter

@@ -21,7 +21,7 @@ spec:
       defaultClassReplicaCount: 3
       recurringJobs:
         enable: true
-        jobList: '[{"name": "snapshot", "task": "snapshot", "cron": "0 */6 * * *", "retain": 4 }, { "name": "backup", "task": "backup", "cron": "0 2 * * *", "retain": 7}]'
+        jobList: '[{"name": "backup", "task": "backup", "cron": "0 3 * * *", "retain": 7}]'
     defaultSettings:
       backupTarget: s3://longhorn@minio/longhorn
       backupTargetCredentialSecret: longhorn-backup

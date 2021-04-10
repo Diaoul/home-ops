@@ -1,0 +1,62 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: k10
+  namespace: kasten-io
+spec:
+  releaseName: k10
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.kasten.io/
+      chart: k10
+      version: 3.0.11
+      sourceRef:
+        kind: HelmRepository
+        name: kasten
+        namespace: flux-system
+  values:
+    eula:
+      accept: true
+      company: Diaoul
+      email: ant.bertin@gmail.com
+    networkPolicy:
+      create: false
+    auth:
+      k10AdminUsers:
+        - ant.bertin@gmail.com
+      oidcAuth:
+        enabled: true
+        secretName: k10-oidc
+    prometheus:
+      enabled: true
+      server:
+        persistentVolume:
+          enabled: false
+    clusterName: k8s
+    ingress:
+      create: true
+      host: k10.diaoul.io
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+        nginx.ingress.kubernetes.io/app-root: /k10
+      urlPath: k10
+      hosts:
+        - k10.diaoul.io
+      tls:
+        enabled: true
+        secretName: k10-tls
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Ingress
+              name: k10-ingress
+            patch:
+              - op: replace
+                path: /spec/rules/0/http/paths/0/path
+                value: /

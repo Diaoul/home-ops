@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - backup-sealedsecret.yaml
   - helmrelease.yaml
+  - longhorn-static-storageclass.yaml
