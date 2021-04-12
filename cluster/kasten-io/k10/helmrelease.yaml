@@ -31,6 +31,8 @@ spec:
         secretName: k10-oidc
     prometheus:
       enabled: true
+      networkPolicy:
+        enabled: false
       server:
         persistentVolume:
           enabled: false
