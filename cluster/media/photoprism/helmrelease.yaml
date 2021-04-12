@@ -1,0 +1,63 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: photoprism
+  namespace: media
+spec:
+  releaseName: photoprism
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: photoprism
+      version: 3.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: photoprism/photoprism
+      tag: "20210222"
+    env:
+      PHOTOPRISM_SITE_URL: https://photos.diaoul.io/
+      PHOTOPRISM_SITE_TITLE: Home Photos
+      PHOTOPRISM_SITE_AUTHOR: Antoine
+      PHOTOPRISM_PUBLIC: true
+      PHOTOPRISM_READONLY: true
+      PHOTOPRISM_THUMB_SIZE: 1280
+      PHOTOPRISM_THUMB_UNCACHED: true
+      PHOTOPRISM_THUMB_SIZE_UNCACHED: 1280
+      PHOTOPRISM_JPEG_SIZE: 1280
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: diaoul.io
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+      hosts:
+        - host: photos.diaoul.io
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - photos.diaoul.io
+          secretName: photoprism-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: photoprism-config
+      originals:
+        enabled: true
+        existingClaim: nfs-singularity-photos
+        readOnly: true
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
+      limits:
+        cpu: 2
+        memory: 4Gi

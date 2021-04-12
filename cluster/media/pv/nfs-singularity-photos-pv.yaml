@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-singularity-photos
+spec:
+  storageClassName: nfs-singularity-photos
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: singularity.milkyway
+    path: /volume1/photos
