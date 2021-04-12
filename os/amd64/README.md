@@ -14,4 +14,5 @@ The DHCP server is configured to point to `pxelinux.0` on the TFTP server.
 [user-data.yaml](user-data.yaml) only contains minimal information, the rest
 is default and usually doesn't need modifying.
 
-:warning: **/dev/sda** will be wiped automatically!
+:warning: **/dev/sda** (default) or **/dev/nvme0n1** will be wiped automatically
+depending on the choice made in GRUB!
