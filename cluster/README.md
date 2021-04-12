@@ -29,6 +29,7 @@ flux bootstrap github \
   --branch=main \
   --path=./cluster \
   --personal \
+  --private=true \
   --network-policy=false \
   --cluster-domain=cluster.milkyway
 ```
