@@ -24,7 +24,7 @@ jobs:
       - name: Install yq
         if: steps.cache-precommitconfig.outputs.cache-hit != 'true'
         env:
-          yq-version: v4.4.1
+          yq-version: v4.6.3
         run: |
           sudo wget https://github.com/mikefarah/yq/releases/download/${{ env.yq-version }}/yq_linux_amd64 -O /usr/bin/yq
           sudo chmod +x /usr/bin/yq
