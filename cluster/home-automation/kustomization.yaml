@@ -11,4 +11,3 @@ resources:
   - esphome
   - home-assistant
   - frigate
-  - node-red
