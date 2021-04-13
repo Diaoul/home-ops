@@ -21,13 +21,14 @@ jobs:
         id: cache-yq
         uses: actions/cache@v2
         with:
-          path: /usr/bin/yq
+          path: bin/yq
           key: yq-${{ env.yq-version }}
       - name: Install yq
         if: steps.cache-yq.outputs.cache-hit != 'true'
         run: |
-          sudo wget https://github.com/mikefarah/yq/releases/download/${{ env.yq-version }}/yq_linux_amd64 -O /usr/bin/yq
-          sudo chmod +x /usr/bin/yq
+          mkdir -p bin
+          wget https://github.com/mikefarah/yq/releases/download/${{ env.yq-version }}/yq_linux_amd64 -O bin/yq
+          chmod +x bin/yq
       - name: Cache deduplicated pre-commit config
         id: cache-precommitconfig
         uses: actions/cache@v2
@@ -37,7 +38,7 @@ jobs:
       - name: Remove duplicates from pre-commit config
         if: steps.cache-precommitconfig.outputs.cache-hit != 'true'
         run: |
-          yq eval 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "ansible-lint" or .id == "kustomize"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
+          bin/yq eval 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "ansible-lint" or .id == "kustomize"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
       - uses: pre-commit/action@v2.0.2
         with:
           extra_args: -c .github/.pre-commit-config.yaml
