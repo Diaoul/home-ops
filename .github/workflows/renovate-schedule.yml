@@ -1,0 +1,33 @@
+---
+name: renovate-schedule
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */6 * * *"
+
+jobs:
+  renovate-helmrelease-annotations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Renovate Helm Releases
+        uses: k8s-at-home/renovate-helm-releases@v1
+        with:
+          cluster-path: ./cluster
+
+      - name: Create pull request for renovate helmrelease annotations
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: renovate/helmrelease-annotations
+          delete-branch: true
+          title: "chore(deps): update renovate helmrelease annotations"
+          committer: "Antoine Bertin <ant.bertin@gmail.com>"
+          author: "Antoine Bertin <ant.bertin@gmail.com>"
+          commit-message: "chore(deps): update renovate helmrelease annotations [skip ci]"
+          labels: renovate/helmrelease-annotations
