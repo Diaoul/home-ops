@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: golift/unifi-poller
-      tag: 2.1.0
+      tag: 2.1.1
     env:
       UP_UNIFI_DEFAULT_URL: "https://sun.milkyway:8443/"
       UP_INFLUXDB_DISABLE: true
