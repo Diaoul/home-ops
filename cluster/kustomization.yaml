@@ -7,7 +7,6 @@ resources:
   - kube-system
   - network-system
   - longhorn-system
-  - velero
   - monitoring
   - media
   - home-automation
