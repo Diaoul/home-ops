@@ -29,6 +29,7 @@ spec:
         - host: dex.diaoul.io
           paths:
             - path: /
+              pathType: Prefix
       tls:
         - hosts:
             - dex.diaoul.io
