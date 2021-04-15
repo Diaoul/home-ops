@@ -23,16 +23,16 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - host: dex.diaoul.io
+        - host: dex.${DOMAIN}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - dex.diaoul.io
+            - dex.${DOMAIN}
           secretName: dex-tls
     resources:
       requests:
@@ -42,7 +42,34 @@ spec:
         cpu: 200m
         memory: 200Mi
     config:
-      issuer: https://dex.diaoul.io
+      issuer: https://dex.${DOMAIN}
+      connectors:
+        - type: github
+          id: github
+          name: GitHub
+          config:
+            clientID: ${DEX_GITHUB_CLIENT_ID}
+            clientSecret: ${DEX_GITHUB_CLIENT_SECRET}
+            redirectURI: https://dex.${DOMAIN}/callback
+        - type: oidc
+          id: google
+          name: Google
+          config:
+            issuer: https://accounts.google.com
+            clientID: ${DEX_GOOGLE_CLIENT_ID}
+            clientSecret: ${DEX_GOOGLE_CLIENT_SECRET}
+            redirectURI: https://dex.${DOMAIN}/callback
+      staticClients:
+        - name: oauth2-proxy
+          id: ${DEX_OAUTH2_PROXY_CLIENT_ID}
+          secret: ${DEX_OAUTH2_PROXY_CLIENT_SECRET}
+          redirectURIs:
+            - https://auth.${DOMAIN}/oauth2/callback
+        - name: k10
+          id: ${DEX_K10_CLIENT_ID}
+          secret: ${DEX_K10_CLIENT_SECRET}
+          redirectURIs:
+            - https://k10.${DOMAIN}/k10/auth-svc/v0/oidc/redirect
       storage:
         type: kubernetes
         config:
@@ -50,7 +77,7 @@ spec:
       frontend:
         theme: coreos
         issuer: Milky Way
-        issuerUrl: https://diaoul.io
+        issuerUrl: https://${DOMAIN}
         logoUrl: https://imgur.com/Idzzln9.png
       expiry:
         signingKeys: 6h
@@ -61,6 +88,3 @@ spec:
       oauth2:
         responseTypes: ["code", "token", "id_token"]
         skipApprovalScreen: true
-  valuesFrom:
-    - kind: Secret
-      name: dex-helm-values

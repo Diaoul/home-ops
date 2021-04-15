@@ -1,9 +1,0 @@
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: milkyway-k3s-ca
-  namespace: network-system
-spec:
-  ca:
-    secretName: milkyway-k3s-ca

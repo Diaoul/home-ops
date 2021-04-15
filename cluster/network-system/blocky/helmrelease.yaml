@@ -29,11 +29,11 @@ spec:
           - tcp-tls:dns10.quad9.net
       conditional:
         mapping:
-          diaoul.io: udp:10.44.0.4
-          cluster.milkyway: udp:10.44.0.4
-          milkyway: udp:10.0.3.1
+          ${DOMAIN}: udp:${COREDNS_IP}
+          cluster.${LOCAL_DOMAIN}: udp:${COREDNS_IP}
+          ${LOCAL_DOMAIN}: udp:${ROUTER_IP}
       clientLookup:
-        upstream: udp:10.0.3.1
+        upstream: udp:${ROUTER_IP}
         clients:
           kids:
             - 10.0.10.36  # asus vivobook
@@ -65,7 +65,7 @@ spec:
           enabled: true
           type: LoadBalancer
           externalIPs:
-            - 10.44.0.5
+            - ${BLOCKY_IP}
           port:
             port: 53
             name: dns-udp

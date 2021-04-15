@@ -22,28 +22,28 @@ spec:
     authenticatedEmailsFile:
       enabled: true
       restricted_access: |-
-        ant.bertin@gmail.com
-        maeva.gault@gmail.com
+        ${AUTHORIZED_EMAIL_ADDRESSES}
+    config:
+      clientID: ${DEX_OAUTH2_PROXY_CLIENT_ID}
+      clientSecret: ${DEX_OAUTH2_PROXY_CLIENT_SECRET}
+      cookieSecret: ${OAUTH2_PROXY_COOKIE_SECRET}
     ingress:
       enabled: true
       path: /oauth2
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - auth.diaoul.io
+        - auth.${DOMAIN}
       tls:
         - hosts:
-            - auth.diaoul.io
+            - auth.${DOMAIN/./-}
           secretName: auth-tls
     extraArgs:
       provider: oidc
-      oidc-issuer-url: https://dex.diaoul.io
+      oidc-issuer-url: https://dex.${DOMAIN}
       skip-provider-button:
       pass-authorization-header:
       email-domain: "*"
-      cookie-domain: .diaoul.io
-      whitelist-domain: .diaoul.io
-  valuesFrom:
-    - kind: Secret
-      name: oauth2-proxy-helm-values
+      cookie-domain: .${DOMAIN}
+      whitelist-domain: .${DOMAIN}
