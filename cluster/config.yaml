@@ -5,4 +5,4 @@ metadata:
   name: cluster-config
   namespace: flux-system
 data:
-  INGRESS_NGINX_LB: 10.44.0.1
+  INGRESS_NGINX_IP: 10.44.0.1

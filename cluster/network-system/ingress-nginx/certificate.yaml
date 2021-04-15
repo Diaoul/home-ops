@@ -2,14 +2,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: diaoul-io
+  name: ${DOMAIN/./-}
   namespace: network-system
 spec:
-  secretName: diaoul-io-tls
+  secretName: ${DOMAIN/./-}-tls
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: diaoul.io
+  commonName: ${DOMAIN}
   dnsNames:
-    - "diaoul.io"
-    - "*.diaoul.io"
+    - "${DOMAIN}"
+    - "*.${DOMAIN}"

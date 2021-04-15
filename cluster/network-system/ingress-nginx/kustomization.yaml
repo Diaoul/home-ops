@@ -2,7 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - diaoul-io-certificate.yaml
-  - milkyway-laniakea-sc-space-certificate.yaml
+  - certificate.yaml
   - helmrelease.yaml
   - ingressclass.yaml
