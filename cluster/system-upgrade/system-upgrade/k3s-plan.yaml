@@ -18,10 +18,6 @@ spec:
         values:
           - "disabled"
           - "false"
-      - key: k3s.io/hostname
-        operator: Exists
-      - key: k3os.io/mode
-        operator: DoesNotExist
       - key: node-role.kubernetes.io/master
         operator: In
         values:
@@ -50,10 +46,6 @@ spec:
         values:
           - "disabled"
           - "false"
-      - key: k3s.io/hostname
-        operator: Exists
-      - key: k3os.io/mode
-        operator: DoesNotExist
       - key: node-role.kubernetes.io/master
         operator: NotIn
         values:
