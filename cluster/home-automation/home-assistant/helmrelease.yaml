@@ -19,6 +19,8 @@ spec:
     image:
       repository: homeassistant/home-assistant
       tag: 2021.4.4
+    git:
+      deployKeyBase64: ${HOME_ASSISTANT_GIT_DEPLOY_KEY}
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
     probes:
@@ -31,24 +33,21 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - host: hass.diaoul.io
+        - host: hass.${DOMAIN}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - hass.diaoul.io
+            - hass.${DOMAIN}
           secretName: hass-tls
     persistence:
       config:
         enabled: true
         existingClaim: home-assistant-config
-    podAnnotations:
-      backup.velero.io/backup-volumes: config
-      secret.reloader.stakater.com/reload: home-assistant-helm-values
     addons:
       codeserver:
         enabled: true
@@ -66,18 +65,18 @@ spec:
         ingress:
           enabled: true
           annotations:
-            external-dns.alpha.kubernetes.io/target: diaoul.io
+            external-dns.alpha.kubernetes.io/target: ${DOMAIN}
             cert-manager.io/cluster-issuer: letsencrypt-production
-            nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-            nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+            nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+            nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
           hosts:
-            - host: hass-config.diaoul.io
+            - host: hass-config.${DOMAIN}
               paths:
                 - path: /
                   pathType: Prefix
           tls:
             - hosts:
-                - hass-config.diaoul.io
+                - hass-config.${DOMAIN}
               secretName: hass-config-tls
         volumeMounts:
           - name: config
@@ -91,6 +90,3 @@ spec:
         memory: 1Gi
       limits:
         memory: 2Gi
-  valuesFrom:
-    - kind: Secret
-      name: home-assistant-helm-values

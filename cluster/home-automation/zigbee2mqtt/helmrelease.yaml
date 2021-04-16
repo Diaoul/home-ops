@@ -22,18 +22,18 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
       hosts:
-        - host: zigbee2mqtt.diaoul.io
+        - host: zigbee2mqtt.${DOMAIN}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - zigbee2mqtt.diaoul.io
+            - zigbee2mqtt.${DOMAIN}
           secretName: zigbee2mqtt-tls
     persistence:
       data:
@@ -55,7 +55,9 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - {key: feature.node.kubernetes.io/custom-zigbee, operator: In, values: ["true"]}
+                - key: feature.node.kubernetes.io/custom-zigbee
+                  operator: In
+                  values: ["true"]
     config:
       homeassistant: true
       mqtt:
@@ -103,18 +105,18 @@ spec:
         ingress:
           enabled: true
           annotations:
-            external-dns.alpha.kubernetes.io/target: diaoul.io
+            external-dns.alpha.kubernetes.io/target: ${DOMAIN}
             cert-manager.io/cluster-issuer: letsencrypt-production
-            nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-            nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+            nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+            nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
           hosts:
-            - host: zigbee2mqtt-config.diaoul.io
+            - host: zigbee2mqtt-config.${DOMAIN}
               paths:
                 - path: /
                   pathType: Prefix
           tls:
             - hosts:
-                - zigbee2mqtt-config.diaoul.io
+                - zigbee2mqtt-config.${DOMAIN}
               secretName: zigbee2mqtt-config-tls
         volumeMounts:
           - name: data
