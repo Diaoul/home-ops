@@ -28,7 +28,12 @@ spec:
         - ${EMAIL_ADDRESS}
       oidcAuth:
         enabled: true
-        secretName: k10-oidc
+        providerURL: https://dex.${DOMAIN}
+        redirectURL: https://k10.${DOMAIN}
+        scopes: profile email openid
+        clientID: ${DEX_K10_CLIENT_ID}
+        clientSecret: ${DEX_K10_CLIENT_SECRET}
+        usernameClaim: email
     prometheus:
       enabled: true
       networkPolicy:
