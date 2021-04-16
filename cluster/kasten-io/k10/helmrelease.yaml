@@ -20,12 +20,12 @@ spec:
     eula:
       accept: true
       company: Diaoul
-      email: ant.bertin@gmail.com
+      email: ${EMAIL_ADDRESS}
     networkPolicy:
       create: false
     auth:
       k10AdminUsers:
-        - ant.bertin@gmail.com
+        - ${EMAIL_ADDRESS}
       oidcAuth:
         enabled: true
         secretName: k10-oidc
@@ -39,14 +39,14 @@ spec:
     clusterName: k8s
     ingress:
       create: true
-      host: k10.diaoul.io
+      host: k10.${DOMAIN}
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
         nginx.ingress.kubernetes.io/app-root: /k10
       urlPath: k10
       hosts:
-        - k10.diaoul.io
+        - k10.${DOMAIN}
       tls:
         enabled: true
         secretName: k10-tls
