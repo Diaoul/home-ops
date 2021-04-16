@@ -30,8 +30,8 @@ spec:
       conditional:
         mapping:
           ${DOMAIN}: udp:${COREDNS_IP}
-          cluster.${LOCAL_DOMAIN}: udp:${COREDNS_IP}
-          ${LOCAL_DOMAIN}: udp:${ROUTER_IP}
+          cluster.milkyway: udp:${COREDNS_IP}
+          milkyway: udp:${ROUTER_IP}
       clientLookup:
         upstream: udp:${ROUTER_IP}
         clients:
