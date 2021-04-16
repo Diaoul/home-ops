@@ -39,8 +39,6 @@ spec:
       config:
         enabled: true
         existingClaim: zwavejs2mqtt-config
-    podAnnotations:
-      backup.velero.io/backup-volumes: config
     additionalVolumeMounts:
       - name: usb
         mountPath: /dev/zwave-controller

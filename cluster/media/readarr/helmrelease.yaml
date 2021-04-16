@@ -56,8 +56,6 @@ spec:
       config:
         enabled: true
         existingClaim: readarr-config
-    podAnnotations:
-      backup.velero.io/backup-volumes: config
     additionalVolumeMounts:
       - name: nfs-singularity-media
         mountPath: /media

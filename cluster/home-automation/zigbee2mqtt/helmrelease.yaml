@@ -39,8 +39,6 @@ spec:
       data:
         enabled: true
         existingClaim: zigbee2mqtt-data
-    podAnnotations:
-      backup.velero.io/backup-volumes: data
     additionalVolumeMounts:
       - name: usb
         mountPath: /dev/zigbee-coordinator
