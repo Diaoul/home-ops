@@ -52,6 +52,3 @@ spec:
       limits:
         cpu: 200m
         memory: 200Mi
-  valuesFrom:
-    - kind: Secret
-      name: flood-helm-values
