@@ -30,10 +30,10 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
-      host: longhorn.diaoul.io
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+      host: longhorn.${DOMAIN}
       tls: true
       tlsSecret: longhorn-tls
