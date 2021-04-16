@@ -37,7 +37,7 @@ spec:
         - auth.${DOMAIN}
       tls:
         - hosts:
-            - auth.${DOMAIN/./-}
+            - auth.${DOMAIN}
           secretName: auth-tls
     extraArgs:
       provider: oidc
