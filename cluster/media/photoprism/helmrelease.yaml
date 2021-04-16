@@ -21,9 +21,9 @@ spec:
       repository: photoprism/photoprism
       tag: "20210222"
     env:
-      PHOTOPRISM_SITE_URL: https://photos.diaoul.io/
+      PHOTOPRISM_SITE_URL: https://photos.${DOMAIN}/
       PHOTOPRISM_SITE_TITLE: Home Photos
-      PHOTOPRISM_SITE_AUTHOR: Antoine
+      PHOTOPRISM_SITE_AUTHOR: Diaoul
       PHOTOPRISM_PUBLIC: true
       PHOTOPRISM_READONLY: true
       PHOTOPRISM_THUMB_SIZE: 1280
@@ -33,18 +33,18 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
       hosts:
-        - host: photos.diaoul.io
+        - host: photos.${DOMAIN}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - photos.diaoul.io
+            - photos.${DOMAIN}
           secretName: photoprism-tls
     persistence:
       config:
