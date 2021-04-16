@@ -42,11 +42,11 @@
                         "service": {
                             "custom-cloudflare": {
                                 "host-name": [
-                                    "diaoul.io"
+                                    "{{ unifi_domain }}"
                                 ],
-                                "login": "ant.bertin@gmail.com",
+                                "login": "{{ unifi_email }}",
                                 "options": [
-                                    "zone=diaoul.io"
+                                    "zone={{ unifi_domain }}"
                                 ],
                                 "password": "{{ unifi_cloudflare_global_api_key }}",
                                 "protocol": "cloudflare",
@@ -58,7 +58,7 @@
             },
             "forwarding": {
                 "options": [
-                    "server=/diaoul.io/10.44.0.4",
+                    "server=/{{ unifi_domain }}/10.44.0.4",
                     "server=/cluster.milkyway/10.44.0.4",
                     "server=1.1.1.1",
                     "server=1.0.0.1"
