@@ -20,18 +20,18 @@ spec:
       ingress:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: diaoul.io
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
           cert-manager.io/cluster-issuer: letsencrypt-production
-          nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
         hosts:
-          - alert-manager.diaoul.io
+          - alert-manager.${DOMAIN}
         tls:
           - hosts:
-              - alert-manager.diaoul.io
+              - alert-manager.${DOMAIN}
             secretName: alert-manager-tls
       alertManagerSpec:
-        externalUrl: https://alert-manager.diaoul.io/
+        externalUrl: https://alert-manager.${DOMAIN}/
         storage:
           volumeClaimTemplate:
             spec:
@@ -67,19 +67,19 @@ spec:
       ingress:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: diaoul.io
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
           cert-manager.io/cluster-issuer: letsencrypt-production
-          nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
         hosts:
-          - prometheus.diaoul.io
+          - prometheus.${DOMAIN}
         tls:
           - hosts:
-              - prometheus.diaoul.io
+              - prometheus.${DOMAIN}
             secretName: prometheus-tls
       prometheusSpec:
         enableAdminAPI: true
-        externalUrl: https://prometheus.diaoul.io/
+        externalUrl: https://prometheus.${DOMAIN}/
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false

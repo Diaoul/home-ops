@@ -22,9 +22,10 @@ spec:
       GF_EXPLORE_ENABLED: true
       GF_PANELS_DISABLE_SANITIZE_HTML: true
       GF_LOG_FILTERS: rendering:debug
+    adminPassword: ${GRAFANA_ADMIN_PASSWORD}
     grafana.ini:
       server:
-        root_url: https://grafana.diaoul.io
+        root_url: https://grafana.${DOMAIN}
       paths:
         data: /var/lib/grafana/data
         logs: /var/log/grafana
@@ -114,21 +115,18 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: diaoul.io
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.diaoul.io/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.diaoul.io/oauth2/start
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
       hosts:
-        - grafana.diaoul.io
+        - grafana.${DOMAIN}
       tls:
         - hosts:
-            - grafana.diaoul.io
+            - grafana.${DOMAIN}
           secretName: grafana-tls
     persistence:
       enabled: true
       existingClaim: grafana-data
     podAnnotations:
       configmap.reloader.stakater.com/reload: grafana
-  valuesFrom:
-    - kind: Secret
-      name: grafana-helm-values
