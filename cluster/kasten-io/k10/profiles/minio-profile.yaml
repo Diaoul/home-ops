@@ -11,7 +11,7 @@ spec:
     objectStore:
       name: k10
       objectStoreType: S3
-      endpoint: https://singularity.milkyway:9001/
+      endpoint: http://singularity.milkyway:9000/
       region: minio
     credential:
       secretType: AwsAccessKey
