@@ -17,6 +17,8 @@ spec:
         namespace: flux-system
   values:
     defaultSettings:
+      backupTarget: s3://longhorn@minio/longhorn
+      backupTargetCredentialSecret: longhorn-backup
       createDefaultDiskLabeledNodes: true
       storageMinimalAvailablePercentage: 10
     ingress:
