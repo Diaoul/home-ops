@@ -16,16 +16,8 @@ spec:
         name: longhorn
         namespace: flux-system
   values:
-    persistence:
-      defaultClass: true
-      defaultClassReplicaCount: 3
-      recurringJobs:
-        enable: true
     defaultSettings:
-      backupTarget: s3://longhorn@minio/longhorn
-      backupTargetCredentialSecret: longhorn-backup
       createDefaultDiskLabeledNodes: true
-      defaultReplicaCount: 3
       storageMinimalAvailablePercentage: 10
     ingress:
       enabled: true
