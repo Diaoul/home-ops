@@ -1,0 +1,30 @@
+---
+apiVersion: ceph.rook.io/v1
+kind: CephCluster
+metadata:
+  name: rook-ceph
+  namespace: rook-ceph
+spec:
+  cephVersion:
+    image: ceph/ceph:v15.2.10
+  dataDirHostPath: /var/lib/rook
+  dashboard:
+    enabled: true
+    port: 7000
+    ssl: false
+  monitoring:
+    enabled: true
+  storage:
+    useAllNodes: false
+    useAllDevices: false
+    config:
+    nodes:
+      - name: k8s-node-vm-1
+        devices:
+          - name: sdb
+      - name: k8s-node-vm-2
+        devices:
+          - name: sdb
+      - name: k8s-node-vm-3
+        devices:
+          - name: sdb

@@ -1,0 +1,30 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rook-ceph-mgr-dashboard
+  namespace: rook-ceph
+  annotations:
+    external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+    nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+  labels:
+    app.kubernetes.io/instance: rook-ceph-mgr-dashboard
+    app.kubernetes.io/name: rook-ceph-mgr-dashboard
+spec:
+  rules:
+    - host: rook.${DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: rook-ceph-mgr-dashboard
+                port:
+                  name: http-dashboard
+  tls:
+    - hosts:
+        - rook.${DOMAIN}
+      secretName: rook-tls
