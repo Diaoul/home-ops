@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - dr-secret.enc.yaml
   - custom-ca-bundle-store-configmap.yaml
+  - volumesnapshotclass.yaml
   - helmrelease.yaml
   - servicemonitor.yaml
   - prometheusrule.yaml
