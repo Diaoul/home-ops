@@ -28,14 +28,13 @@
       become: yes
       when: rook_ceph_enabled is defined and rook_ceph_enabled
 
-    - name: discard sectors on device
-      command: blkdiscard {{ item }}
-      loop: "{{ rook_ceph_devices }}"
-      become: yes
-      when: rook_ceph_enabled is defined and rook_ceph_enabled
-
     - name: remove lvm partitions
-      shell: ls /dev/mapper/ceph-* | xargs -I% -- dmsetup remove %  # noqa 306
+      shell: "{{ item }}"  # noqa 305
+      loop:
+        - ls /dev/mapper/ceph--* | xargs -I% -- fuser --kill %
+        - ls /dev/mapper/ceph--* | xargs -I% -- dmsetup clear %
+        - ls /dev/mapper/ceph--* | xargs -I% -- dmsetup remove -f %
+        - ls /dev/mapper/ceph--* | xargs -I% -- rm -rf %
       become: yes
       when: rook_ceph_enabled is defined and rook_ceph_enabled
 
