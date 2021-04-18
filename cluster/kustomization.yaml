@@ -12,4 +12,5 @@ resources:
   - monitoring
   - media
   - home-automation
+  - kasten-io
   - rook-ceph
