@@ -53,10 +53,16 @@ spec:
     additionalVolumeMounts:
       - name: nfs-singularity-media
         mountPath: /media
+      - name: nfs-singularity-photos
+        mountPath: /photos
+        readOnly: true
     additionalVolumes:
       - name: nfs-singularity-media
         persistentVolumeClaim:
           claimName: nfs-singularity-media
+      - name: nfs-singularity-photos
+        persistentVolumeClaim:
+          claimName: nfs-singularity-photos
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
