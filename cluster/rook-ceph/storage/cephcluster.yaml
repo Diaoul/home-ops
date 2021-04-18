@@ -6,7 +6,7 @@ metadata:
   namespace: rook-ceph
 spec:
   cephVersion:
-    image: ceph/ceph:v15.2.10
+    image: ceph/ceph:v16.2.0
   dataDirHostPath: /var/lib/rook
   dashboard:
     enabled: true
