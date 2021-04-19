@@ -8,7 +8,6 @@ resources:
   - system-upgrade
   - kube-system
   - network-system
-  - longhorn-system
   - monitoring
   - media
   - home-automation
