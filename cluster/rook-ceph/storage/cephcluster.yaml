@@ -21,9 +21,9 @@ spec:
     useAllDevices: false
     config:
     nodes:
-      - name: k8s-node-vm-1
+      - name: k8s-node-3
         devices:
-          - name: sdb
+          - name: nvme0n1
       - name: k8s-node-vm-2
         devices:
           - name: sdb
