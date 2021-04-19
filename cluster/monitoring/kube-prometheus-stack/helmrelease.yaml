@@ -31,6 +31,7 @@ spec:
               - alert-manager.${DOMAIN}
             secretName: alert-manager-tls
       alertManagerSpec:
+        externalUrl: https://alert-manager.${DOMAIN}/
         storage:
           volumeClaimTemplate:
             spec:
@@ -79,6 +80,7 @@ spec:
             secretName: prometheus-tls
       prometheusSpec:
         enableAdminAPI: true
+        externalUrl: https://prometheus.${DOMAIN}/
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
