@@ -60,6 +60,8 @@ spec:
           - /config/.vscode
           - --extensions-dir
           - /config/.vscode
+        git:
+          deployKeySecret: home-assistant-code-server
         ingress:
           enabled: true
           annotations:
