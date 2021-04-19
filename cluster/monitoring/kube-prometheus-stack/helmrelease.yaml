@@ -31,7 +31,7 @@ spec:
               - alert-manager.${DOMAIN}
             secretName: alert-manager-tls
       alertManagerSpec:
-        externalUrl: https://alert-manager.${DOMAIN}/
+        externalUrl: "https://alert-manager.${DOMAIN}/"
         storage:
           volumeClaimTemplate:
             spec:
