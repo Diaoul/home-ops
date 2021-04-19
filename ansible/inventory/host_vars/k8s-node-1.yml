@@ -1,8 +1,8 @@
 ---
-longhorn_enabled: yes
+longhorn_enabled: no
 longhorn_device: /dev/nvme0n1
 
-rook_ceph_enabled: no
+rook_ceph_enabled: yes
 rook_ceph_devices:
   - /dev/nvme0n1
 
