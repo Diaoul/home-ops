@@ -16,6 +16,7 @@ spec:
     ssl: false
   monitoring:
     enabled: true
+  removeOSDsIfOutAndSafeToRemove: true
   storage:
     useAllNodes: false
     useAllDevices: false
