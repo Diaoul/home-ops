@@ -21,12 +21,12 @@ spec:
     useAllDevices: false
     config:
     nodes:
+      - name: k8s-node-2
+        devices:
+          - name: nvme0n1
       - name: k8s-node-3
         devices:
           - name: nvme0n1
-      - name: k8s-node-vm-2
-        devices:
-          - name: sdb
       - name: k8s-node-vm-3
         devices:
           - name: sdb
