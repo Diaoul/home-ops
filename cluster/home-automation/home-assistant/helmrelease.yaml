@@ -19,8 +19,6 @@ spec:
     image:
       repository: homeassistant/home-assistant
       tag: 2021.4.5
-    git:
-      deployKeyBase64: ${HOME_ASSISTANT_GIT_DEPLOY_KEY}
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
     probes:
