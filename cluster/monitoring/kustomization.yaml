@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - unifi-poller
+  - kube-prometheus-stack
   - prometheus-nut-exporter
   - grafana
