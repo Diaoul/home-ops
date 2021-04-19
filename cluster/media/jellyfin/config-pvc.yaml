@@ -10,4 +10,4 @@ spec:
   resources:
     requests:
       storage: 20Gi
-  storageClassName: longhorn
+  storageClassName: rook-ceph-block
