@@ -13,3 +13,4 @@ resources:
   - home-automation
   - kasten-io
   - rook-ceph
+  - calico-system

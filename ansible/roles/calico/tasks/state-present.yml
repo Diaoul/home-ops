@@ -24,6 +24,18 @@
   run_once: yes
   delegate_to: localhost
 
+- name: enable prometheus metrics in felixconfiguration
+  community.kubernetes.k8s:
+    api_version: crd.projectcalico.org/v1
+    namespace: tigera-operator
+    kind: felixconfiguration
+    name: default
+    definition:
+      spec:
+        prometheusMetricsEnabled: true
+  run_once: yes
+  delegate_to: localhost
+
 - name: add bgp configuration
   community.kubernetes.k8s:
     template: bgpconfiguration.yaml.j2

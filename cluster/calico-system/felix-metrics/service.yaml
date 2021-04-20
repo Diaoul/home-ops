@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: felix-metrics
+  namespace: calico-system
+  labels:
+    k8s-app: calico-node
+spec:
+  selector:
+    k8s-app: calico-node
+  ports:
+    - name: metrics
+      port: 9091
+      targetPort: 9091
