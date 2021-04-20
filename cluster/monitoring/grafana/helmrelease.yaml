@@ -70,6 +70,26 @@ spec:
         nginx-dashboard:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
           datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/12175
+        calico-felix:
+          gnetId: 12175
+          revision: 5
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/2842
+        ceph-cluster:
+          gnetId: 2842
+          revision: 14
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/5336
+        ceph-osd:
+          gnetId: 5336
+          revision: 5
+          datasource: Prometheus
+        # Ref: https://grafana.com/grafana/dashboards/5342
+        ceph-pools:
+          gnetId: 5342
+          revision: 5
+          datasource: Prometheus
         # Ref: https://grafana.com/grafana/dashboards/11315
         unifi-client-insights:
           gnetId: 11315
