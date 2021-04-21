@@ -5,11 +5,10 @@
   "separateMinorPatch": true,
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "commitMessageSuffix": "[skip ci]",
   "suppressNotifications": ["prIgnoreNotification"],
   "kubernetes": {
     "fileMatch": ["cluster/.+\\.yaml$"],
-    "ignorePaths": ["cluster/flux-system/"]
+    "ignorePaths": ["cluster/base/"]
   },
   "helm-values": {
     "fileMatch": ["cluster/.+helmrelease\\.yaml$"]
@@ -22,6 +21,10 @@
         "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n",
         // rook-ceph crd
         "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*)\n",
+        // cert-manager crd
+        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*\\/(?<currentValue>.*?)\\/",
+        // kube-prometheus-stack crd
+        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-zA-Z-]+)-(?<currentValue>.*)\n",
       ],
       "datasourceTemplate": "helm"
     }
@@ -95,6 +98,6 @@
       "automerge": true,
       "schedule": "after 3am and before 6am",
       "requiredStatusChecks": null,
-    }
+    },
   ]
 }

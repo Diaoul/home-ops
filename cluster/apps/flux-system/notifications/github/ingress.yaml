@@ -1,0 +1,25 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webhook-receiver
+  namespace: flux-system
+  annotations:
+    external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  rules:
+    - host: flux-receiver.${DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: webhook-receiver
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - flux-receiver.${DOMAIN}
+      secretName: flux-receiver-tls
