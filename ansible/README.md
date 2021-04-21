@@ -19,7 +19,7 @@ available. If using BGP, make sure to configure your router accordingly.
 ansible-playbook ansible/playbooks/calico.yml
 ```
 
-### CSI
+### Storage
 [Longhorn](https://longhorn.io/) or [Rook (ceph)](https://rook.io/)
 available. This role will prepare the disks to be used with the CSI.
 Be careful!
