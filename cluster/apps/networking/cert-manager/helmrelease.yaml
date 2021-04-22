@@ -15,7 +15,6 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-  skipCRDs: true
   values:
     extraArgs:
       - --enable-certificate-owner-ref=true
