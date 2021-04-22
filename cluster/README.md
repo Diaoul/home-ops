@@ -17,7 +17,7 @@ Install Flux
 kubectl apply --kustomize=./cluster/base/flux-system
 ```
 
-Enable k3s upgrades
+Enable k3s upgrades (if not already done by ansible)
 ```bash
 kubectl label node --all k3s-upgrade=true
 ```
