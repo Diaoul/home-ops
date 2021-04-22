@@ -26,6 +26,9 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
         hosts:
           - alert-manager.${DOMAIN}
+        paths:
+          - /
+        pathType: Prefix
         tls:
           - hosts:
               - alert-manager.${DOMAIN}
@@ -73,6 +76,9 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
         hosts:
           - prometheus.${DOMAIN}
+        paths:
+          - /
+        pathType: Prefix
         tls:
           - hosts:
               - prometheus.${DOMAIN}
