@@ -8,6 +8,7 @@ ansible-playbook ansible/playbooks/cluster/os.yml
 
 ### K3S Installation
 Using [xanmanning.k3s](https://galaxy.ansible.com/xanmanning/k3s) role
+to install version pinned in [k3s_release_version](https://github.com/Diaoul/home-operations/blob/main/ansible/inventory/group_vars/all/k3s.yml#L5).
 ```bash
 ansible-playbook ansible/playbooks/cluster/k3s.yml
 ```
