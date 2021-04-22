@@ -7,3 +7,4 @@ resources:
   - helmrelease.yaml
   - servicemonitor.yaml
   - prometheusrule.yaml
+  - profiles
