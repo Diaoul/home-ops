@@ -7,8 +7,8 @@
 _...with Ansible and Kubernetes!_ :sailboat:
 <br/><br/><br/><br/>
 
-![lint](https://github.com/Diaoul/home-operations/workflows/lint/badge.svg)
-![pre-commit](https://github.com/Diaoul/home-operations/workflows/pre-commit/badge.svg)
+![lint](https://github.com/Diaoul/home-ops/workflows/lint/badge.svg)
+![pre-commit](https://github.com/Diaoul/home-ops/workflows/pre-commit/badge.svg)
 
 ## :closed_book: Overview
 This repository contains everything I use to setup and run the devices in my home. For more
