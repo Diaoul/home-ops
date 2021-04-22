@@ -37,7 +37,7 @@ jobs:
           title: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }}"
           committer: "Antoine Bertin <ant.bertin@gmail.com>"
           author: "Antoine Bertin <ant.bertin@gmail.com>"
-          commit-message: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }} [skip ci]"
+          commit-message: "chore(deps): update flux components to ${{ steps.update.outputs.flux_version }}"
           body: |
             Release notes: https://github.com/fluxcd/flux2/releases/tag/${{ steps.update.outputs.flux_version }}
           labels: flux/update
