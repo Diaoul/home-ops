@@ -8,7 +8,9 @@ spec:
   interval: 1m0s
   ref:
     branch: main
-  url: https://github.com/Diaoul/home-ops
+  secretRef:
+    name: flux-system
+  url: ssh://git@github.com/Diaoul/home-ops
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
 kind: Kustomization
