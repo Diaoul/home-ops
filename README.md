@@ -36,3 +36,6 @@ I try to run everything bare metal to get the most out of each device
 I learned a lot from the people that have shared their clusters over at
 [awesome-home-kubernetes](https://github.com/k8s-at-home/awesome-home-kubernetes)
 and from the [k8s@home discord channel](https://discord.gg/DNCynrJ).
+
+Want to get started? I recommend that you take a look at the
+[template-cluster-k3s](https://github.com/k8s-at-home/template-cluster-k3s/) repository!
