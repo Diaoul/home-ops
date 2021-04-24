@@ -18,6 +18,7 @@ resources:
   - prometheus-community.yaml
   - rook-ceph.yaml
   - rook.yaml
+  - runix.yaml
   - stakater.yaml
   - traefik.yaml
   - vernemq.yaml
