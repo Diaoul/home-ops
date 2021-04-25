@@ -27,13 +27,17 @@ spec:
           port = 9090
         }
         backend {
+          jdbc {
+            url = "jdbc:postgresql://postgresql.db/sharry"
+            user = "sharry"
+            password = "${SHARRY_POSTGRES_PASSWORD}"
+          }
           auth {
-            fixed {
-              enabled = false  # set to true to enable this auth provider
-              user = "admin"
-              password = "admin"
-              order = 10
-            }
+            server-secret = "b64:${SHARRY_SERVER_SECRET}"
+          }
+          signup {
+            mode = "invite"
+            invite-password = "${SHARRY_INVITE_PASSWORD}"
           }
         }
       }
