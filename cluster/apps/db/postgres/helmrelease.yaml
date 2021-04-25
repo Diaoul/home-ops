@@ -24,6 +24,3 @@ spec:
     persistence:
       enabled: true
       existingClaim: postgresql
-    primary:
-      annotations:
-        kanister.kasten.io/blueprint: postgres
