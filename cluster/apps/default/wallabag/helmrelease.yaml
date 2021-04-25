@@ -1,0 +1,49 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: wallabag
+  namespace: default
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # registryUrl=https://k8s-at-home.com/charts/
+      chart: wallabag
+      version: 2.3.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: wallabag/wallabag
+      tag: 2.4.2
+    env:
+      SYMFONY__ENV__DATABASE_DRIVER: pdo_pgsql
+      SYMFONY__ENV__DATABASE_HOST: postgresql.db
+      SYMFONY__ENV__DATABASE_PORT: 5432
+      SYMFONY__ENV__DATABASE_NAME: wallabag
+      SYMFONY__ENV__DATABASE_USER: wallabag
+      SYMFONY__ENV__DATABASE_PASSWORD: ${WALLABAG_POSTGRES_PASSWORD}
+      SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${DOMAIN}
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+      hosts:
+        - host: wallabag.${DOMAIN}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - wallabag.${DOMAIN}
+          secretName: wallabag-tls
+    persistence:
+      images:
+        enabled: true
+        existingClaim: wallabag-images
