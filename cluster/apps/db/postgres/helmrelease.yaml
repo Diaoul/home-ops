@@ -26,4 +26,4 @@ spec:
       existingClaim: postgresql
     primary:
       annotations:
-        kanister.kasten.io/blueprint: postgres-bp
+        kanister.kasten.io/blueprint: postgres
