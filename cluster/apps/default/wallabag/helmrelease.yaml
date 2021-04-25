@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # registryUrl=https://k8s-at-home.com/charts/
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: wallabag
       version: 2.3.1
