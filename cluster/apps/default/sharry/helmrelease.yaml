@@ -37,6 +37,8 @@ spec:
           }
         }
       }
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: sharry-config
     ingress:
       enabled: true
       annotations:
