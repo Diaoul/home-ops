@@ -8,7 +8,7 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.bitnami.com/bitnami/
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: postgresql
       version: 10.3.18
       sourceRef:
