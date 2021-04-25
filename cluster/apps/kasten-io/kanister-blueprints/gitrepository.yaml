@@ -1,0 +1,16 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: kanister-blueprints
+  namespace: kasten-io
+spec:
+  interval: 30m
+  url: https://github.com/kanisterio/kanister.git
+  ref:
+    tag: 0.51.0
+  ignore: |
+    # exclude all
+    /*
+    # include postgresql dir
+    !/examples/stable/postgresql/postgres-blueprint.yaml
