@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/k8s-at-home/lidarr
-      tag: v0.8.1.2134
+      tag: v0.8.1.2145
     ingress:
       enabled: true
       annotations:
