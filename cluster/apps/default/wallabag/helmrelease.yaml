@@ -52,3 +52,5 @@ spec:
       images:
         enabled: true
         existingClaim: wallabag-images
+    redis:
+      enabled: true
