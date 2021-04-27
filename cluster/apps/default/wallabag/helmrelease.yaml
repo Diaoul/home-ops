@@ -28,6 +28,7 @@ spec:
       SYMFONY__ENV__DATABASE_NAME: wallabag
       SYMFONY__ENV__DATABASE_USER: wallabag
       SYMFONY__ENV__DATABASE_PASSWORD: ${WALLABAG_POSTGRES_PASSWORD}
+      SYMFONY__ENV__REDIS_HOST: redis-master
       SYMFONY__ENV__DOMAIN_NAME: https://wallabag.${DOMAIN}
       SYMFONY__ENV__SERVER_NAME: Milky Way's Wallabag
       SYMFONY__ENV__FOSUSER_REGISTRATION: "false"
@@ -55,3 +56,8 @@ spec:
     redis:
       enabled: true
       clusterDomain: ${CLUSTER_DOMAIN}
+      architecture: standalone
+      replica:
+        replicaCount: 0
+      persistence:
+        enabled: false
