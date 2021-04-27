@@ -10,3 +10,4 @@ data:
   COREDNS_IP: 10.44.0.4
   BLOCKY_IP: 10.44.0.5
   UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
+  CLUSTER_DOMAIN: cluster.milkyway

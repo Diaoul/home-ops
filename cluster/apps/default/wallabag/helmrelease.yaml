@@ -54,3 +54,4 @@ spec:
         existingClaim: wallabag-images
     redis:
       enabled: true
+      clusterDomain: ${CLUSTER_DOMAIN}
