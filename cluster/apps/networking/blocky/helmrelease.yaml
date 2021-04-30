@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: spx01/blocky
-      tag: v0.13
+      tag: v0.14
     replicas: 2
     config: |
       httpPort: 4000
