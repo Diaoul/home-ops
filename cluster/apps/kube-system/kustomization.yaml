@@ -7,3 +7,4 @@ resources:
   - intel-gpu-plugin
   - descheduler
   - external-snapshotter
+  - kured
