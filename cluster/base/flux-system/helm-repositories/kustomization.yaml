@@ -16,7 +16,6 @@ resources:
   - longhorn.yaml
   - node-feature-discovery.yaml
   - prometheus-community.yaml
-  - rook-ceph.yaml
   - rook.yaml
   - runix.yaml
   - stakater.yaml

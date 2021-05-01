@@ -13,7 +13,7 @@ spec:
       version: v1.6.1
       sourceRef:
         kind: HelmRepository
-        name: rook-ceph
+        name: rook
         namespace: flux-system
   values:
     crds:
