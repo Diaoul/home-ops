@@ -25,7 +25,7 @@ spec:
             key: webhook
     configuration:
       rebootDays:
-        - we
+        - su
       startTime: "3:00"
       endTime: "5:00"
       timeZone: Europe/Paris
