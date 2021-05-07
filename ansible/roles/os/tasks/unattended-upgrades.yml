@@ -3,38 +3,32 @@
   apt:
     name: unattended-upgrades
 
-- name: unattended-upgrades | enable 20auto-upgrades
-  shell: |
-    set -o pipefail
-    echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | debconf-set-selections
-    dpkg-reconfigure -f noninteractive unattended-upgrades
-  args:
-    creates: /etc/apt/apt.conf.d/20auto-upgrades
-  notify: unattended-upgrades configuration changed
-
-- name: unattended-upgrades | create initial 10periodic
-  copy:
-    content: |
-      APT::Periodic::Update-Package-Lists "1";
-      APT::Periodic::Download-Upgradeable-Packages "0";
-      APT::Periodic::AutocleanInterval "0";
-    dest: /etc/apt/apt.conf.d/10periodic
-    mode: 0644
-    force: no
-  notify: unattended-upgrades configuration changed
-
-- name: unattended-upgrades | configure autoclean interval to 7 days
-  lineinfile:
-    dest: /etc/apt/apt.conf.d/10periodic
-    regex: 'APT::Periodic::AutocleanInterval'
-    line: 'APT::Periodic::AutocleanInterval "7";'
-  notify: unattended-upgrades configuration changed
-
-- name: unattended-upgrades | configure to remove unused dependencies
+- name: unattended-upgrades | configure 50unattended-upgrades
   lineinfile:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    regex: 'Unattended-Upgrade::Remove-Unused-Dependencies'
-    line: 'Unattended-Upgrade::Remove-Unused-Dependencies "true";'
+    regex: '{{ item.key }}'
+    line: '{{ item.key }} "{{ item.value }}";'
+  loop:
+    - key: Unattended-Upgrade::Automatic-Reboot
+      value: "false"
+    - key: Unattended-Upgrade::Remove-Unused-Dependencies
+      value: "true"
+  notify: unattended-upgrades configuration changed
+
+- name: unattended-upgrades | configure 20auto-upgrades
+  lineinfile:
+    dest: /etc/apt/apt.conf.d/20auto-upgrades
+    regex: '{{ item.key }}'
+    line: '{{ item.key }} "{{ item.value }}";'
+  loop:
+    - key: APT::Periodic::Unattended-Upgrade
+      value: "1"
+    - key: APT::Periodic::Update-Package-Lists
+      value: "1"
+    - key: APT::Periodic::Download-Upgradeable-Packages
+      value: "1"
+    - key: APT::Periodic::AutocleanInterval
+      value: "7"
   notify: unattended-upgrades configuration changed
 
 - name: unattended-upgrades | enable service
