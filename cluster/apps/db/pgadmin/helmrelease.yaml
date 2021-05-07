@@ -35,6 +35,7 @@ spec:
         - host: pgadmin.${DOMAIN}
           paths:
             - path: /
+              pathType: Prefix
       tls:
         - hosts:
             - pgadmin.${DOMAIN}
