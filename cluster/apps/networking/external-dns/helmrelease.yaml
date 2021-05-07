@@ -21,8 +21,6 @@ spec:
       - ${DOMAIN}
     policy: sync
     registry: noop
-    crd:
-      create: true
     resources:
       requests:
         cpu: 50m
