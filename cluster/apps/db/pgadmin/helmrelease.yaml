@@ -38,6 +38,7 @@ spec:
       tls:
         - hosts:
             - pgadmin.${DOMAIN}
+          secretName: pgadmin-tls
     persistentVolume:
       enabled: true
       existingClaim: pgadmin-config
