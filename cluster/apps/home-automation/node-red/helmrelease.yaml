@@ -1,0 +1,49 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: node-red
+  namespace: home-automation
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: node-red
+      version: 7.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: nodered/node-red
+      tag: 1.3.1
+    env:
+      NODE_RED_ENABLE_PROJECTS: "true"
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+      hosts:
+        - host: node-red.${DOMAIN}
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - node-red.${DOMAIN}
+          secretName: node-red-tls
+    persistence:
+      data:
+        enabled: true
+        existingClaim: node-red-data
+    resources:
+      requests:
+        cpu: 200m
+        memory: 250Mi
+      limits:
+        memory: 500Mi
