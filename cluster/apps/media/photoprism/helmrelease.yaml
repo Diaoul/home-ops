@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: photoprism/photoprism
-      tag: "20210518"
+      tag: "20210519"
     env:
       PHOTOPRISM_SITE_URL: https://photos.${DOMAIN}/
       PHOTOPRISM_SITE_TITLE: Home Photos
