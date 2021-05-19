@@ -19,7 +19,7 @@ spec:
   values:
     image:
       repository: esphome/esphome
-      tag: 1.17.2
+      tag: 1.18.0
     env:
       ESPHOME_DASHBOARD_USE_PING: true
     ingress:
