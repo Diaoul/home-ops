@@ -43,18 +43,11 @@ spec:
         blackLists:
           ads:
             - https://dbl.oisd.nl/
-            - https://block.energized.pro/basic/formats/hosts
-          adult:
-            - https://block.energized.pro/porn/formats/hosts
-        whiteLists:
-          ads:
-            - https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
         clientGroupsBlock:
           default:
             - ads
           kids:
             - ads
-            - adult
       prometheus:
         enable: true
     service:
