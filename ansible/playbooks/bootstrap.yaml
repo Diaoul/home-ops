@@ -1,5 +1,5 @@
 ---
-- hosts: curiosity
+- hosts: all
   vars:
     user: antoine
     ssh_authorized_keys:
@@ -14,7 +14,7 @@
 
     - name: add user to sudoers nopasswd
       copy:
-        dest: /etc/sudoers.d/{{ user }}_nopasswd
+        dest: /etc/sudoers.d/020_{{ user }}-nopasswd
         content: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
         mode: 0440
 
