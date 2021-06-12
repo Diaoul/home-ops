@@ -13,7 +13,7 @@
     - name: flush handlers
       meta: flush_handlers
     - name: reboot
-      ignore_errors: yes
+      ignore_errors: yes  # noqa ignore-errors
       reboot:
         msg: "Rebooting..."
       when: restart_confirmation == "Y"

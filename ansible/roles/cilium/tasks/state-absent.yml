@@ -24,8 +24,7 @@
   command: ip link delete cilium_host
   changed_when: yes
   become: yes
-  ignore_errors: yes
-
+  ignore_errors: yes  # noqa ignore-errors
 - name: clean up cni files
   file:
     state: absent

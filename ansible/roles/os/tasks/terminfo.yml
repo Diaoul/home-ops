@@ -15,7 +15,7 @@
   command:
     cmd: tic -xe xterm-kitty kitty.info
     chdir: /usr/src/kitty
-  when: kitty_terminfo_src is changed
+  when: kitty_terminfo_src is changed  # noqa no-handler
 
 - name: terminfo | create alacritty source directory
   file:
@@ -33,4 +33,4 @@
   command:
     cmd: tic -xe alacritty,alacritty-direct alacritty.info
     chdir: /usr/src/alacritty
-  when: alacritty_terminfo_src is changed
+  when: alacritty_terminfo_src is changed  # noqa no-handler

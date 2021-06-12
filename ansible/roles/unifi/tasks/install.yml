@@ -44,7 +44,7 @@
     -destkeypass aircontrolenterprise
     -alias unifi
   become: yes
-  when: certificate is changed
+  when: certificate is changed  # noqa no-handler
   notify: certificate changed
 
 - name: enable unifi service
