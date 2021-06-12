@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: nzbget
-      version: 10.1.0
+      version: 11.0.0
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home
@@ -20,19 +20,20 @@ spec:
       repository: ghcr.io/k8s-at-home/nzbget
       tag: v21.1
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-      hosts:
-        - host: nzbget.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - nzbget.${DOMAIN}
-          secretName: nzbget-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: nzbget.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - nzbget.${DOMAIN}
+            secretName: nzbget-tls
     persistence:
       config:
         enabled: true
