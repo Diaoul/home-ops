@@ -43,7 +43,7 @@ jobs:
       - name: Remove duplicates from pre-commit config
         if: steps.cache-precommitconfig.outputs.cache-hit != 'true'
         run: |
-          bin/yq eval 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "ansible-lint" or .id == "kustomize"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
+          bin/yq eval 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "yamllint" or .id == "kustomize"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
 
       - uses: pre-commit/action@v2.0.3
         with:
