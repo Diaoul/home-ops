@@ -41,6 +41,9 @@ spec:
       limits:
         cpu: 200m
         memory: 200Mi
+    # see https://github.com/dexidp/dex/issues/2082
+    env:
+      KUBERNETES_POD_NAMESPACE: networking
     config:
       issuer: https://dex.${DOMAIN}
       connectors:
