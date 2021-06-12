@@ -4,7 +4,7 @@
     state: absent
     template: bgppeer.yaml.j2
   loop: "{{ calico_bgp_peers }}"
-  ignore_errors: yes
+  ignore_errors: yes  # noqa ignore-errors
   run_once: yes
   delegate_to: localhost
 
@@ -12,7 +12,7 @@
   community.kubernetes.k8s:
     state: absent
     template: bgpconfiguration.yaml.j2
-  ignore_errors: yes
+  ignore_errors: yes  # noqa ignore-errors
   run_once: yes
   delegate_to: localhost
 
@@ -20,7 +20,7 @@
   community.kubernetes.k8s:
     state: absent
     template: installation.yaml.j2
-  ignore_errors: yes
+  ignore_errors: yes  # noqa ignore-errors
   run_once: yes
   delegate_to: localhost
 
