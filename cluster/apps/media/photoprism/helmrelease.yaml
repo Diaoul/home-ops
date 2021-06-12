@@ -31,21 +31,22 @@ spec:
       PHOTOPRISM_THUMB_SIZE_UNCACHED: 1280
       PHOTOPRISM_JPEG_SIZE: 1280
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
-      hosts:
-        - host: photos.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - photos.${DOMAIN}
-          secretName: photoprism-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: photos.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - photos.${DOMAIN}
+            secretName: photoprism-tls
     persistence:
       config:
         enabled: true
