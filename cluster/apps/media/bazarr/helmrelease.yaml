@@ -44,13 +44,10 @@ spec:
       config:
         enabled: true
         existingClaim: bazarr-config
-    additionalVolumeMounts:
-      - name: nfs-singularity-media
+      media:
+        enabled: true
+        existingClaim: nfs-singularity-media
         mountPath: /media
-    additionalVolumes:
-      - name: nfs-singularity-media
-        persistentVolumeClaim:
-          claimName: nfs-singularity-media
     resources:
       requests:
         cpu: 100m
