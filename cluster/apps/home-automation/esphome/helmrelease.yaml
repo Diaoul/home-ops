@@ -23,21 +23,22 @@ spec:
     env:
       ESPHOME_DASHBOARD_USE_PING: true
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
-      hosts:
-        - host: esphome.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - esphome.${DOMAIN}
-          secretName: esphome-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: esphome.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - esphome.${DOMAIN}
+            secretName: esphome-tls
     persistence:
       config:
         enabled: true
