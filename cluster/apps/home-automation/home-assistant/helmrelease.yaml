@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: home-assistant
-      version: 8.3.1
+      version: 9.0.2
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home
@@ -29,19 +29,20 @@ spec:
       startup:
         enabled: false
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-      hosts:
-        - host: hass.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - hass.${DOMAIN}
-          secretName: hass-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: hass.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - hass.${DOMAIN}
+            secretName: hass-tls
     persistence:
       config:
         enabled: true
