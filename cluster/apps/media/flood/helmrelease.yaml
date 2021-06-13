@@ -26,21 +26,22 @@ spec:
       FLOOD_OPTION_QBUSER: ${QBITTORRENT_USER}
       FLOOD_OPTION_QBPASS: ${QBITTORRENT_PASSWORD}
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
-      hosts:
-        - host: flood.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - flood.${DOMAIN}
-          secretName: flood-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: flood.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - flood.${DOMAIN}
+            secretName: flood-tls
     persistence:
       data:
         enabled: true
