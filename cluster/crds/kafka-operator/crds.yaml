@@ -1,0 +1,28 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: kafka-operator-crds
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://github.com/strimzi/strimzi-kafka-operator.git
+  ref:
+    tag: 0.23.0
+  ignore: |
+    # exclude all
+    /*
+    # include crds directory
+    !/helm-charts/helm3/strimzi-kafka-operator/crds/
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta1
+kind: Kustomization
+metadata:
+  name: kafka-operator-crds
+  namespace: flux-system
+spec:
+  interval: 30m
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: kafka-operator-crds

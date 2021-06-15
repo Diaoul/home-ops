@@ -19,6 +19,7 @@ resources:
   - rook.yaml
   - runix.yaml
   - stakater.yaml
+  - strimzi.yaml
   - traefik.yaml
   - vernemq.yaml
   - weaveworks-kured.yaml

@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - db
   - default
+  - dev
   - flux-system
   - calico-system
   - kube-system
