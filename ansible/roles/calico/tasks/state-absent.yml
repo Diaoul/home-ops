@@ -1,6 +1,6 @@
 ---
 - name: remove bgp peers configuration
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: absent
     template: bgppeer.yaml.j2
   loop: "{{ calico_bgp_peers }}"
@@ -9,7 +9,7 @@
   delegate_to: localhost
 
 - name: remove bgp configuration
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: absent
     template: bgpconfiguration.yaml.j2
   ignore_errors: yes  # noqa ignore-errors
@@ -17,7 +17,7 @@
   delegate_to: localhost
 
 - name: remove tigera operator configuration
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: absent
     template: installation.yaml.j2
   ignore_errors: yes  # noqa ignore-errors
@@ -25,7 +25,7 @@
   delegate_to: localhost
 
 - name: remove tigera operator
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ item }}"
     wait: yes
