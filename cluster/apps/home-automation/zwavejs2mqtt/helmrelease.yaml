@@ -20,32 +20,31 @@ spec:
       repository: zwavejs/zwavejs2mqtt
       tag: 5.0.4
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
-      hosts:
-        - host: zwavejs2mqtt.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - zwavejs2mqtt.${DOMAIN}
-          secretName: zwavejs2mqtt-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: zwavejs2mqtt.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - zwavejs2mqtt.${DOMAIN}
+            secretName: zwavejs2mqtt-tls
     persistence:
       config:
         enabled: true
         existingClaim: zwavejs2mqtt-config
-    additionalVolumeMounts:
-      - name: usb
+      usb:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/serial/by-id/usb-0658_0200-if00
         mountPath: /dev/zwave-controller
-    additionalVolumes:
-      - name: usb
-        hostPath:
-          path: /dev/serial/by-id/usb-0658_0200-if00
     securityContext:
       privileged: true
     affinity:
