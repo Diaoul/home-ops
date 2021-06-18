@@ -1,6 +1,6 @@
 ---
 - name: remove kube-router
-  community.kubernetes.k8s:
+  kubernetes.core.k8s:
     state: absent
     definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"
     wait: yes
@@ -8,7 +8,7 @@
   delegate_to: localhost
 
 - name: remove cilium
-  community.kubernetes.helm:
+  kubernetes.core.helm:
     state: absent
     update_repo_cache: yes
     release_namespace: kube-system
