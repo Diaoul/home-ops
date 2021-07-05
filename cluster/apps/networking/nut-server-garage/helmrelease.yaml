@@ -23,10 +23,11 @@ spec:
       tag: v2.7.4-2124-g9defa7a9
     nameOverride: nut-server-garage
     service:
-      type: LoadBalancer
-      externalIPs:
-        - 10.44.0.8
-      externalTrafficPolicy: Local
+      main:
+        type: LoadBalancer
+        externalIPs:
+          - 10.44.0.8
+        externalTrafficPolicy: Local
     config:
       mode: values
       files:
