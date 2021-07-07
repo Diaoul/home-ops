@@ -2,7 +2,7 @@
 apiVersion: notification.toolkit.fluxcd.io/v1beta1
 kind: Alert
 metadata:
-  name: discord
+  name: info-discord
   namespace: flux-system
 spec:
   providerRef:
@@ -12,11 +12,11 @@ spec:
     - kind: GitRepository
       namespace: flux-system
       name: flux-system
-    - kind: Kustomization
-      namespace: flux-system
+    - kind: HelmRelease
+      namespace: db
       name: "*"
-    - kind: Kustomization
-      namespace: kube-system
+    - kind: HelmRelease
+      namespace: default
       name: "*"
     - kind: HelmRelease
       namespace: home-automation
@@ -39,5 +39,10 @@ spec:
     - kind: HelmRelease
       namespace: rook-ceph
       name: "*"
+    - kind: HelmRelease
+      namespace: system-upgrade
+      name: "*"
   exclusionList:
-    - "Dependencies do not meet ready condition, retrying in 30s"
+    - "reconciliation failed: Operation cannot be fulfilled on .*:
+      the object has been modified;
+      please apply your changes to the latest version and try again"

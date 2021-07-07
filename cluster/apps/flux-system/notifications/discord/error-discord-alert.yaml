@@ -1,0 +1,19 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Alert
+metadata:
+  name: error-discord
+  namespace: flux-system
+spec:
+  providerRef:
+    name: discord
+  eventSeverity: error
+  eventSources:
+    - kind: Kustomization
+      namespace: flux-system
+      name: "*"
+    - kind: Kustomization
+      namespace: kube-system
+      name: "*"
+  exclusionList:
+    - Dependencies do not meet ready condition, retrying in 30s
