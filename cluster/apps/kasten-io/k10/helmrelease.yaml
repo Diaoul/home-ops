@@ -67,6 +67,3 @@ spec:
               - op: replace
                 path: /spec/ingressClassName
                 value: nginx
-              - op: replace
-                path: /spec/rules/0/http/paths/0/path
-                value: /
