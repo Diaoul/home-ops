@@ -56,17 +56,17 @@ spec:
           http:
             port: 4000
       dns-udp:
-          enabled: true
-          type: LoadBalancer
-          externalIPs:
-            - ${BLOCKY_IP}
-          externalTrafficPolicy: Local
-          ports:
-            dns-udp:
-              enabled: true
-              port: 53
-              protocol: UDP
-              targetPort: 53
+        enabled: true
+        type: LoadBalancer
+        externalIPs:
+          - ${BLOCKY_IP}
+        externalTrafficPolicy: Local
+        ports:
+          dns-udp:
+            enabled: true
+            port: 53
+            protocol: UDP
+            targetPort: 53
     prometheus:
       serviceMonitor:
         enabled: true
