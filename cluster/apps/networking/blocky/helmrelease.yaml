@@ -51,20 +51,22 @@ spec:
       prometheus:
         enable: true
     service:
-      port:
-        port: 4000
-      additionalServices:
-        - nameSuffix: dns-udp
+      main:
+        ports:
+          http:
+            port: 4000
+      dns-udp:
           enabled: true
           type: LoadBalancer
           externalIPs:
             - ${BLOCKY_IP}
-          port:
-            port: 53
-            name: dns-udp
-            protocol: UDP
-            targetPort: 53
           externalTrafficPolicy: Local
+          ports:
+            dns-udp:
+              enabled: true
+              port: 53
+              protocol: UDP
+              targetPort: 53
     prometheus:
       serviceMonitor:
         enabled: true
