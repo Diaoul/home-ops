@@ -36,19 +36,20 @@ spec:
       POSTGRES_USER: wallabag
       POSTGRES_PASSWORD: ${WALLABAG_POSTGRES_PASSWORD}
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-      hosts:
-        - host: wallabag.${DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - hosts:
-            - wallabag.${DOMAIN}
-          secretName: wallabag-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+        hosts:
+          - host: wallabag.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - wallabag.${DOMAIN}
+            secretName: wallabag-tls
     persistence:
       images:
         enabled: true
