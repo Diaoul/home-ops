@@ -19,5 +19,5 @@ kubeconfig
 # binaries
 bin/
 
-# python venv
-.venv/
+# direnv
+.direnv/
