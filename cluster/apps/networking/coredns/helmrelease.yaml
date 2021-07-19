@@ -23,6 +23,21 @@ spec:
       externalIPs:
         - ${COREDNS_IP}
       externalTrafficPolicy: Local
+    zoneFiles:
+      - filename: andromeda.db
+        domain: andromeda.${DOMAIN}
+        contents: |
+          $TTL 300 ;
+          andromeda.${DOMAIN}.   IN SOA    ns.dns.${DOMAIN}. hostmaster.${DOMAIN}. 2021072001 7200 1800 86400 30
+          andromeda.${DOMAIN}.   IN CNAME  ${ANDROMEDA_CNAME_TARGET}.
+          *.andromeda.${DOMAIN}. IN CNAME  andromeda.${DOMAIN}.
+      - filename: sunflower.db
+        domain: sunflower.${DOMAIN}
+        contents: |
+          $TTL 300 ;
+          sunflower.${DOMAIN}.   IN SOA    ns.dns.${DOMAIN}. hostmaster.${DOMAIN}. 2021072001 7200 1800 86400 30
+          sunflower.${DOMAIN}.   IN CNAME  ${SUNFLOWER_CNAME_TARGET}.
+          *.sunflower.${DOMAIN}. IN CNAME  sunflower.${DOMAIN}.
     servers:
       # only 1 protocol per port so scheme is required here to limit to udp
       # feature gate MixedProtocolLBService allows multi-protocol per port
@@ -45,6 +60,10 @@ spec:
               pods insecure
               fallthrough in-addr.arpa ip6.arpa
               ttl 30
+          - name: file
+            parameters: /etc/coredns/andromeda.db andromeda.${DOMAIN}
+          - name: file
+            parameters: /etc/coredns/sunflower.db sunflower.${DOMAIN}
           - name: etcd
             parameters: ${DOMAIN}
             configBlock: |-
