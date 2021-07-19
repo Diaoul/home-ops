@@ -17,11 +17,16 @@ spec:
         namespace: flux-system
   values:
     sources:
+      - crd
       - ingress
     provider: cloudflare
     cloudflare:
       secretName: external-dns-cloudflare-api-token
     policy: sync
+    crd:
+      create: false
+      apiversion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
     resources:
       requests:
         cpu: 50m

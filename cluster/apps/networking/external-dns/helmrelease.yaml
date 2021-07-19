@@ -19,8 +19,16 @@ spec:
     provider: coredns
     domainFilters:
       - ${DOMAIN}
+    sources:
+      - crd
+      - service
+      - ingress
     policy: sync
     registry: noop
+    crd:
+      create: false
+      apiversion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
     resources:
       requests:
         cpu: 50m
