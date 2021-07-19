@@ -24,4 +24,4 @@ spec:
       - name: DOCKER_VERNEMQ_ALLOW_ANONYMOUS
         value: "on"
       - name: DOCKER_VERNEMQ_KUBERNETES_CLUSTER_NAME
-        value: cluster.milkyway
+        value: ${CLUSTER_DOMAIN}

@@ -28,7 +28,7 @@ spec:
       # feature gate MixedProtocolLBService allows multi-protocol per port
       # for LoadBalancer
       - zones:
-          - zone: cluster.milkyway.
+          - zone: ${CLUSTER_DOMAIN}.
             scheme: dns://
           - zone: ${DOMAIN}.
             scheme: dns://
@@ -40,7 +40,7 @@ spec:
               lameduck 5s
           - name: ready
           - name: kubernetes
-            parameters: cluster.milkyway in-addr.arpa ip6.arpa
+            parameters: ${CLUSTER_DOMAIN} in-addr.arpa ip6.arpa
             configBlock: |-
               pods insecure
               fallthrough in-addr.arpa ip6.arpa

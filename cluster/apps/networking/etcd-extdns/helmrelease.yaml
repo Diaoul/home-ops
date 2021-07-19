@@ -19,7 +19,7 @@ spec:
     auth:
       rbac:
         enabled: false
-    clusterDomain: cluster.milkyway
+    clusterDomain: ${CLUSTER_DOMAIN}
     persistence:
       enabled: false
     metrics:
