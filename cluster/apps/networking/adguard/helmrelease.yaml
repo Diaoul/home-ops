@@ -1,0 +1,73 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: adguard
+  namespace: networking
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: adguard-home
+      version: 4.3.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: adguard/adguardhome
+      tag: v0.106.3
+    service:
+      dns-tcp:
+        enabled: true
+        type: LoadBalancer
+        externalIPs:
+          - ${ADGUARD_IP}
+        ports:
+          dns-tcp:
+            enabled: true
+            port: 53
+            protocol: TCP
+            targetPort: 53
+        externalTrafficPolicy: Local
+      dns-udp:
+        enabled: true
+        type: LoadBalancer
+        externalIPs:
+          - ${ADGUARD_IP}
+        ports:
+          dns-udp:
+            port: 53
+            protocol: UDP
+            targetPort: 53
+        externalTrafficPolicy: Local
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: adguard.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - adguard.${DOMAIN}
+            secretName: adguard-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: adguard-config
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi

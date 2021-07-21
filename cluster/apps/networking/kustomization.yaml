@@ -7,7 +7,7 @@ resources:
   - external-dns
   - external-dns-cloudflare
   - coredns
-  - blocky
+  - adguard
   - ingress-nginx
   - dex
   - oauth2-proxy
