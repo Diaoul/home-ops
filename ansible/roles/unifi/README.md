@@ -29,3 +29,33 @@ Allow users and set public keys for authentication.
     }
 }
 ```
+
+### Dynamic DNS
+Use Unifi's ability to update a dynamic DNS, e.g. CloudFlare:
+
+```json
+"service": {
+    "dns": {
+        "dynamic": {
+            "interface": {
+                "eth0": {
+                    "service": {
+                        "custom-cloudflare": {
+                            "host-name": [
+                                "{{ unifi_domain }}"
+                            ],
+                            "login": "{{ unifi_email }}",
+                            "options": [
+                                "zone={{ unifi_domain }}"
+                            ],
+                            "password": "{{ unifi_cloudflare_global_api_key }}",
+                            "protocol": "cloudflare",
+                            "server": "api.cloudflare.com/client/v4"
+                        }
+                    }
+                }
+            }
+        },
+    }
+}
+```

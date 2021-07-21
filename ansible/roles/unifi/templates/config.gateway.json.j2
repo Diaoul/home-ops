@@ -36,32 +36,13 @@
     },
     "service": {
         "dns": {
-            "dynamic": {
-                "interface": {
-                    "eth0": {
-                        "service": {
-                            "custom-cloudflare": {
-                                "host-name": [
-                                    "{{ unifi_domain }}"
-                                ],
-                                "login": "{{ unifi_email }}",
-                                "options": [
-                                    "zone={{ unifi_domain }}"
-                                ],
-                                "password": "{{ unifi_cloudflare_global_api_key }}",
-                                "protocol": "cloudflare",
-                                "server": "api.cloudflare.com/client/v4"
-                            }
-                        }
-                    }
-                }
-            },
             "forwarding": {
                 "options": [
                     "server=/{{ unifi_domain }}/10.44.0.4",
-                    "server=/andromeda.{{ unifi_domain }}/#",
+                    "server=/milkyway.{{ unifi_domain }}/#",
                     "server=/sunflower.{{ unifi_domain }}/#",
-                    "server=/cluster.milkyway/10.44.0.4",
+                    "server=/andromeda.{{ unifi_domain }}/#",
+                    "server=/{{ unifi_cluster_domain }}/10.44.0.4",
                     "server=1.1.1.1",
                     "server=1.0.0.1"
                 ]
