@@ -113,42 +113,38 @@ spec:
           snapshots:
             enabled: True
     ingress:
-      enabled: true
-      annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
-        cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
-        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
-      hosts:
-        - frigate.${DOMAIN}
-      tls:
-        - hosts:
-            - frigate.${DOMAIN}
-          secretName: frigate-tls
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - frigate.${DOMAIN}
+        tls:
+          - hosts:
+              - frigate.${DOMAIN}
+            secretName: frigate-tls
     podAnnotations:
       configmap.reloader.stakater.com/reload: frigate
     persistence:
       data:
         enabled: true
         existingClaim: frigate-data
-    extraVolumeMounts:
-      - mountPath: /media
-        name: nfs-singularity-recordings
-      - mountPath: /tmp/cache
-        name: cache
-    extraVolumes:
-      - name: nfs-singularity-recordings
-        persistentVolumeClaim:
-          claimName: nfs-singularity-recordings
-      - name: cache
-        emptyDir:
-          medium: Memory
+      recordings:
+        enabled: true
+        existingClaim: nfs-singularity-recordings
+        mountPath: /recordings
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - {key: feature.node.kubernetes.io/custom-intel-gpu, operator: In, values: ["true"]}
+                - key: feature.node.kubernetes.io/custom-intel-gpu
+                  operator: In
+                  values:
+                    - "true"
     resources:
       requests:
         cpu: 500m
