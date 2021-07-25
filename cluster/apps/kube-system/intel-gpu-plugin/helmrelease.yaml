@@ -29,5 +29,5 @@ spec:
             - matchExpressions:
                 - key: feature.node.kubernetes.io/custom-intel-gpu
                   operator: In
-                  values: 
+                  values:
                     - "true"
