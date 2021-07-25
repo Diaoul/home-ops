@@ -4,6 +4,7 @@ extends: default
 ignore: |
   .github/
   user-data*.yaml
+  *.sops.yml
 
 rules:
   indentation:
