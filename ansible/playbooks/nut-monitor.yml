@@ -1,6 +1,7 @@
 ---
-- hosts: all
+- hosts:
+    - kubernetes
+    - unifi_controller
   gather_facts: no
   roles:
     - name: nut_monitor
-      when: nut_monitor_enabled is defined and nut_monitor_enabled

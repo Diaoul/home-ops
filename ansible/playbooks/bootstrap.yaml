@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: kubernetes
   vars:
     user: antoine
     ssh_authorized_keys:
