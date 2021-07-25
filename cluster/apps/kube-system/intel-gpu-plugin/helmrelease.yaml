@@ -19,11 +19,15 @@ spec:
     image:
       repository: intel/intel-gpu-plugin
       tag: 0.21.0
-    securityContext:
-      readOnlyRootFilesystem: true
+    args:
+      - -shared-dev-num
+      - "2"
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
-                - {key: feature.node.kubernetes.io/custom-intel-gpu, operator: In, values: ["true"]}
+                - key: feature.node.kubernetes.io/custom-intel-gpu
+                  operator: In
+                  values: 
+                    - "true"
