@@ -24,7 +24,7 @@ spec:
         enabled: true
         type: LoadBalancer
         externalIPs:
-          - 10.44.0.64
+          - ${QBITTORRENT_IP}
         ports:
           bittorrent:
             enabled: true
@@ -38,8 +38,6 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
           cert-manager.io/cluster-issuer: letsencrypt-production
-          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
-          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
         hosts:
           - host: qb.${DOMAIN}
             paths:

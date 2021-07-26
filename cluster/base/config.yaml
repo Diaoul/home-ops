@@ -9,5 +9,6 @@ data:
   INGRESS_NGINX_IP: 10.44.0.1
   COREDNS_IP: 10.44.0.4
   ADGUARD_IP: 10.44.0.5
+  QBITTORRENT_IP: 10.44.0.64
   UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
   CLUSTER_DOMAIN: cluster.milkyway
