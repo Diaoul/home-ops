@@ -8,18 +8,17 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://blakeblackshear.github.io/blakeshome-charts/
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: frigate
-      version: 6.0.1
+      version: 5.0.0
       sourceRef:
         kind: HelmRepository
-        name: blakeshome
+        name: k8s-at-home
         namespace: flux-system
   values:
     image:
       repository: blakeblackshear/frigate
       tag: 0.8.4-amd64
-    shmSize: 1Gi
     config: |
       mqtt:
         host: vernemq
@@ -121,7 +120,10 @@ spec:
           nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
         hosts:
-          - frigate.${DOMAIN}
+          - host: frigate.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
         tls:
           - hosts:
               - frigate.${DOMAIN}
@@ -132,10 +134,11 @@ spec:
       data:
         enabled: true
         existingClaim: frigate-data
-      recordings:
+      media:
         enabled: true
         existingClaim: nfs-singularity-recordings
-        mountPath: /recordings
+      cache:
+        enabled: true
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
