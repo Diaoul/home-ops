@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: hotio/readarr
-      tag: nightly-0.1.0.896
+      tag: nightly-0.1.0.904
     env:
       PUID: 568
       PGID: 568
