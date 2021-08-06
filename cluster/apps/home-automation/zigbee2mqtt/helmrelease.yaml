@@ -91,7 +91,7 @@ spec:
         enabled: true
         image:
           repository: codercom/code-server
-          tag: 3.11.0
+          tag: 3.11.1
         workingDir: /data
         args:
           - --user-data-dir
