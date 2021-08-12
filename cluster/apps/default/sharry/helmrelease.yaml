@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: eikek0/sharry
-      tag: 1.8.0
+      tag: v1.9.0
     config: |
       sharry.restserver {
         base-url = "https://sharry.${DOMAIN}"
