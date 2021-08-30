@@ -26,7 +26,7 @@ spec:
           secret_access_key: ${LOKI_MINIO_SECRET_KEY}
           s3forcepathstyle: true
           insecure: true
-        boltd_shipper:
+        boltdb_shipper:
           active_index_directory: /data/index
           cache_location: /data/boltdb-cache
           shared_store: s3
