@@ -22,6 +22,7 @@ spec:
       storage_config:
         aws:
           endpoint: singularity.milkyway:9000
+          bucketnames: loki
           access_key_id: ${LOKI_MINIO_ACCESS_KEY}
           secret_access_key: ${LOKI_MINIO_SECRET_KEY}
           s3forcepathstyle: true
