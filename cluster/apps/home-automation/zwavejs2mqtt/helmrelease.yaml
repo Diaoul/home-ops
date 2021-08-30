@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: zwavejs/zwavejs2mqtt
-      tag: 5.5.1
+      tag: 5.5.2
     ingress:
       main:
         enabled: true
