@@ -1,0 +1,56 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: thanos
+  namespace: monitoring
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+      chart: thanos
+      version: 5.3.2
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    query:
+      dnsDiscovery:
+        sidecarsService: prometheus-thanos-discovery
+        sidecarsNamespace: monitoring
+    ingress:
+      enabled: true
+      hostname: thanos.${DOMAIN}
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+      tls: true
+    objstoreConfig: |
+      type: S3
+      config:
+        bucket: thanos
+        endpoint: singularity.milkyway:9000
+        insecure: true
+        access_key: ${THANOS_MINIO_ACCESS_KEY}
+        secret_key: ${THANOS_MINIO_SECRET_KEY}
+    queryFrontend:
+      enabled: false
+    bucketweb:
+      enabled: true
+    compactor:
+      enabled: true
+      persistence:
+        enabled: false
+    storegateway:
+      enabled: true
+      persistence:
+        enabled: true
+        size: 5Gi
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
