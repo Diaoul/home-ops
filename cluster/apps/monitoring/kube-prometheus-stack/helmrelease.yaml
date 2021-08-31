@@ -16,6 +16,7 @@ spec:
         name: prometheus-community
         namespace: flux-system
   values:
+    fullnameOverride: prometheus
     alertmanager:
       ingress:
         enabled: true
@@ -58,6 +59,8 @@ spec:
       enabled: false
     kubeProxy:
       enabled: false
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
     nodeExporter:
       enabled: true
       serviceMonitor:
@@ -66,6 +69,8 @@ spec:
             sourceLabels:
               - __meta_kubernetes_pod_node_name
             targetLabel: kubernetes_node
+    prometheus-node-exporter:
+      fullnameOverride: prometheus-node-exporter
     prometheus:
       ingress:
         enabled: true
