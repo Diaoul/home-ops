@@ -18,11 +18,8 @@ spec:
         namespace: flux-system
   values:
     image:
-      repository: linuxserver/bazarr
-      tag: v0.9.0.2-ls89
-    env:
-      PUID: 568
-      PGID: 568
+      repository: ghcr.io/k8s-at-home/bazarr
+      tag: v0.9.7
     ingress:
       main:
         enabled: true
