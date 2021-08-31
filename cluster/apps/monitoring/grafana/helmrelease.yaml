@@ -146,7 +146,6 @@ spec:
             - grafana.${DOMAIN}
           secretName: grafana-tls
     persistence:
-      enabled: true
-      existingClaim: grafana-data
+      enabled: false
     podAnnotations:
       configmap.reloader.stakater.com/reload: grafana
