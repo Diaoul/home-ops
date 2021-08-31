@@ -16,6 +16,7 @@ spec:
         name: bitnami
         namespace: flux-system
   values:
+    clusterDomain: ${CLUSTER_DOMAIN}
     query:
       dnsDiscovery:
         sidecarsService: prometheus-thanos-discovery
