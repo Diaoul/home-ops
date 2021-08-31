@@ -38,6 +38,7 @@ spec:
         containerPort: 1514
         service:
           type: LoadBalancer
-          loadBalancerIP: ${PROMTAIL_IP}
+          externalIPs:
+            - ${PROMTAIL_IP}
     serviceMonitor:
       enabled: true
