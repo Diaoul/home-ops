@@ -17,17 +17,12 @@ spec:
         namespace: flux-system
   values:
     updateStrategy: RollingUpdate
-    extraEnvVars:
-      - name: slackHookUrl
-        valueFrom:
-          secretKeyRef:
-            name: kured-discord-webhook
-            key: webhook
     configuration:
       rebootDays:
         - su
       startTime: "3:00"
       endTime: "5:00"
       timeZone: Europe/Paris
+      notifyUrl: ${KURED_DISCORD_WEBHOOK_URL}
     metrics:
       create: true
