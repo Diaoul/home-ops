@@ -6,6 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   interval: 30m
+  # renovate: datasource=github-releases
   url: https://github.com/kubernetes-sigs/external-dns.git
   ref:
     tag: v0.8.0
