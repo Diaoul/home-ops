@@ -53,6 +53,17 @@
         "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-zA-Z-]+)-(?<currentValue>.*)\n",
       ],
       "datasourceTemplate": "helm"
+    },
+    // external-dns and external-snapshotter crd
+    {
+      "fileMatch": [
+        "cluster/crds/external-snapshotter/.+\\.yaml$",
+        "cluster/crds/external-dns/.+\\.yaml$"
+      ],
+      "matchStrings": [
+        "datasource=(?<datasource>.*?)\n *url: https:\/\/github\\.com\/(?<depName>.*?)\\.git\n *ref:\n *tag: (?<currentValue>.*)\n"
+      ],
+      "datasourceTemplate": "github-releases"
     }
   ],
   "packageRules": [
