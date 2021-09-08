@@ -9,7 +9,7 @@ spec:
   url: https://github.com/strimzi/strimzi-kafka-operator.git
   ref:
     # renovate: registryUrl=https://strimzi.io/charts chart=strimzi-kafka-operator
-    tag: 0.23.0
+    tag: 0.25.0
   ignore: |
     # exclude all
     /*
