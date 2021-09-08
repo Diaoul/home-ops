@@ -1,4 +1,5 @@
 ---
+# based on https://github.com/rook/rook/blob/master/cluster/examples/kubernetes/ceph/cluster.yaml
 apiVersion: ceph.rook.io/v1
 kind: CephCluster
 metadata:
@@ -6,16 +7,37 @@ metadata:
   namespace: rook-ceph
 spec:
   cephVersion:
-    image: ceph/ceph:v16.2.5
+    image: quay.io/ceph/ceph:v16.2.5
+    allowUnsupported: false
   dataDirHostPath: /var/lib/rook
+  skipUpgradeChecks: false
+  continueUpgradeAfterChecksEvenIfNotHealthy: false
+  waitTimeoutForHealthyOSDInMinutes: 10
   mon:
     count: 3
+    allowMultiplePerNode: false
+  mgr:
+    count: 1
+    modules:
+      - name: pg_autoscaler
+        enabled: true
   dashboard:
     enabled: true
     port: 7000
     ssl: false
   monitoring:
     enabled: true
+  crashCollector:
+    disable: false
+  cleanupPolicy:
+    # set to "yes-really-destroy-data" to destroy data on uninstall
+    confirmation: ""
+    sanitizeDisks:
+      method: quick
+      dataSource: zero
+      iteration: 1
+    allowUninstallWithVolumes: false
+  removeOSDsIfOutAndSafeToRemove: false
   storage:
     useAllNodes: false
     useAllDevices: false
@@ -30,3 +52,27 @@ spec:
       - name: k8s-node-3
         devices:
           - name: nvme0n1
+  disruptionManagement:
+    managePodBudgets: true
+    osdMaintenanceTimeout: 30
+    pgHealthCheckTimeout: 0
+    manageMachineDisruptionBudgets: false
+    machineDisruptionBudgetNamespace: openshift-machine-api
+  healthCheck:
+    daemonHealth:
+      mon:
+        disabled: false
+        interval: 45s
+      osd:
+        disabled: false
+        interval: 60s
+      status:
+        disabled: false
+        interval: 60s
+    livenessProbe:
+      mon:
+        disabled: false
+      mgr:
+        disabled: false
+      osd:
+        disabled: false
