@@ -54,7 +54,7 @@
       ],
       "datasourceTemplate": "helm"
     },
-    // external-dns and external-snapshotter crd
+    // github release based crd
     {
       "fileMatch": [
         "cluster/crds/external-snapshotter/.+\\.yaml$",
