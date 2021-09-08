@@ -8,3 +8,4 @@ resources:
   - toolbox
   - direct-mount
   - monitoring
+  - snapshot-controller
