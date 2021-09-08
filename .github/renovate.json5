@@ -143,5 +143,15 @@
       "groupName": "rook-ceph",
       "additionalBranchPrefix": "",
     },
+    // group snapshot-controller
+    {
+      "matchDatasources": ["github-releases", "docker"],
+      "matchPackagePatterns": [
+        "external-snapshotter",
+        "snapshot-controller"
+      ],
+      "groupName": "external-snapshotter",
+      "additionalBranchPrefix": "",
+    },
   ]
 }
