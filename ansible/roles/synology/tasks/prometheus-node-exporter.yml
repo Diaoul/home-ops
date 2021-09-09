@@ -8,7 +8,7 @@
   become: yes
 
 - name: install prometheus node-exporter
-  community.general.docker_compose:
+  community.docker.docker_compose:
     project_name: node-exporter
     definition:
       version: "3.7"
