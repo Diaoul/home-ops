@@ -1,7 +1,5 @@
 ---
-- hosts:
-    - master
-    - worker
+- hosts: kubernetes
   vars_prompt:
     - name: "restart_confirmation"
       prompt: "Restart when complete? [Y/n]"
