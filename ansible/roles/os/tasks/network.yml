@@ -5,3 +5,14 @@
     value: "1"
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
   when: '"master" in group_names or "worker" in group_names'
+
+- name: network | update hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  when: ansible_hostname != inventory_hostname
+
+- name: network | update /etc/hosts
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '^127\.0\.1\.1'
+    line: "127.0.1.1 {{ inventory_hostname }}"

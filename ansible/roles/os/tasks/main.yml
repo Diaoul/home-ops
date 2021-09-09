@@ -1,8 +1,4 @@
 ---
-- import_tasks: host.yml
-  tags:
-    - host
-
 - import_tasks: time.yml
   tags:
     - time
