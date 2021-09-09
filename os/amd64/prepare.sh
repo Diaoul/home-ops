@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-url='https://releases.ubuntu.com/20.04/ubuntu-20.04.2-live-server-amd64.iso'
+url='https://releases.ubuntu.com/21.04/ubuntu-21.04-desktop-amd64.iso'
 grub_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed'
 # shellcheck disable=SC2016
 server='${pxe_default_server}'
