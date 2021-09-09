@@ -34,7 +34,7 @@ repos:
         always_run: false
         entry: bash -c "cd ansible/ && exec ansible-lint --force-color"
         additional_dependencies:
-          - ansible>=4.2,<4.3
+          - ansible>=4.5,<4.6
   - repo: https://github.com/k8s-at-home/sops-pre-commit
     rev: v2.0.3
     hooks:
