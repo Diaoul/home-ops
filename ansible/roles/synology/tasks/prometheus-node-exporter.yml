@@ -10,6 +10,7 @@
 - name: install prometheus node-exporter
   community.docker.docker_compose:
     project_name: node-exporter
+    pull: yes
     definition:
       version: "3.7"
       services:
