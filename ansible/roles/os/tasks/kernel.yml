@@ -51,6 +51,7 @@
   loop:
     - br_netfilter
     - overlay
+    - rbd
   when: '"master" in group_names or "worker" in group_names'
 
 - name: kernel | enable modules on boot
@@ -61,4 +62,5 @@
   loop:
     - br_netfilter
     - overlay
+    - rbd
   when: '"master" in group_names or "worker" in group_names'
