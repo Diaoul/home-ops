@@ -43,6 +43,10 @@ spec:
           - hosts:
               - hass.${DOMAIN}
             secretName: hass-tls
+    metrics:
+      enabled: true
+      prometheusRule:
+        enabled: true
     persistence:
       config:
         enabled: true
