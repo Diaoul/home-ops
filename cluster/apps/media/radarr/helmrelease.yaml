@@ -50,6 +50,16 @@ spec:
           - hosts:
               - radarr.${DOMAIN}
             secretName: radarr-tls
+    metrics:
+      enabled: true
+      prometheusRule:
+        enabled: true
+        exporter:
+          image:
+            repository: ghcr.io/onedr0p/exportarr
+            tag: v0.6.1
+          env:
+            additionalMetrics: true
     persistence:
       config:
         enabled: true
