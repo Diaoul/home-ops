@@ -55,6 +55,17 @@ spec:
         enabled: true
         existingClaim: nfs-singularity-media
         mountPath: /media
+    metrics:
+      enabled: true
+      prometheusRule:
+        enabled: true
+      exporter:
+        image:
+          repository: esanchezm/prometheus-qbittorrent-exporter
+          tag: v1.2.0
+        env:
+          user: ${QBITTORRENT_USER}
+          password: ${QBITTORRENT_PASSWORD}
     resources:
       requests:
         cpu: 500m
