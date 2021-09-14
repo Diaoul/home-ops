@@ -25,8 +25,9 @@ spec:
     envFrom:
       - secretRef:
           name: unifi-poller-credentials
-    prometheus:
-      serviceMonitor:
+    metrics:
+      enabled: true
+      prometheusRule:
         enabled: true
     resources:
       requests:
