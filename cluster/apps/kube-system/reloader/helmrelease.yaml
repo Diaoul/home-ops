@@ -15,3 +15,10 @@ spec:
         kind: HelmRepository
         name: stakater
         namespace: flux-system
+  values:
+    nameOverride: reloader
+    fullnameOverride: reloader
+    reloader:
+      podMonitor:
+        enabled: true
+        namespace: kube-system
