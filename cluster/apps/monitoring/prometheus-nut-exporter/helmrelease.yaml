@@ -19,11 +19,13 @@ spec:
     image:
       repository: hon95/prometheus-nut-exporter
       tag: 1.1.1
-    prometheus:
+    metrics:
+      enabled: true
       serviceMonitor:
-        enabled: true
         targets:
           - hostname: nut-server-garage.network-system
             port: 3493
             interval: 30s
             scrapeTimeout: 10s
+      prometheusRule:
+        enabled: true
