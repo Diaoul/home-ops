@@ -7,5 +7,4 @@ resources:
   - promtail
   - thanos
   - unifi-poller
-  - prometheus-nut-exporter
   - grafana
