@@ -43,6 +43,8 @@ spec:
       config:
         enabled: true
         existingClaim: esphome-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
     resources:
       requests:
         cpu: 100m

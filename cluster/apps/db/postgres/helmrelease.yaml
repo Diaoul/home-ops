@@ -24,3 +24,6 @@ spec:
     persistence:
       enabled: true
       existingClaim: postgresql
+    primary:
+      podAnnotations:
+        backup.velero.io/backup-volumes: data

@@ -40,6 +40,8 @@ spec:
       config:
         enabled: true
         existingClaim: jackett-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
     resources:
       requests:
         cpu: 200m

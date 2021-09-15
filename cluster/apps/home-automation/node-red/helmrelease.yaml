@@ -42,6 +42,8 @@ spec:
       data:
         enabled: true
         existingClaim: node-red-data
+    podAnnotations:
+      backup.velero.io/backup-volumes: data
     resources:
       requests:
         cpu: 200m

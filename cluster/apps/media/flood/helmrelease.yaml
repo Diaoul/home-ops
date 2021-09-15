@@ -46,6 +46,8 @@ spec:
       data:
         enabled: true
         existingClaim: flood-data
+    podAnnotations:
+      backup.velero.io/backup-volumes: data
     resources:
       requests:
         cpu: 50m

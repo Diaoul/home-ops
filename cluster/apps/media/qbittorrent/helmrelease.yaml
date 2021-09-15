@@ -55,6 +55,8 @@ spec:
         enabled: true
         existingClaim: nfs-singularity-media
         mountPath: /media
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
     metrics:
       enabled: true
       prometheusRule:

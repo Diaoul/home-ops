@@ -44,6 +44,8 @@ spec:
       config:
         enabled: true
         existingClaim: vaultwarden-config
+        podAnnotations:
+          backup.velero.io/backup-volumes: config
     postgresql:
       enabled: true
       postgresqlUsername: vaultwarden
@@ -52,3 +54,6 @@ spec:
       persistence:
         enabled: true
         existingClaim: vaultwarden-postgresql
+      primary:
+        podAnnotations:
+          backup.velero.io/backup-volumes: data

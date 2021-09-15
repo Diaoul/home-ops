@@ -47,6 +47,8 @@ spec:
       config:
         enabled: true
         existingClaim: home-assistant-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
     addons:
       codeserver:
         enabled: true

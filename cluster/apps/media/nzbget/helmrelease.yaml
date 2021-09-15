@@ -42,6 +42,8 @@ spec:
         enabled: true
         existingClaim: nfs-singularity-media
         mountPath: /media
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
     resources:
       requests:
         cpu: 500m

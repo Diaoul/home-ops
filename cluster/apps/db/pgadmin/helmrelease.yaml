@@ -43,3 +43,5 @@ spec:
     persistentVolume:
       enabled: true
       existingClaim: pgadmin-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: pgadmin-data

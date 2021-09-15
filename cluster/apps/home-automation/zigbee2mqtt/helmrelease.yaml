@@ -44,6 +44,8 @@ spec:
         enabled: true
         type: hostPath
         hostPath: /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B001936534C-if00
+    podAnnotations:
+      backup.velero.io/backup-volumes: data
     securityContext:
       privileged: true
     affinity:
