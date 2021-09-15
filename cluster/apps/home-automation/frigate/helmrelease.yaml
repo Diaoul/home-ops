@@ -129,7 +129,7 @@ spec:
               - frigate.${DOMAIN}
             secretName: frigate-tls
     podAnnotations:
-      configmap.reloader.stakater.com/reload: frigate
+      configmap.reloader.stakater.com/reload: frigate-config
     persistence:
       data:
         enabled: true
