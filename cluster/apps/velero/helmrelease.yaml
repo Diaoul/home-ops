@@ -1,0 +1,55 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: velero
+  namespace: velero
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://vmware-tanzu.github.io/helm-charts
+      chart: velero
+      version: 2.23.8
+      sourceRef:
+        kind: HelmRepository
+        name: vmware-tanzu
+        namespace: flux-system
+  values:
+    upgradeCRDs: false
+    image:
+      repository: ghcr.io/k8s-at-home/velero
+    configuration:
+      provider: aws
+      backupStorageLocation:
+        name: default
+        bucket: velero
+        config:
+          s3ForcePathStyle: true
+          s3Url: http://singularity.milkyway:9000
+          publicUrl: https://s3.${DOMAIN}
+      volumeSnapshotLocation:
+        name: default
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: ghcr.io/k8s-at-home/velero-plugin-for-aws:v1.2.1
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    credentials:
+      name: s3-credentials
+      secretContents:
+        cloud: |
+          [default]
+          aws_access_key_id=${VELERO_MINIO_ACCESS_KEY}
+          aws_secret_access_key=${VELERO_MINIO_SECRET_KEY}
+    schedules:
+      daily-backup:
+        schedule: "0 6 * * *"
+        template:
+          ttl: 120h
+    metrics:
+      serviceMonitor:
+        enabled: true
+    deployRestic: true
