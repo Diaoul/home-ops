@@ -51,7 +51,7 @@ spec:
       daily-backup:
         schedule: "0 6 * * *"
         template:
-          ttl: 120h
+          ttl: 240h
     metrics:
       serviceMonitor:
         enabled: true
