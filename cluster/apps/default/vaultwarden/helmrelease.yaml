@@ -26,6 +26,7 @@ spec:
       SIGNUPS_ALLOWED: false
       YUBICO_CLIENT_ID: ${VAULTWARDEN_YUBICO_CLIENT_ID}
       YUBICO_SECRET_KEY: ${VAULTWARDEN_YUBICO_SECRET_KEY}
+      WEBSOCKET_ENABLED: true
     ingress:
       main:
         enabled: true
@@ -36,6 +37,27 @@ spec:
           - host: vaultwarden.${DOMAIN}
             paths:
               - path: /
+                pathType: Prefix
+              - path: /notifications/hub/negotiate
+                pathType: Prefix
+              - path: /notifications/hub
+                pathType: Prefix
+                servicePort: 3012
+        tls:
+          - hosts:
+              - vaultwarden.${DOMAIN}
+            secretName: vaultwarden-tls
+      admin:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/24
+        hosts:
+          - host: vaultwarden.${DOMAIN}
+            paths:
+              - path: /admin
+                pathType: Prefix
         tls:
           - hosts:
               - vaultwarden.${DOMAIN}
