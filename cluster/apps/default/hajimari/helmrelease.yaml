@@ -23,6 +23,7 @@ spec:
       namespaceSelector:
         matchNames:
           - db
+          - default
           - home-automation
           - media
           - monitoring
