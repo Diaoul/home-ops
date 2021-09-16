@@ -1,0 +1,52 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prowlarr
+  namespace: media
+spec:
+  releaseName: prowlarr
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: prowlarr
+      version: 4.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/k8s-at-home/prowlarr-nightly
+      tag: v0.1.1.940
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: prowlarr.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - prowlarr.${DOMAIN}
+            secretName: prowlarr-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: prowlarr-config
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi

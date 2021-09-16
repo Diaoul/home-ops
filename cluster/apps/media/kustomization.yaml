@@ -16,3 +16,4 @@ resources:
   - bazarr
   - jellyfin
   - photoprism
+  - prowlarr
