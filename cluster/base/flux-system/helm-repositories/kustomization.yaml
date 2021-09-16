@@ -7,6 +7,7 @@ resources:
   - coredns.yaml
   - dex.yaml
   - grafana.yaml
+  - hajimari.yaml
   - ingress-nginx.yaml
   - jetstack.yaml
   - k8s-at-home.yaml

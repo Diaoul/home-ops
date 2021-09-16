@@ -1,0 +1,96 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: hajimari
+  namespace: default
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://hajimari.io
+      chart: hajimari
+      version: 1.1.1
+      sourceRef:
+        kind: HelmRepository
+        name: hajimari
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/toboshii/hajimari
+      tag: v0.1.0
+    hajimari:
+      namespaceSelector:
+        matchNames:
+          - db
+          - home-automation
+          - media
+          - monitoring
+          - networking
+      name: Diaoul
+      customApps:
+        - name: Singularity
+          url: https://singularity.milkyway:5001
+        - name: OctoPrint
+          url: http://curiosity.milkyway
+      groups:
+        - name: Communicate
+          links:
+            - name: Discord
+              url: https://discord.com
+            - name: Gmail
+              url: https://gmail.com
+        - name: Cloud
+          links:
+            - name: Cloudflare
+              url: https://dash.cloudflare.com
+            - name: Drive
+              url: https://drive.google.com
+        - name: Dev
+          links:
+            - name: GitHub
+              url: https://github.com/
+        - name: Media
+          links:
+            - name: Spotify
+              url: http://browse.spotify.com
+            - name: YouTube
+              url: https://youtube.com/feed/subscriptions
+        - name: Reading
+          links:
+            - name: Reddit
+              url: http://reddit.com
+        - name: Tech
+          links:
+            - name: Hacker News
+              url: https://news.ycombinator.com/
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hosts:
+          - host: hajimari.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - hajimari.${DOMAIN}
+            secretName: hajimari-tls
+    persistence:
+      data:
+        enabled: true
+        existingClaim: hajimari-data
+    podAnnotations:
+      backup.velero.io/backup-volumes: data
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi
