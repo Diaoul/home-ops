@@ -38,6 +38,8 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
           cert-manager.io/cluster-issuer: letsencrypt-production
+          hajimari.io/enable: "true"
+          hajimari.io/icon: cloud-download
         hosts:
           - host: qb.${DOMAIN}
             paths:

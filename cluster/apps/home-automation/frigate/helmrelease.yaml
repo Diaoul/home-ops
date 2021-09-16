@@ -119,6 +119,8 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-production
           nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+          hajimari.io/enable: "true"
+          hajimari.io/icon: cctv
         hosts:
           - host: frigate.${DOMAIN}
             paths:
