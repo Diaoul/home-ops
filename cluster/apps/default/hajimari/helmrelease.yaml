@@ -32,8 +32,10 @@ spec:
       customApps:
         - name: Singularity
           url: https://singularity.milkyway:5001
+          icon: nas
         - name: OctoPrint
           url: http://curiosity.milkyway
+          icon: printer-3d
       groups:
         - name: Communicate
           links:
