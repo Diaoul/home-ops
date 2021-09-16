@@ -33,6 +33,8 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
           cert-manager.io/cluster-issuer: letsencrypt-production
+          hajimari.io/enable: "true"
+          hajimari.io/icon: lock
         hosts:
           - host: vaultwarden.${DOMAIN}
             paths:
