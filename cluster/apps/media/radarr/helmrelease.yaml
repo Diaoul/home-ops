@@ -28,7 +28,7 @@ spec:
           nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
           nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
           hajimari.io/enable: "true"
-          hajimari.io/icon: movie
+          hajimari.io/icon: filmstrip
         hosts:
           - host: radarr.${DOMAIN}
             paths:
