@@ -6,3 +6,7 @@
 - import_tasks: prometheus-node-exporter.yml
   tags:
     - prometheus-node-exporter
+
+- import_tasks: minio.yml
+  tags:
+    - minio
