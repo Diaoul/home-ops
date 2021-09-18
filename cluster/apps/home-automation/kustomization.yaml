@@ -5,6 +5,7 @@ resources:
   - pv
   - pvc
   - vernemq
+  - emqx
   - zigbee2mqtt
   - zwavejs2mqtt
   - esphome

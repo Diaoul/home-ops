@@ -6,6 +6,7 @@ resources:
   - blakeshome.yaml
   - coredns.yaml
   - dex.yaml
+  - emqx.yaml
   - grafana.yaml
   - hajimari.yaml
   - ingress-nginx.yaml
