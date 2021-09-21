@@ -61,7 +61,10 @@ spec:
     config:
       homeassistant: true
       mqtt:
-        server: mqtt://vernemq
+        server: mqtt://emqx
+        client_id: zigbee2mqtt
+        user: ${EMQX_USER_USERNAME}
+        password: ${EMQX_USER_PASSWORD}
       serial:
         port: /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B001936534C-if00
       advanced:

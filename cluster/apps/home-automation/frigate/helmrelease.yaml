@@ -21,7 +21,9 @@ spec:
       tag: 0.8.4-amd64
     config: |
       mqtt:
-        host: vernemq
+        host: emqx
+        user: ${EMQX_USER_USERNAME}
+        password: ${EMQX_USER_PASSWORD}
       database:
         path: /data/frigate.db
       detectors:
