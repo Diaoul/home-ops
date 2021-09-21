@@ -1,8 +1,8 @@
 ---
-- name: install nut package
+- name: install nut-client package
   apt:
     name:
-      - nut
+      - nut-client
   become: yes
 
 - name: set netclient mode in nut.conf
