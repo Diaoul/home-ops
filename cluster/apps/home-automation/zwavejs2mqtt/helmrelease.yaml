@@ -19,6 +19,11 @@ spec:
     image:
       repository: zwavejs/zwavejs2mqtt
       tag: 5.6.0
+    service:
+      main:
+        ports:
+          websocket:
+            enabled: true
     ingress:
       main:
         enabled: true
