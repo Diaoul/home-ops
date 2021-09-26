@@ -16,6 +16,7 @@ spec:
         name: kubernetes-sigs-descheduler
         namespace: flux-system
   values:
+    kind: Deployment
     deschedulerPolicy:
       strategies:
         RemoveDuplicates:
