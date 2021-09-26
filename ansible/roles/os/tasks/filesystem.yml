@@ -2,7 +2,7 @@
 - name: filesystem | sysctl update max_user_watches
   ansible.posix.sysctl:
     name: fs.inotify.max_user_watches
-    value: "65536"
+    value: "524288"
     sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
   when: '"master" in group_names or "worker" in group_names'
 
