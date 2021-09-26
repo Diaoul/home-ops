@@ -133,6 +133,8 @@ spec:
             secretName: frigate-tls
     podAnnotations:
       configmap.reloader.stakater.com/reload: frigate-config
+    securityContext:
+      privileged: true
     persistence:
       data:
         enabled: true
@@ -140,8 +142,10 @@ spec:
       media:
         enabled: true
         existingClaim: nfs-singularity-recordings
-      cache:
+      pci:
         enabled: true
+        type: hostPath
+        hostPath: /dev/apex_0
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
