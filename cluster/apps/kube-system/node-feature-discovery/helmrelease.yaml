@@ -47,6 +47,12 @@ spec:
                 - pciId:
                     class: ["0300"]
                     vendor: ["8086"]
+            - name: coral-tpu
+              matchOn:
+                - pciId:
+                    class: ["0880"]
+                    vendor: ["1ac1"]
+                    device: ["089a"]
             - name: zwave
               matchOn:
                 - usbId:
