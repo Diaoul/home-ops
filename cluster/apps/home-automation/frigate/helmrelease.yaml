@@ -27,10 +27,9 @@ spec:
       database:
         path: /data/frigate.db
       detectors:
-        cpu1:
-          type: cpu
-        cpu2:
-          type: cpu
+        coral:
+          type: edgetpu
+          device: pci
       objects:
         track:
           - person
@@ -148,6 +147,10 @@ spec:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
             - matchExpressions:
+                - key: feature.node.kubernetes.io/custom-coral-tpu
+                  operator: In
+                  values:
+                    - "true"
                 - key: feature.node.kubernetes.io/custom-intel-gpu
                   operator: In
                   values:
