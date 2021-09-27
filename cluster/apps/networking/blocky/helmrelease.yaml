@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: blocky
+  namespace: networking
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: blocky
+      version: 9.0.3
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/0xerr0r/blocky
+      tag: v0.16
+    controller:
+      replicas: 2
+    config: |
+      upstream:
+        default:
+          - tcp-tls:1dot1dot1dot1.cloudflare-dns.com
+          - tcp-tls:dns.google
+          - tcp-tls:dns10.quad9.net
+      conditional:
+        mapping:
+          ${DOMAIN}: tcp+udp:${COREDNS_IP}
+          ${CLUSTER_DOMAIN}: tcp+udp:${COREDNS_IP}
+          milkyway: tcp+udp:${ROUTER_IP}
+      clientLookup:
+        upstream: tcp+udp:${ROUTER_IP}
+      blocking:
+        blackLists:
+          ads:
+            - https://dbl.oisd.nl/
+        clientGroupsBlock:
+          default:
+            - ads
+      prometheus:
+        enable: true
+      bootstrapDns: tcp+udp:1.1.1.1
+      httpPort: 4000
+    service:
+      dns-udp:
+        enabled: true
+        type: LoadBalancer
+        externalIPs:
+          - ${BLOCKY_IP}
+        externalTrafficPolicy: Local
+        ports:
+          dns-udp:
+            enabled: true
+            port: 53
+            protocol: UDP
+            targetPort: 53
+    metrics:
+      enabled: true
+      prometheusRule:
+        enabled: true
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: blocky-config
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - blocky
+            topologyKey: kubernetes.io/hostname
+    resources:
+      requests:
+        cpu: 100m
+        memory: 200Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi
