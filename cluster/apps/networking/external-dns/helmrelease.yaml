@@ -8,25 +8,27 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://kubernetes-sigs.github.io/external-dns
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: external-dns
-      version: 1.2.0
+      version: 5.4.8
       sourceRef:
         kind: HelmRepository
-        name: external-dns
+        name: bitnami
         namespace: flux-system
   values:
-    sources:
-      - service
-      - ingress
     provider: coredns
-    env:
-      - name: ETCD_URLS
-        value: http://etcd-extdns:2379
-    policy: sync
     domainFilters:
       - ${DOMAIN}
+    sources:
+      - crd
+      - service
+      - ingress
+    policy: sync
     registry: noop
+    crd:
+      create: false
+      apiversion: externaldns.k8s.io/v1alpha1
+      kind: DNSEndpoint
     resources:
       requests:
         cpu: 50m
@@ -34,3 +36,7 @@ spec:
       limits:
         cpu: 50m
         memory: 50Mi
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
