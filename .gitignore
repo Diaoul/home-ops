@@ -1,9 +1,6 @@
 # ansible roles
 ansible/roles/xanmanning.k3s/
 
-# ansible vault password file
-ansible/vault_pass
-
 # ansible-lint cache
 .cache/
 
@@ -14,7 +11,6 @@ os/amd64/www/
 
 # k8s
 kubeconfig
-*-secret.yaml
 
 # binaries
 bin/
