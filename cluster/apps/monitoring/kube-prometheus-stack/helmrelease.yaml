@@ -113,7 +113,7 @@ spec:
                 requests:
                   storage: 20Gi
         thanos:
-          image: quay.io/thanos/thanos:v0.22.0
+          image: quay.io/thanos/thanos:v0.23.0
           objectStorageConfig:
             name: thanos-objstore-secret
             key: objstore.yml
