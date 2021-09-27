@@ -5,7 +5,7 @@ metadata:
   name: flaresolverr
   namespace: media
 spec:
-  interval: 5m
+  interval: 10m
   chart:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
