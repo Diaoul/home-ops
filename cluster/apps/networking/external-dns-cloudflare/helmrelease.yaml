@@ -31,6 +31,8 @@ spec:
             name: external-dns-cloudflare-credentials
             key: api-token
     policy: sync
+    domainFilters:
+      - ${DOMAIN}
     extraArgs:
       - --cloudflare-proxied
     resources:

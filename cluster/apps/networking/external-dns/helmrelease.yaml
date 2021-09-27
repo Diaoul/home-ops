@@ -16,19 +16,17 @@ spec:
         name: external-dns
         namespace: flux-system
   values:
-    provider: coredns
-    domainFilters:
-      - ${DOMAIN}
     sources:
-      - crd
       - service
       - ingress
+    provider: coredns
+    env:
+      - name: ETCD_URLS
+        value: http://etcd-extdns:2379
     policy: sync
+    domainFilters:
+      - ${DOMAIN}
     registry: noop
-    crd:
-      create: false
-      apiversion: externaldns.k8s.io/v1alpha1
-      kind: DNSEndpoint
     resources:
       requests:
         cpu: 50m
@@ -36,7 +34,3 @@ spec:
       limits:
         cpu: 50m
         memory: 50Mi
-    metrics:
-      enabled: true
-      serviceMonitor:
-        enabled: true
