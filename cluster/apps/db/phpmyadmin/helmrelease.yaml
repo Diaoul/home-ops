@@ -1,0 +1,37 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: phpmyadmin
+  namespace: db
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+      chart: phpmyadmin
+      version: 8.2.13
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    clusterDomain: ${CLUSTER_DOMAIN}
+    db:
+      host: mariadb
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        cert-manager.io/cluster-issuer: letsencrypt-production
+        nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+        nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+        hajimari.io/enable: "true"
+        hajimari.io/icon: database-cog
+        hajimari.io/appName: phpMyAdmin
+      hostname: phpmyadmin.${DOMAIN}
+      tls: true
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
