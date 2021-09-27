@@ -8,12 +8,12 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.bitnami.com/bitnami
+      # renovate: registryUrl=https://kubernetes-sigs.github.io/external-dns
       chart: external-dns
-      version: 5.4.8
+      version: 1.2.0
       sourceRef:
         kind: HelmRepository
-        name: bitnami
+        name: external-dns
         namespace: flux-system
   values:
     provider: coredns
