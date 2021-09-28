@@ -45,6 +45,10 @@ spec:
         enable: true
       bootstrapDns: tcp+udp:1.1.1.1
       httpPort: 4000
+      queryLog:
+        type: mysql
+        target: ${MARIADB_BLOCKY_USER}:${MARIADB_BLOCKY_PASSWORD}@mariadb.db:3306/${MARIADB_BLOCKY_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local
+        logRetentionDays: 7
     service:
       dns-udp:
         enabled: true

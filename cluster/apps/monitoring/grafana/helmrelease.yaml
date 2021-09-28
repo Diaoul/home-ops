@@ -126,6 +126,9 @@ spec:
         blocky:
           url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.16/docs/blocky-grafana.json
           datasource: Prometheus
+        blocky-query:
+          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.16/docs/blocky-query-grafana.json
+          datasource: Prometheus
     sidecar:
       dashboards:
         enabled: true
