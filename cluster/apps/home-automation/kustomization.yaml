@@ -5,9 +5,9 @@ resources:
   - pv
   - pvc
   - emqx
+  - esphome
+  - frigate
+  - home-assistant
+  - node-red
   - zigbee2mqtt
   - zwavejs2mqtt
-  - esphome
-  - home-assistant
-  - frigate
-  - node-red

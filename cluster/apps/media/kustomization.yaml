@@ -4,18 +4,18 @@ kind: Kustomization
 resources:
   - pv
   - pvc
-  - qbittorrent
-  - flood
-  - nzbget
-  - flaresolverr
-  - jackett
-  - sonarr
-  - radarr
-  - lidarr
-  - readarr
-  - readarr-audio
   - airsonic
   - bazarr
+  - flaresolverr
+  - flood
+  - jackett
   - jellyfin
+  - lidarr
+  - nzbget
   - photoprism
   - prowlarr
+  - qbittorrent
+  - radarr
+  - readarr
+  - readarr-audio
+  - sonarr
