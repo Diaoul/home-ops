@@ -21,15 +21,9 @@ spec:
     provider: cloudflare
     env:
       - name: CF_API_EMAIL
-        valueFrom:
-          secretKeyRef:
-            name: external-dns-cloudflare-credentials
-            key: email
+        value: ${CLOUDFLARE_EMAIL}
       - name: CF_API_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: external-dns-cloudflare-credentials
-            key: api-token
+        value: ${CLOUDFLARE_EXTERNAL_DNS_API_TOKEN}
     policy: sync
     domainFilters:
       - ${DOMAIN}
