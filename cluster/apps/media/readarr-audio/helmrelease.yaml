@@ -1,0 +1,84 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: readarr-audio
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: readarr
+      version: 6.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: ghcr.io/k8s-at-home/readarr-nightly
+      tag: v0.1.0.971
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
+          hajimari.io/enable: "true"
+          hajimari.io/icon: book-open-variant
+        hosts:
+          - host: readarr-audio.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - readarr-audio.${DOMAIN}
+            secretName: readarr-audio-tls
+      api:
+        enabled: true
+        nameSuffix: api
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        hosts:
+          - host: readarr-audio.${DOMAIN}
+            paths:
+              - path: /api
+                pathType: Prefix
+        tls:
+          - hosts:
+              - readarr-audio.${DOMAIN}
+            secretName: readarr-audio-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: readarr-audio-config
+      media:
+        enabled: true
+        existingClaim: nfs-singularity-media
+        mountPath: /media
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+      pre.hook.backup.velero.io/container: fsfreeze
+      pre.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--freeze", "/config"]'
+      post.hook.backup.velero.io/container: fsfreeze
+      post.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--unfreeze", "/config"]'
+    additionalContainers:
+      fsfreeze:
+        name: fsfreeze
+        image: ghcr.io/k8s-at-home/fsfreeze:v2.37-r0
+        volumeMounts:
+          - name: config
+            mountPath: /config
+        securityContext:
+          privileged: true
+    resources:
+      requests:
+        cpu: 200m
+        memory: 300Mi
+      limits:
+        cpu: 500m
+        memory: 500Mi

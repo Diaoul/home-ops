@@ -13,6 +13,7 @@ resources:
   - radarr
   - lidarr
   - readarr
+  - readarr-audio
   - bazarr
   - jellyfin
   - photoprism
