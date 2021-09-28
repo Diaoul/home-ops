@@ -1,0 +1,72 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: airsonic
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: airsonic
+      version: 6.0.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: airsonicadvanced/airsonic-advanced
+      tag: edge-11.0.0-SNAPSHOT.20210803095157
+    env:
+      JAVA_OPTS: "-Xmx768m -Dserver.forward-headers-strategy=native"
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          cert-manager.io/cluster-issuer: letsencrypt-production
+          hajimari.io/enable: "true"
+          hajimari.io/icon: headphones-box
+        hosts:
+          - host: airsonic.${DOMAIN}
+            paths:
+              - path: /
+        tls:
+          - hosts:
+              - airsonic.${DOMAIN}
+            secretName: airsonic-tls
+    persistence:
+      config:
+        enabled: true
+        existingClaim: airsonic-config
+      media:
+        enabled: true
+        existingClaim: nfs-singularity-media
+        mountPath: /media
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 100
+    podAnnotations:
+      backup.velero.io/backup-volumes: config
+      pre.hook.backup.velero.io/container: fsfreeze
+      pre.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--freeze", "/config"]'
+      post.hook.backup.velero.io/container: fsfreeze
+      post.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--unfreeze", "/config"]'
+    additionalContainers:
+      fsfreeze:
+        name: fsfreeze
+        image: ghcr.io/k8s-at-home/fsfreeze:v2.37-r0
+        volumeMounts:
+          - name: config
+            mountPath: /config
+        securityContext:
+          privileged: true
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi

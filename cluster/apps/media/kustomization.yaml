@@ -14,6 +14,7 @@ resources:
   - lidarr
   - readarr
   - readarr-audio
+  - airsonic
   - bazarr
   - jellyfin
   - photoprism
