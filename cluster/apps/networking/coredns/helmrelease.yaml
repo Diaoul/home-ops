@@ -67,7 +67,6 @@ spec:
           - name: etcd
             parameters: ${DOMAIN}
             configBlock: |-
-              stubzones
               path /skydns
               endpoint http://etcd-extdns:2379
           - name: prometheus
