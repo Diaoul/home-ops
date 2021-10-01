@@ -17,7 +17,7 @@ spec:
         namespace: flux-system
   values:
     image:
-      repository: airsonicadvanced/airsonic-advanced
+      repository: docker.io/airsonicadvanced/airsonic-advanced
       tag: edge-11.0.0-SNAPSHOT.20210803095157
     env:
       JAVA_OPTS: "-Xmx768m -Dserver.forward-headers-strategy=native"
