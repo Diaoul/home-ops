@@ -6,6 +6,7 @@ resources:
   - blakeshome.yaml
   - coredns.yaml
   - dex.yaml
+  - diaoul.yaml
   - emqx.yaml
   - external-dns.yaml
   - grafana.yaml
