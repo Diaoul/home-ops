@@ -29,7 +29,6 @@ spec:
         config:
           s3ForcePathStyle: true
           s3Url: http://singularity.milkyway:9000
-          publicUrl: https://s3.${DOMAIN}
           region: us-east-1
       volumeSnapshotLocation:
         name: default
