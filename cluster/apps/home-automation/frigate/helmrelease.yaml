@@ -65,6 +65,8 @@ spec:
             enabled: True
           snapshots:
             enabled: True
+            crop: True
+            height: 500
           mqtt:
             enabled: True
             timestamp: False
