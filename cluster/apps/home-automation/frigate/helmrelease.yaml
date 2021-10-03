@@ -60,8 +60,7 @@ spec:
           fps: 5
           motion:
             mask:
-              - 640,360,640,217,588,206,495,326,516,360
-              - 120,0,120,11,0,11,0,0
+              - 825,576,1024,576,1024,344,944,325,794,518
           clips:
             enabled: True
           snapshots:
@@ -89,9 +88,6 @@ spec:
           objects:
             track:
               - person
-          motion:
-            mask:
-              - 120,0,120,11,0,11,0,0
           clips:
             enabled: True
           snapshots:
@@ -115,8 +111,7 @@ spec:
               - person
           motion:
             mask:
-              - 120,0,120,11,0,11,0,0
-              - 640,360,482,360,640,193
+              - 792,576,1024,263,1024,576
           clips:
             enabled: True
           snapshots:
