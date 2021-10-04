@@ -10,7 +10,6 @@ resources:
   - kube-system
   - networking
   - monitoring
-  - kasten-io
   - home-automation
   - media
   - velero
