@@ -52,9 +52,8 @@ spec:
       pre.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--freeze", "/var/lib/pgadmin"]'
       post.hook.backup.velero.io/container: fsfreeze
       post.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--unfreeze", "/var/lib/pgadmin"]'
-    additionalContainers:
-      fsfreeze:
-        name: fsfreeze
+    extraContainers:
+      - name: fsfreeze
         image: ghcr.io/k8s-at-home/fsfreeze:v2.37-r0
         volumeMounts:
           - name: pgadmin-data

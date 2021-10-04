@@ -51,16 +51,16 @@ spec:
     podAnnotations:
       backup.velero.io/backup-volumes: config
       pre.hook.backup.velero.io/container: fsfreeze
-      pre.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--freeze", "/config"]'
+      pre.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--freeze", "/var/airsonic"]'
       post.hook.backup.velero.io/container: fsfreeze
-      post.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--unfreeze", "/config"]'
+      post.hook.backup.velero.io/command: '["/sbin/fsfreeze", "--unfreeze", "/var/airsonic"]'
     additionalContainers:
       fsfreeze:
         name: fsfreeze
         image: ghcr.io/k8s-at-home/fsfreeze:v2.37-r0
         volumeMounts:
           - name: config
-            mountPath: /config
+            mountPath: /var/airsonic
         securityContext:
           privileged: true
     resources:
