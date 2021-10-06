@@ -30,11 +30,6 @@ spec:
         coral:
           type: edgetpu
           device: pci
-      objects:
-        track:
-          - person
-          - dog
-          - cat
       ffmpeg:
         hwaccel_args:
           - -hwaccel
@@ -43,6 +38,8 @@ spec:
           - /dev/dri/renderD128
           - -hwaccel_output_format
           - yuv420p
+      record:
+        enabled: True
       cameras:
         porch:
           ffmpeg:
@@ -52,26 +49,17 @@ spec:
                   - detect
               - path: rtsp://10.0.4.16:554/s0
                 roles:
-                  - clips
                   - record
                   - rtmp
-          width: 1024
-          height: 576
-          fps: 5
+          detect:
+            width: 1024
+            height: 576
           motion:
             mask:
               - 825,576,1024,576,1024,344,944,325,794,518
-          clips:
-            enabled: True
-          snapshots:
-            enabled: True
-            crop: True
-            height: 500
           mqtt:
-            enabled: True
             timestamp: False
             bounding_box: False
-            crop: True
             height: 500
         garage:
           ffmpeg:
@@ -81,19 +69,15 @@ spec:
                   - detect
               - path: rtsp://10.0.4.17:554/s0
                 roles:
-                  - clips
                   - record
                   - rtmp
-          width: 1024
-          height: 576
-          fps: 5
-          objects:
-            track:
-              - person
-          clips:
-            enabled: True
-          snapshots:
-            enabled: True
+          detect:
+            width: 1024
+            height: 576
+          mqtt:
+            timestamp: False
+            bounding_box: False
+            height: 500
         living_room:
           ffmpeg:
             inputs:
@@ -102,22 +86,18 @@ spec:
                   - detect
               - path: rtsp://10.0.4.18:554/s0
                 roles:
-                  - clips
                   - record
                   - rtmp
-          width: 1024
-          height: 576
-          fps: 5
-          objects:
-            track:
-              - person
+          detect:
+            width: 1024
+            height: 576
           motion:
             mask:
               - 792,576,1024,263,1024,576
-          clips:
-            enabled: True
-          snapshots:
-            enabled: True
+          mqtt:
+            timestamp: False
+            bounding_box: False
+            height: 500
     ingress:
       main:
         enabled: true
