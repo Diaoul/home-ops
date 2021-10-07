@@ -46,8 +46,8 @@ spec:
         existingClaim: nfs-singularity-media
         mountPath: /media
     podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 100
+      supplementalGroups:
+        - 568
     podAnnotations:
       backup.velero.io/backup-volumes: config
       pre.hook.backup.velero.io/container: fsfreeze
