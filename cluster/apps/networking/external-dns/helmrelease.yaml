@@ -27,8 +27,6 @@ spec:
     domainFilters:
       - ${DOMAIN}
     registry: noop
-    extraArgs:
-      - --registry=noop  # https://github.com/kubernetes-sigs/external-dns/issues/2325
     resources:
       requests:
         cpu: 50m
