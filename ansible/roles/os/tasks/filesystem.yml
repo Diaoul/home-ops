@@ -1,8 +1,25 @@
 ---
-- name: filesystem | sysctl update max_user_watches
+- name: filesystem | update user open file limit
+  copy:
+    content: |
+      * hard nofile 97816
+      * soft nofile 97816
+      session required pam_limits.so
+    dest: /etc/security/limits.d/10-kubernetes.conf
+    mode: 0644
+  when: '"master" in group_names or "worker" in group_names'
+
+- name: filesystem | sysctl increase max_user_watches
   ansible.posix.sysctl:
     name: fs.inotify.max_user_watches
     value: "524288"
+    sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
+  when: '"master" in group_names or "worker" in group_names'
+
+- name: filesystem | sysctl increase max_user_instances
+  ansible.posix.sysctl:
+    name: fs.inotify.max_user_instances
+    value: "512"
     sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
   when: '"master" in group_names or "worker" in group_names'
 
