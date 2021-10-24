@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: flaresolverr/flaresolverr
-      tag: v2.0.0
+      tag: v2.0.1
     resources:
       requests:
         cpu: 50m
