@@ -1,0 +1,50 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: vpn-gateway-vpnconfig
+    namespace: vpn
+stringData:
+    vpnConfigfile: ENC[AES256_GCM,data:qNV0KognwEvIIX21jRBWihdkxBoawW51HmnX2KxZg2wTvkQzrVSjwHgzpWA4ronmlup0QWzvpHiFkSRHqQAmKwHIyryjjQjA8BRuDoBYvNlYeKzS4M1V/3X0JQU/Xb56IZuhgJovFWWzUQwVRxk4o9+YuQGmb+l7iRumbabHDntSeSABx6krYzew/1aasNVre7ZnPGm1dHFbFr6GbWPXZVFFEN4TPXghe9z33KAKnn0WYztaHp7t9vnkVLZhqWRAisUvch/0UI9zG/HmbscYdkKTmwgimc7NsYBkI0ng+AjVgdFb7L1Pm/7SpSUctJz2G7zxgSMd75wuMln0DSe6,iv:dFpri9F32+5+VeJdaATP5W4GVeB1IREGRhfMOFEh/kk=,tag:qUMMvR/2gudz+ARK04qXHA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age: []
+    lastmodified: "2021-11-02T08:42:15Z"
+    mac: ENC[AES256_GCM,data:66mQAuz8vmXUsSdkiI4X73EkwY9DM9+9PyGN/M1Q+RsIO6sRLkgQdcjyvQ68lDAjqPxd5w67iBaNFgjC+y1SCoqkH7XITml6+12Z2rqzuGYmd9boiLC/AIh3YI2/NMGb7zYCkX0UtF/U5StyCPBjXwAMrXmIQuzAtPJGc3fZvfA=,iv:cdlrB6mDpXcS/dbThq7eMKiGusng4dKX23u/GDHlkOM=,tag:9xQoSclcxxI4XyGksZf78Q==,type:str]
+    pgp:
+        - created_at: "2021-11-01T06:51:58Z"
+          enc: |
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMA8w2CfWjahKJAQ//RND6pTT1kdgz7rD0zzdCI6eJkpHUT8PfZphrcii1SLcF
+            2wFoAflIyHMWKU48oJptcWxXdyE07Icck2cJHiXlJt/XFYU3SCk72d3BRHIiIVTj
+            qtqJ7n9c8K63hNB9Rda5tq6UIiaDB6cED/ucuHk6sJTXuBpsD1Jc85I6XEfeZ9ya
+            6JqcAiuUsjmDtmdD++6y6q53U7T1tDtaOJ3kr/gAOTpFDoc4XKYwBBnFEl3Jpy3t
+            PgPCpEUifstdNsdE+JDUN0C4aPxlLN4kXI5qLXEk/P3UhlGnTAnhIHMkuGr0RcC4
+            We4Ewcufq+SiaF2uZHRvNZ38VT9QlM4CSdhtnSljeQaZwBmFYIyeIooLVe4kXM5X
+            5j6QslEu5nEbDPHuBbAM0b7VgKsNpFXUYWNeuoH1QUhpOlWKFa1+1YchZa5q1BJK
+            2TeaPowKuh3fUSfRlbB/+KSE8o1tcM028sfdVsnV5L2jc0NHUxmUwlqRFauW2lEe
+            62hQUtWN5GwtSi6vPO6Nm0RDGBrMtcK0bH5fe/WvQ4c8+3NEqSzxt68/KDtfMtuT
+            /fb+dbiFq4c7hWGdlwEb7Xz+gWV6O0qiI9ZhVqptOKjAsCzAa8gkSjTdcvPhAoQi
+            dJ/h2M/5JxF5lKB38LBcAFtzIGX1DfSoZSqfdrrLTn34jzzHAvMNwIGk9spCh5PS
+            XgFqRID87GPu7fwekeR1fjOGrLbLfHLb38eRm5WN3Irl1SSdC5QqYsRfMKxj0HiE
+            ibviAkZyTTpFVvjQDvZJABTcwM53X852oE17N2teCWWfpLqGyiBQNC9Dv+MhNUk=
+            =qAms
+            -----END PGP MESSAGE-----
+          fp: 48AEFCFB09BDDFCAD93175EF476C4C1F306D9DFD
+        - created_at: "2021-11-01T06:51:58Z"
+          enc: |
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAcebvm0L7V6o4FekGyQVqYYDcjkP5jrlSjaOSZduoGGkw
+            XLUb8MCS3yi+bexFspjsc3hHTY0g6e4nAxxLlAoNBAtiz1dj81nbr70AQ0kUBkRC
+            0l4BY+yVbVL4tmZZ+2a3drFBoR0V+6Gr+H8WwlKhKagwy26eFAC4m01pdqgeV6XJ
+            uMuSOmwV8s61TUt/IqOdoyGjCO4CcQ+Gx/EccOI6nKTO8SfDruUbROMj2rGDTx/+
+            =SPEV
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.1

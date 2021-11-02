@@ -1,0 +1,90 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: vpn-gateway
+  namespace: vpn
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: pod-gateway
+      version: 5.0.1
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  # see https://github.com/k8s-at-home/charts/blob/master/charts/stable/pod-gateway/values.yaml
+  values:
+    image:
+      repository: ghcr.io/k8s-at-home/pod-gateway
+      tag: v1.4.0
+    clusterName: ${CLUSTER_DOMAIN}
+    addons:
+      vpn:
+        enabled: true
+        type: wireguard
+        wireguard:
+          image:
+            repository: ghcr.io/k8s-at-home/wireguard
+            tag: v1.0.20210914
+        env:
+          IPTABLES_BACKEND: nft
+          KILLSWITCH: "false"
+        configFileSecret: vpn-gateway-vpnconfig
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
+        livenessProbe:
+          exec:
+            command:
+              - sh
+              - -c
+              - if [ $(curl -s https://ipinfo.io/country) = '${VPN_COUNTRY}' ]; then exit 0; else exit $?; fi
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          failureThreshold: 1
+        networkPolicy:
+          enabled: true
+          egress:
+            - to:
+                - ipBlock:
+                    cidr: 0.0.0.0/0
+              ports:
+                - port: ${VPN_PORT}
+                  protocol: UDP
+            - to:
+                - ipBlock:
+                    cidr: ${K8S_CLUSTER_CIDR}
+                - ipBlock:
+                    cidr: ${K8S_SERVICE_CIDR}
+    routed_namespaces:
+      - media
+    settings:
+      DNS_LOCAL_CIDRS: "${LOCAL_DOMAIN}"
+      VPN_INTERFACE: wg0
+      VPN_BLOCK_OTHER_TRAFFIC: true
+      VPN_TRAFFIC_PORT: "${VPN_PORT}"
+      NOT_ROUTED_TO_GATEWAY_CIDRS: "${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}"
+      VPN_LOCAL_CIDRS: "${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}"
+    publicPorts:
+      - hostname: qbittorrent
+        IP: 10
+        ports:
+          - type: tcp
+            port: ${VPN_FORWARDED_PORT_1}
+          - type: udp
+            port: ${VPN_FORWARDED_PORT_1}
+    webhook:
+      image:
+        repository: ghcr.io/k8s-at-home/gateway-admision-controller
+        tag: v3.4.0
+      gatewayDefault: false
+      gatewayLabel: setGateway
+      gatewayAnnotation: setGateway
+      namespaceSelector:
+        label: vpn-routed-gateway

@@ -5,6 +5,9 @@ metadata:
   name: cluster-config
   namespace: flux-system
 data:
+  K8S_CLUSTER_CIDR: 10.42.0.0/16
+  K8S_SERVICE_CIDR: 10.43.0.0/16
+  SERVER_CIDR: 10.0.3.0/24
   ROUTER_IP: 10.0.3.1
   INGRESS_NGINX_IP: 10.44.0.1
   COREDNS_IP: 10.44.0.4
@@ -13,4 +16,8 @@ data:
   PROMTAIL_IP: 10.44.0.8
   QBITTORRENT_IP: 10.44.0.64
   UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
+  LOCAL_DOMAIN: milkyway
   CLUSTER_DOMAIN: cluster.milkyway
+  VPN_COUNTRY: FR
+  VPN_PORT: "51820"
+  VPN_FORWARDED_PORT_1: "50413"

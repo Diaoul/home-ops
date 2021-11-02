@@ -12,3 +12,4 @@ resources:
   - networking.yaml
   - rook-ceph.yaml
   - velero.yaml
+  - vpn.yaml
