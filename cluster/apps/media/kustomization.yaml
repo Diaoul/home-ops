@@ -15,6 +15,7 @@ resources:
   - photoprism
   - prowlarr
   - qbittorrent
+  - qbittorrent-vpn
   - radarr
   - readarr
   - readarr-audio
