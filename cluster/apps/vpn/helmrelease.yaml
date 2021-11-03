@@ -39,15 +39,15 @@ spec:
             memory: 128Mi
           limits:
             memory: 512Mi
-        livenessProbe:
-          exec:
-            command:
-              - sh
-              - -c
-              - if [ $(curl -s https://ipinfo.io/country) = '${VPN_COUNTRY}' ]; then exit 0; else exit $?; fi
-          initialDelaySeconds: 30
-          periodSeconds: 60
-          failureThreshold: 1
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - sh
+        #       - -c
+        #       - if [ $(curl -s https://ipinfo.io/country) = '${VPN_COUNTRY}' ]; then exit 0; else exit $?; fi
+        #   initialDelaySeconds: 30
+        #   periodSeconds: 60
+        #   failureThreshold: 1
         networkPolicy:
           enabled: true
           egress:
@@ -65,20 +65,20 @@ spec:
     routed_namespaces:
       - media
     settings:
-      DNS_LOCAL_CIDRS: "${LOCAL_DOMAIN}"
+      DNS_LOCAL_CIDRS: ${LOCAL_DOMAIN}
       VPN_INTERFACE: wg0
       VPN_BLOCK_OTHER_TRAFFIC: true
-      VPN_TRAFFIC_PORT: "${VPN_PORT}"
-      NOT_ROUTED_TO_GATEWAY_CIDRS: "${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}"
-      VPN_LOCAL_CIDRS: "${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}"
-    publicPorts:
-      - hostname: qbittorrent
-        IP: 10
-        ports:
-          - type: tcp
-            port: ${VPN_FORWARDED_PORT_1}
-          - type: udp
-            port: ${VPN_FORWARDED_PORT_1}
+      VPN_TRAFFIC_PORT: ${VPN_PORT}
+      NOT_ROUTED_TO_GATEWAY_CIDRS: ${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}
+      VPN_LOCAL_CIDRS: ${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}
+    # publicPorts:
+    #   - hostname: qbittorrent
+    #     IP: 10
+    #     ports:
+    #       - type: tcp
+    #         port: ${VPN_FORWARDED_PORT_1}
+    #       - type: udp
+    #         port: ${VPN_FORWARDED_PORT_1}
     webhook:
       image:
         repository: ghcr.io/k8s-at-home/gateway-admision-controller

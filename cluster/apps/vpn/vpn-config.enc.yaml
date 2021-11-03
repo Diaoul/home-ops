@@ -5,15 +5,15 @@ metadata:
     name: vpn-gateway-vpnconfig
     namespace: vpn
 stringData:
-    vpnConfigfile: ENC[AES256_GCM,data:qNV0KognwEvIIX21jRBWihdkxBoawW51HmnX2KxZg2wTvkQzrVSjwHgzpWA4ronmlup0QWzvpHiFkSRHqQAmKwHIyryjjQjA8BRuDoBYvNlYeKzS4M1V/3X0JQU/Xb56IZuhgJovFWWzUQwVRxk4o9+YuQGmb+l7iRumbabHDntSeSABx6krYzew/1aasNVre7ZnPGm1dHFbFr6GbWPXZVFFEN4TPXghe9z33KAKnn0WYztaHp7t9vnkVLZhqWRAisUvch/0UI9zG/HmbscYdkKTmwgimc7NsYBkI0ng+AjVgdFb7L1Pm/7SpSUctJz2G7zxgSMd75wuMln0DSe6,iv:dFpri9F32+5+VeJdaATP5W4GVeB1IREGRhfMOFEh/kk=,tag:qUMMvR/2gudz+ARK04qXHA==,type:str]
+    vpnConfigfile: ENC[AES256_GCM,data:43YPcoLVUS3hE5iV2kQKK7MpawQwgIgUdYZBNv3wyNSOE6UdyI1R+oD/6WY8Ws83HZ08frIxGpAR4Uz6D4MrQvYUlEtwa0swlIYXK0OjyovlO5nE63aH78Az67iSboO+K6MQ+wp7ihHYnYQ4fKo7W9/ArSdbyUMQcOZJFElMGJekLnOyAwh1VO3ysJM1OSSV5lLHKSGKcI4pQxr60bzh3n0LsfldHqNfn8+muFFJjhvjmGBlgFTlpR8rsYWrHi93zsDHSsiXkcPoQ0Wa/HCdv9CCugYvWVyzU0fdXe/3qtJKNvqRye8bkUfBFb1KlQ==,iv:mar0vUFg1akdT+29WkRiDsg3U+iSZtJAkalvPAo3+OI=,tag:pLoMVIqUYiXp/GZzq+auzg==,type:str]
 sops:
     kms: []
     gcp_kms: []
     azure_kv: []
     hc_vault: []
     age: []
-    lastmodified: "2021-11-02T08:42:15Z"
-    mac: ENC[AES256_GCM,data:66mQAuz8vmXUsSdkiI4X73EkwY9DM9+9PyGN/M1Q+RsIO6sRLkgQdcjyvQ68lDAjqPxd5w67iBaNFgjC+y1SCoqkH7XITml6+12Z2rqzuGYmd9boiLC/AIh3YI2/NMGb7zYCkX0UtF/U5StyCPBjXwAMrXmIQuzAtPJGc3fZvfA=,iv:cdlrB6mDpXcS/dbThq7eMKiGusng4dKX23u/GDHlkOM=,tag:9xQoSclcxxI4XyGksZf78Q==,type:str]
+    lastmodified: "2021-11-03T21:56:22Z"
+    mac: ENC[AES256_GCM,data:O3GCM01C7LrhxEQ/cSdzD9X/ulPF8uP1NEMqrmj/cJJ0pztb/6nKCs3qd7JpnOb9rvNegjF4YvEeNAZj8+9RbzoxD0AhVYxG2KTpVak48AwaB8JKpd8XTTvCi3QStKl/riivUJ7NJ6bT0261XHoGlZr/CLm0U4hP07QvwQK976I=,iv:ii065rr3gtCkAli3sTiH5iPTGHV6iA0qShJBfiPB2XY=,tag:YR8G0sg2Mm4dzAR8JKD9tA==,type:str]
     pgp:
         - created_at: "2021-11-01T06:51:58Z"
           enc: |
