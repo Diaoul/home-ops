@@ -32,7 +32,16 @@ spec:
         env:
           IPTABLES_BACKEND: nft
           KILLSWITCH: "false"
-        configFileSecret: vpn-gateway-vpnconfig
+        configFile: |-
+            [Interface]
+            PrivateKey = ${VPN_INTERFACE_PRIVATE_KEY}
+            Address = ${VPN_INTERFACE_ADDRESS}
+            DNS = 1.1.1.1
+            [Peer]
+            PublicKey = ${VPN_PEER_PUBLIC_KEY}
+            AllowedIPs = 0.0.0.0/0, ::/0
+            Endpoint = ${VPN_PEER_ENDPOINT}
+            PersistentKeepalive = 25
         resources:
           requests:
             cpu: 100m
@@ -65,14 +74,14 @@ spec:
     routed_namespaces:
       - media
     settings:
-      DNS_LOCAL_CIDRS: "${LOCAL_DOMAIN}"
+      DNS_LOCAL_CIDRS: ${LOCAL_DOMAIN}
       VPN_INTERFACE: wg0
       VPN_BLOCK_OTHER_TRAFFIC: true
-      VPN_TRAFFIC_PORT: "${VPN_PORT}"
-      NOT_ROUTED_TO_GATEWAY_CIDRS: "${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}"
-      VPN_LOCAL_CIDRS: "${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}"
+      VPN_TRAFFIC_PORT: ${VPN_PORT}
+      NOT_ROUTED_TO_GATEWAY_CIDRS: ${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}
+      VPN_LOCAL_CIDRS: ${K8S_CLUSTER_CIDR} ${K8S_SERVICE_CIDR} ${SERVER_CIDR}
     publicPorts:
-      - hostname: qbittorrent
+      - hostname: qbittorrent-vpn
         IP: 10
         ports:
           - type: tcp
