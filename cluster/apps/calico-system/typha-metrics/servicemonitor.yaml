@@ -13,3 +13,4 @@ spec:
       k8s-app: calico-typha
   endpoints:
     - port: metrics
+      interval: 15s
