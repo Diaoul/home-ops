@@ -38,9 +38,22 @@ spec:
         blackLists:
           ads:
             - https://dbl.oisd.nl/
+          tvs:
+            # Wassname
+            # https://gist.github.com/wassname/b594c63222f9e4c83ea23c818440901b
+            - https://gist.githubusercontent.com/wassname/b594c63222f9e4c83ea23c818440901b/raw/1b0afd2aecf3a099f1681b1cf18fc0e6e2fa116a/Samsung%2520Smart-TV%2520Blocklist%2520Adlist%2520(for%2520PiHole)
+            # https://gist.github.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7
+            - https://gist.githubusercontent.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7/raw/d7863a978993e99d9c77c9001008ce670a3b4c29/LG%2520Smart-TV%2520Blocklist%2520Adlist%2520(for%2520PiHole)
+            # Perflyst
+            # https://github.com/Perflyst/PiHoleBlocklist/blob/master/SmartTV.txt
+            - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
+            # hkamran80
+            # https://gist.github.com/hkamran80/779019103fcd306979411d44c8d38459
+            - https://gist.githubusercontent.com/hkamran80/779019103fcd306979411d44c8d38459/raw/e0f084b396bb8ffcb390c8e7272ae96a6c292d10/SmartTV2.txt
         clientGroupsBlock:
           default:
             - ads
+            - tvs
       prometheus:
         enable: true
       bootstrapDns: tcp+udp:1.1.1.1
