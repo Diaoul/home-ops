@@ -28,7 +28,7 @@ spec:
     service:
       type: LoadBalancer
       externalIPs:
-        - 10.44.0.16
+        - ${EMQX_IP}
     emqxLoadedPlugins: >
       {emqx_management, true}.
       {emqx_recon, true}.

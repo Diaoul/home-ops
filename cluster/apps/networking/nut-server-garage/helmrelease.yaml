@@ -26,7 +26,7 @@ spec:
       main:
         type: LoadBalancer
         externalIPs:
-          - ${NUT_IP}
+          - ${NUT_GARAGE_IP}
         externalTrafficPolicy: Local
     config:
       mode: values
