@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: bitnami/postgresql
-      tag: 13.5.0
+      tag: 14.1.0
     postgresqlUsername: ${POSTGRES_USERNAME}
     postgresqlPassword: ${POSTGRES_PASSWORD}
     persistence:
