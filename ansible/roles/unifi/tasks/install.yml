@@ -1,62 +1,60 @@
 ---
-- name: install required packages
+- name: add docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+  become: yes
+
+- name: add docker repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+    filename: docker
+  become: yes
+
+- name: install docker
   apt:
     name:
-      - apt-transport-https
-      - openjdk-8-jre-headless
-      - haveged
-  become: yes
-
-- name: add GPG keys
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: 06E85760C0A52C50
-  become: yes
-
-- name: add repository
-  apt_repository:
-    repo: deb http://www.ui.com/downloads/unifi/debian stable ubiquiti
-    filename: unifi
-  become: yes
-
-- name: install unifi
-  apt:
-    name: unifi
+      - docker-ce
+      - python3-docker
     update_cache: yes
   become: yes
 
-- name: copy certificate store
+- name: create unifi directory
+  file:
+    path: /etc/unifi
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: create unifi certificates directory
+  file:
+    path: /etc/unifi/cert
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: copy unifi certificates
   copy:
-    src: "{{ unifi_certificate_store }}"
-    dest: /var/lib/unifi/cert.pfx
-    mode: 0644
-  register: certificate
+    src: /mnt/singularity/certificates/{{ item.src }}
+    dest: /etc/unifi/cert/{{ item.dest }}
+    mode: 0600
+  with_items:
+    - src: sun.milkyway.pem
+      dest: cert.pem
+    - src: sun.milkyway-key.pem
+      dest: privkey.pem
+    - src: milkyway-ca-bundle.pem
+      dest: chain.pem
   become: yes
 
-- name: install certificate store
-  command: >
-    keytool -importkeystore -noprompt
-    -srckeystore /var/lib/unifi/cert.pfx
-    -srcstoretype PKCS12
-    -srcstorepass "{{ unifi_certificate_password }}"
-    -destkeystore /var/lib/unifi/keystore
-    -deststorepass aircontrolenterprise
-    -destkeypass aircontrolenterprise
-    -alias unifi
-  become: yes
-  when: certificate is changed  # noqa no-handler
-  notify: certificate changed
-
-- name: enable unifi service
-  service:
+- name: install unifi
+  community.general.docker_container:
     name: unifi
-    enabled: yes
-    state: started
-  become: yes
-
-- name: disable mongo service
-  service:
-    name: mongodb
-    enabled: no
-    state: stopped
+    image: jacobalberty/unifi:latest
+    pull: yes
+    restart_policy: always
+    network_mode: host
+    volumes:
+      - /etc/unifi:/unifi
+    env:
+      TZ: Europe/Paris
   become: yes
