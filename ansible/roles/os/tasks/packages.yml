@@ -1,4 +1,8 @@
 ---
+- name: packages | gather the package facts
+  package_facts:
+    manager: auto
+
 - name: packages | upgrade all packages
   apt:
     upgrade: full
@@ -14,6 +18,17 @@
     cache_valid_time: 3600
     autoclean: yes
   when: packages.install
+
+- name: packages | remove snaps
+  community.general.snap:
+    name:
+      - lxd
+      - core20
+      - snapd
+    state: absent
+  when:
+    - '"snapd" in ansible_facts.packages'
+    - '"snapd" in packages.remove'
 
 - name: packages | remove packages
   apt:
