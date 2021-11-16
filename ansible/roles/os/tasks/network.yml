@@ -4,7 +4,7 @@
     name: net.ipv4.ip_forward
     value: "1"
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-  when: '"master" in group_names or "worker" in group_names'
+  when: '"kubernetes" in group_names'
 
 - name: network | update hostname
   hostname:
