@@ -54,10 +54,13 @@ spec:
             #!/bin/bash
             echo "down"
             ${VPN_SCRIPT_DOWN}
-        persistence:
-          data:
-            enabled: true
-            existingClaim: pod-gateway-data
+        additionalVolumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: pod-gateway-data
+        additionalVolumeMounts:
+          - name: data
+            mountPath: /data
         resources:
           requests:
             cpu: 100m
@@ -113,3 +116,7 @@ spec:
       gatewayAnnotation: setGateway
       namespaceSelector:
         label: vpn-routed-gateway
+    persistence:
+      data:
+        enabled: true
+        existingClaim: pod-gateway-data
