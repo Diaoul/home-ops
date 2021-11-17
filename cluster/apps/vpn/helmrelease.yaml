@@ -43,8 +43,14 @@ spec:
             Endpoint = ${VPN_PEER_ENDPOINT}
             PersistentKeepalive = 25
         scripts:
-          up: ${VPN_SCRIPT_UP}
-          down: ${VPN_SCRIPT_DOWN}
+          up: |-
+            #!/bin/bash
+            echo "up"
+            ${VPN_SCRIPT_UP}
+          down: |-
+            #!/bin/bash
+            echo "down"
+            ${VPN_SCRIPT_DOWN}
         resources:
           requests:
             cpu: 100m
