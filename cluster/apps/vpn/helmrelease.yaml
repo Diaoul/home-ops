@@ -45,10 +45,6 @@ spec:
         scripts:
           up: ${VPN_SCRIPT_UP}
           down: ${VPN_SCRIPT_DOWN}
-        persistence:
-          data:
-            enabled: true
-            existingClaim: pod-gateway-data
         resources:
           requests:
             cpu: 100m
@@ -104,3 +100,7 @@ spec:
       gatewayAnnotation: setGateway
       namespaceSelector:
         label: vpn-routed-gateway
+    persistence:
+      data:
+        enabled: true
+        existingClaim: pod-gateway-data
