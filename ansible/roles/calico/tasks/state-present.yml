@@ -7,14 +7,18 @@
   run_once: yes
   delegate_to: localhost
 
+- name: download tigera operator manifest
+  get_url:
+    url: https://docs.projectcalico.org/manifests/tigera-operator.yaml
+    dest: tigera-operator.yaml
+    mode: '0664'
+  run_once: yes
+  delegate_to: localhost
+
 - name: install tigera operator
   kubernetes.core.k8s:
-    definition: "{{ item }}"
-  loop: "{{ lookup('url', 'https://docs.projectcalico.org/manifests/tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
-  loop_control:
-    label:
-      kind: "{{ item.kind }}"
-      name: "{{ item.metadata.name }}"
+    state: present
+    src: tigera-operator.yaml
   run_once: yes
   delegate_to: localhost
 
