@@ -12,3 +12,4 @@ resources:
   - ingress-nginx
   - nut-server-garage
   - oauth2-proxy
+  - singularity
