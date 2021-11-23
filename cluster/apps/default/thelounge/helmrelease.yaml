@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: thelounge/thelounge
-      tag: 4.2.0-alpine
+      tag: 4.3.0-alpine
     ingress:
       main:
         enabled: true
