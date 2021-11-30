@@ -42,10 +42,6 @@ spec:
       data:
         enabled: true
         existingClaim: zigbee2mqtt-data
-      usb:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B001936534C-if00
     podAnnotations:
       backup.velero.io/backup-volumes: data
       pre.hook.backup.velero.io/container: fsfreeze
@@ -61,16 +57,6 @@ spec:
             mountPath: /data
         securityContext:
           privileged: true
-    securityContext:
-      privileged: true
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: feature.node.kubernetes.io/custom-zigbee
-                  operator: In
-                  values: ["true"]
     config:
       homeassistant: true
       mqtt:
@@ -79,7 +65,7 @@ spec:
         user: ${EMQX_USER_USERNAME}
         password: ${EMQX_USER_PASSWORD}
       serial:
-        port: /dev/serial/by-id/usb-Texas_Instruments_TI_CC2531_USB_CDC___0X00124B001936534C-if00
+        port: tcp://zigbee:6638
       advanced:
         network_key:
           - 206
