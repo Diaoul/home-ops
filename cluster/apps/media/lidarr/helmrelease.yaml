@@ -59,7 +59,7 @@ spec:
         exporter:
           image:
             repository: ghcr.io/onedr0p/exportarr
-            tag: v0.6.1
+            tag: v0.6.2
           env:
             additionalMetrics: true
     persistence:
