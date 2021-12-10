@@ -19,6 +19,7 @@ resources:
   - kubernetes-stable.yaml
   - longhorn.yaml
   - node-feature-discovery.yaml
+  - oauth2-proxy.yaml
   - prometheus-community.yaml
   - rook.yaml
   - runix.yaml
