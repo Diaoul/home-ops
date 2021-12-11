@@ -31,6 +31,8 @@ spec:
           enabled: true
           namespace: networking
       config:
+        custom-http-errors: 401,403,404,500,501,502,503
+        ssl-protocols: "TLSv1.2 TLSv1.3"
         proxy-body-size: 100m
         enable-real-ip: "true"
         use-forwarded-headers: "true"
@@ -65,3 +67,11 @@ spec:
                     values:
                       - controller
               topologyKey: kubernetes.io/hostname
+    defaultBackend:
+      enabled: true
+      image:
+        repository: ghcr.io/181192/custom-error-pages
+        tag: 1.2.1
+      extraEnvs:
+        - name: ERROR_FILES_PATH
+          value: ./themes/ghost
