@@ -26,7 +26,7 @@ spec:
     port: 7000
     ssl: false
   monitoring:
-    enabled: true
+    enabled: false
   crashCollector:
     disable: false
   cleanupPolicy:
