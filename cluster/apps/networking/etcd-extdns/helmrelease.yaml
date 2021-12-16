@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://charts.bitnami.com/bitnami
       chart: etcd
-      version: 6.10.5
+      version: 6.10.6
       sourceRef:
         kind: HelmRepository
         name: bitnami
