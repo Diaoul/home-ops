@@ -18,7 +18,8 @@ spec:
   values:
     upgradeCRDs: false
     image:
-      repository: ghcr.io/k8s-at-home/velero
+      repository: velero/velero
+      tag: v1.7.1
     configuration:
       extraEnvVars:
         TZ: Europe/Paris
@@ -36,7 +37,7 @@ spec:
           region: us-east-1
     initContainers:
       - name: velero-plugin-for-aws
-        image: ghcr.io/k8s-at-home/velero-plugin-for-aws:v1.3.0
+        image: velero/velero-plugin-for-aws:v1.3.0
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - mountPath: /target
