@@ -48,3 +48,5 @@ spec:
               - name: nvme0n1
         useAllDevices: false
         useAllNodes: false
+    cephFileSystems: []
+    cephObjectStores: []
