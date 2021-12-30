@@ -40,6 +40,9 @@ spec:
           - yuv420p
       record:
         enabled: True
+      detect:
+        width: 1024
+        height: 576
       cameras:
         porch:
           ffmpeg:
@@ -51,9 +54,6 @@ spec:
                 roles:
                   - record
                   - rtmp
-          detect:
-            width: 1024
-            height: 576
           motion:
             mask:
               - 825,576,1024,576,1024,344,944,325,794,518
@@ -71,9 +71,6 @@ spec:
                 roles:
                   - record
                   - rtmp
-          detect:
-            width: 1024
-            height: 576
           mqtt:
             timestamp: False
             bounding_box: False
@@ -88,9 +85,6 @@ spec:
                 roles:
                   - record
                   - rtmp
-          detect:
-            width: 1024
-            height: 576
           motion:
             mask:
               - 792,576,1024,263,1024,576
