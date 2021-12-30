@@ -1,0 +1,50 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+  namespace: rook-ceph
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.rook.io/release
+      chart: rook-ceph-cluster
+      version: v1.8.1
+      sourceRef:
+        kind: HelmRepository
+        name: rook
+        namespace: flux-system
+  dependsOn:
+    - name: rook-ceph
+  values:
+    monitoring:
+      enabled: true
+    ingress:
+      dashboard:
+        annotations:
+          kubernetes.io/ingress.class: nginx
+        host:
+          name: rook.${DOMAIN}
+          path: /
+        tls:
+          - hosts:
+              - rook.${DOMAIN}
+    cephClusterSpec:
+      dashboard:
+        enabled: true
+        urlPrefix: /
+        ssl: false
+      storage:
+        nodes:
+          - name: k8s-node-1
+            devices:
+              - name: nvme0n1
+          - name: k8s-node-2
+            devices:
+              - name: nvme0n1
+          - name: k8s-node-3
+            devices:
+              - name: nvme0n1
+        useAllDevices: false
+        useAllNodes: false
