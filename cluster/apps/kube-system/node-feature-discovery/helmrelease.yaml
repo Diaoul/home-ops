@@ -16,13 +16,12 @@ spec:
         name: node-feature-discovery
         namespace: flux-system
   values:
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: nfd-worker-conf
-    image:
-      repository: k8s.gcr.io/nfd/node-feature-discovery
-      tag: v0.10.0
+    nodeFeatureRule:
+      createCRD: false
     worker:
-      config: |-
+      annotations:
+        configmap.reloader.stakater.com/reload: node-feature-discovery-worker-conf
+      config:
         core:
           sources:
             - custom
@@ -59,12 +58,6 @@ spec:
                     class: ["02"]
                     vendor: ["0658"]
                     device: ["0200"]
-            - name: zigbee
-              matchOn:
-                - usbId:
-                    class: ["02"]
-                    vendor: ["0451"]
-                    device: ["16a8"]
             - name: ups-apc
               matchOn:
                 - usbId:

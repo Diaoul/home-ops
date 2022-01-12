@@ -7,4 +7,5 @@ resources:
   - external-dns
   - kafka-operator
   - kube-prometheus-stack
+  - node-feature-discovery
   - rook-ceph
