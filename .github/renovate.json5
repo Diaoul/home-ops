@@ -79,17 +79,26 @@
       "matchDatasources": ["docker"],
       "addLabels": ["renovate/docker"]
     },
+    // manager specific settings
     {
-      "matchDatasources": ["python"],
+      "matchManagers": ["github-actions"],
+      "addLabels": ["renovate/github-actions"]
+    },
+    {
+      "matchManagers": ["pip_requirements"],
       "addLabels": ["renovate/python"]
     },
     {
-      "matchDatasources": ["ansible"],
+      "matchManagers": ["ansible"],
       "addLabels": ["renovate/ansible"]
     },
     {
-      "matchDatasources": ["ansible-galaxy"],
+      "matchManagers": ["ansible-galaxy"],
       "addLabels": ["renovate/ansible-galaxy"]
+    },
+    {
+      "matchManagers": ["pre-commit"],
+      "addLabels": ["renovate/pre-commit"]
     },
     // update types specific settings
     {
