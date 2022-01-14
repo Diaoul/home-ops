@@ -18,3 +18,4 @@ resources:
   - readarr
   - readarr-audio
   - sonarr
+  - unpackerr

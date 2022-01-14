@@ -1,0 +1,51 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: unpackerr
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
+      chart: unpackerr
+      version: 5.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-at-home
+        namespace: flux-system
+  values:
+    image:
+      repository: docker.io/golift/unpackerr
+      tag: 0.9.9
+    env:
+      UN_SONARR_0_URL: http://sonarr:8989
+      UN_SONARR_0_API_KEY: ${SONARR_API_KEY}
+      UN_SONARR_0_PATHS_0: /media/downloads/complete/tv
+      UN_RADARR_0_URL: http://radarr:7878
+      UN_RADARR_0_API_KEY: ${RADARR_API_KEY}
+      UN_RADARR_0_PATHS_0: /media/downloads/complete/movie
+      UN_LIDARR_0_URL: http://lidarr:8686
+      UN_LIDARR_0_API_KEY: ${LIDARR_API_KEY}
+      UN_LIDARR_0_PATHS_0: /media/downloads/complete/music
+      UN_READARR_0_URL: http://readarr:8787
+      UN_READARR_0_API_KEY: ${READARR_API_KEY}
+      UN_READARR_0_PATHS_0: /media/downloads/complete/book
+      UN_READARR_1_URL: http://readarr-audio:8787
+      UN_READARR_1_API_KEY: ${READARR_AUDIO_API_KEY}
+      UN_READARR_1_PATHS_0: /media/downloads/complete/audiobook
+    persistence:
+      config:
+        enabled: false
+      media:
+        enabled: true
+        existingClaim: nfs-singularity-media
+        mountPath: /media
+    resources:
+      requests:
+        cpu: 500m
+        memory: 250Mi
+      limits:
+        cpu: 500m
+        memory: 750Mi
