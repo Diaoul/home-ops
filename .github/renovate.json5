@@ -1,5 +1,8 @@
 {
-  "extends": ["docker:enableMajor"],
+  "extends": [
+    "docker:enableMajor",
+    ":enablePreCommit",
+  ],
   "timezone": "Europe/Paris",
   "semanticCommits": "enabled",
   "separateMinorPatch": true,
