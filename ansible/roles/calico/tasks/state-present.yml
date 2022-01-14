@@ -10,7 +10,7 @@
 - name: download tigera operator manifest
   get_url:
     url: https://docs.projectcalico.org/manifests/tigera-operator.yaml
-    dest: tigera-operator.yaml
+    dest: /tmp/tigera-operator.yaml
     mode: '0664'
   run_once: yes
   delegate_to: localhost
@@ -18,7 +18,7 @@
 - name: install tigera operator
   kubernetes.core.k8s:
     state: present
-    src: tigera-operator.yaml
+    src: /tmp/tigera-operator.yaml
   run_once: yes
   delegate_to: localhost
 
