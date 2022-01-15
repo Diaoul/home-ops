@@ -8,12 +8,12 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://diaoul.github.io/helm-charts/
+      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: double-take
-      version: 0.1.1
+      version: 2.1.0
       sourceRef:
         kind: HelmRepository
-        name: diaoul
+        name: k8s-at-home
         namespace: flux-system
   values:
     image:
@@ -42,6 +42,26 @@ spec:
       storage:
         enabled: true
         existingClaim: double-take-storage
+    config:
+      mqtt:
+        host: emqx
+        username: ${EMQX_USER_USERNAME}
+        password: ${EMQX_USER_PASSWORD}
+
+      frigate:
+        url: http://frigate:5000
+
+      detectors:
+        deepstack:
+          url: http://deepstack:5000
+
+      detect:
+        match:
+          purge: 168
+          min_area: 2500
+
+        unknown:
+          purge: 168
     resources:
       requests:
         cpu: 500m
