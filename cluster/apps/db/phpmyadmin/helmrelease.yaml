@@ -21,6 +21,8 @@ spec:
       host: mariadb
     ingress:
       enabled: true
+      hostname: phpmyadmin.${DOMAIN}
+      pathType: Prefix
       annotations:
         external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
@@ -29,7 +31,6 @@ spec:
         hajimari.io/enable: "true"
         hajimari.io/icon: database-cog
         hajimari.io/appName: phpMyAdmin
-      hostname: phpmyadmin.${DOMAIN}
       tls: true
     metrics:
       enabled: true
