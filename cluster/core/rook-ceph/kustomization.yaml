@@ -6,3 +6,4 @@ resources:
   - operator
   - direct-mount
   - snapshot-controller
+  - volumesnapshotclass.yaml
