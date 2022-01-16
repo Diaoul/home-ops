@@ -41,14 +41,6 @@
       ],
       "datasourceTemplate": "helm"
     },
-    // cert-manager crd
-    {
-      "fileMatch": ["cluster/crds/cert-manager/.+\\.yaml$"],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n.*\\/(?<currentValue>.*?)\\/",
-      ],
-      "datasourceTemplate": "helm"
-    },
     // kube-prometheus-stack crd
     {
       "fileMatch": ["cluster/crds/kube-prometheus-stack/.+\\.yaml$"],
