@@ -25,14 +25,6 @@
       ],
       "datasourceTemplate": "helm"
     },
-    // rook-ceph crd
-    {
-      "fileMatch": ["cluster/crds/rook-ceph/.+\\.yaml$"],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?) chart=(?<depName>.*?)\n *tag: (?<currentValue>.*)\n",
-      ],
-      "datasourceTemplate": "helm"
-    },
     // kube-prometheus-stack crd
     {
       "fileMatch": ["cluster/crds/kube-prometheus-stack/.+\\.yaml$"],
