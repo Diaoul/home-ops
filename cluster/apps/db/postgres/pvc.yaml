@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgresql
   namespace: db
+  labels:
+    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

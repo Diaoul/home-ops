@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: node-red-data
   namespace: home-automation
+  labels:
+    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

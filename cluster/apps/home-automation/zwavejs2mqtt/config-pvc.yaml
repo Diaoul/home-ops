@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: zwavejs2mqtt-config
   namespace: home-automation
+  labels:
+    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce
