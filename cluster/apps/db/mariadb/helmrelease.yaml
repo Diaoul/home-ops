@@ -23,8 +23,6 @@ spec:
       persistence:
         enabled: true
         existingClaim: mariadb
-      podAnnotations:
-        backup.velero.io/backup-volumes: data
     metrics:
       enabled: true
       serviceMonitor:
