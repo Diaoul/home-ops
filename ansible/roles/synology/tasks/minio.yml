@@ -4,7 +4,6 @@
     name:
       - docker
       - docker-compose
-    executable: /usr/local/python3/bin/pip
   become: yes
 
 - name: install minio
