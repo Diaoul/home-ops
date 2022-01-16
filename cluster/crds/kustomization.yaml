@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - external-snapshotter
   - external-dns
-  - kafka-operator
   - kube-prometheus-stack
   - node-feature-discovery
   - rook-ceph
