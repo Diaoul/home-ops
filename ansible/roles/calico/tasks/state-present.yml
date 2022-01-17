@@ -1,12 +1,4 @@
 ---
-- name: create tigera-operator namespace
-  kubernetes.core.k8s:
-    api_version: v1
-    kind: namespace
-    name: tigera-operator
-  run_once: yes
-  delegate_to: localhost
-
 - name: download tigera operator manifest
   get_url:
     url: https://docs.projectcalico.org/manifests/tigera-operator.yaml

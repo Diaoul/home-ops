@@ -3,6 +3,6 @@
     - kubernetes
   gather_facts: no
   vars:
-    calico_state: absent
+    kubevip_state: absent
   roles:
-    - calico
+    - kubevip

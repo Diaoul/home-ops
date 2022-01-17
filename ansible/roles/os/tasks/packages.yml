@@ -13,11 +13,11 @@
 
 - name: packages | install packages
   apt:
-    name: "{{ packages.install }}"
+    name: "{{ os_packages.install }}"
     update_cache: yes
     cache_valid_time: 3600
     autoclean: yes
-  when: packages.install
+  when: os_packages.install
 
 - name: packages | remove snaps
   community.general.snap:
@@ -28,12 +28,12 @@
     state: absent
   when:
     - '"snapd" in ansible_facts.packages'
-    - '"snapd" in packages.remove'
+    - '"snapd" in os_packages.remove'
 
 - name: packages | remove packages
   apt:
-    name: "{{ packages.remove }}"
+    name: "{{ os_packages.remove }}"
     state: absent
     autoremove: yes
     purge: yes
-  when: packages.remove
+  when: os_packages.remove

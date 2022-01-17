@@ -1,0 +1,4 @@
+---
+kubevip_state: present
+kubevip_interface: eno1
+kubevip_address: 10.0.3.32

@@ -1,6 +1,7 @@
 ---
 ansible_become: yes
-packages:
+os_timezone: Europe/Paris
+os_packages:
   install:
     - apt-transport-https
     - arptables
@@ -9,4 +10,7 @@ packages:
     - open-iscsi
   remove:
     - apparmor
+    - cloud-init
+    - plymouth
     - snapd
+    - ufw
