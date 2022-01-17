@@ -21,11 +21,12 @@
 
 - name: packages | remove snaps
   community.general.snap:
-    name:
-      - lxd
-      - core20
-      - snapd
+    name: "{{ item }}"
     state: absent
+  loop:
+    - lxd
+    - core18
+    - snapd
   when:
     - '"snapd" in ansible_facts.packages'
     - '"snapd" in os_packages.remove'

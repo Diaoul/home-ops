@@ -1,15 +1,4 @@
 ---
-- name: network | install network tools
-  ansible.builtin.apt:
-    name: "{{ item }}"
-    update_cache: true
-  loop:
-    - arptables
-    - ebtables
-    - iputils-ping
-    - ipvsadm
-    - net-tools
-
 - name: network | sysctl ip forward
   ansible.posix.sysctl:
     name: "{{ item }}"
