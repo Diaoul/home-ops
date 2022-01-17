@@ -16,6 +16,10 @@ spec:
         kind: HelmRepository
         name: kasten
         namespace: flux-system
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   values:
     eula:
       accept: true
