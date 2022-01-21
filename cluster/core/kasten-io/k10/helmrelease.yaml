@@ -46,6 +46,8 @@ spec:
     prometheus:
       networkPolicy:
         enabled: false
+    grafana:
+      enabled: false
     clusterName: k8s
     ingress:
       create: true
@@ -54,7 +56,6 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
-        nginx.ingress.kubernetes.io/app-root: /k10
       urlPath: k10
       hosts:
         - k10.${DOMAIN}
