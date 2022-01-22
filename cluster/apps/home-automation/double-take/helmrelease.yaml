@@ -59,6 +59,10 @@ spec:
           min_area: 2500
         unknown:
           purge: 168
+    persistence:
+      data:
+        enabled: true
+        existingClaim: double-take-data
     resources:
       requests:
         cpu: 500m
