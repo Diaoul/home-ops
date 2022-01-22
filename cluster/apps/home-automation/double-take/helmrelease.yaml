@@ -38,10 +38,6 @@ spec:
           - hosts:
               - double-take.${DOMAIN}
             secretName: double-take-tls
-    persistence:
-      data:
-        enabled: true
-        existingClaim: double-take-storage
     config:
       mqtt:
         host: emqx
@@ -50,8 +46,13 @@ spec:
       frigate:
         url: http://frigate:5000
       detectors:
+        compreface:
+          enabled: false
         deepstack:
+          enabled: true
           url: http://deepstack:5000
+        facebox:
+          enabled: false
       detect:
         match:
           purge: 168
