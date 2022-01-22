@@ -8,6 +8,7 @@ resources:
   - double-take
   - emqx
   - esphome
+  - facebox
   - frigate
   - home-assistant
   - node-red
