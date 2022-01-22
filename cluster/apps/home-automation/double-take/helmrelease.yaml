@@ -39,7 +39,7 @@ spec:
               - double-take.${DOMAIN}
             secretName: double-take-tls
     persistence:
-      storage:
+      data:
         enabled: true
         existingClaim: double-take-storage
     config:
@@ -47,19 +47,15 @@ spec:
         host: emqx
         username: ${EMQX_USER_USERNAME}
         password: ${EMQX_USER_PASSWORD}
-
       frigate:
         url: http://frigate:5000
-
       detectors:
         deepstack:
           url: http://deepstack:5000
-
       detect:
         match:
           purge: 168
           min_area: 2500
-
         unknown:
           purge: 168
     resources:
