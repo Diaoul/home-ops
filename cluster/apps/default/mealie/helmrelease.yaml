@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: hkotel/mealie
-      tag: v0.5.5
+      tag: v0.5.6
     ingress:
       main:
         enabled: true
