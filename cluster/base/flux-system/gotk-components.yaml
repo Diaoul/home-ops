@@ -3936,7 +3936,7 @@ spec:
     spec:
       containers:
       - args:
-        - --events-addr=http://notification-controller.flux-system.svc.cluster.local/
+        - --events-addr=http://notification-controller.flux-system.svc.cluster.milkyway/
         - --watch-all-namespaces=true
         - --log-level=info
         - --log-encoding=json
@@ -4016,7 +4016,7 @@ spec:
     spec:
       containers:
       - args:
-        - --events-addr=http://notification-controller.flux-system.svc.cluster.local/
+        - --events-addr=http://notification-controller.flux-system.svc.cluster.milkyway/
         - --watch-all-namespaces=true
         - --log-level=info
         - --log-encoding=json
@@ -4185,13 +4185,13 @@ spec:
     spec:
       containers:
       - args:
-        - --events-addr=http://notification-controller.flux-system.svc.cluster.local/
+        - --events-addr=http://notification-controller.flux-system.svc.cluster.milkyway/
         - --watch-all-namespaces=true
         - --log-level=info
         - --log-encoding=json
         - --enable-leader-election
         - --storage-path=/data
-        - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.cluster.local.
+        - --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.cluster.milkyway.
         env:
         - name: RUNTIME_NAMESPACE
           valueFrom:
@@ -4250,62 +4250,3 @@ spec:
         name: data
       - emptyDir: {}
         name: tmp
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  labels:
-    app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/part-of: flux
-    app.kubernetes.io/version: v0.26.2
-  name: allow-egress
-  namespace: flux-system
-spec:
-  egress:
-  - {}
-  ingress:
-  - from:
-    - podSelector: {}
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  labels:
-    app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/part-of: flux
-    app.kubernetes.io/version: v0.26.2
-  name: allow-scraping
-  namespace: flux-system
-spec:
-  ingress:
-  - from:
-    - namespaceSelector: {}
-    ports:
-    - port: 8080
-      protocol: TCP
-  podSelector: {}
-  policyTypes:
-  - Ingress
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  labels:
-    app.kubernetes.io/instance: flux-system
-    app.kubernetes.io/part-of: flux
-    app.kubernetes.io/version: v0.26.2
-  name: allow-webhooks
-  namespace: flux-system
-spec:
-  ingress:
-  - from:
-    - namespaceSelector: {}
-  podSelector:
-    matchLabels:
-      app: notification-controller
-  policyTypes:
-  - Ingress
