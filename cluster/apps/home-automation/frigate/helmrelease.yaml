@@ -19,83 +19,83 @@ spec:
     image:
       repository: blakeblackshear/frigate
       tag: 0.10.0-amd64
-    config:
-      enabled: true
-      config.yml: |
-        mqtt:
-          host: emqx
-          user: ${EMQX_USER_USERNAME}
-          password: ${EMQX_USER_PASSWORD}
-        database:
-          path: /data/frigate.db
-        detectors:
-          coral:
-            type: edgetpu
-            device: pci
-        ffmpeg:
-          hwaccel_args:
-            - -hwaccel
-            - vaapi
-            - -hwaccel_device
-            - /dev/dri/renderD128
-            - -hwaccel_output_format
-            - yuv420p
-        birdseye:
-          mode: continuous
-        record:
-          enabled: True
-        detect:
-          width: 1024
-          height: 576
-        cameras:
-          porch:
-            ffmpeg:
-              inputs:
-                - path: rtsp://10.0.4.16:554/s2
-                  roles:
-                    - detect
-                - path: rtsp://10.0.4.16:554/s0
-                  roles:
-                    - record
-                    - rtmp
-            motion:
-              mask:
-                - 825,576,1024,576,1024,344,944,325,794,518
-            mqtt:
-              timestamp: False
-              bounding_box: False
-              height: 500
-          garage:
-            ffmpeg:
-              inputs:
-                - path: rtsp://10.0.4.17:554/s2
-                  roles:
-                    - detect
-                - path: rtsp://10.0.4.17:554/s0
-                  roles:
-                    - record
-                    - rtmp
-            mqtt:
-              timestamp: False
-              bounding_box: False
-              height: 500
-          living_room:
-            ffmpeg:
-              inputs:
-                - path: rtsp://10.0.4.18:554/s2
-                  roles:
-                    - detect
-                - path: rtsp://10.0.4.18:554/s0
-                  roles:
-                    - record
-                    - rtmp
-            motion:
-              mask:
-                - 792,576,1024,263,1024,576
-            mqtt:
-              timestamp: False
-              bounding_box: False
-              height: 500
+    configmap:
+      config:
+        config.yml: |
+          mqtt:
+            host: emqx
+            user: ${EMQX_USER_USERNAME}
+            password: ${EMQX_USER_PASSWORD}
+          database:
+            path: /data/frigate.db
+          detectors:
+            coral:
+              type: edgetpu
+              device: pci
+          ffmpeg:
+            hwaccel_args:
+              - -hwaccel
+              - vaapi
+              - -hwaccel_device
+              - /dev/dri/renderD128
+              - -hwaccel_output_format
+              - yuv420p
+          birdseye:
+            mode: continuous
+          record:
+            enabled: True
+          detect:
+            width: 1024
+            height: 576
+          cameras:
+            porch:
+              ffmpeg:
+                inputs:
+                  - path: rtsp://10.0.4.16:554/s2
+                    roles:
+                      - detect
+                  - path: rtsp://10.0.4.16:554/s0
+                    roles:
+                      - record
+                      - rtmp
+              motion:
+                mask:
+                  - 825,576,1024,576,1024,344,944,325,794,518
+              mqtt:
+                timestamp: False
+                bounding_box: False
+                height: 500
+            garage:
+              ffmpeg:
+                inputs:
+                  - path: rtsp://10.0.4.17:554/s2
+                    roles:
+                      - detect
+                  - path: rtsp://10.0.4.17:554/s0
+                    roles:
+                      - record
+                      - rtmp
+              mqtt:
+                timestamp: False
+                bounding_box: False
+                height: 500
+            living_room:
+              ffmpeg:
+                inputs:
+                  - path: rtsp://10.0.4.18:554/s2
+                    roles:
+                      - detect
+                  - path: rtsp://10.0.4.18:554/s0
+                    roles:
+                      - record
+                      - rtmp
+              motion:
+                mask:
+                  - 792,576,1024,263,1024,576
+              mqtt:
+                timestamp: False
+                bounding_box: False
+                height: 500
     ingress:
       main:
         enabled: true
