@@ -19,8 +19,8 @@ spec:
     image:
       repository: bitnami/postgresql
       tag: 14.2.0
-    postgresqlUsername: ${POSTGRES_USERNAME}
-    postgresqlPassword: ${POSTGRES_PASSWORD}
+    auth:
+      postgresPassword: ${POSTGRES_PASSWORD}
     persistence:
       enabled: true
       existingClaim: postgresql
