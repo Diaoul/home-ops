@@ -19,8 +19,10 @@ spec:
     image:
       repository: bitnami/postgresql
       tag: 14.2.0
+    clusterDomain: ${CLUSTER_DOMAIN}
     auth:
       postgresPassword: ${POSTGRES_PASSWORD}
-    persistence:
-      enabled: true
-      existingClaim: postgresql
+    primary:
+      persistence:
+        enabled: true
+        existingClaim: postgresql
