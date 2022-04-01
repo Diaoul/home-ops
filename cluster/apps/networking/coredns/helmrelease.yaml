@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://coredns.github.io/helm
       chart: coredns
-      version: 1.17.0
+      version: 1.19.0
       sourceRef:
         kind: HelmRepository
         name: coredns
@@ -20,6 +20,9 @@ spec:
     isClusterService: false
     serviceType: LoadBalancer
     service:
+      # FIXME: https://github.com/coredns/helm/issues/60#issuecomment-1083176810
+      annotations:
+        test: test
       externalIPs:
         - ${COREDNS_IP}
       externalTrafficPolicy: Local
