@@ -20,9 +20,6 @@ spec:
     isClusterService: false
     serviceType: LoadBalancer
     service:
-      # FIXME: https://github.com/coredns/helm/issues/60#issuecomment-1083176810
-      annotations:
-        test: test
       externalIPs:
         - ${COREDNS_IP}
       externalTrafficPolicy: Local
