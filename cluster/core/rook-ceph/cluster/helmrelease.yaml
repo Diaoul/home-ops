@@ -30,6 +30,11 @@ spec:
           - hosts:
               - *host
     cephClusterSpec:
+      network:
+        provider: host
+      connections:
+        compression:
+          enabled: true
       dashboard:
         enabled: true
         urlPrefix: /
@@ -47,5 +52,7 @@ spec:
               - name: nvme0n1
         useAllDevices: false
         useAllNodes: false
-    cephFileSystems: []
-    cephObjectStores: []
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      annotations:
+        k10.kasten.io/is-snapshot-class: "true"
