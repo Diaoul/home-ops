@@ -14,10 +14,8 @@ spec:
         kind: HelmRepository
         name: rook
         namespace: flux-system
-  install:
-    crds: CreateReplace
-  upgrade:
-    crds: CreateReplace
   values:
+    crds:
+      enabled: false
     monitoring:
       enabled: true
