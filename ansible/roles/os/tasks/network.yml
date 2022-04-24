@@ -10,12 +10,12 @@
   when: '"kubernetes" in group_names'
 
 - name: network | update hostname
-  hostname:
+  ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   when: ansible_hostname != inventory_hostname
 
 - name: network | update /etc/hosts
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/hosts
     regexp: '^127\.0\.1\.1'
     line: "127.0.1.1 {{ inventory_hostname }}"

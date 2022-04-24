@@ -1,24 +1,24 @@
 ---
 - name: create config directory
-  file:
+  ansible.builtin.file:
     path: /etc/unifi/data/sites/default
     state: directory
     mode: 0755
-  become: yes
+  become: true
   notify: configuration changed
 
 - name: copy config.properties
-  copy:
+  ansible.builtin.copy:
     src: files/config.properties
     dest: /etc/unifi/data/sites/default/config.properties
     mode: 0644
-  become: yes
+  become: true
   notify: configuration changed
 
 - name: copy config.gateway.json
-  template:
+  ansible.builtin.template:
     src: config.gateway.json.j2
     dest: /etc/unifi/data/sites/default/config.gateway.json
     mode: 0644
-  become: yes
+  become: true
   notify: configuration changed

@@ -1,2 +1,2 @@
 ---
-rook_ceph_enabled: no
+rook_ceph_enabled: false

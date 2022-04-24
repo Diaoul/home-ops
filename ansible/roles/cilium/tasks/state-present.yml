@@ -4,13 +4,13 @@
   kubernetes.core.helm_repository:
     name: cilium
     repo_url: "https://helm.cilium.io/"
-  run_once: yes
+  run_once: true
   delegate_to: localhost
 
 - name: install kube-router manifests
   kubernetes.core.k8s:
-    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"
-  run_once: yes
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"  # noqa line-length
+  run_once: true
   delegate_to: localhost
 
 - name: patch kube-couter configuration
@@ -40,16 +40,16 @@
                   - "--peer-router-ips=10.0.3.1"
                   - "--peer-router-asns=64512"
                   - "--cluster-asn=64513"
-  run_once: yes
+  run_once: true
   delegate_to: localhost
 
 - name: install cilium
   kubernetes.core.helm:
-    update_repo_cache: yes
+    update_repo_cache: true
     release_namespace: kube-system
     name: cilium
     chart_ref: cilium/cilium
     chart_version: "{{ cilium_version }}"
     values: "{{ cilium_values }}"
-  run_once: yes
+  run_once: true
   delegate_to: localhost

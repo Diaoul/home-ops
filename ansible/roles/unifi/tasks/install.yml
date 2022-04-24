@@ -6,43 +6,43 @@
     mode: 0644
     checksum: sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570  # noqa line-length
   register: get_gpg_key
-  become: yes
+  become: true
 
 - name: add docker gpg key to keyrings
   ansible.builtin.command: gpg -o /usr/share/keyrings/docker.gpg --dearmor /usr/share/keyrings/docker.gpg.armored  # noqa line-length no-handler
   when: get_gpg_key is changed
-  become: yes
+  become: true
 
 - name: add docker repository
   ansible.builtin.apt_repository:
     repo: deb [arch={{ "arm64" if ansible_architecture == "aarch64" else ansible_architecture }} signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
     filename: docker
-  become: yes
+  become: true
 
 - name: install docker
-  apt:
+  ansible.builtin.apt:
     name:
       - docker-ce
       - python3-docker
-    update_cache: yes
-  become: yes
+    update_cache: true
+  become: true
 
 - name: create unifi directory
-  file:
+  ansible.builtin.file:
     path: /etc/unifi
     state: directory
     mode: 0755
-  become: yes
+  become: true
 
 - name: create unifi certificates directory
-  file:
+  ansible.builtin.file:
     path: /etc/unifi/cert
     state: directory
     mode: 0755
-  become: yes
+  become: true
 
 - name: copy unifi certificates
-  copy:
+  ansible.builtin.copy:
     src: /mnt/singularity/certificates/{{ item.src }}
     dest: /etc/unifi/cert/{{ item.dest }}
     mode: 0600
@@ -53,17 +53,17 @@
       dest: privkey.pem
     - src: milkyway-ca-bundle.pem
       dest: chain.pem
-  become: yes
+  become: true
 
 - name: install unifi
   community.general.docker_container:
     name: unifi
     image: jacobalberty/unifi:v7.1.68
-    pull: yes
+    pull: true
     restart_policy: always
     network_mode: host
     volumes:
       - /etc/unifi:/unifi
     env:
       TZ: Europe/Paris
-  become: yes
+  become: true

@@ -1,7 +1,7 @@
 ---
 - name: restart nut-monitor
-  service:
+  ansible.builtin.service:
     name: nut-monitor
     state: restarted
-  become: yes
+  become: true
   listen: configuration changed

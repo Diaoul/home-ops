@@ -1,15 +1,15 @@
 ---
 - name: kernel | check that grub exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/default/grub
   register: grub
 
 - name: kernel | adjust grub cmdline linux default
-  become: yes
-  replace:
+  become: true
+  ansible.builtin.replace:
     path: /etc/default/grub
     regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT="(?:(?![ ]?{{ item.option | regex_escape }}=).)*)(?:[ ]?{{ item.option | regex_escape }}=\S+)?(.*")$'
-    replace: '\1 {{ item.option }}={{ item.value }}\2'
+    ansible.builtin.replace: '\1 {{ item.option }}={{ item.value }}\2'
   loop:
     - option: apparmor
       value: 0
@@ -21,7 +21,7 @@
     - '"kubernetes" in group_names'
 
 - name: kernel | adjust cmdline.txt (Ubuntu)
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /boot/firmware/cmdline.txt
     backrefs: true
     regexp: '^(.*splash)$'
@@ -32,7 +32,7 @@
     - '"kubernetes" in group_names'
 
 - name: kernel | adjust cmdline.txt (Debian)
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /boot/cmdline.txt
     backrefs: true
     regexp: '^(.*rootwait)$'
@@ -53,7 +53,7 @@
   when: '"kubernetes" in group_names'
 
 - name: kernel | enable modules on boot
-  copy:
+  ansible.builtin.copy:
     content: "{{ item }}"
     dest: "/etc/modules-load.d/{{ item }}.conf"
     mode: 0644

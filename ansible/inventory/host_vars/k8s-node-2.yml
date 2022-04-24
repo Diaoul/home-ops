@@ -1,4 +1,4 @@
 ---
-rook_ceph_enabled: yes
+rook_ceph_enabled: true
 rook_ceph_devices:
   - /dev/nvme0n1

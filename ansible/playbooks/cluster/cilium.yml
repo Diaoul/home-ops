@@ -2,6 +2,6 @@
 - hosts:
     - master
     - worker
-  gather_facts: no
+  gather_facts: false
   roles:
     - cilium
