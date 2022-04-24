@@ -1,5 +1,5 @@
 ---
-k3s_control_node: yes
+k3s_control_node: true
 
 k3s_server:
   flannel-backend: 'none'
@@ -8,8 +8,8 @@ k3s_server:
     - traefik
     - local-storage
     - metrics-server
-  disable-network-policy: yes
-  disable-cloud-controller: yes
+  disable-network-policy: true
+  disable-cloud-controller: true
   cluster-cidr: 10.42.0.0/16
   service-cidr: 10.43.0.0/16
   cluster-domain: cluster.milkyway

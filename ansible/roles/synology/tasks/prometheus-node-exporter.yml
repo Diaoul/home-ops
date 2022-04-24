@@ -1,15 +1,15 @@
 ---
 - name: install docker and docker-compose python modules
-  pip:
+  ansible.builtin.pip:
     name:
       - docker
       - docker-compose
-  become: yes
+  become: true
 
 - name: install prometheus node-exporter
   community.docker.docker_compose:
     project_name: node-exporter
-    pull: yes
+    pull: true
     definition:
       version: "3.7"
       services:
@@ -24,9 +24,9 @@
             - /proc:/host/proc:ro
             - /sys:/host/sys:ro
             - /:/rootfs:ro
-          command:
+          ansible.builtin.command:
             - "--path.procfs=/host/proc"
             - "--path.sysfs=/host/sys"
             - "--collector.filesystem.ignored-mount-points"
             - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
-  become: yes
+  become: true

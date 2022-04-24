@@ -2,34 +2,34 @@
 - name: remove kube-router
   kubernetes.core.k8s:
     state: absent
-    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"
-    wait: yes
-  run_once: yes
+    definition: "{{ lookup('url', 'https://raw.githubusercontent.com/cloudnativelabs/kube-router/' + kube_router_version + '/daemonset/generic-kuberouter-only-advertise-routes.yaml', split_lines=False) | from_yaml_all | list }}"  # noqa line-length
+    wait: true
+  run_once: true
   delegate_to: localhost
 
 - name: remove cilium
   kubernetes.core.helm:
     state: absent
-    update_repo_cache: yes
+    update_repo_cache: true
     release_namespace: kube-system
     name: cilium
     chart_ref: cilium/cilium
     chart_version: "{{ cilium_version }}"
     values: "{{ cilium_values }}"
-    wait: yes
-  run_once: yes
+    wait: true
+  run_once: true
   delegate_to: localhost
 
 - name: clean up ip links
-  command: ip link delete cilium_host
-  changed_when: yes
-  become: yes
-  ignore_errors: yes  # noqa ignore-errors
+  ansible.builtin.command: ip link delete cilium_host
+  changed_when: true
+  become: true
+  ignore_errors: true  # noqa ignore-errors
 - name: clean up cni files
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ item }}"
   loop:
     - /etc/cni/net.d/05-cilium.conf
     - /opt/cni/bin/cilium-cni
-  become: yes
+  become: true

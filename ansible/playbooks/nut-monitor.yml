@@ -2,6 +2,6 @@
 - hosts:
     - kubernetes
     - unifi_controller
-  gather_facts: no
+  gather_facts: false
   roles:
     - name: nut_monitor

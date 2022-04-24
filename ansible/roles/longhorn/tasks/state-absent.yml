@@ -4,10 +4,10 @@
     path: /var/lib/longhorn
     src: "{{ longhorn_device }}1"
     state: absent
-  become: yes
+  become: true
 
 - name: delete mount directory
-  file:
+  ansible.builtin.file:
     path: /var/lib/longhorn
     state: absent
-  become: yes
+  become: true

@@ -1,30 +1,30 @@
 ---
 - name: install nut-client package
-  apt:
+  ansible.builtin.apt:
     name:
       - nut-client
-  become: yes
+  become: true
 
 - name: set netclient mode in nut.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/nut/nut.conf
     regex: "^MODE="
     line: "MODE=netclient"
-  become: yes
+  become: true
   notify: configuration changed
 
 - name: set MONITOR in upsmon.conf
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/nut/upsmon.conf
     insertafter: "^# MONITOR"
     regex: "^MONITOR"
     line: "MONITOR {{ upsmon_upsname }}@{{ upsmon_host }} {{ upsmon_powervalue }} {{ upsmon_username }} {{ upsmon_password }} {{ upsmon_mode }}"
-  become: yes
+  become: true
   notify: configuration changed
 
 - name: enable nut-monitor service
-  service:
+  ansible.builtin.service:
     name: nut-monitor
-    enabled: yes
+    enabled: true
     state: started
-  become: yes
+  become: true

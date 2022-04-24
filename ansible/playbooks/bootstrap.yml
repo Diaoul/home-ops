@@ -4,15 +4,15 @@
     user: antoine
     ssh_authorized_keys: |
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE6mQ4yBpDESYhJrIv/G2daw5I2X0cwh0Hj9K1YxCp7n openpgp:0x66FDC5CE
-  become: yes
+  become: true
   tasks:
     - name: add user
-      user:
+      ansible.builtin.user:
         name: "{{ user }}"
-        shell: /bin/bash
+        ansible.builtin.shell: /bin/bash
 
     - name: add user to sudoers nopasswd
-      copy:
+      ansible.builtin.copy:
         dest: /etc/sudoers.d/020_{{ user }}-nopasswd
         content: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
         mode: 0440
@@ -21,11 +21,11 @@
       ansible.posix.authorized_key:
         user: "{{ user }}"
         key: "{{ ssh_authorized_keys }}"
-        exclusive: yes
+        exclusive: true
       notify: restart sshd
 
     - name: disable SSH password authentication
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regex: "^#?PasswordAuthentication"
         line: "PasswordAuthentication no"
@@ -33,7 +33,7 @@
 
   handlers:
     - name: restart sshd service
-      systemd:
+      ansible.builtin.systemd:
         name: sshd.service
         state: restarted
       listen: restart sshd

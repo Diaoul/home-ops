@@ -4,47 +4,47 @@
     state: absent
     template: bgppeer.yaml.j2
   loop: "{{ calico_bgp_peers }}"
-  ignore_errors: yes  # noqa ignore-errors
-  run_once: yes
+  ignore_errors: true  # noqa ignore-errors
+  run_once: true
   delegate_to: localhost
 
 - name: remove bgp configuration
   kubernetes.core.k8s:
     state: absent
     template: bgpconfiguration.yaml.j2
-  ignore_errors: yes  # noqa ignore-errors
-  run_once: yes
+  ignore_errors: true  # noqa ignore-errors
+  run_once: true
   delegate_to: localhost
 
 - name: remove tigera operator configuration
   kubernetes.core.k8s:
     state: absent
     template: installation.yaml.j2
-  ignore_errors: yes  # noqa ignore-errors
-  run_once: yes
+  ignore_errors: true  # noqa ignore-errors
+  run_once: true
   delegate_to: localhost
 
 - name: remove tigera operator
   kubernetes.core.k8s:
     state: absent
     definition: "{{ item }}"
-    wait: yes
+    wait: true
   loop: "{{ lookup('url', 'https://docs.projectcalico.org/manifests/tigera-operator.yaml', split_lines=False) | from_yaml_all | list }}"
   loop_control:
     label:
       kind: "{{ item.kind }}"
       name: "{{ item.metadata.name }}"
-  run_once: yes
+  run_once: true
   delegate_to: localhost
 
 - name: clean up ip links
-  shell:
+  ansible.builtin.shell:
     cmd: ip link list | grep cali | awk '{print $2}' | cut -c 1-15 | xargs -I {} ip link delete {}
-  changed_when: yes
-  become: yes
+  changed_when: true
+  become: true
 
 - name: clean up cni files
-  file:
+  ansible.builtin.file:
     state: absent
     path: "{{ item }}"
   loop:
@@ -52,4 +52,4 @@
     - /etc/cni/net.d/calico-kubeconfig
     - /opt/cni/bin/calico
     - /opt/cni/bin/calico-ipam
-  become: yes
+  become: true

@@ -6,10 +6,10 @@
     name: nuke_confirmation
     prompt: This will REMOVE longhorn disk. Do you wish to continue? [Y/n]
     default: n
-    private: no
+    private: false
   vars:
     longhorn_state: absent
-  any_errors_fatal: yes
+  any_errors_fatal: true
   pre_tasks:
     - name: check confirmation
       fail:

@@ -1,6 +1,6 @@
 ---
 - name: power-button | disable single power button press shutdown
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/systemd/logind.conf
     regexp: "{{ item.setting }}"
     line: "{{ item.setting }}={{ item.value }}"

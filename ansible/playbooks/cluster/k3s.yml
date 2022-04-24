@@ -1,11 +1,11 @@
 ---
 - hosts:
     - kubernetes
-  gather_facts: yes
-  any_errors_fatal: yes
+  gather_facts: true
+  any_errors_fatal: true
   pre_tasks:
     - name: Pausing for 5 seconds...
-      pause:
+      ansible.builtin.pause:
         seconds: 5
   roles:
     - xanmanning.k3s

@@ -1,22 +1,22 @@
 ---
 - name: packages | gather the package facts
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 - name: packages | upgrade all packages
-  apt:
+  ansible.builtin.apt:
     upgrade: full
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
-    autoclean: yes
-    autoremove: yes
+    autoclean: true
+    autoremove: true
 
 - name: packages | install packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ os_packages.install }}"
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
-    autoclean: yes
+    autoclean: true
   when: os_packages.install
 
 - name: packages | remove snaps
@@ -26,15 +26,16 @@
   loop:
     - lxd
     - core18
+    - core20
     - snapd
   when:
     - '"snapd" in ansible_facts.packages'
     - '"snapd" in os_packages.remove'
 
 - name: packages | remove packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ os_packages.remove }}"
     state: absent
-    autoremove: yes
-    purge: yes
+    autoremove: true
+    purge: true
   when: os_packages.remove

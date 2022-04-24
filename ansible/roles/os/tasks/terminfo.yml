@@ -1,36 +1,38 @@
 ---
 - name: terminfo | create kitty source directory
-  file:
+  ansible.builtin.file:
     path: /usr/src/kitty
     state: directory
     mode: 0755
 
 - name: terminfo | download kitty terminfo
-  get_url:
+  ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/kovidgoyal/kitty/master/terminfo/kitty.terminfo
     dest: /usr/src/kitty/kitty.info
+    mode: 0644
   register: kitty_terminfo_src
 
 - name: terminfo | install kitty terminfo
-  command:
+  ansible.builtin.command:
     cmd: tic -xe xterm-kitty kitty.info
     chdir: /usr/src/kitty
   when: kitty_terminfo_src is changed  # noqa no-handler
 
 - name: terminfo | create alacritty source directory
-  file:
+  ansible.builtin.file:
     path: /usr/src/alacritty
     state: directory
     mode: 0755
 
 - name: terminfo | download alacritty terminfo
-  get_url:
+  ansible.builtin.get_url:
     url: https://raw.githubusercontent.com/alacritty/alacritty/master/extra/alacritty.info
     dest: /usr/src/alacritty/alacritty.info
+    mode: 0644
   register: alacritty_terminfo_src
 
 - name: terminfo | install alacritty terminfo
-  command:
+  ansible.builtin.command:
     cmd: tic -xe alacritty,alacritty-direct alacritty.info
     chdir: /usr/src/alacritty
   when: alacritty_terminfo_src is changed  # noqa no-handler

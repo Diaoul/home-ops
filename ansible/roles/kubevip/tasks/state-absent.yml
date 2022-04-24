@@ -3,21 +3,21 @@
   kubernetes.core.k8s:
     state: absent
     template: daemonset.yaml.j2
-  ignore_errors: yes  # noqa ignore-errors
-  run_once: yes
+  ignore_errors: true  # noqa ignore-errors
+  run_once: true
   delegate_to: localhost
 
 - name: download kube-vip rbac manifest
-  get_url:
+  ansible.builtin.get_url:
     url: https://kube-vip.io/manifests/rbac.yaml
     dest: /tmp/kube-vip-rbac.yaml
     mode: '0664'
-  run_once: yes
+  run_once: true
   delegate_to: localhost
 
 - name: remove kube-vip rbac
   kubernetes.core.k8s:
     state: absent
     src: /tmp/kube-vip-rbac.yaml
-  run_once: yes
+  run_once: true
   delegate_to: localhost

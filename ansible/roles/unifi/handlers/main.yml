@@ -1,12 +1,12 @@
 ---
 - name: restart unifi
-  service:
+  ansible.builtin.service:
     name: unifi
     state: restarted
-  become: yes
+  become: true
   listen: certificate changed
 
 - name: force provision
-  pause:
+  ansible.builtin.pause:
     prompt: Configuration has changed, trigger a Provision of the device
   listen: configuration changed

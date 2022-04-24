@@ -1,6 +1,6 @@
 ---
 - name: motd | disable motd
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/default/motd-news
     regexp: '^ENABLED='
     line: 'ENABLED=0'

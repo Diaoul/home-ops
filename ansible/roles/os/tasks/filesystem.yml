@@ -1,6 +1,6 @@
 ---
 - name: filesystem | update user open file limit
-  copy:
+  ansible.builtin.copy:
     content: |
       * hard nofile 97816
       * soft nofile 97816
@@ -26,7 +26,7 @@
 - name: filesystem | swap
   block:
     - name: filesystem | disable swap
-      command: swapoff -a
+      ansible.builtin.command: swapoff -a
       when: ansible_swaptotal_mb > 0
     - name: filesystem | disable swap system start
       ansible.posix.mount:

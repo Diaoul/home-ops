@@ -1,25 +1,25 @@
 ---
 - name: install package
-  apt:
+  ansible.builtin.apt:
     name: ufw
-  become: yes
+  become: true
 
 - name: reset configuration
   ufw:
     state: reset
-  become: yes
+  become: true
   when: ufw_reset
 
 - name: set logging
   ufw:
     logging: "on"
-  become: yes
+  become: true
 
 - name: allow ssh
   ufw:
     rule: allow
     port: ssh
-  become: yes
+  become: true
 
 - name: allow ports
   ufw:
@@ -27,16 +27,16 @@
     port: "{{ item.port }}"
     proto: "{{ item.proto }}"
   loop: "{{ ufw_allow }}"
-  become: yes
+  become: true
   when: ufw_allow is defined and ufw_allow|length
 
 - name: deny incoming traffic
   ufw:
     policy: deny
     direction: incoming
-  become: yes
+  become: true
 
 - name: enable
   ufw:
     state: enabled
-  become: yes
+  become: true

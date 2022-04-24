@@ -1,15 +1,15 @@
 ---
 - name: install docker and docker-compose python modules
-  pip:
+  ansible.builtin.pip:
     name:
       - docker
       - docker-compose
-  become: yes
+  become: true
 
 - name: install minio
   community.docker.docker_compose:
     project_name: minio
-    pull: yes
+    pull: true
     definition:
       version: "3.7"
       services:
@@ -17,7 +17,7 @@
           image: quay.io/minio/minio:latest
           container_name: minio
           restart: unless-stopped
-          command: server --console-address ":9010" /data
+          ansible.builtin.command: server --console-address ":9010" /data
           volumes:
             - /volume1/minio:/data
           ports:
@@ -27,4 +27,4 @@
             MINIO_ROOT_USER: "{{ minio_root_user }}"
             MINIO_ROOT_PASSWORD: "{{ minio_root_password }}"
             MINIO_PROMETHEUS_AUTH_TYPE: public
-  become: yes
+  become: true
