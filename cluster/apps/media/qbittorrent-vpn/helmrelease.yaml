@@ -28,13 +28,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: cloud-download
         hosts:
-          - host: qb-vpn.${DOMAIN}
+          - host: &host qb-vpn.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - qb-vpn.${DOMAIN}
+              - *host
             secretName: qb-vpn-tls
     persistence:
       config:

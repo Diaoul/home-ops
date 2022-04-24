@@ -108,13 +108,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: cctv
         hosts:
-          - host: frigate.${DOMAIN}
+          - host: &host frigate.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - frigate.${DOMAIN}
+              - *host
             secretName: frigate-tls
     podAnnotations:
       configmap.reloader.stakater.com/reload: frigate-config

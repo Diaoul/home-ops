@@ -29,13 +29,13 @@ spec:
           hajimari.io/icon: alert
           hajimari.io/appName: Alertmanager
         hosts:
-          - alert-manager.${DOMAIN}
+          - &host-alert-manager alert-manager.${DOMAIN}
         paths:
           - /
         pathType: Prefix
         tls:
           - hosts:
-              - alert-manager.${DOMAIN}
+              - *host-alert-manager
             secretName: alert-manager-tls
       alertManagerSpec:
         storage:
@@ -86,13 +86,13 @@ spec:
           hajimari.io/icon: clipboard-text
           hajimari.io/appName: Prometheus
         hosts:
-          - prometheus.${DOMAIN}
+          - &host-prometheus prometheus.${DOMAIN}
         paths:
           - /
         pathType: Prefix
         tls:
           - hosts:
-              - prometheus.${DOMAIN}
+              - *host-prometheus
             secretName: prometheus-tls
       thanosService:
         enabled: true

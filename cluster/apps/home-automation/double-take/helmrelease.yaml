@@ -30,13 +30,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: face-recognition
         hosts:
-          - host: double-take.${DOMAIN}
+          - host: &host double-take.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - double-take.${DOMAIN}
+              - *host
             secretName: double-take-tls
     config:
       mqtt:

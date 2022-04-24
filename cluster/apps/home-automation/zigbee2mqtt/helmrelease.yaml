@@ -30,13 +30,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: home-automation
         hosts:
-          - host: zigbee2mqtt.${DOMAIN}
+          - host: &host zigbee2mqtt.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - zigbee2mqtt.${DOMAIN}
+              - *host
             secretName: zigbee2mqtt-tls
     persistence:
       data:

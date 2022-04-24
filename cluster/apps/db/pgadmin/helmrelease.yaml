@@ -35,13 +35,13 @@ spec:
         hajimari.io/icon: database-cog
         hajimari.io/appName: pgAdmin
       hosts:
-        - host: pgadmin.${DOMAIN}
+        - host: &host pgadmin.${DOMAIN}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - pgadmin.${DOMAIN}
+            - *host
           secretName: pgadmin-tls
     persistentVolume:
       enabled: true

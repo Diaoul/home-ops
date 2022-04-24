@@ -30,12 +30,12 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: headphones-box
         hosts:
-          - host: airsonic.${DOMAIN}
+          - host: &host airsonic.${DOMAIN}
             paths:
               - path: /
         tls:
           - hosts:
-              - airsonic.${DOMAIN}
+              - *host
             secretName: airsonic-tls
     persistence:
       config:

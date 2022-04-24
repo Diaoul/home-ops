@@ -55,11 +55,11 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: folder-eye
         hosts:
-          - host: sharry.${DOMAIN}
+          - host: &host sharry.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - sharry.${DOMAIN}
+              - *host
             secretName: sharry-tls

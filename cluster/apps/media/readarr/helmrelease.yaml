@@ -30,13 +30,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: book-open-variant
         hosts:
-          - host: readarr.${DOMAIN}
+          - host: &host readarr.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - readarr.${DOMAIN}
+              - *host
             secretName: readarr-tls
       api:
         enabled: true
@@ -44,13 +44,13 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         hosts:
-          - host: readarr.${DOMAIN}
+          - host: *host
             paths:
               - path: /api
                 pathType: Prefix
         tls:
           - hosts:
-              - readarr.${DOMAIN}
+              - *host
             secretName: readarr-tls
     persistence:
       config:

@@ -31,13 +31,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: subtitles
         hosts:
-          - host: bazarr.${DOMAIN}
+          - host: &host bazarr.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - bazarr.${DOMAIN}
+              - *host
             secretName: bazarr-tls
     persistence:
       config:

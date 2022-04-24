@@ -52,13 +52,13 @@ spec:
     ingress:
       create: true
       class: nginx
-      host: k10.${DOMAIN}
+      host: &host k10.${DOMAIN}
       annotations:
         external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
       urlPath: k10
       hosts:
-        - k10.${DOMAIN}
+        - *host
       tls:
         enabled: true
         secretName: k10-tls

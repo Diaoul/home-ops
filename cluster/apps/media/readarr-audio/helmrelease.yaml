@@ -30,13 +30,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: book-open-variant
         hosts:
-          - host: readarr-audio.${DOMAIN}
+          - host: &host readarr-audio.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - readarr-audio.${DOMAIN}
+              - *host
             secretName: readarr-audio-tls
       api:
         enabled: true
@@ -44,13 +44,13 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         hosts:
-          - host: readarr-audio.${DOMAIN}
+          - host: *host
             paths:
               - path: /api
                 pathType: Prefix
         tls:
           - hosts:
-              - readarr-audio.${DOMAIN}
+              - *host
             secretName: readarr-audio-tls
     persistence:
       config:

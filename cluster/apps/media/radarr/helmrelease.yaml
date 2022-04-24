@@ -30,13 +30,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: filmstrip
         hosts:
-          - host: radarr.${DOMAIN}
+          - host: &host radarr.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - radarr.${DOMAIN}
+              - *host
             secretName: radarr-tls
       api:
         enabled: true
@@ -44,13 +44,13 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         hosts:
-          - host: radarr.${DOMAIN}
+          - host: *host
             paths:
               - path: /api
                 pathType: Prefix
         tls:
           - hosts:
-              - radarr.${DOMAIN}
+              - *host
             secretName: radarr-tls
     metrics:
       enabled: true

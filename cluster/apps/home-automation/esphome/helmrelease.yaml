@@ -33,13 +33,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: chip
         hosts:
-          - host: esphome.${DOMAIN}
+          - host: &host esphome.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - esphome.${DOMAIN}
+              - *host
             secretName: esphome-tls
     persistence:
       config:

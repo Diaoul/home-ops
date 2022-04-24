@@ -162,10 +162,10 @@ spec:
         hajimari.io/enable: "true"
         hajimari.io/icon: monitor-dashboard
       hosts:
-        - grafana.${DOMAIN}
+        - &host grafana.${DOMAIN}
       tls:
         - hosts:
-            - grafana.${DOMAIN}
+            - *host
           secretName: grafana-tls
     persistence:
       enabled: false

@@ -37,13 +37,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: home-assistant
         hosts:
-          - host: hass.${DOMAIN}
+          - host: &host hass.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - hass.${DOMAIN}
+              - *host
             secretName: hass-tls
     persistence:
       config:
@@ -73,13 +73,13 @@ spec:
             nginx.ingress.kubernetes.io/auth-url: https://auth.${DOMAIN}/oauth2/auth
             nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}/oauth2/start
           hosts:
-            - host: hass-config.${DOMAIN}
+            - host: &host-hass-config hass-config.${DOMAIN}
               paths:
                 - path: /
                   pathType: Prefix
           tls:
             - hosts:
-                - hass-config.${DOMAIN}
+                - *host-hass-config
               secretName: hass-config-tls
         volumeMounts:
           - name: config

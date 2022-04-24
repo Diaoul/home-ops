@@ -26,13 +26,13 @@ spec:
         external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - host: dex.${DOMAIN}
+        - host: &host dex.${DOMAIN}
           paths:
             - path: /
               pathType: Prefix
       tls:
         - hosts:
-            - dex.${DOMAIN}
+            - *host
           secretName: dex-tls
     resources:
       requests:

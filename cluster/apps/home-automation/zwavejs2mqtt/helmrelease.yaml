@@ -35,13 +35,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: home-automation
         hosts:
-          - host: zwavejs2mqtt.${DOMAIN}
+          - host: &host zwavejs2mqtt.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - zwavejs2mqtt.${DOMAIN}
+              - *host
             secretName: zwavejs2mqtt-tls
     persistence:
       config:

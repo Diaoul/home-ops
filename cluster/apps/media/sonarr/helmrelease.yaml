@@ -30,26 +30,26 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: television-classic
         hosts:
-          - host: sonarr.${DOMAIN}
+          - host: &host sonarr.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - sonarr.${DOMAIN}
+              - *host
             secretName: sonarr-tls
       api:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         hosts:
-          - host: sonarr.${DOMAIN}
+          - host: *host
             paths:
               - path: /api
                 pathType: Prefix
         tls:
           - hosts:
-              - sonarr.${DOMAIN}
+              - *host
             secretName: sonarr-tls
     metrics:
       enabled: true

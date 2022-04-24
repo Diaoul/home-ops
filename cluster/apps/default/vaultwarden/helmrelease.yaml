@@ -36,7 +36,7 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: shield-lock
         hosts:
-          - host: vaultwarden.${DOMAIN}
+          - host: &host vaultwarden.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
@@ -48,7 +48,7 @@ spec:
                 pathType: Prefix
         tls:
           - hosts:
-              - vaultwarden.${DOMAIN}
+              - *host
             secretName: vaultwarden-tls
       admin:
         enabled: true
@@ -57,13 +57,13 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-production
           nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
         hosts:
-          - host: vaultwarden.${DOMAIN}
+          - host: *host
             paths:
               - path: /admin
                 pathType: Prefix
         tls:
           - hosts:
-              - vaultwarden.${DOMAIN}
+              - *host
             secretName: vaultwarden-tls
     persistence:
       config:

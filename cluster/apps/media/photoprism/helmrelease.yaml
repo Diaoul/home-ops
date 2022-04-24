@@ -41,13 +41,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: image-multiple
         hosts:
-          - host: photos.${DOMAIN}
+          - host: &host photos.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - photos.${DOMAIN}
+              - *host
             secretName: photoprism-tls
     persistence:
       config:

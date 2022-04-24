@@ -36,10 +36,10 @@ spec:
         external-dns.alpha.kubernetes.io/target: ${DOMAIN}
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
-        - auth.${DOMAIN}
+        - &host auth.${DOMAIN}
       tls:
         - hosts:
-            - auth.${DOMAIN}
+            - *host
           secretName: auth-tls
     extraArgs:
       provider: oidc

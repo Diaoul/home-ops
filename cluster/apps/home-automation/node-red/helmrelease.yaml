@@ -32,13 +32,13 @@ spec:
           hajimari.io/enable: "true"
           hajimari.io/icon: home-edit
         hosts:
-          - host: node-red.${DOMAIN}
+          - host: &host node-red.${DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
         tls:
           - hosts:
-              - node-red.${DOMAIN}
+              - *host
             secretName: node-red-tls
     persistence:
       data:
