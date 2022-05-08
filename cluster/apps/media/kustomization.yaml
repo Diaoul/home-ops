@@ -10,6 +10,7 @@ resources:
   - jackett
   - jellyfin
   - lidarr
+  - mylar
   - nzbget
   - photoprism
   - prowlarr
