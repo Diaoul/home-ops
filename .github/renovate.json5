@@ -1,6 +1,7 @@
 {
   "extends": [
     "config:base",
+    ":disableRateLimiting",
     "docker:enableMajor",
     ":enablePreCommit",
   ],
