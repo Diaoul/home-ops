@@ -10,7 +10,7 @@ spec:
     spec:
       # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: mealie
-      version: 4.2.2
+      version: 5.0.1
       sourceRef:
         kind: HelmRepository
         name: k8s-at-home
@@ -18,7 +18,13 @@ spec:
   values:
     image:
       repository: hkotel/mealie
-      tag: v0.5.6
+      tag: frontend-v1.0.0beta-2
+    api:
+      image:
+        repository: hkotel/mealie
+        tag: api-v1.0.0beta-2
+      env:
+        ALLOW_SIGNUP: "false"
     ingress:
       main:
         enabled: true
@@ -36,10 +42,6 @@ spec:
           - hosts:
               - *host
             secretName: mealie-tls
-    persistence:
-      config:
-        enabled: true
-        existingClaim: mealie-config
     resources:
       requests:
         cpu: 100m
