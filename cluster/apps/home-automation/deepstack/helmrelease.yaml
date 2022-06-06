@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: docker.io/deepquestai/deepstack
-      tag: cpu-2021.09.1
+      tag: cpu-2022.01.1
     env:
       VISION-FACE: "True"
     ui:
