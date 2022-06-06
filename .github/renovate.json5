@@ -108,6 +108,11 @@
       "matchPackageNames": ["docker.io/airsonicadvanced/airsonic-advanced"],
       "versioning": "regex:^edge-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-SNAPSHOT\\.(?<build>\\d+)$"
     },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/deepquestai/deepstack"],
+      "versioning": "regex:^cpu-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$"
+    },
     // version strategies
     {
       "matchDatasources": ["docker"],
