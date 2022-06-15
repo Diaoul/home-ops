@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/k8s-at-home/jackett
-      tag: v0.20.1175
+      tag: v0.20.1185
     ingress:
       main:
         enabled: true
