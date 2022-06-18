@@ -7,4 +7,4 @@ ips=$( (\
     curl -s https://www.cloudflare.com/ips-v6 | sort \
     ) | cat | tr '\n' ',' | sed -e 's/,$//' )
 
-yq -i eval ".spec.values.controller.config.proxy-real-ip-cidr = \"$ips\"" $file
+yq -i ".spec.values.controller.config.proxy-real-ip-cidr = \"$ips\"" "$file"
