@@ -11,13 +11,15 @@ jobs:
   pre-commit:
     runs-on: ubuntu-latest
     env:
-      yq-version: v4.6.3
+      yq-version: v4.25.2
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
       - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
 
       - name: Cache yq
         id: cache-yq
@@ -43,7 +45,7 @@ jobs:
       - name: Remove duplicates from pre-commit config
         if: steps.cache-precommitconfig.outputs.cache-hit != 'true'
         run: |
-          bin/yq eval 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "yamllint" or .id == "kustomize" or .id == "gitleaks"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
+          bin/yq 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "yamllint" or .id == "kustomize" or .id == "gitleaks"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
 
       - uses: pre-commit/action@v3.0.0
         with:
