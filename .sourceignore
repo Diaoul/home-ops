@@ -1,0 +1,13 @@
+# flux ignore file
+# see https://toolkit.fluxcd.io/components/source/gitrepositories/#excluding-files
+.github/
+ansible/
+hack/
+os/
+.envrc
+.gitignore
+.pre-commit-config.yaml
+.sops.yaml
+.yamllint.yaml
+LICENSE
+README.md
