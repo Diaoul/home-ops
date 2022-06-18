@@ -1,2 +1,5 @@
+skip_list:
+    - yaml
+
 exclude_paths:
   - inventory/host_vars/*.sops.yml
