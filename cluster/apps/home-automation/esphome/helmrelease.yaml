@@ -9,7 +9,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: esphome
       version: 8.3.2
       sourceRef:

@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://hajimari.io
       chart: hajimari
       version: 1.2.0
       sourceRef:

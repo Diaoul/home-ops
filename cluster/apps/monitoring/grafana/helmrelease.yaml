@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://grafana.github.io/helm-charts
       chart: grafana
       version: 6.30.2
       sourceRef:

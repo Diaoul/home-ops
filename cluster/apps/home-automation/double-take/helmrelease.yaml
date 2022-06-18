@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: double-take
       version: 2.2.2
       sourceRef:

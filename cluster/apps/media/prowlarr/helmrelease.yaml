@@ -9,7 +9,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: prowlarr
       version: 4.4.2
       sourceRef:

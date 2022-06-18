@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://helm.runix.net
       chart: pgadmin4
       version: 1.10.0
       sourceRef:

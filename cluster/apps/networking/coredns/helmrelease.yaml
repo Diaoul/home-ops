@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://coredns.github.io/helm
       chart: coredns
       version: 1.19.4
       sourceRef:

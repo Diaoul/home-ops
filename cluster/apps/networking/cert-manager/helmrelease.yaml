@@ -8,7 +8,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://charts.jetstack.io/
       chart: cert-manager
       version: v1.8.1
       sourceRef:

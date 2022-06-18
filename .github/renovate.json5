@@ -19,14 +19,6 @@
     "fileMatch": ["cluster/.+helmrelease\\.yaml$"]
   },
   "regexManagers": [
-    // helmrelease
-    {
-      "fileMatch": ["cluster/.+\\.yaml$"],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?)\n *chart: (?<depName>.*?)\n *version: (?<currentValue>.*)\n",
-      ],
-      "datasourceTemplate": "helm"
-    },
     // kube-prometheus-stack crd
     {
       "fileMatch": ["cluster/crds/kube-prometheus-stack/.+\\.yaml$"],

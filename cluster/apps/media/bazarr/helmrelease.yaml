@@ -9,7 +9,6 @@ spec:
   interval: 10m
   chart:
     spec:
-      # renovate: registryUrl=https://k8s-at-home.com/charts/
       chart: bazarr
       version: 10.5.2
       sourceRef:
