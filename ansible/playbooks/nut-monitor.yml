@@ -4,4 +4,4 @@
     - unifi_controller
   gather_facts: false
   roles:
-    - name: nut_monitor
+    - nut_monitor
