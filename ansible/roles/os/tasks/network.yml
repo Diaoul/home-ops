@@ -1,12 +1,19 @@
 ---
-- name: network | sysctl ip forward
+- name: network | sysctl network configuration
   ansible.posix.sysctl:
-    name: "{{ item }}"
-    value: "1"
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
     sysctl_file: /etc/sysctl.d/99-kubernetes-cri.conf
-  loop:
-    - net.ipv4.ip_forward
-    - net.ipv6.conf.all.forwarding
+  loop: "{{ sysctl_config | dict2items }}"
+  vars:
+    sysctl_config:
+      net.ipv4.ip_forward: 1
+      net.ipv4.conf.all.forwarding: 1
+      net.ipv6.conf.all.forwarding: 1
+      net.bridge.bridge-nf-call-iptables: 1
+      net.bridge.bridge-nf-call-ip6tables: 1
+      net.ipv4.conf.default.rp_filter: 0
+      net.ipv4.conf.all.rp_filter: 0
   when: '"kubernetes" in group_names'
 
 - name: network | update hostname
