@@ -16,8 +16,8 @@ spec:
         namespace: flux-system
   values:
     image:
-      repository: blakeblackshear/frigate
-      tag: 0.10.1-amd64
+      repository: docker.io/blakeblackshear/frigate
+      tag: 0.11.0-beta4
     configmap:
       config:
         data:
