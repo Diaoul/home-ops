@@ -16,8 +16,11 @@
     "fileMatch": ["cluster/.+\\.ya?ml$"],
     "ignorePaths": ["cluster/base/"]
   },
+  "flux": {
+    "fileMatch": ["cluster/.+\\.ya?ml$"]
+  },
   "helm-values": {
-    "fileMatch": ["cluster/.+helmrelease\\.ya?ml$"]
+    "fileMatch": ["cluster/.+\\.ya?ml$"]
   },
   "regexManagers": [
     // generic matcher
