@@ -1,0 +1,31 @@
+---
+- name: coral-tpu | check for device
+  ansible.builtin.shell: lspci -d 1ac1:089a
+  register: coral_tpu
+  changed_when: false
+  become: true
+
+- name: coral-tpu | download google cloud gpg key
+  ansible.builtin.get_url:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    dest: /usr/share/keyrings/google-cloud-packages.gpg.armored
+    mode: 0644
+    checksum: sha256:ff834d1e179c3727d9cd3d0c8dad763b0710241f1b64539a200fbac68aebff3e  # noqa line-length
+  when: coral_tpu.stdout
+  register: get_gpg_key
+  become: true
+
+- name: coral-tpu | add google cloud gpg key to keyrings
+  ansible.builtin.command: gpg -o /usr/share/keyrings/google-cloud-packages.gpg --dearmor /usr/share/keyrings/google-cloud-packages.gpg.armored  # noqa line-length no-handler
+  when: coral_tpu.stdout and get_gpg_key is changed
+  become: true
+
+- name: coral-tpu | install packages
+  ansible.builtin.apt:
+    name:
+      - gasket-dkms
+      - libedgetpu1-std
+    update_cache: true
+    cache_valid_time: 3600
+    autoclean: true
+  when: coral_tpu.stdout
