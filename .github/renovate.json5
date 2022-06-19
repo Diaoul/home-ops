@@ -1,3 +1,4 @@
+// vim: ts=2 sw=2
 {
   "extends": [
     "config:base",
@@ -12,31 +13,29 @@
   "dependencyDashboardTitle": "Renovate Dashboard",
   "suppressNotifications": ["prIgnoreNotification"],
   "kubernetes": {
-    "fileMatch": ["cluster/.+\\.yaml$"],
+    "fileMatch": ["cluster/.+\\.ya?ml$"],
     "ignorePaths": ["cluster/base/"]
   },
   "helm-values": {
-    "fileMatch": ["cluster/.+helmrelease\\.yaml$"]
+    "fileMatch": ["cluster/.+helmrelease\\.ya?ml$"]
   },
   "regexManagers": [
-    // kube-prometheus-stack crd
-    {
-      "fileMatch": ["cluster/crds/kube-prometheus-stack/.+\\.yaml$"],
-      "matchStrings": [
-        "registryUrl=(?<registryUrl>.*?)\n *tag: (?<depName>[a-zA-Z-]+)-(?<currentValue>.*)\n",
-      ],
-      "datasourceTemplate": "helm"
-    },
-    // github release based crd
+    // generic matcher
+    // see https://regex101.com/r/fzaLfV/1
     {
       "fileMatch": [
-        "cluster/crds/external-snapshotter/.+\\.yaml$",
-        "cluster/crds/external-dns/.+\\.yaml$"
+        "ansible/.+\\.ya?ml$",
+        "cluster/.+\\.ya?ml$",
       ],
       "matchStrings": [
-        "datasource=(?<datasource>.*?)\n *url: https:\/\/github\\.com\/(?<depName>.*?)\\.git\n *ref:\n *tag: (?<currentValue>.*)\n"
+        "datasource=(?<datasource>helm) registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>docker) image=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>github-releases) repos=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>pypi) package=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
       ],
-      "datasourceTemplate": "github-releases"
+      "datasourceTemplate": "{{datasource}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}{{#if (containsString datasource 'pypi')}}pep440{{else}}semver{{/if}}{{/if}}"
     }
   ],
   "packageRules": [
@@ -73,8 +72,7 @@
     // update types specific settings
     {
       "matchUpdateTypes": ["major"],
-      "addLabels": ["dependency/major"],
-      "stabilityDays": 3
+      "addLabels": ["dependency/major"]
     },
     {
       "matchUpdateTypes": ["minor"],
@@ -85,16 +83,6 @@
       "addLabels": ["dependency/patch"]
     },
     // custom versions schemes
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["blakeblackshear/frigate"],
-      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)-(?<compatibility>.*)$"
-    },
-    {
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["docker.io/minio/minio"],
-      "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$"
-    },
     {
       "matchDatasources": ["docker"],
       "matchPackageNames": ["docker.io/airsonicadvanced/airsonic-advanced"],
