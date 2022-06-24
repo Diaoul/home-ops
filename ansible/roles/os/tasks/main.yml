@@ -10,6 +10,7 @@
 - import_tasks: coral-tpu.yml
   tags:
     - coral-tpu
+  when: '"pi" not in group_names'
 
 - import_tasks: power-button.yml
   tags:
