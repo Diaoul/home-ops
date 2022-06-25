@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: docker.io/airsonicadvanced/airsonic-advanced
-      tag: edge-11.0.0-SNAPSHOT.20220418221611
+      tag: edge-11.0.0-SNAPSHOT.20220625031036
     env:
       JAVA_OPTS: "-Xmx768m -Dserver.forward-headers-strategy=native"
     ingress:
