@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: koenkk/zigbee2mqtt
-      tag: 1.25.2
+      tag: 1.26.0
     ingress:
       main:
         enabled: true
