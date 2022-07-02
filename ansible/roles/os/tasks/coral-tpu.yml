@@ -20,6 +20,13 @@
   when: coral_tpu.stdout and get_gpg_key is changed
   become: true
 
+- name: coral-tpu | add repository google cloud packages repository
+  ansible.builtin.apt_repository:
+    repo: deb [signed-by=/usr/share/keyrings/google-cloud-packages.gpg] https://packages.cloud.google.com/apt coral-edgetpu-stable main
+    filename: google-cloud-packages
+  when: coral_tpu.stdout
+  become: true
+
 - name: coral-tpu | install packages
   ansible.builtin.apt:
     name:
