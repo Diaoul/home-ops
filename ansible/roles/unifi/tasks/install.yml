@@ -1,12 +1,21 @@
 ---
-- name: add docker GPG key
-  apt_key:
+- name: download docker gpg key
+  ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /usr/share/keyrings/docker.gpg.armored
+    mode: 0644
+    checksum: sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570  # noqa line-length
+  register: get_gpg_key
+  become: yes
+
+- name: add docker gpg key to keyrings
+  ansible.builtin.command: gpg -o /usr/share/keyrings/docker.gpg --dearmor /usr/share/keyrings/docker.gpg.armored  # noqa line-length no-handler
+  when: get_gpg_key is changed
   become: yes
 
 - name: add docker repository
-  apt_repository:
-    repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+  ansible.builtin.apt_repository:
+    repo: deb [Signed-By=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
     filename: docker
   become: yes
 
