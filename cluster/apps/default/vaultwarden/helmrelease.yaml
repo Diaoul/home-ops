@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: vaultwarden/server
-      tag: 1.25.1
+      tag: 1.25.2
     env:
       DOMAIN: https://vaultwarden.${DOMAIN}
       DATABASE_URL: postgresql://vaultwarden:${VAULTWARDEN_POSTGRES_PASSWORD}@vaultwarden-postgresql:5432/vaultwarden
