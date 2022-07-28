@@ -10,6 +10,5 @@ resources:
   - esphome
   - frigate
   - home-assistant
-  - node-red
   - zigbee2mqtt
   - zwavejs2mqtt
