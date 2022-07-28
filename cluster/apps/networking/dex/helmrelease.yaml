@@ -18,7 +18,7 @@ spec:
   values:
     image:
       repository: ghcr.io/dexidp/dex
-      tag: v2.32.0
+      tag: v2.33.0
     ingress:
       enabled: true
       annotations:
