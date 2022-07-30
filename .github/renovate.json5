@@ -118,7 +118,7 @@
         "ghcr.io/k8s-at-home/qbittorrent",
         "ghcr.io/k8s-at-home/sonarr",
         "ghcr.io/k8s-at-home/radarr",
-        "ghcr.io/k8s-at-home/lidarr",
+        "ghcr.io/k8s-at-home/lidarr-nightly",
         "ghcr.io/k8s-at-home/readarr-nightly",
         "ghcr.io/k8s-at-home/prowlarr-nightly",
       ],
