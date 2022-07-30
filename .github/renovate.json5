@@ -123,7 +123,6 @@
         "ghcr.io/k8s-at-home/prowlarr-nightly",
       ],
       "automerge": true,
-      "schedule": "after 3am and before 6am",
       "requiredStatusChecks": null,
     },
     // group rook-ceph
