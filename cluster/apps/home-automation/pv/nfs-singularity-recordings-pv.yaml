@@ -4,7 +4,6 @@ kind: PersistentVolume
 metadata:
   name: nfs-singularity-recordings
 spec:
-  storageClassName: nfs-singularity-recordings
   capacity:
     storage: 1Mi
   accessModes:

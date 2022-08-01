@@ -7,7 +7,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-singularity-photos
+  storageClassName: ""
   resources:
     requests:
       storage: 1Mi
+  volumeName: nfs-singularity-photos

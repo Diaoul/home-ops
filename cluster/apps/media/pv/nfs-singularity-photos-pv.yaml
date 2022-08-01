@@ -4,7 +4,6 @@ kind: PersistentVolume
 metadata:
   name: nfs-singularity-photos
 spec:
-  storageClassName: nfs-singularity-photos
   capacity:
     storage: 1Mi
   accessModes:
