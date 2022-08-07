@@ -8,6 +8,7 @@ metadata:
     external-dns.alpha.kubernetes.io/target: ${DOMAIN}
     cert-manager.io/cluster-issuer: letsencrypt-production
 spec:
+  ingressClassName: nginx
   rules:
     - host: flux-receiver.${DOMAIN}
       http:
