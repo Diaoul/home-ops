@@ -5,5 +5,5 @@ metadata:
   name: kubernetes-stable
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 1h
   url: https://charts.helm.sh/stable
