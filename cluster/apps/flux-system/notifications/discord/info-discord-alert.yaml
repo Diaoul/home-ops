@@ -10,4 +10,5 @@ spec:
   eventSeverity: info
   eventSources:
     - kind: HelmRelease
+      namespace: "*"
       name: "*"
