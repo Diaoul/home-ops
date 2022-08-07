@@ -1,6 +1,6 @@
 ---
 - name: coral-tpu | check for device
-  ansible.builtin.shell: lspci -d 1ac1:089a
+  ansible.builtin.command: lspci -d 1ac1:089a
   register: coral_tpu
   changed_when: false
   become: true
