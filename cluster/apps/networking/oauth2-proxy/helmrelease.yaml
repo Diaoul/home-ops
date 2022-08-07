@@ -20,7 +20,7 @@ spec:
       tag: v7.3.0
     authenticatedEmailsFile:
       enabled: true
-      restricted_access: |-
+      restricted_access: |
         ${AUTHORIZED_EMAIL_ADDRESSES}
     config:
       clientID: ${DEX_OAUTH2_PROXY_CLIENT_ID}
@@ -32,7 +32,7 @@ spec:
         auth_logging = true
         cookie_domains = ".${DOMAIN}"
         cookie_secure = true
-        email_domains = "*"
+        email_domains = []
         pass_access_token = true
         pass_authorization_header = true
         whitelist_domains = ".${DOMAIN}"
