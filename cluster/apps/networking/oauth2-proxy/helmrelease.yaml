@@ -20,8 +20,9 @@ spec:
       tag: v7.3.0
     authenticatedEmailsFile:
       enabled: true
-      restricted_access: |
-        ${AUTHORIZED_EMAIL_ADDRESSES}
+      restricted_access: |-
+        ${EMAIL_ADDRESS_1}
+        ${EMAIL_ADDRESS_2}
     config:
       clientID: ${DEX_OAUTH2_PROXY_CLIENT_ID}
       clientSecret: ${DEX_OAUTH2_PROXY_CLIENT_SECRET}

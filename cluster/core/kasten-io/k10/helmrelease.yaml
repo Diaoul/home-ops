@@ -23,7 +23,7 @@ spec:
     eula:
       accept: true
       company: Diaoul
-      email: ${EMAIL_ADDRESS}
+      email: ${EMAIL_ADDRESS_1}
     networkPolicy:
       create: false
     global:
@@ -31,7 +31,7 @@ spec:
         storageClass: rook-ceph-block
     auth:
       k10AdminUsers:
-        - ${EMAIL_ADDRESS}
+        - ${EMAIL_ADDRESS_1}
       oidcAuth:
         enabled: true
         providerURL: https://dex.${DOMAIN}
