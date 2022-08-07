@@ -20,4 +20,3 @@ spec:
   exclusionList:
     - "error.*lookup github\\.com"
     - "waiting.*socket"
-  suspend: false
