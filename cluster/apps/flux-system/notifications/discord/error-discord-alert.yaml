@@ -9,11 +9,15 @@ spec:
     name: discord
   eventSeverity: error
   eventSources:
-    - kind: Kustomization
-      namespace: flux-system
+    - kind: GitRepository
       name: "*"
     - kind: Kustomization
-      namespace: kube-system
+      name: "*"
+    - kind: HelmRepository
+      name: "*"
+    - kind: HelmRelease
       name: "*"
   exclusionList:
-    - Dependencies do not meet ready condition, retrying in 30s
+    - "error.*lookup github\\.com"
+    - "waiting.*socket"
+  suspend: false

@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - secret.enc.yaml
   - provider.yaml
-  - info-discord-alert.yaml
   - error-discord-alert.yaml
