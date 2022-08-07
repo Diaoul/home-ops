@@ -14,7 +14,7 @@ kubectl create secret generic sops-gpg \
 
 Install Flux
 ```bash
-kubectl apply --kustomize=./cluster/base/flux-system
+kubectl apply --kustomize=./cluster/flux/flux-system
 ```
 
 Enable k3s upgrades (if not already done by ansible)
