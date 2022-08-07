@@ -19,10 +19,10 @@ spec:
   values:
     monitoring:
       enabled: true
+      createPrometheusRules: true
     ingress:
       dashboard:
-        annotations:
-          kubernetes.io/ingress.class: nginx
+        ingressClassName: nginx
         host:
           name: &host rook.${DOMAIN}
           path: /
