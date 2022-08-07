@@ -32,9 +32,6 @@ spec:
     cephClusterSpec:
       network:
         provider: host
-      connections:
-        compression:
-          enabled: true
       dashboard:
         enabled: true
         urlPrefix: /
