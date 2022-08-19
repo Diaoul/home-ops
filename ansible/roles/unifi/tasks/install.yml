@@ -23,7 +23,6 @@
   ansible.builtin.apt:
     name:
       - docker-ce
-      - python3-docker
     update_cache: true
   become: true
 
