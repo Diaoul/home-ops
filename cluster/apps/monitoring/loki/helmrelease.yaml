@@ -17,6 +17,19 @@ spec:
   values:
     image:
       repository: ghcr.io/k8s-at-home/loki
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-production
+      hosts:
+        - host: &host "loki.${DOMAIN}"
+          paths:
+            - /
+      tls:
+        - hosts:
+            - *host
+          secretName: loki-tls
     config:
       storage_config:
         aws:
@@ -27,8 +40,10 @@ spec:
           s3forcepathstyle: true
           insecure: true
         boltdb_shipper:
-          active_index_directory: /data/index
-          cache_location: /data/boltdb-cache
+          active_index_directory: /data/loki/index
+          cache_location: /data/loki/index-cache
           shared_store: s3
+      ruler:
+        alertmanager_url: http://kube-prometheus-stack-alertmanager.monitoring:9093
     serviceMonitor:
       enabled: true

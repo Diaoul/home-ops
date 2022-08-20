@@ -14,11 +14,16 @@ spec:
         kind: HelmRepository
         name: bitnami
         namespace: flux-system
+  dependsOn:
+    - name: kube-prometheus-stack
+      namespace: monitoring
   values:
     clusterDomain: ${CLUSTER_DOMAIN}
     query:
+      replicaLabel:
+        - __replica__
       dnsDiscovery:
-        sidecarsService: prometheus-thanos-discovery
+        sidecarsService: kube-prometheus-stack-thanos-discovery
         sidecarsNamespace: monitoring
       ingress:
         enabled: true
@@ -32,8 +37,8 @@ spec:
           hajimari.io/icon: clipboard-text
           hajimari.io/appName: Thanos
         tls: true
-    objstoreConfig: |
-      type: S3
+    objstoreConfig:
+      type: s3
       config:
         bucket: thanos
         endpoint: singularity.milkyway:9000
@@ -42,17 +47,19 @@ spec:
         secret_key: ${THANOS_MINIO_SECRET_KEY}
     queryFrontend:
       enabled: false
-    bucketweb:
+    ruler:
       enabled: true
-    compactor:
-      enabled: true
-      persistence:
-        enabled: false
-    storegateway:
-      enabled: true
-      persistence:
+      dnsDiscovery:
         enabled: true
-        size: 5Gi
+      alertmanagers:
+        - http://kube-prometheus-stack-alertmanager.monitoring:9093
+      clusterName: milkyway
+      config: |-
+        groups:
+          - name: "PrometheusWatcher"
+            rules:
+              - alert: "PrometheusDown"
+                expr: absent(up{job="kube-prometheus-stack-prometheus"})
     metrics:
       enabled: true
       serviceMonitor:

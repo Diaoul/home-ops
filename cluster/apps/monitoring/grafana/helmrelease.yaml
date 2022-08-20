@@ -17,10 +17,6 @@ spec:
   values:
     deploymentStrategy:
       type: Recreate
-    env:
-      GF_EXPLORE_ENABLED: true
-      GF_PANELS_DISABLE_SANITIZE_HTML: true
-      GF_LOG_FILTERS: rendering:debug
     adminPassword: ${GRAFANA_ADMIN_PASSWORD}
     grafana.ini:
       server:
@@ -116,7 +112,7 @@ spec:
         # Ref: https://grafana.com/grafana/dashboards/13502
         minio:
           gnetId: 13502
-          revision: 12
+          revision: 19
           datasource: Prometheus
         # Ref: https://grafana.com/grafana/dashboards/14371
         nut:
@@ -130,10 +126,10 @@ spec:
           url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json
           datasource: Prometheus
         blocky:
-          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.16/docs/blocky-grafana.json
+          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.19/docs/blocky-grafana.json
           datasource: Prometheus
         blocky-query:
-          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.16/docs/blocky-query-grafana.json
+          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.19/docs/blocky-query-grafana.json
           datasource: MySQL Blocky
     sidecar:
       dashboards:

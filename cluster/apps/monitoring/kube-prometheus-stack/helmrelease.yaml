@@ -15,7 +15,6 @@ spec:
         name: prometheus-community
         namespace: flux-system
   values:
-    fullnameOverride: prometheus
     alertmanager:
       ingress:
         enabled: true
@@ -46,6 +45,7 @@ spec:
                   storage: 10Gi
     grafana:
       enabled: false
+      forceDeployDashboards: true
     kubelet:
       serviceMonitor:
         metricRelabelings:
@@ -62,17 +62,17 @@ spec:
     kubeProxy:
       enabled: false
     kube-state-metrics:
-      fullnameOverride: kube-state-metrics
-    nodeExporter:
-      enabled: true
-      serviceMonitor:
-        relabelings:
-          - action: replace
-            sourceLabels:
-              - __meta_kubernetes_pod_node_name
-            targetLabel: kubernetes_node
-    prometheus-node-exporter:
-      fullnameOverride: prometheus-node-exporter
+      metricLabelsAllowlist:
+        - "persistentvolumeclaims=[*]"
+      prometheus:
+        monitor:
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              targetLabel: kubernetes_node
     prometheus:
       ingress:
         enabled: true
@@ -95,14 +95,29 @@ spec:
             secretName: prometheus-tls
       thanosService:
         enabled: true
+      thanosServiceMonitor:
+        enabled: true
+      thanosIngress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+        hosts:
+          - &host-thanos-sidecar "thanos-sidecar.${DOMAIN}"
+        tls:
+          - hosts:
+              - *host-thanos-sidecar
       prometheusSpec:
         enableAdminAPI: true
-        replicaExternalLabelName: replica
+        replicaExternalLabelName: __replica__
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         retention: 2d
+        retentionSize: "5GB"
         walCompression: true
         storageSpec:
           volumeClaimTemplate:
@@ -113,6 +128,8 @@ spec:
                   storage: 20Gi
         thanos:
           image: quay.io/thanos/thanos:v0.27.0
+          # renovate: datasource=docker depName=quay.io/thanos/thanos
+          version: "v0.27.0"
           objectStorageConfig:
             name: thanos-objstore-secret
             key: objstore.yml
