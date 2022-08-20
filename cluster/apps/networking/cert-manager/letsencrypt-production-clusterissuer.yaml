@@ -5,14 +5,14 @@ metadata:
   name: letsencrypt-production
 spec:
   acme:
-    email: ant.bertin@gmail.com
+    email: ${EMAIL_ADDRESS_1}
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-production
     solvers:
       - dns01:
           cloudflare:
-            email: ant.bertin@gmail.com
+            email: ${EMAIL_ADDRESS_1}
             apiTokenSecretRef:
               name: cloudflare-api-token
               key: api-token
