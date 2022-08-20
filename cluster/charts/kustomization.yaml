@@ -27,6 +27,7 @@ resources:
   - stakater.yaml
   - strimzi.yaml
   - traefik.yaml
+  - vector.yaml
   - vernemq.yaml
-  - weaveworks-kured.yaml
   - vmware-tanzu.yaml
+  - weaveworks-kured.yaml
