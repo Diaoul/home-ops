@@ -50,7 +50,7 @@ spec:
           type: loki
           inputs:
             - journal_logs
-          endpoint: http://loki-gateway:80
+          endpoint: http://loki:3100
           encoding:
             codec: json
           batch:
@@ -65,7 +65,7 @@ spec:
           type: loki
           inputs:
             - kubernetes_logs_remap
-          endpoint: http://loki-gateway:80
+          endpoint: http://loki:3100
           encoding:
             codec: json
           batch:
