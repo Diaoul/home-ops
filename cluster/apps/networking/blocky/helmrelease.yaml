@@ -64,6 +64,20 @@ spec:
         target: ${MARIADB_BLOCKY_USER}:${MARIADB_BLOCKY_PASSWORD}@tcp(mariadb.db:3306)/${MARIADB_BLOCKY_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local
         logRetentionDays: 7
     service:
+      main:
+        enabled: true
+      dns-tcp:
+        enabled: true
+        type: LoadBalancer
+        externalIPs:
+          - ${BLOCKY_IP}
+        externalTrafficPolicy: Local
+        ports:
+          dns-tcp:
+            enabled: true
+            port: 53
+            protocol: TCP
+            targetPort: 53
       dns-udp:
         enabled: true
         type: LoadBalancer
