@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - authentik.yaml
   - bitnami.yaml
+  - bjw-s.yaml
   - blakeshome.yaml
   - coredns.yaml
   - dex.yaml
@@ -15,6 +16,7 @@ resources:
   - ingress-nginx.yaml
   - jetstack.yaml
   - k8s-at-home.yaml
+  - k8s-gateway.yaml
   - kasten.yaml
   - kubernetes-sigs-descheduler.yaml
   - kubernetes-stable.yaml

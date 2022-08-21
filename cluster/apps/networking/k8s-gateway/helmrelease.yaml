@@ -1,0 +1,27 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: k8s-gateway
+  namespace: networking
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: k8s-gateway
+      version: 1.1.12
+      sourceRef:
+        kind: HelmRepository
+        name: k8s-gateway
+        namespace: flux-system
+
+  values:
+    image:
+      repository: oriedge/k8s_gateway
+      tag: v0.3.1
+    domain: ${DOMAIN}
+    service:
+      type: LoadBalancer
+      externalIPs:
+        - ${K8S_GATEWAY_IP}
+      externalTrafficPolicy: Local
