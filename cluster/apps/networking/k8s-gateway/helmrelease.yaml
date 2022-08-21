@@ -8,20 +8,86 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: k8s-gateway
-      version: 1.1.12
+      chart: coredns
+      version: 1.19.4
       sourceRef:
         kind: HelmRepository
-        name: k8s-gateway
+        name: coredns
         namespace: flux-system
-
   values:
     image:
-      repository: oriedge/k8s_gateway
+      repository: quay.io/oriedge/k8s_gateway
       tag: v0.3.1
-    domain: ${DOMAIN}
+    replicaCount: 2
+    isClusterService: false
+    serviceType: LoadBalancer
     service:
-      type: LoadBalancer
       externalIPs:
         - ${K8S_GATEWAY_IP}
       externalTrafficPolicy: Local
+    zoneFiles:
+      - filename: andromeda.db
+        domain: andromeda.${DOMAIN}
+        contents: |
+          $TTL 300 ;
+          andromeda.${DOMAIN}.   IN SOA    ns.dns.${DOMAIN}. hostmaster.${DOMAIN}. 2021072001 7200 1800 86400 30
+          andromeda.${DOMAIN}.   IN CNAME  ${ANDROMEDA_CNAME_TARGET}.
+          *.andromeda.${DOMAIN}. IN CNAME  andromeda.${DOMAIN}.
+      - filename: sunflower.db
+        domain: sunflower.${DOMAIN}
+        contents: |
+          $TTL 300 ;
+          sunflower.${DOMAIN}.   IN SOA    ns.dns.${DOMAIN}. hostmaster.${DOMAIN}. 2021072001 7200 1800 86400 30
+          sunflower.${DOMAIN}.   IN CNAME  ${SUNFLOWER_CNAME_TARGET}.
+          *.sunflower.${DOMAIN}. IN CNAME  sunflower.${DOMAIN}.
+    servers:
+      - zones:
+          - zone: ${DOMAIN}.
+        port: 53
+        plugins:
+          - name: errors
+          - name: health
+            configBlock: |-
+              lameduck 5s
+          - name: ready
+          - name: file
+            parameters: /etc/coredns/andromeda.db andromeda.${DOMAIN}
+          - name: file
+            parameters: /etc/coredns/sunflower.db sunflower.${DOMAIN}
+          - name: k8s_gateway
+            parameters: ${DOMAIN}
+            configBlock: |-
+              apex k8s-gateway.networking
+              resources Ingress
+              ttl 30
+          - name: prometheus
+            parameters: 0.0.0.0:9153
+          - name: cache
+          - name: loop
+          - name: reload
+    prometheus:
+      service:
+        enabled: true
+      monitor:
+        enabled: true
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - coredns
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - coredns
+            topologyKey: kubernetes.io/hostname
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        cpu: 500m
+        memory: 200Mi
