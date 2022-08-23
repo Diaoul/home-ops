@@ -28,8 +28,7 @@ spec:
           - tcp-tls:dns10.quad9.net
       conditional:
         mapping:
-          ${DOMAIN}: tcp+udp:${COREDNS_IP}
-          ${CLUSTER_DOMAIN}: tcp+udp:${COREDNS_IP}
+          ${DOMAIN}: tcp+udp:${K8S_GATEWAY_IP}
           milkyway: tcp+udp:${ROUTER_IP}
       clientLookup:
         upstream: tcp+udp:${ROUTER_IP}

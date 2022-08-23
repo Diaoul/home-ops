@@ -4,10 +4,7 @@ kind: Kustomization
 resources:
   - blocky
   - cert-manager
-  - coredns
   - dex
-  - etcd-extdns
-  - external-dns
   - external-dns-cloudflare
   - ingress-nginx
   - k8s-gateway
