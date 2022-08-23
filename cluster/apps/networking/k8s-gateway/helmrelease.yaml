@@ -31,16 +31,6 @@ spec:
         - andromeda.${DOMAIN}
         - sunflower.${DOMAIN}
     extraZonePlugins: |
-      forward synology.me tls://1.1.1.1 tls://1.0.0.1 {
+      forward . tls://1.1.1.1 tls://1.0.0.1 {
         tls_servername cloudflare-dns.com
       }
-    zoneFile:
-      filename: db.${DOMAIN}
-      contents: |
-        $TTL 300 ;
-        andromeda.${DOMAIN}.   IN SOA    ns.dns.${DOMAIN}. hostmaster.${DOMAIN}. 2021072001 7200 1800 86400 30
-        andromeda.${DOMAIN}.   IN CNAME  ${ANDROMEDA_CNAME_TARGET}.
-        *.andromeda.${DOMAIN}. IN CNAME  andromeda.${DOMAIN}.
-        sunflower.${DOMAIN}.   IN SOA    ns.dns.${DOMAIN}. hostmaster.${DOMAIN}. 2021072001 7200 1800 86400 30
-        sunflower.${DOMAIN}.   IN CNAME  ${SUNFLOWER_CNAME_TARGET}.
-        *.sunflower.${DOMAIN}. IN CNAME  sunflower.${DOMAIN}.
