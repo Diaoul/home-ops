@@ -30,6 +30,10 @@ spec:
       zones:
         - andromeda.${DOMAIN}
         - sunflower.${DOMAIN}
+    extraZonePlugins: |
+      forward synology.me tls://1.1.1.1 tls://1.0.0.1 {
+        tls_servername cloudflare-dns.com
+      }
     zoneFile:
       filename: db.${DOMAIN}
       contents: |
