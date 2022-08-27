@@ -79,7 +79,7 @@ spec:
                   timestamp: False
                   bounding_box: False
                   height: 500
-              living_room:
+              driveway:
                 ffmpeg:
                   inputs:
                     - path: rtsp://10.0.4.18:554/s2
@@ -89,9 +89,6 @@ spec:
                       roles:
                         - record
                         - rtmp
-                motion:
-                  mask:
-                    - 792,576,1024,263,1024,576
                 mqtt:
                   timestamp: False
                   bounding_box: False
