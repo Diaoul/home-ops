@@ -8,6 +8,7 @@ resources:
   - flux-system
   - calico-system
   - kube-system
+  - kyverno
   - networking
   - monitoring
   - kasten-io

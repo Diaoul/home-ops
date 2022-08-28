@@ -20,6 +20,7 @@ resources:
   - kasten.yaml
   - kubernetes-sigs-descheduler.yaml
   - kubernetes-stable.yaml
+  - kyverno.yaml
   - longhorn.yaml
   - node-feature-discovery.yaml
   - oauth2-proxy.yaml
