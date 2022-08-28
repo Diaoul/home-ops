@@ -6,7 +6,7 @@ resources:
   - dev.yaml
   - flux-system.yaml
   - home-automation.yaml
-  - katen-io.yaml
+  - kasten-io.yaml
   - media.yaml
   - monitoring.yaml
   - networking.yaml
