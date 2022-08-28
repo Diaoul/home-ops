@@ -22,7 +22,7 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        external-dns.home.arpa/enabled: "true"
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
         - host: &host dex.${DOMAIN}

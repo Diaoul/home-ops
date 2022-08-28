@@ -30,7 +30,7 @@ spec:
       main:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          external-dns.home.arpa/enabled: "true"
           cert-manager.io/cluster-issuer: letsencrypt-production
         hosts:
           - host: &host vaultwarden.${DOMAIN}
@@ -50,7 +50,7 @@ spec:
       admin:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+          external-dns.home.arpa/enabled: "true"
           cert-manager.io/cluster-issuer: letsencrypt-production
           nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
         hosts:

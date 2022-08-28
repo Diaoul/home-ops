@@ -5,8 +5,8 @@ metadata:
   name: singularity
   namespace: networking
   annotations:
+    external-dns.home.arpa/enabled: "true"
     cert-manager.io/cluster-issuer: letsencrypt-production
-    external-dns.alpha.kubernetes.io/target: ${DOMAIN}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: nginx

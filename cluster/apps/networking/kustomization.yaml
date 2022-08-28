@@ -5,7 +5,7 @@ resources:
   - blocky
   - cert-manager
   - dex
-  - external-dns-cloudflare
+  - external-dns
   - ingress-nginx
   - k8s-gateway
   - nut-server-garage

@@ -43,7 +43,7 @@ spec:
       path: /oauth2
       pathType: Prefix
       annotations:
-        external-dns.alpha.kubernetes.io/target: ${DOMAIN}
+        external-dns.home.arpa/enabled: "true"
         cert-manager.io/cluster-issuer: letsencrypt-production
       hosts:
         - &host auth.${DOMAIN}

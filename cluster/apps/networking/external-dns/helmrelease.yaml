@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: external-dns-cloudflare
+  name: external-dns
   namespace: networking
 spec:
   interval: 10m
@@ -28,6 +28,9 @@ spec:
       - ${DOMAIN}
     extraArgs:
       - --cloudflare-proxied
+      - --annotation-filter=external-dns.home.arpa/enabled in (true)
+    serviceMonitor:
+      enabled: true
     resources:
       requests:
         cpu: 50m
