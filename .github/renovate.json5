@@ -123,7 +123,7 @@
         "ghcr.io/k8s-at-home/prowlarr-nightly",
       ],
       "automerge": true,
-      "requiredStatusChecks": null,
+      "ignoreTests": true,
     },
     // group rook-ceph
     {
