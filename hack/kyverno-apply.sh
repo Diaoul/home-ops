@@ -1,4 +1,5 @@
 #!/bin/bash
+# this script applies kyverno policies on a live cluster
 
 workdir=$(mktemp -d)
 echo "Created workdir $workdir"
