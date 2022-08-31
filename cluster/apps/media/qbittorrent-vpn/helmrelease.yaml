@@ -43,10 +43,6 @@ spec:
         mountPath: /media
     podAnnotations:
       setGateway: "true"
-    metrics:
-      enabled: true
-      prometheusRule:
-        enabled: true
     resources:
       requests:
         cpu: 500m
