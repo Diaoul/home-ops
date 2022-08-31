@@ -25,7 +25,7 @@ spec:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
-          cert-manager.io/cluster-issuer: letsencrypt-production
+          cert-manager.home.arpa/enabled: "true"
         hosts:
           - host: &host airsonic.${DOMAIN}
             paths:

@@ -54,7 +54,7 @@ spec:
       host: &host k10.${DOMAIN}
       annotations:
         external-dns.home.arpa/enabled: "true"
-        cert-manager.io/cluster-issuer: letsencrypt-production
+        cert-manager.home.arpa/enabled: "true"
       urlPath: k10
       hosts:
         - *host

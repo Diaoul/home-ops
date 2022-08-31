@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
   annotations:
     external-dns.home.arpa/enabled: "true"
-    cert-manager.io/cluster-issuer: letsencrypt-production
+    cert-manager.home.arpa/enabled: "true"
 spec:
   ingressClassName: nginx
   rules:
