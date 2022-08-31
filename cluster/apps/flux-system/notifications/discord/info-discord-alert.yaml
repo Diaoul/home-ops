@@ -42,3 +42,5 @@ spec:
     - kind: HelmRelease
       namespace: vpn
       name: "*"
+  exclusionList:
+    - Dependencies do not meet ready condition .* retrying in 30s

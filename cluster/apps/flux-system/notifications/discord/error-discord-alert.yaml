@@ -20,3 +20,6 @@ spec:
   exclusionList:
     - "error.*lookup github\\.com"
     - "waiting.*socket"
+    - "reconciliation failed: Operation cannot be fulfilled on .*:
+      the object has been modified;
+      please apply your changes to the latest version and try again"
