@@ -10,4 +10,12 @@ spec:
   eventSeverity: info
   eventSources:
     - kind: Kustomization
-      name: "*"
+      name: apps
+    - kind: Kustomization
+      name: core
+    - kind: Kustomization
+      name: crds
+    - kind: Kustomization
+      name: config
+    - kind: Kustomization
+      name: charts
