@@ -54,6 +54,8 @@ spec:
           10.0.30.0/24:
             - ads
             - tvs
+      caching:
+        cacheTimeNegative: 30s
       prometheus:
         enable: true
       bootstrapDns: tcp+udp:1.1.1.1
