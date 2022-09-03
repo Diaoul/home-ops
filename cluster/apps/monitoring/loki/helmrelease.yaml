@@ -15,18 +15,17 @@ spec:
         name: grafana
         namespace: flux-system
   values:
-    config:
-      global:
-        clusterDomain: ${CLUSTER_DOMAIN}
-      loki:
-        auth_enabled: false
-      storage:
-        s3:
-          endpoint: singularity.milkyway:9000
-          secretAccessKey: ${LOKI_MINIO_SECRET_KEY}
-          accessKeyId: ${LOKI_MINIO_ACCESS_KEY}
-          s3ForcePathStyle: true
-          insecure: true
+    global:
+      clusterDomain: ${CLUSTER_DOMAIN}
+    loki:
+      auth_enabled: false
+    storage:
+      s3:
+        endpoint: singularity.milkyway:9000
+        secretAccessKey: ${LOKI_MINIO_SECRET_KEY}
+        accessKeyId: ${LOKI_MINIO_ACCESS_KEY}
+        s3ForcePathStyle: true
+        insecure: true
     gateway:
       ingress:
         enabled: true
