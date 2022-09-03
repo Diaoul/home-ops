@@ -15,23 +15,10 @@ spec:
         name: grafana
         namespace: flux-system
   values:
-    deploymentStrategy:
-      type: Recreate
     adminPassword: ${GRAFANA_ADMIN_PASSWORD}
     grafana.ini:
-      server:
-        root_url: https://grafana.${DOMAIN}
-      paths:
-        data: /var/lib/grafana/data
-        logs: /var/log/grafana
-        plugins: /var/lib/grafana/plugins
-        provisioning: /etc/grafana/provisioning
       analytics:
         check_for_updates: false
-      log:
-        mode: console
-      grafana_net:
-        url: https://grafana.net
     datasources:
       datasources.yaml:
         apiVersion: 1
@@ -52,18 +39,6 @@ spec:
             user: ${MARIADB_GRAFANA_USER}
             secureJsonData:
               password: ${MARIADB_GRAFANA_PASSWORD}
-    dashboardProviders:
-      dashboardproviders.yaml:
-        apiVersion: 1
-        providers:
-          - name: default
-            orgId: 1
-            folder: ""
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/default
     dashboards:
       default:
         nginx-dashboard:
@@ -149,6 +124,7 @@ spec:
       enabled: true
     ingress:
       enabled: true
+      ingressClassName: nginx
       annotations:
         external-dns.home.arpa/enabled: "true"
         cert-manager.home.arpa/enabled: "true"
@@ -161,5 +137,3 @@ spec:
           secretName: grafana-tls
     persistence:
       enabled: false
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: grafana
