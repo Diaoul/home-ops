@@ -27,6 +27,7 @@ spec:
         s3ForcePathStyle: true
         insecure: true
     gateway:
+      replicas: 3
       ingress:
         enabled: true
         ingressClassName: nginx
@@ -44,3 +45,5 @@ spec:
     monitoring:
       selfMonitoring:
         enabled: false
+        grafanaAgent:
+          installOperator: false
