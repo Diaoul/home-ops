@@ -5,6 +5,5 @@ resources:
   - grafana
   - kube-prometheus-stack
   - loki
-  - thanos
   - unifi-poller
   - vector
