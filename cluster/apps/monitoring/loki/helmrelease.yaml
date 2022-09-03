@@ -15,35 +15,33 @@ spec:
         name: grafana
         namespace: flux-system
   values:
-    image:
-      repository: ghcr.io/k8s-at-home/loki
-    ingress:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        cert-manager.home.arpa/enabled: "true"
-      hosts:
-        - host: &host "loki.${DOMAIN}"
-          paths:
-            - /
-      tls:
-        - hosts:
-            - *host
-          secretName: loki-tls
     config:
-      storage_config:
-        aws:
+      global:
+        clusterDomain: ${CLUSTER_DOMAIN}
+      loki:
+        auth_enabled: false
+      storage:
+        s3:
           endpoint: singularity.milkyway:9000
-          bucketnames: loki
-          access_key_id: ${LOKI_MINIO_ACCESS_KEY}
-          secret_access_key: ${LOKI_MINIO_SECRET_KEY}
-          s3forcepathstyle: true
+          secretAccessKey: ${LOKI_MINIO_SECRET_KEY}
+          accessKeyId: ${LOKI_MINIO_ACCESS_KEY}
+          s3ForcePathStyle: true
           insecure: true
-        boltdb_shipper:
-          active_index_directory: /data/loki/index
-          cache_location: /data/loki/index-cache
-          shared_store: s3
-      ruler:
-        alertmanager_url: http://kube-prometheus-stack-alertmanager.monitoring:9093
-    serviceMonitor:
-      enabled: true
+    gateway:
+      ingress:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          cert-manager.home.arpa/enabled: "true"
+        hosts:
+          - host: &host "loki.${DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: loki-tls
+    monitoring:
+      selfMonitoring:
+        enabled: false
