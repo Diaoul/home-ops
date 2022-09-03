@@ -20,6 +20,10 @@ spec:
     loki:
       auth_enabled: false
       storage:
+        bucketNames:
+          chunks: loki
+          ruler: loki
+          admin: loki
         s3:
           endpoint: singularity.milkyway:9000
           secretAccessKey: ${LOKI_MINIO_SECRET_KEY}
