@@ -14,10 +14,11 @@
       version: "3.7"
       services:
         minio:
-          image: quay.io/minio/minio:latest
+          # renovate: datasource=docker depName=quay.io/minio/minio
+          image: quay.io/minio/minio:RELEASE.2022-09-01T23-53-36Z
           container_name: minio
           restart: unless-stopped
-          ansible.builtin.command: server --console-address ":9010" /data
+          command: server --console-address ":9010" /data
           volumes:
             - /volume1/minio:/data
           ports:
