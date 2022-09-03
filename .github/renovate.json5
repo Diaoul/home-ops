@@ -17,7 +17,7 @@
     "ignorePaths": ["cluster/flux/"]
   },
   "flux": {
-    "fileMatch": ["cluster/.+\\.ya?ml$"]
+    "fileMatch": ["cluster/.+\\.ya?ml$"],
     "ignorePaths": ["cluster/flux/"]
   },
   "helm-values": {
