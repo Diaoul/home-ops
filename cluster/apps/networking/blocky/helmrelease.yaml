@@ -2,17 +2,17 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: blocky
+  name: &app blocky
   namespace: networking
 spec:
   interval: 10m
   chart:
     spec:
-      chart: blocky
-      version: 10.5.2
+      chart: app-template
+      version: 0.1.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   values:
     image:
@@ -20,53 +20,12 @@ spec:
       tag: v0.19
     controller:
       replicas: 2
-    config: |
-      upstream:
-        default:
-          - tcp-tls:1dot1dot1dot1.cloudflare-dns.com
-          - tcp-tls:dns.google
-          - tcp-tls:dns10.quad9.net
-      conditional:
-        mapping:
-          ${DOMAIN}: tcp+udp:${K8S_GATEWAY_IP}
-          milkyway: tcp+udp:${ROUTER_IP}
-      clientLookup:
-        upstream: tcp+udp:${ROUTER_IP}
-      blocking:
-        blackLists:
-          ads:
-            - https://dbl.oisd.nl/
-          tvs:
-            # Wassname
-            # https://gist.github.com/wassname/b594c63222f9e4c83ea23c818440901b
-            - https://gist.githubusercontent.com/wassname/b594c63222f9e4c83ea23c818440901b/raw/1b0afd2aecf3a099f1681b1cf18fc0e6e2fa116a/Samsung%2520Smart-TV%2520Blocklist%2520Adlist%2520(for%2520PiHole)
-            # https://gist.github.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7
-            - https://gist.githubusercontent.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7/raw/d7863a978993e99d9c77c9001008ce670a3b4c29/LG%2520Smart-TV%2520Blocklist%2520Adlist%2520(for%2520PiHole)
-            # Perflyst
-            # https://github.com/Perflyst/PiHoleBlocklist/blob/master/SmartTV.txt
-            - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
-            # hkamran80
-            # https://gist.github.com/hkamran80/779019103fcd306979411d44c8d38459
-            - https://gist.githubusercontent.com/hkamran80/779019103fcd306979411d44c8d38459/raw/e0f084b396bb8ffcb390c8e7272ae96a6c292d10/SmartTV2.txt
-        clientGroupsBlock:
-          default:
-            - ads
-          10.0.30.0/24:
-            - ads
-            - tvs
-      caching:
-        cacheTimeNegative: 30s
-      prometheus:
-        enable: true
-      bootstrapDns: tcp+udp:1.1.1.1
-      httpPort: 4000
-      queryLog:
-        type: mysql
-        target: ${MARIADB_BLOCKY_USER}:${MARIADB_BLOCKY_PASSWORD}@tcp(mariadb.db:3306)/${MARIADB_BLOCKY_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local
-        logRetentionDays: 7
     service:
       main:
         enabled: true
+        ports:
+          http:
+            port: 4000
       dns-tcp:
         enabled: true
         type: LoadBalancer
@@ -91,26 +50,74 @@ spec:
             port: 53
             protocol: UDP
             targetPort: 53
-    metrics:
-      enabled: true
-      prometheusRule:
+    persistence:
+      config:
         enabled: true
+        type: configMap
+        name: &config blocky-config
+        mountPath: /app/config.yml
+        subPath: config.yml
+    configmap:
+      config:
+        enabled: true
+        data:
+          config.yml: |-
+            upstream:
+              default:
+                - tcp-tls:1dot1dot1dot1.cloudflare-dns.com
+                - tcp-tls:dns.google
+                - tcp-tls:dns10.quad9.net
+            conditional:
+              mapping:
+                ${DOMAIN}: tcp+udp:${K8S_GATEWAY_IP}
+                milkyway: tcp+udp:${ROUTER_IP}
+            clientLookup:
+              upstream: tcp+udp:${ROUTER_IP}
+            blocking:
+              blackLists:
+                ads:
+                  - https://dbl.oisd.nl/
+                tvs:
+                  # Wassname
+                  # https://gist.github.com/wassname/b594c63222f9e4c83ea23c818440901b
+                  - https://gist.githubusercontent.com/wassname/b594c63222f9e4c83ea23c818440901b/raw
+                  # https://gist.github.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7
+                  - https://gist.githubusercontent.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7/raw
+                  # Perflyst
+                  # https://github.com/Perflyst/PiHoleBlocklist/blob/master/SmartTV.txt
+                  - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
+                  # hkamran80
+                  # https://gist.github.com/hkamran80/779019103fcd306979411d44c8d38459
+                  - https://gist.githubusercontent.com/hkamran80/779019103fcd306979411d44c8d38459/raw
+              clientGroupsBlock:
+                default:
+                  - ads
+                10.0.30.0/24:
+                  - ads
+                  - tvs
+            caching:
+              cacheTimeNegative: 30s
+            prometheus:
+              enable: true
+            bootstrapDns: tcp+udp:1.1.1.1
+            httpPort: 4000
+            queryLog:
+              type: mysql
+              target: ${MARIADB_BLOCKY_USER}:${MARIADB_BLOCKY_PASSWORD}@tcp(mariadb.db:3306)/${MARIADB_BLOCKY_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local
+              logRetentionDays: 7
     podAnnotations:
-      configmap.reloader.stakater.com/reload: blocky-config
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values:
-                    - blocky
-            topologyKey: kubernetes.io/hostname
+      configmap.reloader.stakater.com/reload: *config
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: *app
     resources:
       requests:
-        cpu: 200m
-        memory: 700Mi
+        cpu: 10m
+        memory: 100Mi
       limits:
-        cpu: 1
-        memory: 1Gi
+        cpu: 100m
+        memory: 200Mi
