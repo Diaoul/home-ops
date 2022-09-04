@@ -1,7 +1,0 @@
----
-- hosts:
-    - master
-    - worker
-  roles:
-    - name: longhorn
-      when: longhorn_enabled is defined and longhorn_enabled
