@@ -25,7 +25,7 @@ spec:
       namespace: kasten-io
       name: "*"
     - kind: HelmRelease
-      namespace: kube-system
+      namespace: kube-tools
       name: "*"
     - kind: HelmRelease
       namespace: media
