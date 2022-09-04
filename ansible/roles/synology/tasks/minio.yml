@@ -14,7 +14,6 @@
       version: "3.7"
       services:
         minio:
-          # renovate: datasource=docker depName=quay.io/minio/minio
           image: quay.io/minio/minio:RELEASE.2022-09-01T23-53-36Z
           container_name: minio
           restart: unless-stopped
