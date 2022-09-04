@@ -109,16 +109,16 @@ spec:
           revision: 1
           datasource: Prometheus
         flux-cluster:
-          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/cluster.json
+          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/cluster.json
           datasource: Prometheus
         flux-control-plane:
-          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/grafana/dashboards/control-plane.json
+          url: https://raw.githubusercontent.com/fluxcd/flux2/main/manifests/monitoring/monitoring-config/dashboards/control-plane.json
           datasource: Prometheus
         blocky:
-          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.19/docs/blocky-grafana.json
+          url: https://raw.githubusercontent.com/0xERR0R/blocky/development/docs/blocky-grafana.json
           datasource: Prometheus
         blocky-query:
-          url: https://raw.githubusercontent.com/0xERR0R/blocky/v0.19/docs/blocky-query-grafana.json
+          url: https://raw.githubusercontent.com/0xERR0R/blocky/development/docs/blocky-query-grafana.json
           datasource: MySQL Blocky
     sidecar:
       dashboards:
