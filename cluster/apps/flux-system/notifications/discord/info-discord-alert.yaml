@@ -43,4 +43,4 @@ spec:
       namespace: vpn
       name: "*"
   exclusionList:
-    - Dependencies do not meet ready condition .* retrying in 30s
+    - dependencies do not meet ready condition .* retrying in 30s
