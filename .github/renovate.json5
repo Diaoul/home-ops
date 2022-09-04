@@ -24,19 +24,22 @@
     "fileMatch": ["cluster/.+\\.ya?ml$"]
   },
   "regexManagers": [
-    // generic matcher
-    // see https://regex101.com/r/fzaLfV/1
     {
       "fileMatch": [
         "ansible/.+\\.ya?ml$",
         "cluster/.+\\.ya?ml$",
       ],
       "matchStrings": [
+        // generic matcher
+        // see https://regex101.com/r/fzaLfV/1
         "datasource=(?<datasource>helm) registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
         "datasource=(?<datasource>docker) image=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
         "datasource=(?<datasource>github-releases) repos=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
         "datasource=(?<datasource>pypi) package=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        // github release artifact url matcher
+        // see https://regex101.com/r/qBmdwk/1
+        "datasource=(?<datasource>docker) image=(?<depName>\\S+)\n.*https:\/\/github\.com\/.*\/releases\/download\/(?<currentValue>[^/]+)\/[^/]+\n",
       ],
       "datasourceTemplate": "{{datasource}}",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}{{#if (containsString datasource 'pypi')}}pep440{{else}}semver{{/if}}{{/if}}"

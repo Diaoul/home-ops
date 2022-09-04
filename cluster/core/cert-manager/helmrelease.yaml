@@ -14,14 +14,9 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-  install:
-    crds: CreateReplace
-  upgrade:
-    crds: CreateReplace
   values:
-    installCRDs: true
+    installCRDs: false
     extraArgs:
-      - --enable-certificate-owner-ref=true
       - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
       - --dns01-recursive-nameservers-only
     prometheus:
