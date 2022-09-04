@@ -9,7 +9,7 @@
   ansible.builtin.replace:
     path: /etc/default/grub
     regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT="(?:(?![ ]?{{ item.option | regex_escape }}=).)*)(?:[ ]?{{ item.option | regex_escape }}=\S+)?(.*")$'
-    ansible.builtin.replace: '\1 {{ item.option }}={{ item.value }}\2'
+    replace: '\1 {{ item.option }}={{ item.value }}\2'
   loop:
     - option: apparmor
       value: 0
