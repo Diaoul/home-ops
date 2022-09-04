@@ -12,4 +12,5 @@ resources:
   - monitoring.yaml
   - networking.yaml
   - rook-ceph.yaml
+  - tigera-operator.yaml
   - vpn.yaml
