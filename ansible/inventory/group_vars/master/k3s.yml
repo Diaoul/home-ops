@@ -8,6 +8,9 @@ k3s_server:
     - traefik
     - local-storage
     - metrics-server
+  # https://github.com/k3s-io/k3s/issues/5835
+  # https://github.com/k3s-io/k3s/issues/5633
+  egress-selector-mode: disabled
   disable-network-policy: true
   disable-cloud-controller: true
   cluster-cidr: 10.42.0.0/16
