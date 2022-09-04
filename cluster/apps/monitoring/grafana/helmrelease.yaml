@@ -15,6 +15,8 @@ spec:
         name: grafana
         namespace: flux-system
   values:
+    env:
+      VAR_BLOCKY_URL: "http://blocky.networking.svc.${CLUSTER_DOMAIN}:4000"
     adminPassword: ${GRAFANA_ADMIN_PASSWORD}
     grafana.ini:
       analytics:
@@ -148,4 +150,5 @@ spec:
             - *host
           secretName: grafana-tls
     persistence:
-      enabled: false
+      enabled: true
+      existingClaim: grafana-config
