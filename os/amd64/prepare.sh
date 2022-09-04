@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-url='https://releases.ubuntu.com/22.04/ubuntu-22.04-live-server-amd64.iso'
+url='https://releases.ubuntu.com/22.04.1/ubuntu-22.04.1-live-server-amd64.iso'
 grub_url='http://archive.ubuntu.com/ubuntu/dists/jammy/main/uefi/grub2-amd64/current/grubnetx64.efi.signed'
 # shellcheck disable=SC2016
 server='${pxe_default_server}'
