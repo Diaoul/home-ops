@@ -1,5 +1,7 @@
+# setup ssh on a machine
+# not needed for cloud-init
 ---
-- hosts: kubernetes
+- hosts: pi
   vars:
     user: antoine
     ssh_authorized_keys: |

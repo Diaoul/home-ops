@@ -1,5 +1,11 @@
 ## :building_construction: Playbooks
 
+### Bootstrap
+Setup ssh on a machine (not needed for kubernetes: part of cloud-init)
+```bash
+ansible-playbook playbooks/bootstrap.yml
+```
+
 ### OS Preparation
 With Kubernetes requirements
 ```bash
