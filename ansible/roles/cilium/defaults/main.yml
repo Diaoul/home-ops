@@ -1,4 +1,0 @@
----
-cilium_state: present
-cilium_values: {}
-cilium_version: 1.9.2

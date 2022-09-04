@@ -1,8 +1,0 @@
----
-- hosts:
-    - master
-    - worker
-  vars:
-    cilium_state: absent
-  roles:
-    - cilium

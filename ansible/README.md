@@ -19,19 +19,12 @@ ansible-playbook playbooks/cluster/k3s.yml
 ```
 
 ### CNI
-[Calico](https://www.projectcalico.org/) or [Cilium](https://cilium.io/)
-available. If using BGP, make sure to configure your router accordingly.
+Using [Calico](https://www.projectcalico.org/). If using BGP, make sure to
+configure your router accordingly.
 ```bash
 ansible-playbook playbooks/cluster/calico.yml
 ```
-
-### Storage
-[Longhorn](https://longhorn.io/) or [Rook (ceph)](https://rook.io/)
-available. This role will prepare the disks to be used with the CSI.
-Be careful!
-```bash
-ansible-playbook playbooks/cluster/longhorn.yml
-```
+*Note: This is later managed in-cluster.*
 
 ## :fire: Uninstall Playbooks
 Because sometimes it's the only thing left to do...

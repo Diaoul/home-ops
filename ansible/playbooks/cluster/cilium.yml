@@ -1,7 +1,0 @@
----
-- hosts:
-    - master
-    - worker
-  gather_facts: false
-  roles:
-    - cilium
