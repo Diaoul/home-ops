@@ -120,11 +120,8 @@ spec:
                   storage: 20Gi
         thanos:
           image: quay.io/thanos/thanos:v0.28.0
-          # renovate: datasource=docker depName=quay.io/thanos/thanos
+          # renovate: datasource=docker image=quay.io/thanos/thanos
           version: "v0.28.0"
-          objectStorageConfig:
-            name: thanos-objstore-secret
-            key: objstore.yml
         additionalScrapeConfigs:
           - job_name: node-exporter
             static_configs:
