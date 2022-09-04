@@ -10,7 +10,6 @@ resources:
   - kube-tools
   - networking
   - monitoring
-  - kasten-io
   - home-automation
   - media
   - vpn

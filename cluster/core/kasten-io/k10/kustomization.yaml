@@ -5,3 +5,4 @@ resources:
   - dr-secret.enc.yaml
   - custom-ca-bundle-store-configmap.yaml
   - helmrelease.yaml
+  - profiles
