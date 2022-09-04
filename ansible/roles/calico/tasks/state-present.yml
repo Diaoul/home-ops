@@ -20,15 +20,9 @@
   run_once: true
   delegate_to: localhost
 
-- name: enable prometheus metrics in felixconfiguration
+- name: add felix configuration
   kubernetes.core.k8s:
-    api_version: crd.projectcalico.org/v1
-    namespace: tigera-operator
-    kind: felixconfiguration
-    name: default
-    definition:
-      spec:
-        prometheusMetricsEnabled: true
+    template: felixconfiguration.yaml.j2
   run_once: true
   delegate_to: localhost
 
