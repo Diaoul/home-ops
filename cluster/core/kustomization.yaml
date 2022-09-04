@@ -5,4 +5,5 @@ resources:
   - namespaces
   - kasten-io
   - cert-manager
+  - flux-system
   - rook-ceph
