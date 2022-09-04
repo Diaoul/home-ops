@@ -6,7 +6,7 @@ metadata:
     prometheus: k8s
     role: alert-rules
   name: kured-rules
-  namespace: kube-system
+  namespace: kube-tools
 spec:
   groups:
     - name: kured.rules
