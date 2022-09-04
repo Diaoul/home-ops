@@ -1,8 +1,0 @@
----
-- hosts:
-    - kubernetes
-  gather_facts: false
-  vars:
-    kubevip_state: absent
-  roles:
-    - kubevip

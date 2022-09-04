@@ -1,2 +1,0 @@
----
-- include_tasks: state-{{ kubevip_state }}.yml
