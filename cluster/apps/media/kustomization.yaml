@@ -6,7 +6,6 @@ resources:
   - pvc
   - airsonic
   - flaresolverr
-  - jackett
   - jellyfin
   - lidarr
   - mylar
