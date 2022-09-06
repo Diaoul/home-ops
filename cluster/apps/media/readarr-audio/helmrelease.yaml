@@ -2,22 +2,30 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: readarr-audio
+  name: &app readarr-audio
   namespace: media
 spec:
   interval: 10m
   chart:
     spec:
-      chart: readarr
-      version: 6.4.2
+      chart: app-template
+      version: 0.1.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   values:
     image:
-      repository: ghcr.io/k8s-at-home/readarr-nightly
-      tag: v0.1.1.1409
+      repository: ghcr.io/onedr0p/readarr-nightly
+      tag: 0.1.1.1409@sha256:00a1098977f6d77dabdad2ba8a65937a45098cd7f41285441cf74994813d5c8f
+    envFrom:
+      - secretRef:
+          name: *app
+    service:
+      main:
+        ports:
+          http:
+            port: 8787
     ingress:
       main:
         enabled: true
@@ -34,20 +42,11 @@ spec:
           - hosts:
               - *host
             secretName: readarr-audio-tls
-      api:
-        enabled: true
-        nameSuffix: api
-        annotations:
-          external-dns.home.arpa/enabled: "true"
-        hosts:
-          - host: *host
-            paths:
-              - path: /api
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
-            secretName: readarr-audio-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -56,6 +55,8 @@ spec:
         enabled: true
         existingClaim: nfs-singularity-media
         mountPath: /media
+    podAnnotations:
+      secretreloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 200m
