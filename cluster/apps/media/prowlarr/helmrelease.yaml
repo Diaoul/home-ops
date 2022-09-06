@@ -2,26 +2,34 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: prowlarr
+  name: &app prowlarr
   namespace: media
 spec:
-  releaseName: prowlarr
   interval: 10m
   chart:
     spec:
-      chart: prowlarr
-      version: 4.5.2
+      chart: app-template
+      version: 0.1.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   values:
     image:
-      repository: ghcr.io/k8s-at-home/prowlarr-nightly
-      tag: v0.4.5.1955
+      repository: ghcr.io/onedr0p/prowlarr-nightly
+      tag: 0.4.5.1958@sha256:83e2658f75028d67bc90ec98bb11bf129c2822f0836635d50256b72a4b346249
+    envFrom:
+      - secretRef:
+          name: *app
+    service:
+      main:
+        ports:
+          http:
+            port: 9696
     ingress:
       main:
         enabled: true
+        ingressClassName: nginx
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -34,11 +42,17 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: prowlarr-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
         existingClaim: prowlarr-config
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *app
     resources:
       requests:
         cpu: 100m
