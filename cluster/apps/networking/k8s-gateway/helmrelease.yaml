@@ -19,7 +19,7 @@ spec:
     image:
       registry: quay.io
       repository: oriedge/k8s_gateway
-      tag: v0.3.1
+      tag: v0.3.2
     replicaCount: 2
     domain: ${DOMAIN}
     service:
