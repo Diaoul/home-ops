@@ -32,7 +32,19 @@ spec:
       zones:
         - andromeda.${DOMAIN}
         - sunflower.${DOMAIN}
-    extraZonePlugins: |
-      forward . tls://1.1.1.1 tls://1.0.0.1 {
-        tls_servername cloudflare-dns.com
-      }
+    extraZonePlugins:
+      - name: log
+      - name: errors
+      - name: health
+        configBlock: |-
+          lameduck 5s
+      - name: ready
+      - name: prometheus
+        parameters: 0.0.0.0:9153
+      - name: forward
+        parameters: . tls://1.1.1.1 tls://1.0.0.1
+        configBlock: |-
+          tls_servername cloudflare-dns.com
+      - name: loop
+      - name: reload
+      - name: loadbalance
