@@ -12,7 +12,7 @@ spec:
       version: 3.0.1
       sourceRef:
         kind: HelmRepository
-        name: weaveworks-kured
+        name: kubereboot
         namespace: flux-system
   values:
     updateStrategy: RollingUpdate
