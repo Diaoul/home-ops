@@ -143,6 +143,12 @@ spec:
       data:
         enabled: true
         existingClaim: frigate-data
+      config:
+        enabled: true
+        type: configMap
+        name: frigate-config
+        subPath: config.yml
+        mountPath: /config/config.yml
       media:
         enabled: true
         existingClaim: nfs-singularity-recordings
