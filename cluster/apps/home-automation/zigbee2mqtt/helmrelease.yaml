@@ -8,16 +8,49 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: zigbee2mqtt
-      version: 9.4.2
+      chart: app-template
+      version: 0.2.2
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   values:
     image:
       repository: koenkk/zigbee2mqtt
       tag: 1.28.0
+    env:
+      ZIGBEE2MQTT_DATA: /data
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_DISCOVERY_TOPIC: homeassistant
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: "true"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: "true"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: "false"
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: "false"
+      # ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
+      ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
+      ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
+      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_LEGACY: "false"
+      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
+      ZIGBEE2MQTT_CONFIG_EXPERIMENTAL_NEW_API: "true"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.${DOMAIN}"
+      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
+      ZIGBEE2MQTT_CONFIG_MQTT_INCLUDE_DEVICE_INFORMATION: "true"
+      ZIGBEE2MQTT_CONFIG_MQTT_KEEPALIVE: 60
+      ZIGBEE2MQTT_CONFIG_MQTT_REJECT_UNAUTHORIZED: "true"
+      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
+      ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
+      ZIGBEE2MQTT_CONFIG_MQTT_USER: ${EMQX_USER_USERNAME}
+      ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://10.0.3.16:6638
+      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
+      ZIGBEE2MQTT_CONFIG_DEVICES: devices.yaml
+      ZIGBEE2MQTT_CONFIG_GROUPS: groups.yaml
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
     ingress:
       main:
         enabled: true
@@ -34,38 +67,15 @@ spec:
           - hosts:
               - *host
             secretName: zigbee2mqtt-tls
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       data:
         enabled: true
         existingClaim: zigbee2mqtt-data
-    config:
-      homeassistant: true
-      mqtt:
-        server: mqtt://emqx
-        client_id: zigbee2mqtt
-        user: ${EMQX_USER_USERNAME}
-        password: ${EMQX_USER_PASSWORD}
-      serial:
-        port: tcp://zigbee:6638
-      advanced:
-        network_key:
-          - 206
-          - 120
-          - 216
-          - 75
-          - 36
-          - 22
-          - 179
-          - 163
-          - 216
-          - 178
-          - 26
-          - 126
-          - 50
-          - 109
-          - 66
-          - 185
-        pan_id: 45138
     resources:
       requests:
         cpu: 100m
