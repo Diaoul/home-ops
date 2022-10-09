@@ -20,8 +20,6 @@ spec:
       tag: 0.11.1
     env:
       LIBVA_DRIVER_NAME: i965
-      FRIGATE_MQTT_USER: ${EMQX_USER_USERNAME}
-      FRIGATE_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
     service:
       main:
         ports:
@@ -65,8 +63,8 @@ spec:
           config.yml: |
             mqtt:
               host: emqx
-              user: {FRIGATE_MQTT_USER}
-              password: {FRIGATE_MQTT_PASSWORD}
+              user: ${EMQX_USER_USERNAME}
+              password: ${EMQX_USER_PASSWORD}
             database:
               path: /data/frigate.db
             detectors:
