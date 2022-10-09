@@ -8,26 +8,65 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: frigate
-      version: 8.2.2
+      chart: app-template
+      version: 0.2.2
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   values:
     image:
       repository: docker.io/blakeblackshear/frigate
-      tag: 0.11.0-rc1
+      tag: 0.11.1
     env:
-      LIBVA_DRIVER_NAME_JELLYFIN: i965
+      LIBVA_DRIVER_NAME: i965
+      FRIGATE_MQTT_USER: ${EMQX_USER_USERNAME}
+      FRIGATE_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
+    service:
+      main:
+        ports:
+          http:
+            port: &port 5000
+    probes:
+      readiness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /api/version
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      liveness: *probes
+      startup:
+        enabled: false
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+          cert-manager.home.arpa/enabled: "true"
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - host: &host frigate.${DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+            secretName: frigate-tls
     configmap:
       config:
+        enabled: true
         data:
           config.yml: |
             mqtt:
               host: emqx
-              user: ${EMQX_USER_USERNAME}
-              password: ${EMQX_USER_PASSWORD}
+              user: {FRIGATE_MQTT_USER}
+              password: {FRIGATE_MQTT_PASSWORD}
             database:
               path: /data/frigate.db
             detectors:
@@ -64,8 +103,8 @@ spec:
                   mask:
                     - 825,576,1024,576,1024,344,944,325,794,518
                 mqtt:
-                  timestamp: False
-                  bounding_box: False
+                  timestamp: false
+                  bounding_box: false
                   height: 500
               garage:
                 ffmpeg:
@@ -78,8 +117,8 @@ spec:
                         - record
                         - rtmp
                 mqtt:
-                  timestamp: False
-                  bounding_box: False
+                  timestamp: false
+                  bounding_box: false
                   height: 500
               driveway:
                 ffmpeg:
@@ -91,30 +130,15 @@ spec:
                       roles:
                         - record
                         - rtmp
+                objects:
+                  filters:
+                    person:
+                      mask:
+                        - 0,80,1024,80,1024,0,0,0
                 mqtt:
-                  timestamp: False
-                  bounding_box: False
+                  timestamp: false
+                  bounding_box: false
                   height: 500
-    ingress:
-      main:
-        enabled: true
-        annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
-          auth.home.arpa/enabled: "true"
-        hosts:
-          - host: &host frigate.${DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
-            secretName: frigate-tls
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: frigate-config
-    securityContext:
-      privileged: true
     persistence:
       data:
         enabled: true
@@ -122,10 +146,21 @@ spec:
       media:
         enabled: true
         existingClaim: nfs-singularity-recordings
+      cache:
+        enabled: true
+        type: emptyDir
+        medium: Memory
+        sizeLimit: 1Gi
+        mountPath: /dev/shm
       pci:
         enabled: true
         type: hostPath
         hostPath: /dev/apex_0
+        hostPathType: CharDevice
+    securityContext:
+      privileged: true
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: frigate-config
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -142,8 +177,9 @@ spec:
     resources:
       requests:
         cpu: 700m
-        memory: 1Gi
+        memory: 1.5Gi
         gpu.intel.com/i915: 1
       limits:
+        cpu: 1
         memory: 2Gi
         gpu.intel.com/i915: 1
