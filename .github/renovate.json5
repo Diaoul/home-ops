@@ -46,6 +46,12 @@
     }
   ],
   "packageRules": [
+    // disable kubernetes-api
+    {
+      "matchManagers": ["kubernetes"],
+      "matchDatasources": ["kubernetes-api"],
+      "enabled": false
+    },
     // datasource specific settings
     {
       "matchDatasources": ["helm"],
