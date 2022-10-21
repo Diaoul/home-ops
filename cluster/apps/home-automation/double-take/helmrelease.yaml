@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: docker.io/jakowenko/double-take
-      tag: 1.12.1
+      tag: 1.13.0
     ingress:
       main:
         enabled: true
