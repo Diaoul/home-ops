@@ -12,5 +12,7 @@ collections:
     version: 1.4.1
 
 roles:
-  - src: xanmanning.k3s
+  # workaround for https://github.com/PyratLabs/ansible-role-k3s/issues/196
+  - name: xanmanning.k3s
+    src: https://github.com/PyratLabs/ansible-role-k3s.git
     version: v3.3.0
