@@ -1,5 +1,5 @@
 ---
-- name: remove bgp peers configuration
+- name: Remove bgp peers configuration
   kubernetes.core.k8s:
     state: absent
     template: bgppeer.yaml.j2
@@ -8,7 +8,7 @@
   run_once: true
   delegate_to: localhost
 
-- name: remove bgp configuration
+- name: Remove bgp configuration
   kubernetes.core.k8s:
     state: absent
     template: bgpconfiguration.yaml.j2
@@ -16,7 +16,7 @@
   run_once: true
   delegate_to: localhost
 
-- name: remove tigera operator configuration
+- name: Remove tigera operator configuration
   kubernetes.core.k8s:
     state: absent
     template: installation.yaml.j2
@@ -24,7 +24,7 @@
   run_once: true
   delegate_to: localhost
 
-- name: remove tigera operator
+- name: Remove tigera operator
   kubernetes.core.k8s:
     state: absent
     definition: "{{ item }}"
@@ -37,13 +37,13 @@
   run_once: true
   delegate_to: localhost
 
-- name: clean up ip links
+- name: Clean up ip links
   ansible.builtin.shell:
     cmd: ip link list | grep cali | awk '{print $2}' | cut -c 1-15 | xargs -I {} ip link delete {}
   changed_when: true
   become: true
 
-- name: clean up cni files
+- name: Clean up cni files
   ansible.builtin.file:
     state: absent
     path: "{{ item }}"

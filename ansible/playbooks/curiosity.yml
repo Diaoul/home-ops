@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Curiosity
+  hosts:
     - curiosity
   vars_prompt:
     - name: "restart_confirmation"
@@ -10,9 +11,9 @@
     - os
     - printer3d
   tasks:
-    - name: flush handlers
+    - name: Flush handlers
       ansible.builtin.meta: ansible.builtin.flush_handlers
-    - name: reboot
+    - name: Reboot
       ignore_errors: true  # noqa ignore-errors
       ansible.builtin.reboot:
         msg: "Rebooting..."

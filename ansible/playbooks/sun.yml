@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Sun
+  hosts:
     - sun
   roles:
     - os

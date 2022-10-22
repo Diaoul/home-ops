@@ -1,49 +1,61 @@
 ---
-- import_tasks: time.yml
+- name: Time
+  ansible.builtin.import_tasks: time.yml
   tags:
     - time
 
-- import_tasks: packages.yml
+- name: Packages
+  ansible.builtin.import_tasks: packages.yml
   tags:
     - packages
 
-- import_tasks: coral-tpu.yml
+- name: Coral TPU
+  ansible.builtin.import_tasks: coral-tpu.yml
   tags:
     - coral-tpu
   when: '"pi" not in group_names'
 
-- import_tasks: power-button.yml
+- name: Power Button
+  ansible.builtin.import_tasks: power-button.yml
   tags:
     - power-button
 
-- import_tasks: motd.yml
+- name: MOTD
+  ansible.builtin.import_tasks: motd.yml
   tags:
     - motd
 
-- import_tasks: kernel.yml
+- name: Kernel
+  ansible.builtin.import_tasks: kernel.yml
   tags:
     - kernel
 
-- import_tasks: network.yml
+- name: Network
+  ansible.builtin.import_tasks: network.yml
   tags:
     - network
 
-- import_tasks: filesystem.yml
+- name: Filesystem
+  ansible.builtin.import_tasks: filesystem.yml
   tags:
     - filesystem
 
-- import_tasks: pi.yml
+- name: Pi
+  ansible.builtin.import_tasks: pi.yml
   tags:
     - pi
 
-- import_tasks: journald.yml
+- name: Journald
+  ansible.builtin.import_tasks: journald.yml
   tags:
     - journald
 
-- import_tasks: unattended-upgrades.yml
+- name: Unattended Upgrades
+  ansible.builtin.import_tasks: unattended-upgrades.yml
   tags:
     - unattended-upgrades
 
-- import_tasks: terminfo.yml
+- name: Terminfo
+  ansible.builtin.import_tasks: terminfo.yml
   tags:
     - terminfo

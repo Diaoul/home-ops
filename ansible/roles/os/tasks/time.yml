@@ -1,5 +1,5 @@
 ---
-- name: time | set timezone
+- name: Set timezone
   community.general.timezone:
     name: "{{ os_timezone }}"
   when: os_timezone is defined

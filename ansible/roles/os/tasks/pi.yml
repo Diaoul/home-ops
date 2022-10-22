@@ -1,5 +1,5 @@
 ---
-- name: pi | apply boot config options
+- name: Apply boot config options
   ansible.builtin.lineinfile:
     path: /boot/config.txt
     regex: "^#?{{ item.key }}="

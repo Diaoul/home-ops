@@ -1,7 +1,7 @@
 ---
-- name: motd | disable motd
+- name: Disable motd
   ansible.builtin.lineinfile:
     dest: /etc/default/motd-news
-    regexp: '^ENABLED='
-    line: 'ENABLED=0'
+    regexp: "^ENABLED="
+    line: "ENABLED=0"
   when: ansible_distribution == "Ubuntu"

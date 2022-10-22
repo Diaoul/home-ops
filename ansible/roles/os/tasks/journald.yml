@@ -1,5 +1,5 @@
 ---
-- name: journald | limit size to 1GB
+- name: Limit size to 1GB
   ansible.builtin.lineinfile:
     path: /etc/systemd/journald.conf
     regex: "^#?SystemMaxUse="

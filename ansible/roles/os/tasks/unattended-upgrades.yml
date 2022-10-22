@@ -1,12 +1,12 @@
 ---
-- name: unattended-upgrades | install
+- name: Install
   ansible.builtin.apt:
     name: unattended-upgrades
 
-- name: unattended-upgrades | configure 50unattended-upgrades
+- name: Configure 50unattended-upgrades
   ansible.builtin.lineinfile:
     dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    regex: '{{ item.key }}'
+    regex: "{{ item.key }}"
     line: '{{ item.key }} "{{ item.value }}";'
   loop:
     - key: Unattended-Upgrade::Automatic-Reboot
@@ -15,10 +15,10 @@
       value: "true"
   notify: unattended-upgrades configuration changed
 
-- name: unattended-upgrades | configure 20auto-upgrades
+- name: Configure 20auto-upgrades
   ansible.builtin.lineinfile:
     dest: /etc/apt/apt.conf.d/20auto-upgrades
-    regex: '{{ item.key }}'
+    regex: "{{ item.key }}"
     line: '{{ item.key }} "{{ item.value }}";'
   loop:
     - key: APT::Periodic::Unattended-Upgrade
@@ -31,7 +31,7 @@
       value: "7"
   notify: unattended-upgrades configuration changed
 
-- name: unattended-upgrades | enable service
+- name: Enable service
   ansible.builtin.service:
     name: unattended-upgrades.service
     enabled: true

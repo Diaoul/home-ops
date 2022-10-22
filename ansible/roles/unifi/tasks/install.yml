@@ -1,5 +1,5 @@
 ---
-- name: download docker gpg key
+- name: Download docker gpg key
   ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /usr/share/keyrings/docker.gpg.armored
@@ -8,39 +8,39 @@
   register: get_gpg_key
   become: true
 
-- name: add docker gpg key to keyrings
+- name: Add docker gpg key to keyrings
   ansible.builtin.command: gpg -o /usr/share/keyrings/docker.gpg --dearmor /usr/share/keyrings/docker.gpg.armored  # noqa line-length no-handler
   when: get_gpg_key is changed
   become: true
 
-- name: add docker repository
+- name: Add docker repository
   ansible.builtin.apt_repository:
     repo: deb [arch={{ "arm64" if ansible_architecture == "aarch64" else ansible_architecture }} signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
     filename: docker
   become: true
 
-- name: install docker
+- name: Install docker
   ansible.builtin.apt:
     name:
       - docker-ce
     update_cache: true
   become: true
 
-- name: create unifi directory
+- name: Create unifi directory
   ansible.builtin.file:
     path: /etc/unifi
     state: directory
     mode: 0755
   become: true
 
-- name: create unifi certificates directory
+- name: Create unifi certificates directory
   ansible.builtin.file:
     path: /etc/unifi/cert
     state: directory
     mode: 0755
   become: true
 
-- name: copy unifi certificates
+- name: Copy unifi certificates
   ansible.builtin.copy:
     src: /mnt/singularity/certificates/{{ item.src }}
     dest: /etc/unifi/cert/{{ item.dest }}
@@ -54,7 +54,7 @@
       dest: chain.pem
   become: true
 
-- name: install unifi
+- name: Install unifi
   community.general.docker_container:
     name: unifi
     image: jacobalberty/unifi:v7.2.94

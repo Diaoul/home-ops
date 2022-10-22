@@ -1,12 +1,12 @@
 ---
-- name: install docker and docker-compose python modules
+- name: Install docker and docker-compose python modules
   ansible.builtin.pip:
     name:
       - docker
       - docker-compose
   become: true
 
-- name: install minio
+- name: Install minio
   community.docker.docker_compose:
     project_name: minio
     pull: true

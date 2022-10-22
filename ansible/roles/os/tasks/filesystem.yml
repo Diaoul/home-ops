@@ -1,5 +1,5 @@
 ---
-- name: filesystem | update user open file limit
+- name: Update user open file limit
   ansible.builtin.copy:
     content: |
       * hard nofile 97816
@@ -9,26 +9,26 @@
     mode: 0644
   when: '"kubernetes" in group_names'
 
-- name: filesystem | sysctl increase max_user_watches
+- name: Sysctl increase max_user_watches
   ansible.posix.sysctl:
     name: fs.inotify.max_user_watches
     value: "524288"
     sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
   when: '"kubernetes" in group_names'
 
-- name: filesystem | sysctl increase max_user_instances
+- name: Sysctl increase max_user_instances
   ansible.posix.sysctl:
     name: fs.inotify.max_user_instances
     value: "512"
     sysctl_file: /etc/sysctl.d/98-kubernetes-fs.conf
   when: '"kubernetes" in group_names'
 
-- name: filesystem | swap
+- name: Swap
   block:
-    - name: filesystem | disable swap
+    - name: Disable swap
       ansible.builtin.command: swapoff -a
       when: ansible_swaptotal_mb > 0
-    - name: filesystem | disable swap system start
+    - name: Disable swap system start
       ansible.posix.mount:
         name: "{{ item }}"
         fstype: swap

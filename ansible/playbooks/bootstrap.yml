@@ -1,32 +1,33 @@
 # setup ssh on a machine
 # not needed for cloud-init
 ---
-- hosts: pi
+- name: Bootstrap
+  hosts: pi
   vars:
     user: antoine
     ssh_authorized_keys: |
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE6mQ4yBpDESYhJrIv/G2daw5I2X0cwh0Hj9K1YxCp7n openpgp:0x66FDC5CE
   become: true
   tasks:
-    - name: add user
+    - name: Add user
       ansible.builtin.user:
         name: "{{ user }}"
         ansible.builtin.shell: /bin/bash
 
-    - name: add user to sudoers nopasswd
+    - name: Add user to sudoers nopasswd
       ansible.builtin.copy:
         dest: /etc/sudoers.d/020_{{ user }}-nopasswd
         content: "{{ user }} ALL=(ALL) NOPASSWD: ALL"
         mode: 0440
 
-    - name: add user SSH public keys
+    - name: Add user SSH public keys
       ansible.posix.authorized_key:
         user: "{{ user }}"
         key: "{{ ssh_authorized_keys }}"
         exclusive: true
       notify: restart sshd
 
-    - name: disable SSH password authentication
+    - name: Disable SSH password authentication
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
         regex: "^#?PasswordAuthentication"
@@ -34,7 +35,7 @@
       notify: restart sshd
 
   handlers:
-    - name: restart sshd service
+    - name: Restart sshd service
       ansible.builtin.systemd:
         name: sshd.service
         state: restarted

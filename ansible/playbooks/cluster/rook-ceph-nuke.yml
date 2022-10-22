@@ -15,11 +15,11 @@
         path: /var/lib/rook
 
     - name: zap the drives
-      ansible.builtin.shell: sgdisk --zap-all {{ item }} || true  # noqa 306
+      ansible.builtin.shell: sgdisk --zap-all {{ item }} || true  # noqa risky-shell-pipe
       loop: "{{ rook_ceph_devices | default([]) }}"
 
     - name: remove lvm partitions
-      ansible.builtin.shell: "{{ item }}"  # noqa 305
+      ansible.builtin.shell: "{{ item }}"  # noqa command-instead-of-shell
       loop:
         - ls /dev/mapper/ceph--* | xargs -I% -- fuser --kill %
         - ls /dev/mapper/ceph--* | xargs -I% -- dmsetup clear %

@@ -1,4 +1,4 @@
 ---
-- name: install avrdude
+- name: Install avrdude
   ansible.builtin.apt:
     name: avrdude

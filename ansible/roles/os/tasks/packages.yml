@@ -1,9 +1,9 @@
 ---
-- name: packages | gather the package facts
+- name: Gather the package facts
   ansible.builtin.package_facts:
     manager: auto
 
-- name: packages | upgrade all packages
+- name: Upgrade all packages
   ansible.builtin.apt:
     upgrade: full
     update_cache: true
@@ -11,7 +11,7 @@
     autoclean: true
     autoremove: true
 
-- name: packages | install packages
+- name: Install packages
   ansible.builtin.apt:
     name: "{{ os_packages.install }}"
     update_cache: true
@@ -19,7 +19,7 @@
     autoclean: true
   when: os_packages.install
 
-- name: packages | remove snaps
+- name: Remove snaps
   community.general.snap:
     name: "{{ item }}"
     state: absent
@@ -32,7 +32,7 @@
     - '"snapd" in ansible_facts.packages'
     - '"snapd" in os_packages.remove'
 
-- name: packages | remove packages
+- name: Remove packages
   ansible.builtin.apt:
     name: "{{ os_packages.remove }}"
     state: absent

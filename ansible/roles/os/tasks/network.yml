@@ -1,5 +1,5 @@
 ---
-- name: network | sysctl network configuration
+- name: Sysctl network configuration
   ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -16,12 +16,12 @@
       net.ipv4.conf.all.rp_filter: 0
   when: '"kubernetes" in group_names'
 
-- name: network | update hostname
+- name: Update hostname
   ansible.builtin.hostname:
     name: "{{ inventory_hostname }}"
   when: ansible_hostname != inventory_hostname
 
-- name: network | update /etc/hosts
+- name: Update /etc/hosts
   ansible.builtin.lineinfile:
     dest: /etc/hosts
     regexp: '^127\.0\.1\.1'

@@ -1,2 +1,3 @@
 ---
-- include_tasks: state-{{ calico_state }}.yml
+- name: Include state
+  ansible.builtin.include_tasks: state-{{ calico_state }}.yml
