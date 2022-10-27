@@ -7,8 +7,10 @@ metadata:
   labels:
     k3s-upgrade: agent
 spec:
+  # renovate: datasource=github-releases repos=k3s-io/k3s
+  version: "v1.25.3+k3s1"
+  serviceAccountName: system-upgrade
   concurrency: 1
-  channel: https://update.k3s.io/v1-release/channels/v1.24
   nodeSelector:
     matchExpressions:
       - key: node-role.kubernetes.io/master
@@ -21,7 +23,6 @@ spec:
         operator: In
         values:
           - "true"
-  serviceAccountName: system-upgrade
   prepare:
     image: rancher/k3s-upgrade
     args:
