@@ -95,6 +95,10 @@
       "matchUpdateTypes": ["patch"],
       "addLabels": ["dependency/patch"]
     },
+    {
+      "matchUpdateTypes": ["digest"],
+      "addLabels": ["dependency/digest"]
+    },
     // custom versions schemes
     {
       "matchDatasources": ["docker"],
