@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/sonarr-develop
-      tag: 4.0.0.258@sha256:500795e620bd2d516cad3d63d3aef5353be88d97cf8580ea7db0b8cfce0ed8bb
+      tag: 4.0.0.281@sha256:add6e9e50783af3719cb9ad2855e039718d742edd36d2ba096673a9113aa7229
     envFrom:
       - secretRef:
           name: *app
