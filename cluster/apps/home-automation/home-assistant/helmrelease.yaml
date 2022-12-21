@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: homeassistant/home-assistant
-      tag: 2022.12.5
+      tag: 2022.12.8
     hostNetwork: true
     dnsPolicy: ClusterFirstWithHostNet
     probes:
