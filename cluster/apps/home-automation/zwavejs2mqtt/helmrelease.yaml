@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: zwavejs/zwavejs2mqtt
-      tag: 8.6.1
+      tag: 8.6.2
     service:
       main:
         ports:
