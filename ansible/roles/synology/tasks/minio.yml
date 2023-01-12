@@ -14,7 +14,7 @@
       version: "3.7"
       services:
         minio:
-          image: quay.io/minio/minio:RELEASE.2022-12-12T19-27-27Z
+          image: quay.io/minio/minio:RELEASE.2023-01-12T02-06-16Z
           container_name: minio
           restart: unless-stopped
           command: server --console-address ":9010" /data
