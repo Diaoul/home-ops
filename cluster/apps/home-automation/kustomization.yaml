@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - pv
   - pvc
-  - double-take
   - emqx
   - esphome
   - frigate
