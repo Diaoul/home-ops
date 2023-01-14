@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - pv
   - pvc
-  - deepstack
   - double-take
   - emqx
   - esphome
