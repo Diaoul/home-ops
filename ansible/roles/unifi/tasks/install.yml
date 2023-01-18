@@ -9,7 +9,7 @@
   become: true
 
 - name: Add docker gpg key to keyrings
-  ansible.builtin.command: gpg -o /usr/share/keyrings/docker.gpg --dearmor /usr/share/keyrings/docker.gpg.armored  # noqa line-length no-handler
+  ansible.builtin.command: gpg --yes -o /usr/share/keyrings/docker.gpg --dearmor /usr/share/keyrings/docker.gpg.armored  # noqa line-length no-handler
   when: get_gpg_key is changed
   become: true
 
