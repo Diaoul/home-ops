@@ -20,7 +20,7 @@ spec:
     emqxConfig:
       EMQX_CLUSTER__K8S__SUFFIX: svc.${CLUSTER_DOMAIN}
       EMQX_ALLOW_ANONYMOUS: "false"
-      EMQX_ADMIN_PASSWORD: "${EMQX_ADMIN_PASSWORD}"
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: "${EMQX_ADMIN_PASSWORD}"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
       EMQX_AUTH__USER__1__USERNAME: "${EMQX_USER_USERNAME}"
       EMQX_AUTH__USER__1__PASSWORD: "${EMQX_USER_PASSWORD}"
@@ -28,18 +28,25 @@ spec:
       type: LoadBalancer
       externalIPs:
         - ${EMQX_IP}
-    emqxLoadedPlugins: >
-      {emqx_management, true}.
-      {emqx_recon, true}.
-      {emqx_retainer, true}.
-      {emqx_dashboard, false}.
-      {emqx_telemetry, false}.
-      {emqx_rule_engine, true}.
-      {emqx_bridge_mqtt, false}.
-      {emqx_auth_mnesia, true}.
+      externalTrafficPolicy: Local
+    ingress:
+      dashboard:
+        enabled: true
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+          cert-manager.home.arpa/enabled: "true"
+        path: /
+        pathType: Prefix
+        hosts:
+          - &host emqx.${DOMAIN}
+        tls:
+          - hosts:
+              - *host
+            secretName: emqx-tls
     persistence:
       enabled: true
-      storageClass: rook-ceph-block
+      storageClass: local-path
+      size: 100Mi
     affinity:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
