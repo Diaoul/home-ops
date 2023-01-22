@@ -19,6 +19,7 @@ spec:
     recreatePods: true
     emqxConfig:
       EMQX_CLUSTER__K8S__SUFFIX: svc.${CLUSTER_DOMAIN}
+      EMQX_CLUSTER__DNS__NAME: emqx-headless.home-automation.svc.${CLUSTER_DOMAIN}
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_DASHBOARD__DEFAULT_PASSWORD: "${EMQX_ADMIN_PASSWORD}"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
