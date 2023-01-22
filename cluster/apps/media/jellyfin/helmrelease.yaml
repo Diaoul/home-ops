@@ -17,7 +17,7 @@ spec:
   values:
     image:
       repository: jellyfin/jellyfin
-      tag: 10.8.8
+      tag: 10.8.9
     env:
       JELLYFIN_CACHE_DIR: /config/cache
     podSecurityContext:
