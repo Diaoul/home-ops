@@ -10,7 +10,6 @@ resources:
   - lidarr
   - mylar
   - nzbget
-  - photoprism
   - prowlarr
   - qbittorrent-vpn
   - radarr
