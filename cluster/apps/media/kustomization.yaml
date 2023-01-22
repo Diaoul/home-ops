@@ -5,6 +5,7 @@ resources:
   - pv
   - pvc
   - airsonic
+  - audiobookshelf
   - flaresolverr
   - jellyfin
   - lidarr
