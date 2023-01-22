@@ -12,14 +12,13 @@ spec:
       version: 5.0.14
       sourceRef:
         kind: HelmRepository
-        name: emqx
+        name: diaoul
         namespace: flux-system
   values:
     replicaCount: 2
     recreatePods: true
+    clusterDomain: ${CLUSTER_DOMAIN}
     emqxConfig:
-      EMQX_CLUSTER__K8S__SUFFIX: svc.${CLUSTER_DOMAIN}
-      EMQX_CLUSTER__DNS__NAME: emqx-headless.home-automation.svc.${CLUSTER_DOMAIN}
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_DASHBOARD__DEFAULT_PASSWORD: "${EMQX_ADMIN_PASSWORD}"
       EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
