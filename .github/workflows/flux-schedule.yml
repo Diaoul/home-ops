@@ -32,7 +32,7 @@ jobs:
             --network-policy false \
             --cluster-domain cluster.milkyway \
             --export > ./cluster/flux/flux-system/gotk-components.yaml
-          echo "::set-output name=flux_version::$VERSION"
+          echo "flux_version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create pull request for Flux update
         uses: peter-evans/create-pull-request@v4
