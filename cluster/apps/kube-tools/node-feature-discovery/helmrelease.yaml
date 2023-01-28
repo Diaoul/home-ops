@@ -14,10 +14,18 @@ spec:
         kind: HelmRepository
         name: node-feature-discovery
         namespace: flux-system
+  maxHistory: 3
   install:
+    remediation:
+      retries: 3
     crds: CreateReplace
   upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
     crds: CreateReplace
+  uninstall:
+    keepHistory: false
   values:
     worker:
       annotations:

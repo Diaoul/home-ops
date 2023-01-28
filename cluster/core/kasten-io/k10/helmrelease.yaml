@@ -15,10 +15,18 @@ spec:
         kind: HelmRepository
         name: kasten
         namespace: flux-system
+  maxHistory: 3
   install:
+    remediation:
+      retries: 3
     crds: CreateReplace
   upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
     crds: CreateReplace
+  uninstall:
+    keepHistory: false
   values:
     eula:
       accept: true
