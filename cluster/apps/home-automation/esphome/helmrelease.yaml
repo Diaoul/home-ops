@@ -9,11 +9,11 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: esphome
-      version: 8.4.2
+      chart: app-template
+      version: 1.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   maxHistory: 3
   install:
@@ -31,6 +31,11 @@ spec:
       tag: 2022.12.8
     env:
       ESPHOME_DASHBOARD_USE_PING: true
+    service:
+      main:
+        ports:
+          http:
+            port: 6052
     ingress:
       main:
         enabled: true
@@ -51,6 +56,10 @@ spec:
       config:
         enabled: true
         existingClaim: esphome-config
+      cache:
+        enabled: true
+        type: emptyDir
+        mountPath: /config/.esphome
     resources:
       requests:
         cpu: 100m
