@@ -39,6 +39,7 @@ spec:
         tls:
           - hosts:
               - *host
+            secretName: rook-tls
     cephClusterSpec:
       network:
         provider: host
