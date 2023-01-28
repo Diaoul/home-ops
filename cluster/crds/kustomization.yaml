@@ -6,4 +6,3 @@ resources:
   - external-dns
   - kube-prometheus-stack
   - kyverno
-  - rook-ceph

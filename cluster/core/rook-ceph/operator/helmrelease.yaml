@@ -26,6 +26,6 @@ spec:
     keepHistory: false
   values:
     crds:
-      enabled: false
+      enabled: true
     monitoring:
       enabled: true
