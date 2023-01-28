@@ -42,18 +42,18 @@ spec:
           IPTABLES_BACKEND: nft
           KILLSWITCH: "false"
         configFile: |-
-            [Interface]
-            PrivateKey = ${VPN_INTERFACE_PRIVATE_KEY}
-            Address = ${VPN_INTERFACE_ADDRESS}
-            DNS = 1.1.1.1
-            PostUp = /config/up.sh %i
-            PreDown = /config/down.sh %i
+          [Interface]
+          PrivateKey = ${VPN_INTERFACE_PRIVATE_KEY}
+          Address = ${VPN_INTERFACE_ADDRESS}
+          DNS = 1.1.1.1
+          PostUp = /config/up.sh %i
+          PreDown = /config/down.sh %i
 
-            [Peer]
-            PublicKey = ${VPN_PEER_PUBLIC_KEY}
-            AllowedIPs = 0.0.0.0/0, ::/0
-            Endpoint = ${VPN_PEER_ENDPOINT}
-            PersistentKeepalive = 25
+          [Peer]
+          PublicKey = ${VPN_PEER_PUBLIC_KEY}
+          AllowedIPs = 0.0.0.0/0, ::/0
+          Endpoint = ${VPN_PEER_ENDPOINT}
+          PersistentKeepalive = 25
         scripts:
           up: |-
             #!/bin/bash
