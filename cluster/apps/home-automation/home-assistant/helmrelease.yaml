@@ -8,11 +8,11 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: home-assistant
-      version: 13.4.2
+      chart: app-template
+      version: 1.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   maxHistory: 3
   install:
@@ -26,17 +26,13 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: homeassistant/home-assistant
-      tag: 2023.1.7
-    hostNetwork: true
-    dnsPolicy: ClusterFirstWithHostNet
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-      startup:
-        enabled: false
+      repository: ghcr.io/onedr0p/home-assistant
+      tag: 2023.1.7@sha256:73e1bcb151ed89257fa56bb632c83037b159552ffd0da7e6a389cfb3884f988f
+    service:
+      main:
+        ports:
+          http:
+            port: 8123
     ingress:
       main:
         enabled: true
@@ -52,6 +48,18 @@ spec:
           - hosts:
               - *host
             secretName: hass-tls
+    probes:
+      liveness:
+        enabled: false
+      readiness:
+        enabled: false
+      startup:
+        enabled: false
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -60,7 +68,7 @@ spec:
       codeserver:
         enabled: true
         image:
-          repository: codercom/code-server
+          repository: ghcr.io/coder/code-server
           tag: 4.9.1
         workingDir: /config
         args:
@@ -70,8 +78,6 @@ spec:
           - /config/.vscode
           - --extensions-dir
           - /config/.vscode
-        git:
-          deployKeySecret: home-assistant-code-server
         ingress:
           enabled: true
           annotations:
@@ -92,7 +98,7 @@ spec:
             mountPath: /config
     resources:
       requests:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 100m
+        memory: 800Mi
       limits:
-        memory: 2Gi
+        memory: 1Gi
