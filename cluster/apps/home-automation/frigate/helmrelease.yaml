@@ -184,10 +184,8 @@ spec:
                   operator: In
                   values:
                     - "true"
-                - key: feature.node.kubernetes.io/custom-intel-gpu
-                  operator: In
-                  values:
-                    - "true"
+    nodeSelector:
+      intel.feature.node.kubernetes.io/gpu: "true"
     resources:
       requests:
         cpu: 700m
