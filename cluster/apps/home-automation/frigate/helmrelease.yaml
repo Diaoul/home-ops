@@ -26,8 +26,8 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: docker.io/blakeblackshear/frigate
-      tag: 0.11.1
+      repository: ghcr.io/blakeblackshear/frigate
+      tag: 0.12.0-beta5
     env:
       LIBVA_DRIVER_NAME: i965
     service:
@@ -36,7 +36,7 @@ spec:
           http:
             port: &port 5000
     probes:
-      readiness: &probes
+      liveness: &probes
         enabled: true
         custom: true
         spec:
@@ -47,7 +47,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 1
           failureThreshold: 3
-      liveness: *probes
+      readiness: *probes
       startup:
         enabled: false
     ingress:
@@ -157,6 +157,7 @@ spec:
         name: frigate-config
         subPath: config.yml
         mountPath: /config/config.yml
+        readOnly: true
       media:
         enabled: true
         existingClaim: nfs-singularity-recordings
@@ -175,16 +176,8 @@ spec:
       privileged: true
     podAnnotations:
       configmap.reloader.stakater.com/reload: frigate-config
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: feature.node.kubernetes.io/custom-coral-tpu
-                  operator: In
-                  values:
-                    - "true"
     nodeSelector:
+      google.feature.node.kubernetes.io/coral: "true"
       intel.feature.node.kubernetes.io/gpu: "true"
     resources:
       requests:
