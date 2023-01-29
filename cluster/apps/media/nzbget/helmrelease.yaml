@@ -9,10 +9,10 @@ spec:
   chart:
     spec:
       chart: nzbget
-      version: 12.4.2
+      version: 1.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   maxHistory: 3
   install:
@@ -26,8 +26,13 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: ghcr.io/k8s-at-home/nzbget-testing
-      tag: v21.2-r2333
+      repository: ghcr.io/onedr0p/nzbget
+      tag: 21.1@sha256:4735c87fbc75b781039c958292c485b31078fc886e682b641b86fc09e3621956
+    service:
+      main:
+        ports:
+          http:
+            port: 6789
     ingress:
       main:
         enabled: true
@@ -43,6 +48,11 @@ spec:
           - hosts:
               - *host
             secretName: nzbget-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -51,6 +61,9 @@ spec:
         enabled: true
         existingClaim: nfs-singularity-media
         mountPath: /media
+      incomplete:
+        enabled: true
+        type: emptyDir
     resources:
       requests:
         cpu: 500m
