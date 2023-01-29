@@ -8,11 +8,11 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: qbittorrent
-      version: 13.5.2
+      chart: app-template
+      version: 1.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   maxHistory: 3
   install:
@@ -26,8 +26,13 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: ghcr.io/k8s-at-home/qbittorrent
-      tag: v4.4.3.1
+      repository: ghcr.io/onedr0p/qbittorrent
+      tag: 4.5.0@sha256:5ff2064d788100f54770dc5e477f32d41be7e71ee36923a22236053576e39d5d
+    service:
+      main:
+        ports:
+          http:
+            port: 8080
     ingress:
       main:
         enabled: true
@@ -43,6 +48,11 @@ spec:
           - hosts:
               - *host
             secretName: qb-vpn-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -55,7 +65,7 @@ spec:
       setGateway: "true"
     resources:
       requests:
-        cpu: 500m
-        memory: 2Gi
+        cpu: 100m
+        memory: 400Mi
       limits:
-        memory: 2Gi
+        memory: 1Gi
