@@ -65,15 +65,8 @@ spec:
         image:
           repository: hon95/prometheus-nut-exporter
           tag: 1.2.1
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: feature.node.kubernetes.io/custom-ups-apc
-                  operator: In
-                  values:
-                    - "true"
+    nodeSelector:
+      ups.feature.node.kubernetes.io/apc: "true"
     resources:
       requests:
         cpu: 25m
