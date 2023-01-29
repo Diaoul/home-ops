@@ -8,11 +8,11 @@ spec:
   interval: 10m
   chart:
     spec:
-      chart: jellyfin
-      version: 9.5.3
+      chart: app-template
+      version: 1.2.1
       sourceRef:
         kind: HelmRepository
-        name: k8s-at-home
+        name: bjw-s
         namespace: flux-system
   maxHistory: 3
   install:
@@ -26,15 +26,17 @@ spec:
     keepHistory: false
   values:
     image:
-      repository: jellyfin/jellyfin
-      tag: 10.8.9
-    env:
-      JELLYFIN_CACHE_DIR: /config/cache
-    podSecurityContext:
-      supplementalGroups:
-        - 44
-        - 109
-        - 568
+      repository: ghcr.io/onedr0p/jellyfin
+      tag: 10.8.9@sha256:e10ff50f840eb2cb30d8eb676cad09eb7feee49e7463bd10bf91cb174879de4f
+    service:
+      main:
+        type: LoadBalancer
+        externalIPs:
+          - ${JELLYFIN_IP}
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 8096
     ingress:
       main:
         enabled: true
@@ -50,6 +52,15 @@ spec:
           - hosts:
               - *host
             secretName: jellyfin-tls
+    podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups:
+        - 44
+        - 109
+        - 10000
     persistence:
       config:
         enabled: true
