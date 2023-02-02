@@ -56,7 +56,7 @@ spec:
     persistence:
       enabled: true
       storageClass: local-path
-      size: 100Mi
+      size: 500Mi
     affinity:
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
