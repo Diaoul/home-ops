@@ -8,4 +8,6 @@ resources:
   - kyverno
   - node-feature-discovery
   - reloader
+  - snapshot-controller
+  - snapshot-validation-webhook
   - system-upgrade

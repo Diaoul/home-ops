@@ -28,6 +28,7 @@ resources:
   - oauth2-proxy.yaml
   - project-calico.yaml
   - prometheus-community.yaml
+  - pyraeus.yaml
   - rook.yaml
   - runix.yaml
   - stakater.yaml
