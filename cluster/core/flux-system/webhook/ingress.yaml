@@ -13,7 +13,7 @@ spec:
     - host: flux-receiver.${DOMAIN}
       http:
         paths:
-          - path: /hook/
+          - path: /
             pathType: Prefix
             backend:
               service:
