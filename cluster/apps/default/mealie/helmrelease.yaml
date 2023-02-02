@@ -28,7 +28,7 @@ spec:
     image:
       repository: docker.io/hkotel/mealie
       tag: frontend-v1.0.0beta-5
-    additionalContainers:
+    sidecars:
       api:
         name: mealie-api
         image: docker.io/hkotel/mealie:api-v1.0.0beta-5
