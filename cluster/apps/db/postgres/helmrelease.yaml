@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: bitnami/postgresql
-      tag: 14.7.0
+      tag: 15.2.0
     clusterDomain: ${CLUSTER_DOMAIN}
     auth:
       postgresPassword: ${POSTGRES_PASSWORD}
