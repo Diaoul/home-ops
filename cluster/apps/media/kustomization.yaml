@@ -16,5 +16,6 @@ resources:
   - radarr
   - readarr
   - readarr-audio
+  - recyclarr
   - sonarr
   - unpackerr
