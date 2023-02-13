@@ -5,5 +5,5 @@ metadata:
   name: blakeshome
   namespace: flux-system
 spec:
-  interval: 1h
+  interval: 2h
   url: https://blakeblackshear.github.io/blakeshome-charts/

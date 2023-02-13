@@ -5,5 +5,5 @@ metadata:
   name: coredns
   namespace: flux-system
 spec:
-  interval: 1h
+  interval: 2h
   url: https://coredns.github.io/helm

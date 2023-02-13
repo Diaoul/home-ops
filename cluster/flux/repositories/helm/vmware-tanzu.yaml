@@ -5,5 +5,5 @@ metadata:
   name: vmware-tanzu
   namespace: flux-system
 spec:
-  interval: 1h
+  interval: 2h
   url: https://vmware-tanzu.github.io/helm-charts
