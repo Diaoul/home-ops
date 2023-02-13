@@ -25,6 +25,7 @@ resources:
   - kyverno.yaml
   - longhorn.yaml
   - node-feature-discovery.yaml
+  - metrics-server.yaml
   - oauth2-proxy.yaml
   - project-calico.yaml
   - prometheus-community.yaml

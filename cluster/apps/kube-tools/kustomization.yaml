@@ -6,6 +6,7 @@ resources:
   - intel-device-plugin
   - kured
   - kyverno
+  - metrics-server
   - node-feature-discovery
   - reloader
   - snapshot-controller
