@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - config-pvc.yaml
   - postgresql-pvc.yaml
+  - data-pvc.yaml
   - helmrelease.yaml
