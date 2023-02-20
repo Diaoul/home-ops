@@ -35,6 +35,9 @@ spec:
       YUBICO_CLIENT_ID: ${VAULTWARDEN_YUBICO_CLIENT_ID}
       YUBICO_SECRET_KEY: ${VAULTWARDEN_YUBICO_SECRET_KEY}
       WEBSOCKET_ENABLED: true
+      SMTP_HOST: ${ROUTER_HOST}
+      SMTP_FROM: admin@${DOMAIN}
+      SMTP_SECURITY: "off"
     service:
       main:
         ports:
