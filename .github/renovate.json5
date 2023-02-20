@@ -129,7 +129,7 @@
     // auto-merge
     {
       "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "matchPackageNames": [
         "ghcr.io/onedr0p/nzbget",
         "ghcr.io/onedr0p/qbittorrent",
