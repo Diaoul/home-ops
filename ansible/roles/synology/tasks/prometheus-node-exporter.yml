@@ -24,7 +24,7 @@
             - /proc:/host/proc:ro
             - /sys:/host/sys:ro
             - /:/rootfs:ro
-          ansible.builtin.command:
+          command:
             - "--path.procfs=/host/proc"
             - "--path.sysfs=/host/sys"
             - "--collector.filesystem.ignored-mount-points"
