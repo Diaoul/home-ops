@@ -2,4 +2,5 @@ skip_list:
     - yaml
 
 exclude_paths:
+  - roles/xanmanning.k3s/
   - inventory/host_vars/*.sops.yml
