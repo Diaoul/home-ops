@@ -131,6 +131,7 @@
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "matchPackageNames": [
+        "ghcr.io/recyclarr/recyclarr",
         "ghcr.io/onedr0p/nzbget",
         "ghcr.io/onedr0p/qbittorrent",
         "ghcr.io/onedr0p/unpackerr",
