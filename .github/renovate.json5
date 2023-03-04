@@ -21,14 +21,14 @@
   "rebaseWhen": "conflicted",
   "flux": {
     "fileMatch": ["cluster/.+\\.ya?ml$"],
-    "ignorePaths": ["cluster/flux/"]
+    "ignorePaths": ["cluster/flux/flux-system"]
   },
   "helm-values": {
     "fileMatch": ["cluster/.+\\.ya?ml$"]
   },
   "kubernetes": {
     "fileMatch": ["cluster/.+\\.ya?ml$"],
-    "ignorePaths": ["cluster/flux/"]
+    "ignorePaths": ["cluster/flux/flux-system"]
   },
   "regexManagers": [
     {
