@@ -9,10 +9,10 @@ spec:
   chart:
     spec:
       chart: emqx
-      version: 5.0.14
+      version: 5.0.16
       sourceRef:
         kind: HelmRepository
-        name: diaoul
+        name: emqx
         namespace: flux-system
   maxHistory: 3
   install:
