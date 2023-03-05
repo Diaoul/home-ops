@@ -41,8 +41,9 @@ spec:
           namespace: networking
       config:
         custom-http-errors: 401,403,404,500,501,502,503
-        ssl-protocols: "TLSv1.2 TLSv1.3"
-        proxy-body-size: 100m
+        ssl-protocols: "TLSv1.3 TLSv1.2"
+        proxy-body-size: 0
+        enable-brotli: "true"
         enable-real-ip: "true"
         use-forwarded-headers: "true"
         forwarded-for-header: CF-Connecting-IP
