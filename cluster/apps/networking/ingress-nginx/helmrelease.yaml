@@ -34,11 +34,6 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: ${DOMAIN}
-      metrics:
-        enabled: true
-        serviceMonitor:
-          enabled: true
-          namespace: networking
       config:
         custom-http-errors: 401,403,404,500,501,502,503
         ssl-protocols: "TLSv1.3 TLSv1.2"
@@ -59,24 +54,19 @@ spec:
         limits:
           cpu: 200m
           memory: 500Mi
-      affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: app.kubernetes.io/name
-                    operator: In
-                    values:
-                      - ingress-nginx
-                  - key: app.kubernetes.io/instance
-                    operator: In
-                    values:
-                      - ingress-nginx
-                  - key: app.kubernetes.io/component
-                    operator: In
-                    values:
-                      - controller
-              topologyKey: kubernetes.io/hostname
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: networking
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/component: controller
     defaultBackend:
       enabled: true
       image:
