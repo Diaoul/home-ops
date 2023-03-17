@@ -47,8 +47,6 @@ spec:
       ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
       ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
       ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
-      ZIGBEE2MQTT_CONFIG_DEVICES: devices.yaml
-      ZIGBEE2MQTT_CONFIG_GROUPS: groups.yaml
     envFrom:
       - secretRef:
           name: zigbee2mqtt
