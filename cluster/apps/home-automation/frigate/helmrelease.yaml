@@ -128,21 +128,15 @@ spec:
                   timestamp: false
                   bounding_box: false
                   height: 500
-              driveway:
+              kennel:
                 ffmpeg:
                   inputs:
-                    - path: rtsp://10.0.4.18:554/s2
-                      roles:
-                        - detect
                     - path: rtsp://10.0.4.18:554/s0
                       roles:
                         - record
                         - rtmp
-                objects:
-                  filters:
-                    person:
-                      mask:
-                        - 0,80,1024,80,1024,0,0,0
+                detect:
+                  enabled: False
                 mqtt:
                   timestamp: false
                   bounding_box: false
