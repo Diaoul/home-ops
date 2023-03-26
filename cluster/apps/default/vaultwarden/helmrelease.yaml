@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: vaultwarden/server
-      tag: 1.27.0
+      tag: 1.28.0
     env:
       DOMAIN: https://vaultwarden.${DOMAIN}
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
