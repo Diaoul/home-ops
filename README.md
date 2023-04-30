@@ -131,6 +131,48 @@ I run the Postfix plugin with the following configuration:
     swaks --server opnsense.milkyway --port 25 --to <email-address> --from <email-address>
     ```
 
+## :bug: Troubleshooting
+### Etcd
+Run this on a master node within the etcd cluster
+
+1. Get the etcd version with
+   ```
+   curl -L \
+     --cacert /var/lib/rancher/k3s/server/tls/etcd/server-ca.crt \
+     --cert /var/lib/rancher/k3s/server/tls/etcd/server-client.crt \
+     --key /var/lib/rancher/k3s/server/tls/etcd/server-client.key \
+     https://127.0.0.1:2379/version
+   ```
+2. Install etcd locally (change the version below accordingly)
+   ```
+   ETCD_VER=v3.5.7
+   DOWNLOAD_URL=https://github.com/etcd-io/etcd/releases/download
+
+   rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+   rm -rf /tmp/etcd-download-test && mkdir -p /tmp/etcd-download-test
+
+   curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+   tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
+   rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+
+   etcd --version
+   etcdctl version
+   ```
+3. Export environment variables for an easy way to configure etcdctl
+   ```
+   export ETCDCTL_ENDPOINTS='https://127.0.0.1:2379'
+   export ETCDCTL_CACERT='/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt'
+   export ETCDCTL_CERT='/var/lib/rancher/k3s/server/tls/etcd/server-client.crt'
+   export ETCDCTL_KEY='/var/lib/rancher/k3s/server/tls/etcd/server-client.key'
+   export ETCDCTL_API=3
+   ```
+4. Start troubleshooting (example commands below)
+   - `etcdctl member list`
+   - `etcdctl endpoint status`
+   - `etcdctl endpoint health`
+   - `etcdctl defrag --cluster`
+   - `etcdctl check perf`
+
 ## :handshake:&nbsp; Thanks
 I learned a lot from the people that have shared their clusters over at
 [awesome-home-kubernetes](https://nanne.dev/k8s-at-home-search/)
