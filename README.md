@@ -6,8 +6,8 @@
 ### Operations for my home...
 _...with Ansible and Kubernetes!_ :sailboat:
 <br/><br/><br/><br/>
-![lint](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/lint.yml?style=for-the-badge)
-![pre-commit](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/pre-commit.yml?style=for-the-badge)
+![lint](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/lint.yml?label=lint&style=for-the-badge)
+![pre-commit](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/pre-commit.yml?label=pre-commit&style=for-the-badge)
 
 ## :closed_book: Overview
 This repository contains everything I use to setup and run the devices in my home. For more
