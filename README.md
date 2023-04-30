@@ -34,6 +34,44 @@ I try to run everything bare metal to get the most out of each device
 In addition to the regular things like a firewall, my router runs other useful
 stuff.
 
+#### HAProxy
+I use HAProxy as loadbalancer to provide HA over the API Server
+
+1. Services > HAProxy | Real Servers (for each **master note**)
+    1. `Enabled` = `true`
+    2. `Name or Prefix` = `k8s-node-x-apiserver`
+    3. `FQDN or IP` = `k8s-node-x`
+    4. `Port` = `6443`
+    5. `Verify SSL Certificate` = `false`
+2. Services > HAProxy | Rules & Checks > Health Monitors
+    1. `Name` = `k8s-apiserver`
+    2. `SSL preferences` = `Force SSL for health checks`
+    3. `Port to check` = `6443`
+    4. `HTTP method` = `GET`
+    5. `Request URI` = `/healthz`
+    6. `HTTP version` = `HTTP/1.1`
+3. Services > HAProxy | Virtual Services > Backend Pools
+    1. `Enabled` = `true`
+    2. `Name` = `k8s-apiserver`
+    3. `Mode` = `TCP (Layer 4)`
+    4. `Servers` = `k8s-node-x-apiserver` (Add one for each real server you created)
+    5. `Enable Health Checking` = `true`
+    6. `Health Monitor` = `k8s-apiserver`
+4. Services > HAProxy | Virtual Services > Public Services
+    1. `Enabled` = `true`
+    2. `Name` = `k8s-apiserver`
+    3. `Listen Addresses` = `10.0.3.1:6443` (Your Opnsense IP address)
+    4. `Type` = `TCP`
+    5. `Default Backend Pool` = `k8s-apiserver`
+5. Services > HAProxy | Settings > Service
+    1. `Enable HAProxy` = `true`
+6. Services > HAProxy | Settings > Global Parameters
+    1. `Verify SSL Server Certificates` = `disable-verify`
+7. Services > HAProxy | Settings > Default Parameters
+    1. `Client Timeout` = `4h`
+    2. `Connection Timeout` = `10s`
+    3. `Server Timeout` = `4h`
+
 #### BGP
 The Calico CNI is configured with BGP to advertise load balancer IPs directly
 over BGP. Coupled with ECMP, this allows to spread workload in my cluster.
