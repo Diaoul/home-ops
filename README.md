@@ -133,8 +133,8 @@ I run the Postfix plugin with the following configuration:
 
 ## :handshake:&nbsp; Thanks
 I learned a lot from the people that have shared their clusters over at
-[awesome-home-kubernetes](https://github.com/k8s-at-home/awesome-home-kubernetes)
+[awesome-home-kubernetes](https://nanne.dev/k8s-at-home-search/)
 and from the [k8s@home discord channel](https://discord.gg/DNCynrJ).
 
 Want to get started? I recommend that you take a look at the
-[template-cluster-k3s](https://github.com/k8s-at-home/template-cluster-k3s/) repository!
+[template-cluster-k3s](https://github.com/onedr0p/flux-cluster-template) repository!
