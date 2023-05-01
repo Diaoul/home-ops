@@ -7,10 +7,22 @@ sonarr:
     delete_old_custom_formats: true
     quality_definition:
       type: series
+    quality_profiles:
+      - name: WEB 1080p
+        reset_unmatched_scores: true
+      - name: WEB 2160p
+        reset_unmatched_scores: true
+      - name: Remux-1080p - Anime
+        reset_unmatched_scores: true
+      - name: Remux-1080p - VOSTFR Anime
+        reset_unmatched_scores: true
+      - name: WEB 1080p - French
+        reset_unmatched_scores: true
+      - name: WEB 2160p - French
+        reset_unmatched_scores: true
     custom_formats:
       - quality_profiles:
           - name: WEB 1080p
-            reset_unmatched_scores: true
         trash_ids:
           # Unwanted
           - 85c61753df5da1fb2aab6f2a47426b09  # BR-DISK
@@ -48,7 +60,6 @@ sonarr:
           - d84935abd3f8556dcd51d4f27e22d0a6  # WEB Tier 03
       - quality_profiles:
           - name: WEB 2160p
-            reset_unmatched_scores: true
         trash_ids:
           # HDR Metadata
           - 7878c33f1963fefb3d6c8657d46c2f0a  # DV HDR10
@@ -99,9 +110,7 @@ sonarr:
           - d84935abd3f8556dcd51d4f27e22d0a6  # WEB Tier 03
       - quality_profiles:
           - name: Remux-1080p - Anime
-            reset_unmatched_scores: true
           - name: Remux-1080p - VOSTFR Anime
-            reset_unmatched_scores: true
         trash_ids:
           # Anime CF/Scoring
           - 949c16fe0a8147f50ba82cc2df9411c9  # Anime BD Tier 01 (Top SeaDex Muxers)
@@ -219,7 +228,6 @@ sonarr:
           - dbfc0a4b5cb4cbd693311c4482ae9683  # FR WEB Tier 03
       - quality_profiles:
           - name: WEB 2160p - French
-            reset_unmatched_scores: true
         trash_ids:
           # HDR Metadata
           - 7878c33f1963fefb3d6c8657d46c2f0a  # DV HDR10
@@ -286,6 +294,15 @@ radarr:
     delete_old_custom_formats: true
     quality_definition:
       type: movie
+    quality_profiles:
+      - name: HD
+        reset_unmatched_scores: true
+      - name: UHD
+        reset_unmatched_scores: true
+      - name: HD - French
+        reset_unmatched_scores: true
+      - name: UHD - French
+        reset_unmatched_scores: true
     custom_formats:
       - quality_profiles:
           - name: HD
