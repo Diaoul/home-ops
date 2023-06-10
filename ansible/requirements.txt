@@ -1,4 +1,4 @@
-ansible==7.5.0
+ansible==7.6.0
 ansible-lint==6.17.0
 openshift==0.13.1
 pyunifi==2.21
