@@ -13,4 +13,4 @@ collections:
 
 roles:
   - name: xanmanning.k3s
-    version: v3.4.1
+    version: v3.4.2
