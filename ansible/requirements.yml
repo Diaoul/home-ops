@@ -9,7 +9,7 @@ collections:
   - name: community.kubernetes
     version: 2.0.1
   - name: community.sops
-    version: 1.6.2
+    version: 1.6.4
 
 roles:
   - name: xanmanning.k3s
