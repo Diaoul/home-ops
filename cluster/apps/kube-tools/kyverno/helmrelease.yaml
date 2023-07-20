@@ -26,7 +26,7 @@ spec:
     keepHistory: false
   values:
     crds:
-      install: true
+      install: false
     admissionController:
       replicas: 3
       topologySpreadConstraints:
