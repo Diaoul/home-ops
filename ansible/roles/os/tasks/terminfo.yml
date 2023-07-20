@@ -36,3 +36,8 @@
     cmd: tic -xe alacritty,alacritty-direct alacritty.info
     chdir: /usr/src/alacritty
   when: alacritty_terminfo_src is changed  # noqa no-handler
+
+- name: Install foot terminfo
+  ansible.builtin.apt:
+    name: foot-terminfo
+  when: ansible_facts['os_family'] == "Debian"
