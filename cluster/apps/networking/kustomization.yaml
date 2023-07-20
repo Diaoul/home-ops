@@ -10,4 +10,3 @@ resources:
   - nut-server-garage
   - oauth2-proxy
   - singularity
-  - tigera-operator
