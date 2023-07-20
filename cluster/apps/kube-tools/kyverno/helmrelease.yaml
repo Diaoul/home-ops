@@ -25,14 +25,15 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    installCRDs: false
-    replicaCount: 3
-    serviceMonitor:
-      enabled: true
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/instance: kyverno
+    crds:
+      install: true
+    admissionController:
+      replicas: 3
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: kyverno
+              app.kubernetes.io/component: kyverno

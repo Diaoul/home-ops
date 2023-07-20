@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - external-dns
   - kube-prometheus-stack
-  - kyverno
