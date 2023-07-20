@@ -37,3 +37,18 @@ spec:
             matchLabels:
               app.kubernetes.io/instance: kyverno
               app.kubernetes.io/component: kyverno
+    backgroundController:
+      rbac:
+        clusterRole:
+          extraResources:
+            - apiGroups:
+                - ""
+              resources:
+                - ingress
+              verbs:
+                - create
+                - update
+                - patch
+                - delete
+                - get
+                - list
