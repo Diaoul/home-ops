@@ -23,7 +23,8 @@ spec:
                 external-dns.home.arpa/enabled: "true"
       mutate:
         targets:
-          - kind: Ingress
+          - apiVersion: v1
+            kind: Ingress
             name: "{{ request.object.metadata.name }}"
             namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
@@ -39,7 +40,8 @@ spec:
                 cert-manager.home.arpa/enabled: "true"
       mutate:
         targets:
-          - kind: Ingress
+          - apiVersion: v1
+            kind: Ingress
             name: "{{ request.object.metadata.name }}"
             namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
@@ -55,7 +57,8 @@ spec:
                 auth.home.arpa/enabled: "true"
       mutate:
         targets:
-          - kind: Ingress
+          - apiVersion: v1
+            kind: Ingress
             name: "{{ request.object.metadata.name }}"
             namespace: "{{ request.object.metadata.namespace }}"
         patchStrategicMerge:
