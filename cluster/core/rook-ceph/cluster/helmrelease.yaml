@@ -40,6 +40,8 @@ spec:
           - hosts:
               - *host
             secretName: rook-tls
+    toolbox:
+      enabled: true
     cephClusterSpec:
       network:
         provider: host
