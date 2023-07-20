@@ -11,7 +11,8 @@ metadata:
       cert-manager and authentication based on custom annotations.
 spec:
   mutateExistingOnPolicyUpdate: true
-  generateExistingOnPolicyUpdate: true
+  generateExisting: true
+  validationFailureAction: enforce
   rules:
     - name: external-dns
       match:
