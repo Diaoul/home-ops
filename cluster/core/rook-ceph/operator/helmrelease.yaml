@@ -25,8 +25,5 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    csi:
-      csiAddons:
-        enabled: true
     monitoring:
       enabled: true
