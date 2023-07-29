@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/prowlarr-develop
-      tag: 1.7.2.3710@sha256:461c5440e4aa0e0dbaa883db71cb5529fcaed84f0e2c793ccd8d4029c7782873
+      tag: 1.7.4.3769@sha256:d94c2b25d30503ae2f62b342f3aab0f71ac45ebba669357c7ce5ca586f88470c
     env:
       PROWLARR__AUTHENTICATION_METHOD: External
     envFrom:
