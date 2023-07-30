@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/readarr-nightly
-      tag: 0.3.0.2091@sha256:a8f579cad1cd645a2e51bfe408d5d17bc37a29c69c51e701ed25f9afc9670c4f
+      tag: 0.3.1.2092@sha256:fa930592ace6d3766d4d22db8a0ef05a8a39821a80b6bd5a8354cbc7b0039b41
     envFrom:
       - secretRef:
           name: *app
