@@ -63,9 +63,6 @@ spec:
         server: singularity.milkyway
         path: /volume1/media
         mountPath: /media
-      incomplete:
-        enabled: true
-        type: emptyDir
     podAnnotations:
       setDownloadGateway: "true"
     resources:
