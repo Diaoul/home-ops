@@ -5,6 +5,7 @@ resources:
   - db
   - default
   - dev
+  - downloads
   - calico-system
   - kube-tools
   - networking

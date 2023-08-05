@@ -12,7 +12,6 @@ resources:
   - mylar
   - nzbget
   - prowlarr
-  - qbittorrent-vpn
   - radarr
   - readarr
   - readarr-audio

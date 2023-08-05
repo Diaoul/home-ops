@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - db.yaml
   - dev.yaml
+  - downloads.yaml
   - flux-system.yaml
   - home-automation.yaml
   - kasten-io.yaml

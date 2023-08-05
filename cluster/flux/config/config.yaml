@@ -20,6 +20,3 @@ data:
   UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
   LOCAL_DOMAIN: milkyway
   CLUSTER_DOMAIN: cluster.milkyway
-  VPN_COUNTRY: FR
-  VPN_PORT: "51820"
-  VPN_FORWARDED_PORT_1: "50413"
