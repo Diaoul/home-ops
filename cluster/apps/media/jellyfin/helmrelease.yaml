@@ -36,7 +36,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           http:
-            port: 8096
+            port: &port 8096
     ingress:
       main:
         enabled: true
