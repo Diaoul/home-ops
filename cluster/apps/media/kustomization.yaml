@@ -4,12 +4,10 @@ kind: Kustomization
 resources:
   - pv
   - pvc
-  - airsonic
   - audiobookshelf
   - flaresolverr
   - jellyfin
   - lidarr
-  - mylar
   - nzbget
   - prowlarr
   - radarr
