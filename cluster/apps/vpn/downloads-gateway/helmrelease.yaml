@@ -68,22 +68,6 @@ spec:
               secretKeyRef:
                 name: downloads-gateway
                 key: SERVER_COUNTRIES
-        scripts:
-          up: |-
-            #!/bin/bash
-            echo "up"
-            ${VPN_SCRIPT_UP}
-          down: |-
-            #!/bin/bash
-            echo "down"
-            ${VPN_SCRIPT_DOWN}
-        additionalVolumes:
-          - name: data
-            persistentVolumeClaim:
-              claimName: downloads-gateway-data
-        additionalVolumeMounts:
-          - name: data
-            mountPath: /data
         resources:
           requests:
             cpu: 5m
@@ -136,10 +120,6 @@ spec:
       gatewayAnnotation: setDownloadGateway
       namespaceSelector:
         label: downloads-routed-gateway
-    persistence:
-      data:
-        enabled: true
-        existingClaim: downloads-gateway-data
     podAnnotations:
       configmap.reloader.stakater.com/reload: downloads-gateway-pod-gateway,downloads-gateway-pod-gateway-addon-vpn
       secret.reloader.stakater.com/reload: downloads-gateway
