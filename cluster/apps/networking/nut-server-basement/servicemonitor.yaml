@@ -1,0 +1,23 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nut-server-basement
+  namespace: networking
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nut-server-basement
+      app.kubernetes.io/instance: nut-server-basement
+  endpoints:
+    - port: metrics
+      scheme: http
+      interval: 15s
+      scrapeTimeout: 10s
+      path: /ups_metrics
+      params:
+        target:
+          - localhost:3493
+      relabelings:
+        - sourceLabels: [__param_target]
+          targetLabel: target
