@@ -58,9 +58,8 @@ spec:
       fsGroup: 568
       fsGroupChangePolicy: OnRootMismatch
       supplementalGroups:
-        - 44
-        - 109
-        - 10000
+        - 44  # video
+        - 109  # render
     persistence:
       config:
         enabled: true
@@ -70,15 +69,32 @@ spec:
         type: emptyDir
       media:
         enabled: true
-        existingClaim: nfs-singularity-media
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
         mountPath: /media
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /health
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
     nodeSelector:
       intel.feature.node.kubernetes.io/gpu: "true"
     resources:
       requests:
         cpu: 1
-        memory: 3Gi
+        memory: 1Gi
         gpu.intel.com/i915: 1
       limits:
-        memory: 4Gi
+        memory: 3Gi
         gpu.intel.com/i915: 1
