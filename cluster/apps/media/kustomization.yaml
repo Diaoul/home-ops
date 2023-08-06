@@ -8,7 +8,6 @@ resources:
   - flaresolverr
   - jellyfin
   - lidarr
-  - nzbget
   - prowlarr
   - radarr
   - readarr
