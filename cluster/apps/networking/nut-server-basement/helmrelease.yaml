@@ -87,6 +87,7 @@ spec:
         name: exporter
         image: ghcr.io/druggeri/nut_exporter:3.0.0
         args:
+          # export all variables
           - --nut.vars_enable=
     resources:
       requests:
