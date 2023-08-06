@@ -86,6 +86,9 @@ spec:
       exporter:
         name: exporter
         image: ghcr.io/druggeri/nut_exporter:3.0.0
+        args:
+          - --log.level=debug
+          - --nut.vars_enable=
     resources:
       requests:
         cpu: 25m
