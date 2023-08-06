@@ -130,7 +130,7 @@ spec:
         # Ref: https://grafana.com/grafana/dashboards/19308
         nut:
           gnetId: 19308
-          revision: 1
+          revision: 2
           datasource: Prometheus
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
