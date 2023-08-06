@@ -140,7 +140,6 @@ spec:
           gnetId: 15038
           revision: 1
           datasource: Prometheus
-      blocky:
         blocky:
           url: https://raw.githubusercontent.com/0xERR0R/blocky/development/docs/blocky-grafana.json
           datasource: Prometheus
