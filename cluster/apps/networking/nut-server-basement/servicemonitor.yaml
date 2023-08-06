@@ -16,8 +16,12 @@ spec:
       scrapeTimeout: 10s
       path: /ups_metrics
       params:
+        ups:
+          - nut-server-basement
         target:
           - localhost:3493
       relabelings:
         - sourceLabels: [__param_target]
           targetLabel: target
+        - targetLabel: ups
+          replacement: nut-server-basement
