@@ -57,7 +57,7 @@ spec:
           upsd.conf: |-
             LISTEN 0.0.0.0
           ups.conf: |-
-            [nut-server-basement]
+            [ups]
               driver = usbhid-ups
               port = auto
               desc = "APC Back-UPS RS 900G"

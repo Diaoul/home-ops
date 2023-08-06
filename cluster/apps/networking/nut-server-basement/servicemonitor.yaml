@@ -17,7 +17,7 @@ spec:
       path: /ups_metrics
       params:
         ups:
-          - nut-server-basement
+          - ups
       relabelings:
-        - sourceLabels: [__param_ups]
-          targetLabel: ups
+        - targetLabel: ups
+          replacement: nut-server-basement
