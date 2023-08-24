@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/home-assistant
-      tag: 2023.8.2@sha256:ee7da9c68d9bfdbc4da8c907e454275ebe79e99f4fc373a02be8c56eed76f4f5
+      tag: 2023.8.4@sha256:60777ed79b9cde58621c83fcb8ce8d4d4654bbe65cfeb048b4f5afe91fb407ac
     service:
       main:
         ports:
