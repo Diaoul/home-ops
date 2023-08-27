@@ -1,8 +1,0 @@
----
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - dr-secret.enc.yaml
-  - custom-ca-bundle-store-configmap.yaml
-  - helmrelease.yaml
-  - profiles

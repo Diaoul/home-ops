@@ -6,5 +6,4 @@ resources:
   - tigera-operator
   - flux-system
   - rook-ceph
-  - kasten-io
   - cert-manager
