@@ -1,0 +1,2 @@
+pre-commit==3.3.3
+-r ansible/requirements.txt
