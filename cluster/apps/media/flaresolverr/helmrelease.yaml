@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: flaresolverr/flaresolverr
-      tag: v3.3.2
+      tag: v3.3.3
     service:
       main:
         ports:
