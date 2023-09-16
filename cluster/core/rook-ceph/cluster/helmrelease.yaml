@@ -65,5 +65,3 @@ spec:
     cephBlockPoolsVolumeSnapshotClass:
       enabled: true
       default: true
-      annotations:
-        k10.kasten.io/is-snapshot-class: "true"
