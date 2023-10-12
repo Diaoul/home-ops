@@ -25,6 +25,7 @@
   },
   "helm-values": {
     "fileMatch": ["cluster/.+\\.ya?ml$"]
+    "ignorePaths": ["cluster/flux/flux-system"]
   },
   "kubernetes": {
     "fileMatch": ["cluster/.+\\.ya?ml$"],
