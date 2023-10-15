@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: ghcr.io/onedr0p/unpackerr
-      tag: 0.12.0@sha256:952bce04ef8229681fc74976b722416bc5b9000434014ca26d7bfae625ee681b
+      tag: 0.12.0@sha256:354aa32097c9113f92b2aa5a42bc8606f4fafbf94a8285143ce883ce390a93a2
     env:
       UN_SONARR_0_URL: http://sonarr:8989
       UN_SONARR_0_PATHS_0: /media/downloads/complete/tv
