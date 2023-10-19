@@ -129,9 +129,9 @@ spec:
                 requests:
                   storage: 20Gi
         thanos:
-          image: quay.io/thanos/thanos:v0.32.4
+          image: quay.io/thanos/thanos:v0.32.5
           # renovate: datasource=docker image=quay.io/thanos/thanos
-          version: "v0.32.4"
+          version: "v0.32.5"
         additionalScrapeConfigs:
           - job_name: node-exporter
             static_configs:
