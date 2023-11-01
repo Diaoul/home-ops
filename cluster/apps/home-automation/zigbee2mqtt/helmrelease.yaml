@@ -28,6 +28,7 @@ spec:
     image:
       repository: koenkk/zigbee2mqtt
       tag: latest-dev
+      pullPolicy: Always
     env:
       ZIGBEE2MQTT_DATA: /data
       ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
