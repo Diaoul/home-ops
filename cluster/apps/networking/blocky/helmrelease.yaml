@@ -83,11 +83,12 @@ spec:
         enabled: true
         data:
           config.yml: |-
-            upstream:
-              default:
-                - tcp-tls:1dot1dot1dot1.cloudflare-dns.com
-                - tcp-tls:dns.google
-                - tcp-tls:dns10.quad9.net
+            upstreams:
+              groups:
+                default:
+                  - tcp-tls:1dot1dot1dot1.cloudflare-dns.com
+                  - tcp-tls:dns.google
+                  - tcp-tls:dns10.quad9.net
             conditional:
               mapping:
                 ${DOMAIN}: tcp+udp:${K8S_GATEWAY_IP}
@@ -121,7 +122,8 @@ spec:
             prometheus:
               enable: true
             bootstrapDns: tcp+udp:1.1.1.1
-            httpPort: 4000
+            ports:
+              http: 4000
             queryLog:
               type: mysql
               target: ${MARIADB_BLOCKY_USER}:${MARIADB_BLOCKY_PASSWORD}@tcp(mariadb.db:3306)/${MARIADB_BLOCKY_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local
