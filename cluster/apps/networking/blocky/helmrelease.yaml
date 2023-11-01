@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.0.3
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -25,19 +25,38 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/0xerr0r/blocky
-      tag: v0.22
-    controller:
-      replicas: 2
+    controllers:
+      main:
+        replicas: 2
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/0xerr0r/blocky
+              tag: v0.22
+            resources:
+              requests:
+                cpu: 10m
+                memory: 100Mi
+              limits:
+                cpu: 100m
+                memory: 200Mi
+        pod:
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
     service:
       main:
-        enabled: true
         ports:
           http:
             port: 4000
-      dns-tcp:
-        enabled: true
+      dns:
+        controller: main
         type: LoadBalancer
         externalIPs:
           - ${BLOCKY_IP}
@@ -47,26 +66,18 @@ spec:
             enabled: true
             port: 53
             protocol: TCP
-            targetPort: 53
-      dns-udp:
-        enabled: true
-        type: LoadBalancer
-        externalIPs:
-          - ${BLOCKY_IP}
-        externalTrafficPolicy: Local
-        ports:
           dns-udp:
             enabled: true
             port: 53
             protocol: UDP
-            targetPort: 53
     persistence:
       config:
         enabled: true
         type: configMap
-        name: &config blocky-config
-        mountPath: /app/config.yml
-        subPath: config.yml
+        name: blocky-config
+        globalMounts:
+          - path: /app/config.yml
+            subPath: config.yml
     configMaps:
       config:
         enabled: true
@@ -115,19 +126,3 @@ spec:
               type: mysql
               target: ${MARIADB_BLOCKY_USER}:${MARIADB_BLOCKY_PASSWORD}@tcp(mariadb.db:3306)/${MARIADB_BLOCKY_DATABASE}?charset=utf8mb4&parseTime=True&loc=Local
               logRetentionDays: 7
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: *config
-    topologySpreadConstraints:
-      - maxSkew: 1
-        topologyKey: kubernetes.io/hostname
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-    resources:
-      requests:
-        cpu: 10m
-        memory: 100Mi
-      limits:
-        cpu: 100m
-        memory: 200Mi
