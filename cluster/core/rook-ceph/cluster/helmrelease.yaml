@@ -62,6 +62,3 @@ spec:
               - name: nvme0n1
         useAllDevices: false
         useAllNodes: false
-    cephBlockPoolsVolumeSnapshotClass:
-      enabled: true
-      default: true
