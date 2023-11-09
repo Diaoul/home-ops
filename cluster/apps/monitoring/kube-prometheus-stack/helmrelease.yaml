@@ -149,7 +149,7 @@ spec:
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         retention: 2d
-        retentionSize: "5GB"
+        retentionSize: 15GB
         walCompression: true
         storageSpec:
           volumeClaimTemplate:
@@ -160,8 +160,10 @@ spec:
                   storage: 20Gi
         thanos:
           image: quay.io/thanos/thanos:v0.32.5
-          # renovate: datasource=docker image=quay.io/thanos/thanos
-          version: "v0.32.5"
+          objectStorageConfig:
+            existingSecret:
+              name: thanos-objstore-secret
+              key: objstore.yml
         additionalScrapeConfigs:
           - job_name: node-exporter
             static_configs:
