@@ -6,6 +6,7 @@ resources:
   - intel-device-plugin
   - kured
   - kyverno
+  - local-path-provisioner
   - metrics-server
   - node-feature-discovery
   - reloader
