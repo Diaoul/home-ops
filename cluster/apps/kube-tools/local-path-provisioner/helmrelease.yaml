@@ -27,11 +27,8 @@ spec:
     keepHistory: false
   values:
     replicaCount: 2
-    helperImage:
-      repository: public.ecr.aws/docker/library/busybox
-      tag: latest
     storageClass:
-      defaultClass: false
+      provisionerName: ${CLUSTER_DOMAIN}/local-path-provisioner
     nodePathMap:
       - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
         paths: ["/var/lib/rancher/k3s/storage"]
