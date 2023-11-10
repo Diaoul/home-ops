@@ -7,5 +7,5 @@ resources:
   - kube-state-metrics
   - loki
   - thanos
-  - unifi-poller
+  - unpoller
   - vector
