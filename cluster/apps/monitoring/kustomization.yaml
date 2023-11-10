@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - grafana
   - kube-prometheus-stack
+  - kube-state-metrics
   - loki
   - thanos
   - unifi-poller
