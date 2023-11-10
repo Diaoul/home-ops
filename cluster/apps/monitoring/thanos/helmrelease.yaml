@@ -25,8 +25,12 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: kube-prometheus-stack
       namespace: monitoring
+    - name: local-path-provisioner
+      namespace: kube-tools
   values:
     clusterDomain: ${CLUSTER_DOMAIN}
     image:

@@ -24,6 +24,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: local-path-provisioner
+      namespace: kube-tools
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   values:
     alertmanager:
       ingress:
