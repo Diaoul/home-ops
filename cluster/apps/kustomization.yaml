@@ -12,4 +12,5 @@ resources:
   - monitoring
   - home-automation
   - media
+  - volsync
   - vpn
