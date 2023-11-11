@@ -5,6 +5,6 @@ resources:
   # renovate: datasource=docker image=quay.io/jetstack/cert-manager-controller
   - https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
   - helmrelease.yaml
-  - cloudflare-api-token-secret.enc.yaml
+  - cloudflare-api-token-secret.sops.yaml
   - letsencrypt-staging-clusterissuer.yaml
   - letsencrypt-production-clusterissuer.yaml
