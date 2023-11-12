@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - angelnu.yaml
   - authentik.yaml
+  - backube.yaml
   - bitnami.yaml
   - bjw-s.yaml
   - blakeshome.yaml
