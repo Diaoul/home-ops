@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -25,18 +25,22 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: flaresolverr/flaresolverr
-      tag: v3.3.9
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: flaresolverr/flaresolverr
+              tag: v3.3.9
+            resources:
+              requests:
+                cpu: 50m
+                memory: 150Mi
+              limits:
+                cpu: 1
+                memory: 300Mi
     service:
       main:
         ports:
           http:
             port: 8191
-    resources:
-      requests:
-        cpu: 50m
-        memory: 150Mi
-      limits:
-        cpu: 1
-        memory: 300Mi
