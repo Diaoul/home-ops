@@ -20,3 +20,4 @@ data:
   UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
   LOCAL_DOMAIN: milkyway
   CLUSTER_DOMAIN: cluster.milkyway
+  VOLSYNC_RESTIC_REPOSITORY: s3:https://singularity.milkyway:9001/volsync
