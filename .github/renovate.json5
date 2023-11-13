@@ -119,13 +119,13 @@
     },
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["quay.io/minio/minio"],
+      "matchPackagePatterns": ["minio"],
       "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$"
     },
     // version strategies
     {
       "matchDatasources": ["docker"],
-      "matchPackageNames": ["ghcr.io/k8s-at-home/qbittorrent"],
+      "matchPackagePatterns": ["qbittorrent"],
       "versioning": "loose"
     },
     // auto-merge

@@ -33,10 +33,6 @@ repos:
         files: ^ansible/
         always_run: false
         entry: bash -c "cd ansible/ && exec ansible-lint --force-color"
-  - repo: https://github.com/k8s-at-home/sops-pre-commit
-    rev: v2.1.1
-    hooks:
-      - id: forbid-secrets
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.18.0
     hooks:
