@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -24,15 +24,39 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
-    image:
-      repository: ghcr.io/onedr0p/prowlarr-develop
-      tag: 1.10.2.4064@sha256:f33e0d64d6155ea677e70652347cb0d6e7a957e50b57fc7175a0abc01ed0b068
-    env:
-      PROWLARR__AUTHENTICATION_METHOD: External
-    envFrom:
-      - secretRef:
-          name: *app
+    controllers:
+      main:
+        pod:
+          annotations:
+            secret.reloader.stakater.com/reload: *app
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.10.2.4064@sha256:f33e0d64d6155ea677e70652347cb0d6e7a957e50b57fc7175a0abc01ed0b068
+            env:
+              PROWLARR__AUTHENTICATION_METHOD: External
+            envFrom:
+              - secretRef:
+                  name: *app
+            resources:
+              requests:
+                cpu: 100m
+                memory: 600Mi
+              limits:
+                cpu: 500m
+                memory: 1Gi
     service:
       main:
         ports:
@@ -50,25 +74,13 @@ spec:
           - host: &host prowlarr.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
+            secretName: prowlarr-tls
     persistence:
       config:
-        enabled: true
         existingClaim: prowlarr-config
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
-    resources:
-      requests:
-        cpu: 100m
-        memory: 600Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
