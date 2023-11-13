@@ -83,4 +83,5 @@ spec:
             secretName: prowlarr-tls
     persistence:
       config:
+        enabled: true
         existingClaim: prowlarr-config

@@ -104,12 +104,15 @@ spec:
             secretName: jellyfin-tls
     persistence:
       config:
+        enabled: true
         existingClaim: jellyfin-config
       transcode:
+        enabled: true
         type: emptyDir
         globalMounts:
           - path: /transcode
       media:
+        enabled: true
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
