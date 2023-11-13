@@ -2,14 +2,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-  name: &app audiobookshelf
+  name: audiobookshelf
   namespace: media
 spec:
   interval: 10m
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -25,14 +25,31 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/advplyr/audiobookshelf
-      tag: 2.5.0
-    env:
-      AUDIOBOOKSHELF_UID: 568
-      AUDIOBOOKSHELF_GID: 568
-      CONFIG_PATH: /config
-      METADATA_PATH: /config/metadata
+    controllers:
+      main:
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          main:
+            image:
+              repository: ghcr.io/advplyr/audiobookshelf
+              tag: 2.5.0
+            env:
+              AUDIOBOOKSHELF_UID: 568
+              AUDIOBOOKSHELF_GID: 568
+              CONFIG_PATH: /config
+              METADATA_PATH: /config/metadata
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                cpu: 1
+                memory: 500Mi
     service:
       main:
         ports:
@@ -49,16 +66,13 @@ spec:
           - host: &host audiobookshelf.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: audiobookshelf-tls
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -70,11 +84,5 @@ spec:
       media:
         enabled: true
         existingClaim: nfs-singularity-media
-        mountPath: /media
-    resources:
-      requests:
-        cpu: 100m
-        memory: 100Mi
-      limits:
-        cpu: 1
-        memory: 500Mi
+        globalMounts:
+          - path: /media
