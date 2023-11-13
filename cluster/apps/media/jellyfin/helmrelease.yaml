@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -25,9 +25,52 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/onedr0p/jellyfin
-      tag: 10.8.11@sha256:926e2a9f6677a0c7b12feba29f36c954154869318d6a52df72f72ff9c74cf494
+    controllers:
+      main:
+        pod:
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups:
+              - 44  # video
+              - 109  # render
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/jellyfin
+              tag: 10.8.11@sha256:926e2a9f6677a0c7b12feba29f36c954154869318d6a52df72f72ff9c74cf494
+            env:
+              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
+              JELLYFIN_FFmpeg__probesize: 500M
+              JELLYFIN_FFmpeg__analyzeduration: 250M
+              JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8096
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+                gpu.intel.com/i915: 1
+              limits:
+                memory: 3Gi
+                gpu.intel.com/i915: 1
     service:
       main:
         type: LoadBalancer
@@ -36,7 +79,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           http:
-            port: &port 8096
+            port: *port
     ingress:
       main:
         enabled: true
@@ -47,54 +90,23 @@ spec:
           - host: &host jellyfin.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: jellyfin-tls
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups:
-        - 44  # video
-        - 109  # render
     persistence:
       config:
-        enabled: true
         existingClaim: jellyfin-config
       transcode:
-        enabled: true
         type: emptyDir
+        globalMounts:
+          - path: /transcode
       media:
-        enabled: true
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
-        mountPath: /media
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /health
-            port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
-    nodeSelector:
-      intel.feature.node.kubernetes.io/gpu: "true"
-    resources:
-      requests:
-        cpu: 1
-        memory: 1Gi
-        gpu.intel.com/i915: 1
-      limits:
-        memory: 3Gi
-        gpu.intel.com/i915: 1
+        globalMounts:
+          - path: /media
