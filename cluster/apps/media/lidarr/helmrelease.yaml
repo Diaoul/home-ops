@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -24,13 +24,37 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
-    image:
-      repository: ghcr.io/onedr0p/lidarr-develop
-      tag: 1.4.5.3639@sha256:8afcbef8d7867849cecfe7a4b3e9db3f02231b0351c73edb2af7c09b892dee23
-    envFrom:
-      - secretRef:
-          name: *app
+    controllers:
+      main:
+        pod:
+          annotations:
+            secret.reloader.stakater.com/reload: *app
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/lidarr-develop
+              tag: 1.4.5.3639@sha256:8afcbef8d7867849cecfe7a4b3e9db3f02231b0351c73edb2af7c09b892dee23
+            envFrom:
+              - secretRef:
+                  name: *app
+            resources:
+              requests:
+                cpu: 200m
+                memory: 700Mi
+              limits:
+                cpu: 500m
+                memory: 1Gi
     service:
       main:
         ports:
@@ -47,7 +71,9 @@ spec:
           - host: &host lidarr.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -61,16 +87,13 @@ spec:
           - host: *host
             paths:
               - path: /api
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: lidarr-tls
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -78,13 +101,5 @@ spec:
       media:
         enabled: true
         existingClaim: nfs-singularity-media
-        mountPath: /media
-    podAnnotations:
-      secret.reloader.stakater.com/reload: *app
-    resources:
-      requests:
-        cpu: 200m
-        memory: 700Mi
-      limits:
-        cpu: 500m
-        memory: 1Gi
+        globalMounts:
+          - path: /media
