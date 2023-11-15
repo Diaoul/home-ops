@@ -28,7 +28,7 @@ spec:
   values:
     image:
       repository: esphome/esphome
-      tag: 2023.10.6
+      tag: 2023.11.0
     env:
       ESPHOME_DASHBOARD_USE_PING: true
     service:
