@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.2.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -24,13 +24,37 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
-    image:
-      repository: ghcr.io/onedr0p/readarr-nightly
-      tag: 0.3.10.2287@sha256:05770d10d0d5fb85deba534aa80a862008764ae8cfcbd3390bad9539f72a9d0e
-    envFrom:
-      - secretRef:
-          name: *app
+    controllers:
+      main:
+        pod:
+          annotations:
+            secretreloader.stakater.com/reload: *app
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/readarr-nightly
+              tag: 0.3.10.2287@sha256:05770d10d0d5fb85deba534aa80a862008764ae8cfcbd3390bad9539f72a9d0e
+            envFrom:
+              - secretRef:
+                  name: *app
+            resources:
+              requests:
+                cpu: 200m
+                memory: 700Mi
+              limits:
+                cpu: 500m
+                memory: 700Mi
     service:
       main:
         ports:
@@ -46,16 +70,13 @@ spec:
           - host: &host readarr-audio.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: readarr-audio-tls
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
         enabled: true
@@ -63,13 +84,5 @@ spec:
       media:
         enabled: true
         existingClaim: nfs-singularity-media
-        mountPath: /media
-    podAnnotations:
-      secretreloader.stakater.com/reload: *app
-    resources:
-      requests:
-        cpu: 200m
-        memory: 700Mi
-      limits:
-        cpu: 500m
-        memory: 700Mi
+        globalMounts:
+          - path: /media
