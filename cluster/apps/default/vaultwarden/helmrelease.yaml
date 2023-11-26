@@ -59,10 +59,10 @@ spec:
       main:
         ports:
           http:
-            port: &port 80
+            port: 80
           websocket:
             enabled: true
-            port: &websocket-port 3012
+            port: 3012
     ingress:
       main:
         enabled: true
@@ -74,16 +74,16 @@ spec:
             paths:
               - path: /
                 service:
-                  name: http
-                  port: *port
+                  name: main
+                  port: http
               - path: /notifications/hub
                 service:
-                  name: websocket
-                  port: *websocket-port
+                  name: main
+                  port: websocket
               - path: /notifications/hub/negotiate
                 service:
-                  name: http
-                  port: *port
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
@@ -101,8 +101,8 @@ spec:
             paths:
               - path: /admin
                 service:
-                  name: http
-                  port: *port
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
