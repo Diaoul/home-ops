@@ -45,12 +45,12 @@ spec:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 4.6.2@sha256:252b90e64ae43113f1fdb5dd941728a752eed13fc5fbc4ac5b63e2acccad8f7f
-          resources:
-            requests:
-              cpu: 100m
-              memory: 400Mi
-            limits:
-              memory: 1Gi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 400Mi
+              limits:
+                memory: 1Gi
     service:
       main:
         ports:
