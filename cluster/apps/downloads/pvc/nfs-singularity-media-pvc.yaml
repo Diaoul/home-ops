@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-singularity-media
-  namespace: media
+  namespace: downloads
 spec:
   accessModes:
     - ReadWriteMany
