@@ -103,4 +103,8 @@ spec:
         existingClaim: sabnzbd-config
       media:
         enabled: true
-        existingClaim: nfs-singularity-media
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
+        globalMounts:
+          - path: /media
