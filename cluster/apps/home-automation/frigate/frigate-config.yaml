@@ -1,0 +1,53 @@
+---
+mqtt:
+  host: emqx
+  user: ${EMQX_USER_USERNAME}
+  password: ${EMQX_USER_PASSWORD}
+database:
+  path: /data/frigate.db
+detectors:
+  coral:
+    type: edgetpu
+    device: pci
+ffmpeg:
+  hwaccel_args:
+    - -hwaccel
+    - vaapi
+    - -hwaccel_device
+    - /dev/dri/renderD128
+    - -hwaccel_output_format
+    - yuv420p
+  output_args:
+    record: preset-record-ubiquiti
+birdseye:
+  mode: continuous
+record:
+  enabled: true
+  retain:
+    days: 30
+    mode: motion
+snapshots:
+  enabled: true
+  timestamp: false
+  bounding_box: true
+  retain:
+    default: 30
+objects:
+  track: ["person"]
+detect:
+  width: 1024
+  height: 576
+  fps: 10
+go2rtc:
+  streams:
+    crate_hq: rtsp://10.0.4.18:554/s0
+    crate_lq: rtsp://10.0.4.18:554/s2
+cameras:
+  crate:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/crate_hq
+          roles:
+            - record
+    detect:
+      enabled: false

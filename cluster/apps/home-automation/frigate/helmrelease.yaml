@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -24,32 +24,61 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: intel-device-plugin-gpu
+      namespace: kube-tools
+    - name: emqx
+      namespace: home-automation
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
-    image:
-      repository: ghcr.io/blakeblackshear/frigate
-      tag: 0.12.0-beta10
-    env:
-      LIBVA_DRIVER_NAME: i965
+    controllers:
+      main:
+        pod:
+          nodeSelector:
+            google.feature.node.kubernetes.io/coral: "true"
+            intel.feature.node.kubernetes.io/gpu: "true"
+          annotations:
+            configmap.reloader.stakater.com/reload: frigate-config
+        containers:
+          main:
+            image:
+              repository: ghcr.io/blakeblackshear/frigate
+              tag: 0.12.1
+            env:
+              LIBVA_DRIVER_NAME: i965
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/version
+                    port: &port 5000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 500m
+                memory: 1.5Gi
+                gpu.intel.com/i915: 1
+              limits:
+                memory: 3Gi
+                gpu.intel.com/i915: 1
+            securityContext:
+              privileged: true
     service:
       main:
         ports:
           http:
-            port: &port 5000
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /api/version
             port: *port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
     ingress:
       main:
         enabled: true
@@ -61,124 +90,40 @@ spec:
           - host: &host frigate.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: frigate-tls
-    configMaps:
-      config:
-        enabled: true
-        data:
-          config.yml: |
-            mqtt:
-              host: emqx
-              user: ${EMQX_USER_USERNAME}
-              password: ${EMQX_USER_PASSWORD}
-            database:
-              path: /data/frigate.db
-            detectors:
-              coral:
-                type: edgetpu
-                device: pci
-            ffmpeg:
-              hwaccel_args:
-                - -hwaccel
-                - vaapi
-                - -hwaccel_device
-                - /dev/dri/renderD128
-                - -hwaccel_output_format
-                - yuv420p
-            birdseye:
-              mode: continuous
-            record:
-              enabled: True
-            detect:
-              width: 1024
-              height: 576
-            cameras:
-              porch:
-                ffmpeg:
-                  inputs:
-                    - path: rtsp://10.0.4.16:554/s2
-                      roles:
-                        - detect
-                    - path: rtsp://10.0.4.16:554/s0
-                      roles:
-                        - record
-                        - rtmp
-                motion:
-                  mask:
-                    - 825,576,1024,576,1024,344,944,325,794,518
-                mqtt:
-                  timestamp: false
-                  bounding_box: false
-                  height: 500
-              garage:
-                ffmpeg:
-                  inputs:
-                    - path: rtsp://10.0.4.17:554/s2
-                      roles:
-                        - detect
-                    - path: rtsp://10.0.4.17:554/s0
-                      roles:
-                        - record
-                        - rtmp
-                mqtt:
-                  timestamp: false
-                  bounding_box: false
-                  height: 500
-              kennel:
-                ffmpeg:
-                  inputs:
-                    - path: rtsp://10.0.4.18:554/s0
-                      roles:
-                        - record
-                        - rtmp
-                detect:
-                  enabled: False
-                mqtt:
-                  timestamp: false
-                  bounding_box: false
-                  height: 500
     persistence:
       data:
         enabled: true
         existingClaim: frigate-data
       config:
         enabled: true
+        readOnly: true
         type: configMap
         name: frigate-config
-        subPath: config.yml
-        mountPath: /config/config.yml
-        readOnly: true
+        globalMounts:
+          - path: /config
       media:
         enabled: true
-        existingClaim: nfs-singularity-recordings
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/recordings
+        globalMounts:
+          - path: /media
       cache:
         enabled: true
         type: emptyDir
         medium: Memory
-        sizeLimit: 1Gi
-        mountPath: /dev/shm
+        sizeLimit: 2Gi
+        globalMounts:
+          - path: /dev/shm
       pci:
         enabled: true
         type: hostPath
         hostPath: /dev/apex_0
         hostPathType: CharDevice
-    securityContext:
-      privileged: true
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: frigate-config
-    nodeSelector:
-      google.feature.node.kubernetes.io/coral: "true"
-      intel.feature.node.kubernetes.io/gpu: "true"
-    resources:
-      requests:
-        cpu: 700m
-        memory: 1.5Gi
-        gpu.intel.com/i915: 1
-      limits:
-        cpu: 1
-        memory: 2Gi
-        gpu.intel.com/i915: 1
