@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - pv
   - pvc
+  - milkyway-ca-secret.yaml
   - emqx
   - esphome
   - frigate
