@@ -85,7 +85,7 @@ spec:
     additionalContainers:
       exporter:
         name: exporter
-        image: ghcr.io/druggeri/nut_exporter:3.1.0
+        image: ghcr.io/druggeri/nut_exporter:3.1.1
         args:
           # export all variables
           - --nut.vars_enable=
