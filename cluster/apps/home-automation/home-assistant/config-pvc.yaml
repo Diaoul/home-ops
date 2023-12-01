@@ -4,8 +4,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: home-assistant-config
   namespace: home-automation
-  labels:
-    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

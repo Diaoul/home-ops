@@ -5,3 +5,4 @@ resources:
   - config-pvc.yaml
   - code-server-secret.sops.yaml
   - helmrelease.yaml
+  - volsync.yaml

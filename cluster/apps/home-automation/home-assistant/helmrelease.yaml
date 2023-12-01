@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -24,15 +24,67 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: emqx
+      namespace: home-automation
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
-    image:
-      repository: ghcr.io/onedr0p/home-assistant
-      tag: 2023.11.3@sha256:a24bb33c22c67e1e89a0cace283af24315ccbedd859199b2048f2fc97bbd1139
+    controllers:
+      main:
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          main:
+            image:
+              repository: ghcr.io/onedr0p/home-assistant
+              tag: 2023.11.3@sha256:a24bb33c22c67e1e89a0cace283af24315ccbedd859199b2048f2fc97bbd1139
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 100m
+                memory: 800Mi
+              limits:
+                memory: 1Gi
+          codeserver:
+            enabled: true
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.19.0
+            args:
+              - --auth
+              - none
+              - --user-data-dir
+              - /config/.vscode
+              - --extensions-dir
+              - /config/.vscode
+              - /config
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
     service:
       main:
         ports:
           http:
             port: 8123
+          codeserver:
+            enabled: true
+            port: 8080
     ingress:
       main:
         enabled: true
@@ -43,62 +95,31 @@ spec:
           - host: &host hass.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: hass-tls
-    probes:
-      liveness:
-        enabled: false
-      readiness:
-        enabled: false
-      startup:
-        enabled: false
-    podSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
+      codeserver:
+        enabled: true
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+          cert-manager.home.arpa/enabled: "true"
+          auth.home.arpa/enabled: "true"
+        hosts:
+          - host: &host-hass-config hass-config.${DOMAIN}
+            paths:
+              - path: /
+                service:
+                  name: main
+                  port: codeserver
+        tls:
+          - hosts:
+              - *host-hass-config
+            secretName: hass-config-tls
     persistence:
       config:
         enabled: true
         existingClaim: home-assistant-config
-    addons:
-      codeserver:
-        enabled: true
-        image:
-          repository: ghcr.io/coder/code-server
-          tag: 4.19.0
-        workingDir: /config
-        args:
-          - --auth
-          - none
-          - --user-data-dir
-          - /config/.vscode
-          - --extensions-dir
-          - /config/.vscode
-        ingress:
-          enabled: true
-          annotations:
-            external-dns.home.arpa/enabled: "true"
-            cert-manager.home.arpa/enabled: "true"
-            auth.home.arpa/enabled: "true"
-          hosts:
-            - host: &host-hass-config hass-config.${DOMAIN}
-              paths:
-                - path: /
-                  pathType: Prefix
-          tls:
-            - hosts:
-                - *host-hass-config
-              secretName: hass-config-tls
-        volumeMounts:
-          - name: config
-            mountPath: /config
-    resources:
-      requests:
-        cpu: 100m
-        memory: 800Mi
-      limits:
-        memory: 1Gi
