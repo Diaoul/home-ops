@@ -3,7 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: qbittorrent-restic
-  namespace: default
+  namespace: downloads
 type: Opaque
 stringData:
   RESTIC_REPOSITORY: ${VOLSYNC_RESTIC_REPOSITORY}/qbittorrent
@@ -15,7 +15,7 @@ apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
   name: qbittorrent
-  namespace: default
+  namespace: downloads
 spec:
   sourcePVC: qbittorrent-config
   trigger:
