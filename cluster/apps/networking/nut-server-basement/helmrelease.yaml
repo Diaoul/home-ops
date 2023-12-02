@@ -55,16 +55,16 @@ spec:
               - --nut.vars_enable=
     service:
       main:
-        ports:
-          http:
-            port: 3493
-            protocol: TCP
         type: LoadBalancer
         externalIPs:
           - ${NUT_BASEMENT_IP}
         externalTrafficPolicy: Local
+        ports:
+          http:
+            port: 3493
+            protocol: TCP
       metrics:
-        enabled: true
+        controller: main
         ports:
           metrics:
             enabled: true
