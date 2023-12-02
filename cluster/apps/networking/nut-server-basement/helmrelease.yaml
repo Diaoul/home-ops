@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -25,10 +25,34 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    image:
-      repository: ghcr.io/jr0dd/network-ups-tools
-      tag: v2.8.0@sha256:8878ab0f9420801f110ba1f173c97ad056cd9a6f56b181e1b39add1d91dc9626
-    nameOverride: nut-server-basement
+    controllers:
+      main:
+        pod:
+          annotations:
+            reloader.stakater.com/auto: "true"
+          securityContext:
+            privileged: true
+          nodeSelector:
+            ups.feature.node.kubernetes.io/apc: "true"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/jr0dd/network-ups-tools
+              tag: v2.8.0@sha256:8878ab0f9420801f110ba1f173c97ad056cd9a6f56b181e1b39add1d91dc9626
+            resources:
+              requests:
+                cpu: 25m
+                memory: 64Mi
+              limits:
+                cpu: 50m
+                memory: 128Mi
+          exporter:
+            image:
+              repository: ghcr.io/druggeri/nut_exporter
+              tag: 3.1.1
+            args:
+              # export all variables
+              - --nut.vars_enable=
     service:
       main:
         ports:
@@ -46,53 +70,11 @@ spec:
             enabled: true
             port: 9199
             protocol: TCP
-    securityContext:
-      privileged: true
-    configMaps:
-      config:
-        enabled: true
-        data:
-          nut.conf: |-
-            MODE=netserver
-          upsd.conf: |-
-            LISTEN 0.0.0.0
-          ups.conf: |-
-            [ups]
-              driver = usbhid-ups
-              port = auto
-              desc = "APC Back-UPS RS 900G"
-              vendorid = 051d
-              productid = 0002
-              serial = 3B1227X00136
-          upsd.users: |-
-            [monuser]
-              password = secret
-              upsmon slave
-            [monmaster]
-              password = secret
-              upsmon master
     persistence:
       config:
         enabled: true
         type: configMap
-        name: &config nut-server-basement-config
-        mountPath: /etc/nut
-        defaultMode: 256
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: *config
-    nodeSelector:
-      ups.feature.node.kubernetes.io/apc: "true"
-    additionalContainers:
-      exporter:
-        name: exporter
-        image: ghcr.io/druggeri/nut_exporter:3.1.1
-        args:
-          # export all variables
-          - --nut.vars_enable=
-    resources:
-      requests:
-        cpu: 25m
-        memory: 64Mi
-      limits:
-        cpu: 50m
-        memory: 128Mi
+        name: nut-server-basement-config
+        globalMounts:
+          - path: /etc/nut
+            readOnly: true
