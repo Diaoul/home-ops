@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 1.5.1
+      version: 2.3.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -24,33 +24,57 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: emqx
+      namespace: home-automation
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync
   values:
-    image:
-      repository: koenkk/zigbee2mqtt
-      tag: latest-dev
-      pullPolicy: Always
-    env:
-      ZIGBEE2MQTT_DATA: /data
-      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
-      ZIGBEE2MQTT_CONFIG_MQTT_USER: ${EMQX_USER_USERNAME}
-      ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
-      ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
-      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://zigbee.milkyway:6638
-      ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.${DOMAIN}"
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: "false"
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: "false"
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
-      ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: "false"
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: "false"
-      ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
-      ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
-      ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
-      ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
-      ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
-    envFrom:
-      - secretRef:
-          name: zigbee2mqtt
+    controllers:
+      main:
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          main:
+            image:
+              repository: ghcr.io/koenkk/zigbee2mqtt
+              tag: 1.34.0
+              pullPolicy: Always
+            env:
+              ZIGBEE2MQTT_DATA: /data
+              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
+              ZIGBEE2MQTT_CONFIG_MQTT_USER: ${EMQX_USER_USERNAME}
+              ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
+              ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
+              ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://zigbee.milkyway:6638
+              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.${DOMAIN}"
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: "false"
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: "false"
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_ENTITY_ATTRIBUTES: "false"
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_LEGACY_TRIGGERS: "false"
+              ZIGBEE2MQTT_CONFIG_ADVANCED_HOMEASSISTANT_STATUS_TOPIC: homeassistant/status
+              ZIGBEE2MQTT_CONFIG_AVAILABILITY_ACTIVE_TIMEOUT: 60
+              ZIGBEE2MQTT_CONFIG_AVAILABILITY_PASSIVE_TIMEOUT: 2000
+              ZIGBEE2MQTT_CONFIG_DEVICE_OPTIONS_RETAIN: "true"
+              ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
+            envFrom:
+              - secretRef:
+                  name: zigbee2mqtt
+            resources:
+              requests:
+                cpu: 20m
+                memory: 300Mi
+              limits:
+                cpu: 0.5
+                memory: 500Mi
     service:
       main:
         ports:
@@ -67,24 +91,14 @@ spec:
           - host: &host zigbee2mqtt.${DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  name: main
+                  port: http
         tls:
           - hosts:
               - *host
             secretName: zigbee2mqtt-tls
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: OnRootMismatch
     persistence:
       data:
         enabled: true
         existingClaim: zigbee2mqtt-data
-    resources:
-      requests:
-        cpu: 20m
-        memory: 300Mi
-      limits:
-        cpu: 0.5
-        memory: 500Mi
