@@ -14,9 +14,6 @@ spec:
         kind: HelmRepository
         name: intel
         namespace: flux-system
-  dependsOn:
-    - name: node-feature-discovery
-      namespace: kube-tools
   maxHistory: 3
   install:
     remediation:
@@ -27,3 +24,6 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: node-feature-discovery
+      namespace: kube-tools

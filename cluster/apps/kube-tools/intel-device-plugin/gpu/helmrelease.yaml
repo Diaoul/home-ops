@@ -14,9 +14,6 @@ spec:
         kind: HelmRepository
         name: intel
         namespace: flux-system
-  dependsOn:
-    - name: intel-device-plugin-operator
-      namespace: kube-tools
   maxHistory: 3
   install:
     remediation:
@@ -27,6 +24,9 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: intel-device-plugin-operator
+      namespace: kube-tools
   values:
     name: intel-gpu-plugin
     sharedDevNum: 3
