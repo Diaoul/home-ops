@@ -6,3 +6,12 @@ resources:
   - helmrelease.yaml
   - servicemonitor.yaml
   - prometheusrule.yaml
+configMapGenerator:
+  - name: nut-server-basement-config
+    files:
+      - ./config/nut.conf
+      - ./config/ups.conf
+      - ./config/upsd.conf
+      - ./config/upsd.users
+generatorOptions:
+  disableNameSuffixHash: true
