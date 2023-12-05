@@ -7,6 +7,7 @@ resources:
   - volsync.yaml
 configMapGenerator:
   - name: recyclarr
+    namespace: media
     files:
       - ./config/recyclarr.yml
 generatorOptions:
