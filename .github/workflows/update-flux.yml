@@ -1,5 +1,5 @@
 ---
-name: flux-schedule
+name: update-flux
 
 on:
   workflow_dispatch:
@@ -10,17 +10,16 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/flux-schedule.yml
+      - .github/workflows/update-flux.yml
 
 jobs:
   flux-update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-        with:
-          fetch-depth: 1
+      - name: Check out code
+        uses: actions/checkout@v4
 
-      - name: Install Flux
+      - name: Setup flux CLI
         uses: fluxcd/flux2/action@main
 
       - name: Update Flux components
@@ -29,12 +28,12 @@ jobs:
           UGLY_VERSION="$(flux -v)"
           VERSION="v${UGLY_VERSION#*flux version }"
           flux install --version="${VERSION}" \
-            --network-policy false \
-            --cluster-domain cluster.milkyway \
+            --network-policy=false \
+            --cluster-domain=cluster.milkyway \
             --export > ./cluster/flux/flux-system/gotk-components.yaml
           echo "flux_version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create pull request for Flux update
+      - name: Create pull request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
