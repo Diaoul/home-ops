@@ -16,10 +16,12 @@ spec:
         namespace: flux-system
   maxHistory: 3
   install:
+    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
+    crds: CreateReplace
     remediation:
       retries: 3
   uninstall:
@@ -30,6 +32,8 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    crds:
+      enabled: true
     alertmanager:
       ingress:
         enabled: true
