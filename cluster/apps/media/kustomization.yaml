@@ -8,6 +8,7 @@ resources:
   - audiobookshelf
   - flaresolverr
   - jellyfin
+  - kavita
   - lidarr
   - prowlarr
   - radarr
