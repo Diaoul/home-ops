@@ -61,7 +61,6 @@ spec:
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
-          auth.home.arpa/enabled: "true"
         hosts:
           - host: &host kavita.${DOMAIN}
             paths:
