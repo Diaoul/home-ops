@@ -77,6 +77,22 @@ spec:
           - hosts:
               - *host
             secretName: readarr-audio-tls
+      api:
+        enabled: true
+        annotations:
+          external-dns.home.arpa/enabled: "true"
+          cert-manager.home.arpa/enabled: "true"
+        hosts:
+          - host: *host
+            paths:
+              - path: /api
+                service:
+                  name: main
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: readarr-audio-tls
     persistence:
       config:
         enabled: true
