@@ -12,6 +12,8 @@ ignore: |
 rules:
   indentation:
     spaces: 2
+  comments:
+    min-spaces-from-content: 1
   line-length: disable
   truthy:
     level: error
