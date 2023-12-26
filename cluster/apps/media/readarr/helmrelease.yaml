@@ -43,8 +43,8 @@ spec:
         containers:
           main:
             image:
-              repository: ghcr.io/onedr0p/readarr-nightly
-              tag: 0.3.14.2341@sha256:4276421626d6ab3d3ceb69c6fb69e6687741cb0128868637c44485f29ca18160
+              repository: ghcr.io/onedr0p/readarr-develop
+              tag: 0.3.13.2338@sha256:bf8a16b7fb4c17499f8de4c0c71a044e140e90d9c00904d751c1a46470a99033
             envFrom:
               - secretRef:
                   name: *app
