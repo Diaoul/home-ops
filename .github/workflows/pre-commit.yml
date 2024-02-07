@@ -47,6 +47,6 @@ jobs:
         run: |
           bin/yq 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "yamllint" or .id == "kustomize" or .id == "gitleaks"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
 
-      - uses: pre-commit/action@v3.0.0
+      - uses: pre-commit/action@v3.0.1
         with:
           extra_args: -c .github/.pre-commit-config.yaml
