@@ -46,7 +46,7 @@ spec:
           main:
             image:
               repository: ghcr.io/blakeblackshear/frigate
-              tag: 0.13.0
+              tag: 0.13.2
             env:
               LIBVA_DRIVER_NAME: i965
             probes:
