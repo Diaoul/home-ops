@@ -12,7 +12,7 @@
     - name: Add user
       ansible.builtin.user:
         name: "{{ user }}"
-        ansible.builtin.shell: /bin/bash
+        shell: /bin/bash
 
     - name: Add user to sudoers nopasswd
       ansible.builtin.copy:
