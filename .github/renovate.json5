@@ -2,7 +2,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
+    "config:recommended",
     "docker:enableMajor",
     ":disableRateLimiting",
     ":dependencyDashboard",
@@ -10,15 +10,11 @@
     ":enablePreCommit",
     ":automergeDigest",
     ":automergeBranch",
+    ":skipStatusChecks",
+    ":timezone(Europe/Paris)",
   ],
-  "platform": "github",
-  "onboarding": false,
-  "requireConfig": "optional",
-  "timezone": "Europe/Paris",
-  "separateMinorPatch": true,
   "dependencyDashboardTitle": "Renovate Dashboard",
-  "suppressNotifications": ["prIgnoreNotification"],
-  "rebaseWhen": "conflicted",
+  "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "flux": {
     "fileMatch": ["cluster/.+\\.ya?ml$"],
     "ignorePaths": ["cluster/flux/flux-system"]
@@ -31,8 +27,9 @@
     "fileMatch": ["cluster/.+\\.ya?ml$"],
     "ignorePaths": ["cluster/flux/flux-system"]
   },
-  "regexManagers": [
+  "customManagers": [
     {
+      "customType": "regex",
       "fileMatch": [
         "ansible/.+\\.ya?ml$",
         "cluster/.+\\.ya?ml$",
