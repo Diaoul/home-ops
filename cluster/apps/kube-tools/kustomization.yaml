@@ -11,4 +11,3 @@ resources:
   - node-feature-discovery
   - reloader
   - snapshot-controller
-  - system-upgrade
