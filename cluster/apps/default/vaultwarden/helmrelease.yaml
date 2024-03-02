@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: ghcr.io/dani-garcia/vaultwarden
-              tag: 1.30.4
+              tag: 1.30.5
             env:
               DOMAIN: https://vaultwarden.${DOMAIN}
               ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
