@@ -9,7 +9,7 @@
     - os
   tasks:
     - name: flush handlers
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
     - name: reboot
       ignore_errors: true
       reboot:

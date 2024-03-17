@@ -12,9 +12,9 @@
     - printer3d
   tasks:
     - name: Flush handlers
-      ansible.builtin.meta: ansible.builtin.flush_handlers
+      ansible.builtin.meta: flush_handlers
     - name: Reboot
-      ignore_errors: true  # noqa ignore-errors
+      ignore_errors: true # noqa ignore-errors
       ansible.builtin.reboot:
         msg: "Rebooting..."
       when: restart_confirmation == "Y"
