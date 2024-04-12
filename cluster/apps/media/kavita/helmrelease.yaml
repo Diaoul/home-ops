@@ -42,7 +42,7 @@ spec:
           main:
             image:
               repository: ghcr.io/kareadita/kavita
-              tag: 0.7.14@sha256:9cbe62ea84c250f41e0f04f620537a4687345868612a40c840e464f34b5bbfe5
+              tag: 0.7.14@sha256:c74bb42fd07ab538df2c187c4f4ab34fe36c6239c13761898c57dfdaeecbf6b2
             resources:
               requests:
                 cpu: 50m
