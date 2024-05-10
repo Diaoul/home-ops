@@ -17,13 +17,13 @@ jobs:
         with:
           fetch-depth: 1
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5
         with:
           python-version: 3.x
 
       - name: Cache yq
         id: cache-yq
-        uses: actions/cache@v4
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
         with:
           path: bin/yq
           key: yq-${{ env.yq-version }}
@@ -37,7 +37,7 @@ jobs:
 
       - name: Cache deduplicated pre-commit config
         id: cache-precommitconfig
-        uses: actions/cache@v4
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4
         with:
           path: .github/.pre-commit-config.yaml
           key: precommitconfig-${{ hashFiles('.pre-commit-config.yaml') }}
@@ -47,6 +47,6 @@ jobs:
         run: |
           bin/yq 'del(.repos.[].hooks[] | select(.id == "shellcheck" or .id == "yamllint" or .id == "kustomize" or .id == "gitleaks"))' .pre-commit-config.yaml > .github/.pre-commit-config.yaml
 
-      - uses: pre-commit/action@v3.0.1
+      - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
         with:
           extra_args: -c .github/.pre-commit-config.yaml
