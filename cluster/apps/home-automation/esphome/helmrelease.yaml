@@ -36,7 +36,7 @@ spec:
           main:
             image:
               repository: esphome/esphome
-              tag: 2024.4.2
+              tag: 2024.5.0@sha256:917bf34d17c54f64914b5a3a9a320c59272ee4690411299ff447dc6bafdff527
             env:
               ESPHOME_DASHBOARD_USE_PING: true
             resources:
