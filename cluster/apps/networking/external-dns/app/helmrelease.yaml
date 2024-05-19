@@ -1,11 +1,12 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: external-dns
   namespace: networking
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: external-dns
@@ -14,13 +15,16 @@ spec:
         kind: HelmRepository
         name: external-dns
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
+    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
+    crds: CreateReplace
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,19 +36,26 @@ spec:
       - name: CF_API_EMAIL
         value: ${CLOUDFLARE_EMAIL}
       - name: CF_API_TOKEN
-        value: ${CLOUDFLARE_EXTERNAL_DNS_API_TOKEN}
+        valueFrom:
+          secretKeyRef:
+            name: &secret external-dns
+            key: CF_API_TOKEN
     policy: sync
     domainFilters:
       - ${DOMAIN}
     extraArgs:
       - --cloudflare-proxied
       - --annotation-filter=external-dns.home.arpa/enabled in (true)
+      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+      - --crd-source-kind=DNSEndpoint
     serviceMonitor:
       enabled: true
     resources:
       requests:
-        cpu: 50m
+        cpu: 25m
         memory: 50Mi
       limits:
         cpu: 50m
         memory: 50Mi
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *secret

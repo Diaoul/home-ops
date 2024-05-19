@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - blocky
   - dex
-  - external-dns
+  - external-dns/ks.yaml
   - ingress-nginx
   - k8s-gateway
   - nut-server-basement
