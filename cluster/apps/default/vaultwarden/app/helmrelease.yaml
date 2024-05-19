@@ -108,7 +108,7 @@ spec:
             paths:
               - path: /admin
                 service:
-                  name: main
+                  name: app
                   port: *port
         tls:
           - hosts:
