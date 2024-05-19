@@ -5,7 +5,7 @@ resources:
   - grafana
   - kube-prometheus-stack
   - kube-state-metrics
-  - loki
+  - loki/ks.yaml
   - thanos
   - unpoller
   - vector/ks.yaml
