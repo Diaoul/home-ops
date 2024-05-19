@@ -5,6 +5,7 @@ metadata:
   name: cluster-config
   namespace: flux-system
 data:
+  TIMEZONE: Europe/Paris
   K8S_CLUSTER_CIDR: 10.42.0.0/16
   K8S_SERVICE_CIDR: 10.43.0.0/16
   SERVER_CIDR: 10.0.3.0/24
