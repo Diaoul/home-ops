@@ -8,4 +8,4 @@ resources:
   - loki
   - thanos
   - unpoller
-  - vector
+  - vector/ks.yaml
