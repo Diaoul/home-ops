@@ -45,8 +45,6 @@ spec:
               DOMAIN: https://vaultwarden.${DOMAIN}
               TZ: ${TIMEZONE}
               SIGNUPS_ALLOWED: false
-              YUBICO_CLIENT_ID: ${VAULTWARDEN_YUBICO_CLIENT_ID}
-              YUBICO_SECRET_KEY: ${VAULTWARDEN_YUBICO_SECRET_KEY}
               WEBSOCKET_ENABLED: true
               SMTP_HOST: ${ROUTER_IP}
               SMTP_PORT: 25
