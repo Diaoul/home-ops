@@ -85,11 +85,11 @@ spec:
                   port: *port
               - path: /notifications/hub
                 service:
-                  name: app
+                  identifier: app
                   port: *websocket_port
               - path: /notifications/hub/negotiate
                 service:
-                  name: app
+                  identifier: app
                   port: *websocket_port
         tls:
           - hosts:
@@ -108,7 +108,7 @@ spec:
             paths:
               - path: /admin
                 service:
-                  name: app
+                  identifier: app
                   port: *port
         tls:
           - hosts:
