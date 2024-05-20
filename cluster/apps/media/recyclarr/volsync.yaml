@@ -11,6 +11,7 @@ stringData:
   AWS_ACCESS_KEY_ID: ${VOLSYNC_MINIO_ACCESS_KEY}
   AWS_SECRET_ACCESS_KEY: ${VOLSYNC_MINIO_SECRET_KEY}
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationsource_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
