@@ -88,7 +88,7 @@ spec:
               - path: /notifications/hub/negotiate
                 service:
                   identifier: app
-                  port: *websocket_port
+                  port: *port
         tls:
           - hosts:
               - *host
