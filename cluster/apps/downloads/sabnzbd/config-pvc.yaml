@@ -4,8 +4,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: sabnzbd-config
   namespace: downloads
-  labels:
-    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

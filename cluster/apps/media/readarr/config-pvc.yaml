@@ -4,8 +4,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: readarr-config
   namespace: media
-  labels:
-    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

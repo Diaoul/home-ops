@@ -4,8 +4,6 @@ kind: PersistentVolumeClaim
 metadata:
   name: mariadb
   namespace: db
-  labels:
-    k10.kasten.io/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce
