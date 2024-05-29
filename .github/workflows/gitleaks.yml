@@ -11,6 +11,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: zricethezav/gitleaks-action@e6dab246340401bf53eec993b8f05aebe80ac636 # v2
+      - uses: zricethezav/gitleaks-action@f19e05d966f1890683f5960ff182f6d5a82e2e90 # v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
