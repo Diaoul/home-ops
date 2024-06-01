@@ -52,8 +52,8 @@ spec:
           configMap:
             name: emqx-init-mqtt
   listenersServiceTemplate:
-    metadata:
-      annotations:
-        io.cilium/lb-ipam-ips: 192.168.42.129
     spec:
       type: LoadBalancer
+      externalIPs:
+        - ${EMQX_IP}
+      externalTrafficPolicy: Local
