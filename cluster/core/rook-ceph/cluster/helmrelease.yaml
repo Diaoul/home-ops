@@ -15,8 +15,6 @@ spec:
         kind: HelmRepository
         name: rook
         namespace: flux-system
-  driftDetection:
-    mode: enabled
   maxHistory: 3
   install:
     remediation:
