@@ -6,6 +6,7 @@ metadata:
   name: emqx
 spec:
   image: public.ecr.aws/emqx/emqx:5.7.0
+  clusterDomain: ${CLUSTER_DOMAIN}
   config:
     data: |
       authentication {
