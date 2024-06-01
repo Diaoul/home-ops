@@ -49,7 +49,7 @@ spec:
               pullPolicy: Always
             env:
               ZIGBEE2MQTT_DATA: /data
-              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx
+              ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx-listeners.home-automation.svc.cluster.milkyway:1883
               ZIGBEE2MQTT_CONFIG_MQTT_USER: ${EMQX_USER_USERNAME}
               ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
