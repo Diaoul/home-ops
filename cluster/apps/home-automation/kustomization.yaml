@@ -6,7 +6,7 @@ resources:
   - pv
   - pvc
   - milkyway-ca-secret.yaml
-  - emqx
+  - emqx/ks.yaml
   - esphome/ks.yaml
   - frigate
   - home-assistant
