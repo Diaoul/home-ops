@@ -17,11 +17,6 @@ spec:
         namespace: flux-system
   driftDetection:
     mode: enabled
-    ignore:
-      - paths:
-          - ""
-        target:
-          kind: (CephCluster|CephFilesystem)
   maxHistory: 3
   install:
     remediation:
