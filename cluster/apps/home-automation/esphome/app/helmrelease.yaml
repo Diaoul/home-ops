@@ -78,5 +78,3 @@ spec:
       cache:
         enabled: true
         type: emptyDir
-        globalMounts:
-          - path: /config/.esphome
