@@ -25,14 +25,6 @@ spec:
         ]
         no_match: "deny"
       }
-  bootstrapAPIKeys:
-    - secretRef:
-        key:
-          secretName: emqx
-          secretKey: X_EMQX_APIKEY_KEY
-        secret:
-          secretName: emqx
-          secretKey: X_EMQX_APIKEY_SECRET
   coreTemplate:
     metadata:
       annotations:
@@ -47,7 +39,7 @@ spec:
           image: docker.io/library/python:3.12-alpine
           env:
             - name: X_EMQX_ADDRESS
-              value: emqx-dashboard.database.svc.cluster.local:18083
+              value: emqx-dashboard.home-automation.svc.cluster.milkyway:18083
           envFrom: *envFrom
           command: ["python", "/init-mqtt.py"]
           volumeMounts:
