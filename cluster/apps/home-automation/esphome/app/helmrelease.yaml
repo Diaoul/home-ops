@@ -6,22 +6,23 @@ metadata:
   name: esphome
   namespace: home-automation
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.1.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,9 +33,9 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      esphome:
         containers:
-          main:
+          app:
             image:
               repository: esphome/esphome
               tag: 2024.5.4@sha256:29e21efe64d03646530025d056d545485ab9c40a35f3d99e8e0a90d79bde2356
@@ -47,12 +48,13 @@ spec:
               limits:
                 memory: 4Gi
     service:
-      main:
+      app:
+        controller: esphome
         ports:
           http:
             port: 6052
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -63,7 +65,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -72,8 +74,9 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: esphome-config
+        existingClaim: esphome
       cache:
         enabled: true
         type: emptyDir
-        mountPath: /config/.esphome
+        globalMounts:
+          - path: /config/.esphome
