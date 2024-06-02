@@ -115,4 +115,4 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: vaultwarden-data
+        existingClaim: vaultwarden
