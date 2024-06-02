@@ -33,6 +33,11 @@ spec:
   values:
     controllers:
       recyclarr:
+        type: cronjob
+        cronjob:
+          schedule: "@daily"
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
