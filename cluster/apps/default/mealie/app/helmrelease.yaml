@@ -6,16 +6,16 @@ metadata:
   name: mealie
   namespace: default
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -28,16 +28,14 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync
   values:
     controllers:
-      main:
+      mealie:
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/mealie-recipes/mealie
-              tag: v1.0.0-RC1.1
+              tag: v1.7.0
             env:
               BASE_URL: https://mealie.${DOMAIN}
               ALLOW_SIGNUP: false
@@ -54,7 +52,8 @@ spec:
                 cpu: 200m
                 memory: 800Mi
     service:
-      main:
+      app:
+        controller: mealie
         ports:
           http:
             port: 9000
@@ -70,7 +69,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: main
                   port: http
         tls:
           - hosts:
@@ -79,6 +78,6 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: mealie-config
+        existingClaim: mealie
         globalMounts:
           - path: /app/data
