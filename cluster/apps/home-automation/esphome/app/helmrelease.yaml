@@ -73,8 +73,6 @@ spec:
             secretName: esphome-tls
     persistence:
       config:
-        enabled: true
         existingClaim: esphome
       cache:
-        enabled: true
         type: emptyDir

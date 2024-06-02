@@ -83,7 +83,6 @@ spec:
             secretName: mealie-tls
     persistence:
       config:
-        enabled: true
         existingClaim: mealie
         globalMounts:
           - path: /app/data

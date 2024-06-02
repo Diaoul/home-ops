@@ -114,5 +114,4 @@ spec:
             secretName: vaultwarden-tls
     persistence:
       data:
-        enabled: true
         existingClaim: vaultwarden

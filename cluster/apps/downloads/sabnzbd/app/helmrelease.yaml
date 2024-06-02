@@ -102,10 +102,8 @@ spec:
             secretName: sabnzbd-tls
     persistence:
       config:
-        enabled: true
         existingClaim: sabnzbd
       media:
-        enabled: true
         type: nfs
         server: singularity.milkyway
         path: /volume1/media

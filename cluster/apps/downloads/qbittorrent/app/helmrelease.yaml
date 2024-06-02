@@ -78,10 +78,8 @@ spec:
             secretName: qb-tls
     persistence:
       config:
-        enabled: true
         existingClaim: qbittorrent
       media:
-        enabled: true
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
