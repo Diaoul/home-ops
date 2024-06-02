@@ -3,19 +3,18 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app unpackerr
-  namespace: media
+  name: unpackerr
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -32,52 +31,69 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      unpackerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            secret.reloader.stakater.com/reload: *app
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
-              repository: docker.io/golift/unpackerr
-              tag: 0.13.1
+              repository: ghcr.io/unpackerr/unpackerr
+              tag: 0.13.1@sha256:04fcb43fa70e6db88331962760607842cdf19889e6d35d9d2fde0cf6a1550eaf
             env:
-              UN_WEBSERVER_METRICS: "true"
-              UN_SONARR_0_URL: http://sonarr:8989
+              UN_WEBSERVER_METRICS: true
+              UN_SONARR_0_URL: http://sonarr.media.svc.cluster.milkyway:8989
               UN_SONARR_0_PATHS_0: /media/downloads/complete/tv
-              UN_RADARR_0_URL: http://radarr:7878
+              UN_RADARR_0_URL: http://radarr.media.svc.cluster.milkyway:7878
               UN_RADARR_0_PATHS_0: /media/downloads/complete/movie
-              UN_LIDARR_0_URL: http://lidarr:8686
+              UN_LIDARR_0_URL: http://lidarr.media.svc.cluster.milkyway:8686
               UN_LIDARR_0_PATHS_0: /media/downloads/complete/music
-              UN_READARR_0_URL: http://readarr:8787
+              UN_READARR_0_URL: http://readarr.media.svc.cluster.milkyway:8787
               UN_READARR_0_PATHS_0: /media/downloads/complete/book
-              UN_READARR_1_URL: http://readarr-audio:8787
+              UN_READARR_1_URL: http://readarr-audio.media.svc.cluster.milkyway:8787
               UN_READARR_1_PATHS_0: /media/downloads/complete/audiobook
             envFrom:
               - secretRef:
-                  name: *app
+                  name: unpackerr
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
             resources:
               requests:
                 cpu: 500m
                 memory: 250Mi
               limits:
-                memory: 1Gi
+                memory: 2Gi
     service:
-      main:
+      app:
+        controller: unpackerr
         ports:
           http:
             port: 5656
     serviceMonitor:
-      main:
-        enabled: true
+      app:
+        serviceName: unpackerr
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
     persistence:
       media:
-        enabled: true
         existingClaim: nfs-singularity-media
         globalMounts:
           - path: /media
