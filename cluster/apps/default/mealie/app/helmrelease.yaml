@@ -35,11 +35,19 @@ spec:
       mealie:
         annotations:
           reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
           app:
             image:
               repository: ghcr.io/mealie-recipes/mealie
-              tag: v1.7.0
+              tag: v1.7.0@sha256:87a5143f503cf7ef708bc6a8abc6a938e0fe8e4beb266b800f1efa98aebb3dd3
             env:
               BASE_URL: https://mealie.${DOMAIN}
               API_DOCS: false
@@ -50,6 +58,10 @@ spec:
             envFrom:
               - secretRef:
                   name: mealie
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m

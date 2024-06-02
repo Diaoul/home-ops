@@ -53,6 +53,10 @@ spec:
               tag: 10.9.4@sha256:e6b71e6cd18fa272ffaf5c376ac0db1113dab0bddf60e889a65eab05e17cfb73
             env:
               JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             probes:
               liveness: &probes
                 enabled: true

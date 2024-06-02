@@ -46,6 +46,10 @@ spec:
             image:
               repository: ghcr.io/kareadita/kavita
               tag: 0.8.1@sha256:7d7d7b1e07d944fdbc77d214d8858a32ce302e136a25a32b938c20a1d0099ed6
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 15m

@@ -52,6 +52,10 @@ spec:
             envFrom:
               - secretRef:
                   name: vaultwarden
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
