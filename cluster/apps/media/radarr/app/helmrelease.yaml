@@ -4,24 +4,24 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app radarr
-  namespace: media
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,38 +32,56 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      radarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            secret.reloader.stakater.com/reload: *app
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
               tag: 5.6.0.8846@sha256:b3137a2b451683d834627bf6997460f26eb864757b1ffb5eb6544a8ba6d432ef
             envFrom:
               - secretRef:
                   name: *app
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 7878
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 200m
                 memory: 500Mi
               limits:
-                cpu: 500m
                 memory: 1Gi
     service:
-      main:
+      app:
+        controller: radarr
         ports:
           http:
-            port: 7878
+            port: *port
     ingress:
-      main:
-        enabled: true
+      app:
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -73,14 +91,13 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
             secretName: radarr-tls
       api:
-        enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -89,7 +106,7 @@ spec:
             paths:
               - path: /api
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -97,10 +114,8 @@ spec:
             secretName: radarr-tls
     persistence:
       config:
-        enabled: true
-        existingClaim: radarr-config
+        existingClaim: radarr
       media:
-        enabled: true
         existingClaim: nfs-singularity-media
         globalMounts:
           - path: /media
