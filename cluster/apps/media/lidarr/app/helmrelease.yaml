@@ -3,25 +3,25 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app lidarr
-  namespace: media
+  name: lidarr
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,38 +32,43 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      lidarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            secret.reloader.stakater.com/reload: *app
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/lidarr-develop
               tag: 2.3.3.4204@sha256:85bb890dab6ca3bf4356c49a1b6d7620ec8c85f12cff08a35a8c62bd41271ec9
             envFrom:
               - secretRef:
-                  name: *app
+                  name: lidarr
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 200m
                 memory: 700Mi
               limits:
-                cpu: 500m
                 memory: 1Gi
     service:
-      main:
+      app:
+        controller: lidarr
         ports:
           http:
             port: 8686
     ingress:
-      main:
-        enabled: true
+      app:
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -73,15 +78,13 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
             secretName: lidarr-tls
       api:
-        enabled: true
-        nameSuffix: api
         annotations:
           external-dns.home.arpa/enabled: "true"
         hosts:
@@ -89,7 +92,7 @@ spec:
             paths:
               - path: /api
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -97,10 +100,8 @@ spec:
             secretName: lidarr-tls
     persistence:
       config:
-        enabled: true
         existingClaim: lidarr-config
       media:
-        enabled: true
         existingClaim: nfs-singularity-media
         globalMounts:
           - path: /media

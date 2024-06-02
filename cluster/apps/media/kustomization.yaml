@@ -10,7 +10,7 @@ resources:
   - flaresolverr/ks.yaml
   - jellyfin/ks.yaml
   - kavita/ks.yaml
-  - lidarr
+  - lidarr/ks.yaml
   - prowlarr
   - radarr
   - readarr
