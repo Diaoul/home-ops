@@ -52,9 +52,6 @@ spec:
               repository: jellyfin/jellyfin
               tag: 10.9.4@sha256:e6b71e6cd18fa272ffaf5c376ac0db1113dab0bddf60e889a65eab05e17cfb73
             env:
-              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
-              JELLYFIN_FFmpeg__probesize: 500M
-              JELLYFIN_FFmpeg__analyzeduration: 250M
               JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
             probes:
               liveness: &probes
