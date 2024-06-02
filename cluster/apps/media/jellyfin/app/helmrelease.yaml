@@ -4,24 +4,24 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: jellyfin
-  namespace: media
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,20 +32,22 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      jellyfin:
         pod:
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
             supplementalGroups:
               - 44 # video
               - 109 # render
         containers:
-          main:
+          app:
             image:
               repository: jellyfin/jellyfin
               tag: 10.9.4@sha256:e6b71e6cd18fa272ffaf5c376ac0db1113dab0bddf60e889a65eab05e17cfb73
@@ -68,7 +70,16 @@ spec:
                   failureThreshold: 3
               readiness: *probes
               startup:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8096
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 1
@@ -78,7 +89,8 @@ spec:
                 memory: 3Gi
                 gpu.intel.com/i915: 1
     service:
-      main:
+      app:
+        controller: jellyfin
         type: LoadBalancer
         externalIPs:
           - ${JELLYFIN_IP}
@@ -87,7 +99,7 @@ spec:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -97,7 +109,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -105,13 +117,11 @@ spec:
             secretName: jellyfin-tls
     persistence:
       config:
-        enabled: true
-        existingClaim: jellyfin-config
-      transcode:
-        enabled: true
+        existingClaim: jellyfin
+      cache:
         type: emptyDir
-        globalMounts:
-          - path: /transcode
+      transcode:
+        type: emptyDir
       media:
         enabled: true
         type: nfs
@@ -119,3 +129,4 @@ spec:
         path: /volume1/media
         globalMounts:
           - path: /media
+            readOnly: true

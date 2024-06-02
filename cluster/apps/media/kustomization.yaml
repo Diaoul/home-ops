@@ -8,7 +8,7 @@ resources:
   - pvc
   - audiobookshelf
   - flaresolverr
-  - jellyfin
+  - jellyfin/ks.yaml
   - kavita
   - lidarr
   - prowlarr
