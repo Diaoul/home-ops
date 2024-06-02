@@ -6,22 +6,23 @@ metadata:
   name: sabnzbd
   namespace: downloads
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,7 +33,7 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      sabnzbd:
         pod:
           annotations:
             setDownloadGateway: "true"
@@ -42,7 +43,7 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/sabnzbd
               tag: 4.3.2@sha256:8e70a877c77805dfe93ce30a8da3362fbddf221ef806951d4e4634bb80dc87b5
@@ -77,12 +78,13 @@ spec:
               limits:
                 memory: 2Gi
     service:
-      main:
+      app:
+        controller: sabnzbd
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -92,7 +94,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -101,7 +103,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: sabnzbd-config
+        existingClaim: sabnzbd
       media:
         enabled: true
         type: nfs
