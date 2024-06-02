@@ -115,6 +115,9 @@ spec:
       config:
         existingClaim: sonarr
       media:
-        existingClaim: nfs-singularity-media
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
         globalMounts:
           - path: /media
+            readOnly: true

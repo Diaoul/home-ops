@@ -115,7 +115,6 @@ spec:
       transcode:
         type: emptyDir
       media:
-        enabled: true
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
