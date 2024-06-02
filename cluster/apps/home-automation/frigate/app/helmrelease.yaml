@@ -101,29 +101,25 @@ spec:
             secretName: frigate-tls
     persistence:
       data:
-        enabled: true
         existingClaim: frigate
       config:
-        enabled: true
         type: configMap
         name: frigate-config
         globalMounts:
-          - path: /config
+          - path: /config/config.yml
+            subPath: config.yaml
             readOnly: true
       cache:
-        enabled: true
         type: emptyDir
         medium: Memory
         sizeLimit: 2Gi
         globalMounts:
           - path: /dev/shm
       pci:
-        enabled: true
         type: hostPath
         hostPath: /dev/apex_0
         hostPathType: CharDevice
       media:
-        enabled: true
         type: nfs
         server: singularity.milkyway
         path: /volume1/recordings
