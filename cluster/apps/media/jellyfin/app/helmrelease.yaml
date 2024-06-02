@@ -64,10 +64,6 @@ spec:
     service:
       app:
         controller: jellyfin
-        type: LoadBalancer
-        externalIPs:
-          - ${JELLYFIN_IP}
-        externalTrafficPolicy: Local
         ports:
           http:
             port: 8096
