@@ -9,7 +9,7 @@ resources:
   - audiobookshelf
   - flaresolverr/ks.yaml
   - jellyfin/ks.yaml
-  - kavita
+  - kavita/ks.yaml
   - lidarr
   - prowlarr
   - radarr
