@@ -6,7 +6,7 @@ resources:
   - milkyway-ca-secret.yaml
   - pv
   - pvc
-  - audiobookshelf
+  - audiobookshelf/ks.yaml
   - flaresolverr/ks.yaml
   - jellyfin/ks.yaml
   - kavita/ks.yaml
