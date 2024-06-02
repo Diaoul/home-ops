@@ -93,7 +93,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: frigate
+                  identifier: app
                   port: http
         tls:
           - hosts:
