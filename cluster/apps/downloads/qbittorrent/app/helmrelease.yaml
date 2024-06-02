@@ -6,22 +6,23 @@ metadata:
   name: qbittorrent
   namespace: downloads
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,7 +33,7 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      qbittorrent:
         pod:
           annotations:
             setDownloadGateway: "true"
@@ -42,7 +43,7 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 4.6.5@sha256:c019af23966ebafcaf1713d4553bc043246858b711a7d57d8bee358a89990a3e
@@ -53,12 +54,13 @@ spec:
               limits:
                 memory: 5Gi
     service:
-      main:
+      app:
+        controller: qbittorrent
         ports:
           http:
             port: 8080
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -68,7 +70,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -77,7 +79,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: qbittorrent-config
+        existingClaim: qbittorrent
       media:
         enabled: true
         type: nfs
