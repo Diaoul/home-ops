@@ -6,47 +6,49 @@ metadata:
   name: zigbee2mqtt
   namespace: home-automation
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: emqx
-      namespace: home-automation
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
       namespace: volsync
   values:
     controllers:
-      main:
+      zigbee2mqtt:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
           securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/koenkk/zigbee2mqtt
               tag: 1.38.0@sha256:8a893949ab01ea25fe1189a02a24f7fee3d7e8717d0973bd3dd6989a3a45a6bf
-              pullPolicy: Always
             env:
               ZIGBEE2MQTT_DATA: /data
               ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx-listeners.home-automation.svc.cluster.milkyway:1883
@@ -69,20 +71,34 @@ spec:
             envFrom:
               - secretRef:
                   name: zigbee2mqtt
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 20m
                 memory: 300Mi
               limits:
-                cpu: 0.5
                 memory: 500Mi
     service:
-      main:
+      app:
+        controller: zigbee2mqtt
         ports:
           http:
             port: 8080
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -93,7 +109,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -101,5 +117,4 @@ spec:
             secretName: zigbee2mqtt-tls
     persistence:
       data:
-        enabled: true
-        existingClaim: zigbee2mqtt-data
+        existingClaim: zigbee2mqtt
