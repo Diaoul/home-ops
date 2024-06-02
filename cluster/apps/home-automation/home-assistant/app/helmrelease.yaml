@@ -6,88 +6,67 @@ metadata:
   name: home-assistant
   namespace: home-automation
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: emqx
-      namespace: home-automation
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
       namespace: volsync
   values:
     controllers:
-      main:
+      home-assistant:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/home-assistant
               tag: 2024.5.5@sha256:7c9514d573dddae6eaa0ec452e70f52a3e789cb6f348cb69d4fecc2bfa3dc10e
-            probes:
-              liveness:
-                enabled: false
-              readiness:
-                enabled: false
-              startup:
-                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
-                memory: 800Mi
-              limits:
                 memory: 1Gi
-          codeserver:
-            enabled: true
-            image:
-              repository: ghcr.io/coder/code-server
-              tag: 4.89.1@sha256:3b56b9e77d242241c107b6e9ec3be91ea23ab733e016f8a5e318c974b2a97107
-            args:
-              - --auth
-              - none
-              - --user-data-dir
-              - /config/.vscode
-              - --extensions-dir
-              - /config/.vscode
-              - /config
-            resources:
-              requests:
-                cpu: 10m
-                memory: 128Mi
               limits:
                 memory: 1Gi
     service:
-      main:
+      app:
+        controller: home-assistant
         ports:
           http:
             port: 8123
-          codeserver:
-            enabled: true
-            port: 8080
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -97,30 +76,22 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
             secretName: hass-tls
-      codeserver:
-        enabled: true
-        annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
-          auth.home.arpa/enabled: "true"
-        hosts:
-          - host: &host-hass-config hass-config.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  name: main
-                  port: codeserver
-        tls:
-          - hosts:
-              - *host-hass-config
-            secretName: hass-config-tls
     persistence:
       config:
-        enabled: true
-        existingClaim: home-assistant-config
+        existingClaim: home-assistant
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /config/logs
+      tts:
+        type: emptyDir
+        globalMounts:
+          - path: /config/tts
+      tmp:
+        type: emptyDir

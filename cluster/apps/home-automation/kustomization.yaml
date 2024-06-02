@@ -9,5 +9,5 @@ resources:
   - emqx/ks.yaml
   - esphome/ks.yaml
   - frigate/ks.yaml
-  - home-assistant
+  - home-assistant/ks.yaml
   - zigbee2mqtt
