@@ -29,8 +29,6 @@ spec:
   dependsOn:
     - name: intel-device-plugin-gpu
       namespace: kube-tools
-    - name: emqx-cluster
-      namespace: home-automation
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
