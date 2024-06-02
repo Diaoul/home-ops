@@ -16,5 +16,5 @@ resources:
   - readarr/ks.yaml
   - readarr-audio/ks.yaml
   - recyclarr/ks.yaml
-  - sonarr
+  - sonarr/ks.yaml
   - unpackerr

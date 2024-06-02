@@ -3,19 +3,18 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app sonarr
-  namespace: media
+  name: sonarr
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
@@ -32,38 +31,56 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      sonarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            secret.reloader.stakater.com/reload: *app
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/sonarr-develop
               tag: 4.0.5.1719@sha256:0fc7fff53bad288cdad69ab2b05fc53b5f16066215aa98bb2f2886d984e1eaf7
             envFrom:
               - secretRef:
-                  name: *app
+                  name: sonarr
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 8989
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 200m
                 memory: 800Mi
               limits:
-                cpu: 1
                 memory: 1Gi
     service:
-      main:
+      app:
+        controller: sonarr
         ports:
           http:
-            port: 8989
+            port: *port
     ingress:
-      main:
-        enabled: true
+      app:
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -73,14 +90,13 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
             secretName: sonarr-tls
       api:
-        enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -89,7 +105,7 @@ spec:
             paths:
               - path: /api
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -97,10 +113,8 @@ spec:
             secretName: sonarr-tls
     persistence:
       config:
-        enabled: true
-        existingClaim: sonarr-config
+        existingClaim: sonarr
       media:
-        enabled: true
         existingClaim: nfs-singularity-media
         globalMounts:
           - path: /media
