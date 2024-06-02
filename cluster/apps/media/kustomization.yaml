@@ -7,7 +7,7 @@ resources:
   - pv
   - pvc
   - audiobookshelf
-  - flaresolverr
+  - flaresolverr/ks.yaml
   - jellyfin/ks.yaml
   - kavita
   - lidarr
