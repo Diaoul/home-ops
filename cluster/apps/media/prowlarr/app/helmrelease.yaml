@@ -3,25 +3,25 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app prowlarr
-  namespace: media
+  name: prowlarr
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,41 +32,56 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      prowlarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            secret.reloader.stakater.com/reload: *app
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/prowlarr-develop
               tag: 1.18.0.4543@sha256:563ca1f28815db564116b2258ae5b1db30dba4f0bafc8115f51257e9672fc45a
-            env:
-              PROWLARR__AUTHENTICATION_METHOD: External
             envFrom:
               - secretRef:
-                  name: *app
+                  name: prowlarr
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 9696
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 100m
                 memory: 600Mi
               limits:
-                cpu: 500m
                 memory: 1Gi
     service:
-      main:
+      app:
+        controller: prowlarr
         ports:
           http:
-            port: 9696
+            port: *port
     ingress:
-      main:
-        enabled: true
-        ingressClassName: nginx
+      app:
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -76,7 +91,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -84,5 +99,4 @@ spec:
             secretName: prowlarr-tls
     persistence:
       config:
-        enabled: true
-        existingClaim: prowlarr-config
+        existingClaim: prowlarr
