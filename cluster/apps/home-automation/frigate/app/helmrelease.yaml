@@ -6,29 +6,30 @@ metadata:
   name: frigate
   namespace: home-automation
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   dependsOn:
     - name: intel-device-plugin-gpu
       namespace: kube-tools
-    - name: emqx
+    - name: emqx-cluster
       namespace: home-automation
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -36,20 +37,23 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      frigate:
+        annotations:
+          configmap.reloader.stakater.com/reload: frigate-config
         pod:
           nodeSelector:
             google.feature.node.kubernetes.io/coral: "true"
             intel.feature.node.kubernetes.io/gpu: "true"
-          annotations:
-            configmap.reloader.stakater.com/reload: frigate-config
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/blakeblackshear/frigate
-              tag: 0.13.2
+              tag: 0.13.2@sha256:2906991ccad85035b176941f9dedfd35088ff710c39d45ef1baa9a49f2b16734
             env:
               LIBVA_DRIVER_NAME: i965
+            envFrom:
+              - secretRef:
+                  name: frigate
             probes:
               liveness: &probes
                 enabled: true
@@ -63,25 +67,24 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-              startup:
-                enabled: false
+            securityContext:
+              privileged: true
             resources:
               requests:
                 cpu: 500m
-                memory: 1.5Gi
+                memory: 2Gi
                 gpu.intel.com/i915: 1
               limits:
-                memory: 3Gi
+                memory: 4Gi
                 gpu.intel.com/i915: 1
-            securityContext:
-              privileged: true
     service:
-      main:
+      app:
+        controller: frigate
         ports:
           http:
             port: *port
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
@@ -92,7 +95,7 @@ spec:
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: frigate
                   port: http
         tls:
           - hosts:
@@ -101,21 +104,14 @@ spec:
     persistence:
       data:
         enabled: true
-        existingClaim: frigate-data
+        existingClaim: frigate
       config:
         enabled: true
-        readOnly: true
         type: configMap
         name: frigate-config
         globalMounts:
           - path: /config
-      media:
-        enabled: true
-        type: nfs
-        server: singularity.milkyway
-        path: /volume1/recordings
-        globalMounts:
-          - path: /media
+            readOnly: true
       cache:
         enabled: true
         type: emptyDir
@@ -128,3 +124,10 @@ spec:
         type: hostPath
         hostPath: /dev/apex_0
         hostPathType: CharDevice
+      media:
+        enabled: true
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/recordings
+        globalMounts:
+          - path: /media

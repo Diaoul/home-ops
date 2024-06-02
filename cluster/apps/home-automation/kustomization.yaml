@@ -8,6 +8,6 @@ resources:
   - milkyway-ca-secret.yaml
   - emqx/ks.yaml
   - esphome/ks.yaml
-  - frigate
+  - frigate/ks.yaml
   - home-assistant
   - zigbee2mqtt

@@ -1,8 +1,8 @@
 ---
 mqtt:
   host: emqx
-  user: ${EMQX_USER_USERNAME}
-  password: ${EMQX_USER_PASSWORD}
+  user: "{MQTT_USERNAME}"
+  password: "{MQTT_PASSWORD}"
 database:
   path: /data/frigate.db
 detectors:
