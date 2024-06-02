@@ -3,25 +3,25 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app readarr-audio
-  namespace: media
+  name: readarr-audio
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -32,54 +32,72 @@ spec:
       namespace: volsync
   values:
     controllers:
-      main:
+      readarr-audio:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
-          annotations:
-            secretreloader.stakater.com/reload: *app
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: { type: RuntimeDefault }
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/onedr0p/readarr-develop
               tag: 0.3.27.2538@sha256:6850caa980bfea336b6113c37f59c40a42f61ca2714d5b8f9c13b5933e33c0f2
             envFrom:
               - secretRef:
-                  name: *app
+                  name: readarr-audio
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 8787
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 200m
                 memory: 700Mi
               limits:
-                cpu: 500m
                 memory: 700Mi
     service:
-      main:
+      app:
+        controller: readarr-audio
         ports:
           http:
-            port: 8787
+            port: *port
     ingress:
-      main:
-        enabled: true
+      app:
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
+          auth.home.arpa/enabled: "true"
         hosts:
           - host: &host readarr-audio.${DOMAIN}
             paths:
               - path: /
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
               - *host
             secretName: readarr-audio-tls
       api:
-        enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
           cert-manager.home.arpa/enabled: "true"
@@ -88,7 +106,7 @@ spec:
             paths:
               - path: /api
                 service:
-                  name: main
+                  identifier: app
                   port: http
         tls:
           - hosts:
@@ -96,10 +114,8 @@ spec:
             secretName: readarr-audio-tls
     persistence:
       config:
-        enabled: true
-        existingClaim: readarr-audio-config
+        existingClaim: readarr-audio
       media:
-        enabled: true
         existingClaim: nfs-singularity-media
         globalMounts:
           - path: /media

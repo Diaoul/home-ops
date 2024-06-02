@@ -14,7 +14,7 @@ resources:
   - prowlarr
   - radarr/ks.yaml
   - readarr/ks.yaml
-  - readarr-audio
+  - readarr-audio/ks.yaml
   - recyclarr
   - sonarr
   - unpackerr
