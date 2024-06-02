@@ -53,10 +53,9 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 500Mi
+                memory: 300Mi
               limits:
-                cpu: 200m
-                memory: 800Mi
+                memory: 600Mi
     service:
       app:
         controller: mealie
