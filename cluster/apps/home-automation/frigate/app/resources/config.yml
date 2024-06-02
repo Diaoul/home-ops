@@ -1,8 +1,8 @@
 ---
 mqtt:
   host: emqx-listeners.home-automation.svc.cluster.milkyway
-  user: "{MQTT_USERNAME}"
-  password: "{MQTT_PASSWORD}"
+  user: "{FRIGATE_MQTT_USERNAME}"
+  password: "{FRIGATE_MQTT_PASSWORD}"
 database:
   path: /data/frigate.db
 detectors:
