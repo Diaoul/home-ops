@@ -3,16 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: vaultwarden
+  name: &app vaultwarden
   namespace: flux-system
 spec:
   targetNamespace: default
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./cluster/apps/default/vaultwarden/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-cluster
+  prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substitute:
+      APP: *app
+      CAPACITY: 200Mi
