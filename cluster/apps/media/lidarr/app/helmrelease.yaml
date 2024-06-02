@@ -100,7 +100,7 @@ spec:
             secretName: lidarr-tls
     persistence:
       config:
-        existingClaim: lidarr-config
+        existingClaim: lidarr
       media:
         existingClaim: nfs-singularity-media
         globalMounts:
