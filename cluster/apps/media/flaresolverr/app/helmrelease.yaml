@@ -4,44 +4,44 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: flaresolverr
-  namespace: media
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      flaresolverr:
         containers:
-          main:
+          app:
             image:
-              repository: flaresolverr/flaresolverr
-              tag: v3.3.19
+              repository: ghcr.io/flaresolverr/flaresolverr
+              tag: v3.3.19@sha256:0bdf9ed48f3c54c998bc160be46244ce3a88a7783b6cfd31eec9c1667786152f
             resources:
               requests:
-                cpu: 50m
+                cpu: 10m
                 memory: 150Mi
               limits:
-                cpu: 1
-                memory: 300Mi
+                memory: 500Mi
     service:
-      main:
+      app:
+        controller: flaresolverr
         ports:
           http:
             port: 8191
