@@ -60,7 +60,7 @@ spec:
           http:
             port: 9000
     ingress:
-      main:
+      app:
         enabled: true
         annotations:
           external-dns.home.arpa/enabled: "true"
