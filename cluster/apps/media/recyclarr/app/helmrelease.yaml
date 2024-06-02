@@ -69,10 +69,6 @@ spec:
                 memory: 100M
               limits:
                 memory: 200M
-    service:
-      app:
-        controller: recyclarr
-        enabled: false
     persistence:
       config:
         existingClaim: recyclarr
