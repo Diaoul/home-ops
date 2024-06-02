@@ -3,13 +3,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - config-pvc.yaml
-  - helmrelease.yaml
-  - volsync.yaml
+  - ./helmrelease.yaml
+  - ../../../../templates/persistence
 configMapGenerator:
   - name: recyclarr
-    namespace: media
     files:
-      - ./config/recyclarr.yml
+      - ./recources/recyclarr.yml
 generatorOptions:
   disableNameSuffixHash: true
