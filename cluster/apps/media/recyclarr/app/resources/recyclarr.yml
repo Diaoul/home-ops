@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json
 sonarr:
-  standard:
+  sonarr:
     base_url: http://sonarr.media.svc.cluster.milkyway:8989
     api_key: !env_var SONARR__API_KEY
     delete_old_custom_formats: true
@@ -341,7 +341,7 @@ sonarr:
           # VOSTFR
           - 07a32f77690263bb9fda1842db7e273f # VOSTFR
 radarr:
-  standard:
+  radarr:
     base_url: http://radarr.media.svc.cluster.milkyway:7878
     api_key: !env_var RADARR__API_KEY
     delete_old_custom_formats: true
