@@ -16,5 +16,4 @@ resources:
   - rook-ceph.yaml
   - system-upgrade.yaml
   - tigera-operator.yaml
-  - volsync.yaml
   - vpn.yaml
