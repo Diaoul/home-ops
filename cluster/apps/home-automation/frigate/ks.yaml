@@ -16,6 +16,7 @@ spec:
     name: flux-cluster
   dependsOn:
     - name: emqx-cluster
+    - name: node-feature-discovery-rules
   prune: true
   wait: false
   interval: 30m

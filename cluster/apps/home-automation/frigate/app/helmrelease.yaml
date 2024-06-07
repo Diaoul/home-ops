@@ -26,8 +26,6 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: intel-device-plugin-gpu
-      namespace: kube-tools
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
