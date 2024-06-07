@@ -14,5 +14,5 @@ resources:
   - home-automation
   - media
   - system-upgrade
-  - volsync
+  - ./volsync-system
   - vpn
