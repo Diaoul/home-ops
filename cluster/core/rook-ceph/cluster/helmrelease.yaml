@@ -29,6 +29,9 @@ spec:
     keepHistory: false
   dependsOn:
     - name: rook-ceph
+      namespace: rook-ceph
+    - name: snapshot-controller
+      namespace: volsync-system
   values:
     monitoring:
       enabled: true
@@ -65,3 +68,8 @@ spec:
               - name: nvme0n1
         useAllDevices: false
         useAllNodes: false
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-blockpool
+      isDefault: false
+      deletionPolicy: Delete
