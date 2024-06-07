@@ -9,6 +9,7 @@ resources:
   - downloads
   - calico-system
   - kube-tools
+  - kube-system
   - networking
   - monitoring
   - home-automation
