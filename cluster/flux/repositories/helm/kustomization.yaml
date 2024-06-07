@@ -11,6 +11,7 @@ resources:
   - blakeshome.yaml
   - coredns.yaml
   - dex.yaml
+  - descheduler.yaml
   - diaoul.yaml
   - emqx.yaml
   - external-dns.yaml
@@ -22,7 +23,6 @@ resources:
   - k8s-gateway.yaml
   - kasten.yaml
   - kubereboot.yaml
-  - kubernetes-sigs-descheduler.yaml
   - kubernetes-stable.yaml
   - kyverno.yaml
   - longhorn.yaml
