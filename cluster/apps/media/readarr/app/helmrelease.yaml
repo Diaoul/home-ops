@@ -51,6 +51,8 @@ spec:
             envFrom:
               - secretRef:
                   name: readarr
+            env:
+              COMPlus_EnableDiagnostics: "0"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

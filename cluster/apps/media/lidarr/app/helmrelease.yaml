@@ -48,6 +48,8 @@ spec:
             image:
               repository: ghcr.io/onedr0p/lidarr-develop
               tag: 2.3.3.4204@sha256:8061ccda9651601d112dfb1476cc32aa23826e4685c202da56ecb81b218ef491
+            env:
+              COMPlus_EnableDiagnostics: "0"
             envFrom:
               - secretRef:
                   name: lidarr
