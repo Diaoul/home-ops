@@ -7,5 +7,4 @@ resources:
   - kyverno
   - local-path-provisioner
   - metrics-server
-  - node-feature-discovery
   - reloader
