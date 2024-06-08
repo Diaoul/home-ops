@@ -83,7 +83,7 @@ spec:
                   failureThreshold: 30
             resources:
               requests:
-                cpu: 1
+                cpu: 100m
                 memory: 1Gi
                 gpu.intel.com/i915: 1
               limits:
