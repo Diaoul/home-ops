@@ -15,7 +15,7 @@ spec:
       key: ca.crt
     copyMethod: Snapshot
     pruneIntervalDays: 7
-    volumeSnapshotClassName: csi-ceph-blockpool
+    volumeSnapshotClassName: ceph-block
     cacheStorageClassName: openebs-hostpath
     cacheAccessModes:
       - ReadWriteOnce
