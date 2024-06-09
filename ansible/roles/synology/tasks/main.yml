@@ -13,3 +13,8 @@
   ansible.builtin.import_tasks: minio.yml
   tags:
     - minio
+
+- name: Matchbox
+  ansible.builtin.import_tasks: matchbox.yml
+  tags:
+    - matchbox
