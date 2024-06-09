@@ -26,8 +26,6 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    crds:
-      install: true
     admissionController:
       replicas: 3
       updateStrategy:
