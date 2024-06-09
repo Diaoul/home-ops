@@ -15,6 +15,8 @@ spec:
         kind: HelmRepository
         name: rook
         namespace: flux-system
+  driftDetection:
+    mode: warn
   maxHistory: 2
   install:
     remediation:
@@ -31,9 +33,50 @@ spec:
     - name: snapshot-controller
       namespace: volsync-system
   values:
+    toolbox:
+      enabled: true
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 1Gi
     monitoring:
       enabled: true
       createPrometheusRules: true
+    cephClusterSpec:
+      network:
+        provider: host
+        connections:
+          requireMsgr2: true
+      placement:
+        mgr: &placement
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: node-role.kubernetes.io/control-plane
+                      operator: Exists
+        mon: *placement
+      dashboard:
+        ssl: false
+      # NOTE: only overriding problematic resource constraints
+      resources:
+        mgr:
+          requests:
+            cpu: 100m # 500m
+        mon:
+          requests:
+            cpu: 200m # 1000m
+            memory: 128Mi # 1Gi
+          limits:
+            memory: 1Gi # 2Gi
+        osd:
+          requests:
+            cpu: 200m # 1000m
+            memory: 2Gi # 4Gi
+      storage:
+        deviceFilter: nvme0n1
     ingress:
       dashboard:
         ingressClassName: nginx
@@ -44,55 +87,127 @@ spec:
           - hosts:
               - *host
             secretName: rook-tls
-    toolbox:
+    # NOTE: same as default
+    cephBlockPools:
+      - name: ceph-blockpool
+        spec:
+          failureDomain: host
+          replicated:
+            size: 3
+        storageClass:
+          enabled: true
+          name: ceph-block
+          isDefault: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: Immediate
+          mountOptions: []
+          allowedTopologies: []
+          parameters:
+            imageFormat: "2"
+            imageFeatures: layering
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/fstype: ext4
+    # NOTE: same as default except resources
+    cephFileSystems:
+      - name: ceph-filesystem
+        spec:
+          metadataPool:
+            replicated:
+              size: 3
+          dataPools:
+            - failureDomain: host
+              replicated:
+                size: 3
+              name: data0
+          metadataServer:
+            activeCount: 1
+            activeStandby: true
+            resources:
+              requests:
+                cpu: 100m # 1000m
+                memory: 1Gi # 4Gi
+              limits:
+                memory: 4Gi # 4Gi
+            priorityClassName: system-cluster-critical
+        storageClass:
+          enabled: true
+          isDefault: false
+          name: ceph-filesystem
+          pool: data0
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: Immediate
+          mountOptions: []
+          parameters:
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
+            csi.storage.k8s.io/fstype: ext4
+        metadataServer:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1Gi
+            limits:
+              memory: 4Gi
+    # NOTE: same as default except enabled and not default
+    cephFileSystemVolumeSnapshotClass:
       enabled: true
-    cephClusterSpec:
-      network:
-        provider: host
-      dashboard:
-        enabled: true
-        urlPrefix: /
-        ssl: false
-      storage:
-        nodes:
-          - name: k8s-node-1
-            devices:
-              - name: nvme0n1
-          - name: k8s-node-2
-            devices:
-              - name: nvme0n1
-          - name: k8s-node-3
-            devices:
-              - name: nvme0n1
-        useAllDevices: false
-        useAllNodes: false
-      resources:
-        mgr:
-          requests:
-            cpu: 100m
-            memory: 512Mi
-          limits:
-            memory: 2Gi
-        mon:
-          requests:
-            cpu: 50m
-            memory: 512Mi
-          limits:
-            memory: 1Gi
-        osd:
-          requests:
-            cpu: 500m
-            memory: 2Gi
-          limits:
-            memory: 6Gi
-        mgr-sidecar:
-          requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            memory: 256Mi
-    cephBlockPoolsVolumeSnapshotClass:
-      enabled: true
-      name: csi-ceph-blockpool
+      name: ceph-filesystem
       isDefault: false
       deletionPolicy: Delete
+      annotations: {}
+      labels: {}
+      parameters: {}
+    # NOTE: same as default except enabled
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: ceph-block
+      isDefault: false
+      deletionPolicy: Delete
+      annotations: {}
+      labels: {}
+      parameters: {}
+    # NOTE: same as default except resources
+    cephObjectStores:
+      - name: ceph-objectstore
+        spec:
+          metadataPool:
+            failureDomain: host
+            replicated:
+              size: 3
+          dataPool:
+            failureDomain: host
+            erasureCoded:
+              dataChunks: 2
+              codingChunks: 1
+          preservePoolsOnDelete: true
+          gateway:
+            port: 80
+            resources:
+              requests:
+                cpu: 200m # 1000m
+                memory: 1Gi # 1Gi
+              limits:
+                memory: 2Gi # 2Gi
+            instances: 1
+            priorityClassName: system-cluster-critical
+        storageClass:
+          enabled: true
+          name: ceph-bucket
+          reclaimPolicy: Delete
+          volumeBindingMode: Immediate
+          parameters:
+            region: us-east-1
+        # TODO: consider enabling this
+        ingress:
+          enabled: false
