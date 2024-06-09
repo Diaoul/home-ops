@@ -39,7 +39,7 @@ session:
 notifier:
   disable_startup_check: true
   smtp:
-    address: smtp-relay.default.svc.cluster.milkyway:25
+    address: ${ROUTER_IP}
     sender: Authelia <authelia@${DOMAIN}>
     disable_require_tls: true
 
