@@ -6,7 +6,7 @@ metadata:
   name: rook-ceph
   namespace: rook-ceph
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: rook-ceph
@@ -15,7 +15,7 @@ spec:
         kind: HelmRepository
         name: rook
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     crds: CreateReplace
     remediation:
@@ -27,6 +27,14 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  dependsOn:
+    - name: snapshot-controller
+      namespace: volsync-system
   values:
+    csi:
+      cephFSKernelMountOptions: ms_mode=prefer-crc
+      enableLiveness: true
+      serviceMonitor:
+        enabled: true
     monitoring:
       enabled: true

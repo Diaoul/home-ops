@@ -6,7 +6,7 @@ metadata:
   name: rook-ceph-cluster
   namespace: rook-ceph
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: rook-ceph-cluster
@@ -15,9 +15,7 @@ spec:
         kind: HelmRepository
         name: rook
         namespace: flux-system
-  driftDetection:
-    mode: enabled
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
