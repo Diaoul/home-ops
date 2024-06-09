@@ -35,6 +35,7 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: ${DOMAIN}
+      allowSnippetAnnotations: true
       config:
         custom-http-errors: 401,403,404,500,501,502,503
         ssl-protocols: "TLSv1.3 TLSv1.2"
