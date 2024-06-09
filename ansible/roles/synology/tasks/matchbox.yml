@@ -8,7 +8,7 @@
 - name: Install matchbox
   community.docker.docker_container:
     name: matchbox
-    image: quay.io/poseidon/matchbox:v0.10.0
+    image: quay.io/poseidon/matchbox:v0.11.0
     restart_policy: unless-stopped
     network_mode: host
     command: >
