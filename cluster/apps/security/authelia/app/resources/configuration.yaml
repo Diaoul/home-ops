@@ -63,8 +63,8 @@ access_control:
 identity_providers:
   oidc:
     jwks:
-      - key:
-          path: /config/oidc-jwks-key.pem
+      # prettier-ignore
+      - key: {{ secret "/config/oidc-jwks-key.pem" | mindent 10 "|" | msquote }}
     cors:
       endpoints: ["authorization", "token", "revocation", "introspection"]
       allowed_origins_from_client_redirect_uris: true
