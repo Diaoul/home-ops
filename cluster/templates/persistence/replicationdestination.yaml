@@ -13,8 +13,8 @@ spec:
       secretName: milkyway-ca
       key: ca.crt
     copyMethod: Snapshot
-    volumeSnapshotClassName: csi-ceph-blockpool
-    cacheStorageClassName: local-path
+    volumeSnapshotClassName: ceph-block
+    cacheStorageClassName: openebs-hostpath
     cacheAccessModes:
       - ReadWriteOnce
     cacheCapacity: 4Gi
