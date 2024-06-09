@@ -30,7 +30,7 @@ session:
   cookies:
     - name: milkyway_session
       domain: ${DOMAIN}
-      authelia_url: https://auth.${DOMAIN}
+      authelia_url: https://authelia.${DOMAIN}
       default_redirection_url: https://${DOMAIN}
   redis:
     database_index: 2
@@ -62,6 +62,9 @@ access_control:
 
 identity_providers:
   oidc:
+    jwks:
+      - key:
+          path: /config/oidc-jwks-key.pem
     cors:
       endpoints: ["authorization", "token", "revocation", "introspection"]
       allowed_origins_from_client_redirect_uris: true
