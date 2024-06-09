@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - kured
   - kyverno
-  - local-path-provisioner
   - metrics-server
   - reloader

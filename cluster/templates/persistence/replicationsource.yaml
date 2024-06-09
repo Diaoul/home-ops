@@ -16,7 +16,7 @@ spec:
     copyMethod: Snapshot
     pruneIntervalDays: 7
     volumeSnapshotClassName: csi-ceph-blockpool
-    cacheStorageClassName: local-path
+    cacheStorageClassName: openebs-hostpath
     cacheAccessModes:
       - ReadWriteOnce
     cacheCapacity: 8Gi

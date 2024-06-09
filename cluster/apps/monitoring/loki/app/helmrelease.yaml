@@ -29,8 +29,8 @@ spec:
   uninstall:
     keepHistory: false
   dependsOn:
-    - name: local-path-provisioner
-      namespace: kube-tools
+    - name: openebs
+      namespace: openebs-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: vector-agent
@@ -100,7 +100,7 @@ spec:
       replicas: 2
       persistence:
         size: 10Gi
-        storageClass: local-path
+        storageClass: openebs-hostpath
     gateway:
       replicas: 2
       image:
@@ -111,7 +111,7 @@ spec:
       replicas: 2
       persistence:
         size: 10Gi
-        storageClass: local-path
+        storageClass: openebs-hostpath
     lokiCanary:
       enabled: false
     sidecar:
