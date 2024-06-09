@@ -7,8 +7,8 @@ resources:
   - default
   - downloads
   - calico-system
-  - kube-tools
   - kube-system
+  - ./kyverno
   - networking
   - monitoring
   - home-automation

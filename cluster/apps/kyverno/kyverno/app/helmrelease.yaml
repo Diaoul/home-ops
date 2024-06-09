@@ -4,9 +4,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: kyverno
-  namespace: kyverno
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: kyverno
@@ -15,21 +14,26 @@ spec:
         kind: HelmRepository
         name: kyverno
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     crds:
-      install: false
+      install: true
     admissionController:
       replicas: 3
+      updateStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxSurge: 1
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -37,4 +41,15 @@ spec:
           labelSelector:
             matchLabels:
               app.kubernetes.io/instance: kyverno
-              app.kubernetes.io/component: kyverno
+              app.kubernetes.io/component: admission-controller
+      serviceMonitor:
+        enabled: true
+    backgroundController:
+      serviceMonitor:
+        enabled: true
+    cleanupController:
+      serviceMonitor:
+        enabled: true
+    reportsController:
+      serviceMonitor:
+        enabled: true
