@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./database
   - default
-  - dev
   - downloads
   - calico-system
   - kube-tools
