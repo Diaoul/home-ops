@@ -29,6 +29,7 @@ resources:
   - node-feature-discovery.yaml
   - metrics-server.yaml
   - oauth2-proxy.yaml
+  - openebs.yaml
   - project-calico.yaml
   - prometheus-community.yaml
   - piraeus.yaml
