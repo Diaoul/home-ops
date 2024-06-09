@@ -44,3 +44,10 @@ spec:
             - "${K8S_CLUSTER_CIDR}"
       nodeMetricsPort: 9091
       typhaMetricsPort: 9093
+    resources:
+      requests:
+        cpu: 15m
+        memory: 164M
+      limits:
+        cpu: 500m
+        memory: 196M
