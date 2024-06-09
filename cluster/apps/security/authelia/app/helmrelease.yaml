@@ -111,7 +111,7 @@ spec:
             add_header X-Frame-Options "SAMEORIGIN";
             add_header X-XSS-Protection "1; mode=block";
         hosts:
-          - host: &host authelia.${DOMAIN}
+          - host: &host auth2.${DOMAIN}
             paths:
               - path: /
                 service:

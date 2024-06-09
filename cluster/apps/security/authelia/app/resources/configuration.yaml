@@ -30,7 +30,7 @@ session:
   cookies:
     - name: milkyway_session
       domain: ${DOMAIN}
-      authelia_url: https://authelia.${DOMAIN}
+      authelia_url: https://auth2.${DOMAIN}
       default_redirection_url: https://${DOMAIN}
   redis:
     database_index: 2
