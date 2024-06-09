@@ -49,13 +49,6 @@ spec:
             type: loki
             access: proxy
             url: http://loki-gateway
-          - name: MySQL Blocky
-            type: mysql
-            url: mariadb.db:3306
-            database: blocky
-            user: ${MARIADB_GRAFANA_USER}
-            secureJsonData:
-              password: ${MARIADB_GRAFANA_PASSWORD}
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
