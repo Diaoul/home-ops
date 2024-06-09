@@ -9,6 +9,7 @@ resources:
   - bitnami.yaml
   - bjw-s.yaml
   - blakeshome.yaml
+  - cloudnative-pg.yaml
   - coredns.yaml
   - dex.yaml
   - descheduler.yaml

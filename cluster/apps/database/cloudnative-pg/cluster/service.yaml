@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-lb
+  annotations:
+    external-dns.home.arpa/enabled: "true"
+spec:
+  type: LoadBalancer
+  externalIPs:
+    - ${POSTGRES_IP}
+  externalTrafficPolicy: Local
+  ports:
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    cnpg.io/cluster: postgres16
+    role: primary
