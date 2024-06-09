@@ -43,13 +43,6 @@ notifier:
     sender: Authelia <authelia@${DOMAIN}>
     disable_require_tls: true
 
-totp:
-  disable: false
-  issuer: authelia.com
-
-webauthn:
-  disable: true
-
 duo_api:
   disable: true
 
