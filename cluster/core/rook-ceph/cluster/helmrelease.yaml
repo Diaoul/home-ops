@@ -16,7 +16,7 @@ spec:
         name: rook
         namespace: flux-system
   driftDetection:
-    mode: warn
+    mode: enabled
   maxHistory: 2
   install:
     remediation:
