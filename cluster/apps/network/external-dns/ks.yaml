@@ -6,8 +6,8 @@ metadata:
   name: external-dns
   namespace: flux-system
 spec:
-  targetNamespace: networking
-  path: ./cluster/apps/networking/external-dns/app
+  targetNamespace: network
+  path: ./cluster/apps/network/external-dns/app
   prune: true
   sourceRef:
     kind: GitRepository
