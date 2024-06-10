@@ -4,30 +4,30 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: nut-server-basement
-  namespace: networking
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 2.6.0
+      version: 3.2.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   values:
     controllers:
-      main:
+      nut-server-basement:
         pod:
           annotations:
             configmap.reloader.stakater.com/reload: &config nut-server-basement-config
@@ -55,7 +55,8 @@ spec:
               # export all variables
               - --nut.vars_enable=
     service:
-      main:
+      app:
+        controller: nut-server-basement
         ports:
           http:
             port: 3493

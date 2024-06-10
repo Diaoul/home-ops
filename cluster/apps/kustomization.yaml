@@ -13,6 +13,7 @@ resources:
   - monitoring
   - home-automation
   - media
+  - ./observability
   - ./openebs-system
   - ./security
   - system-upgrade

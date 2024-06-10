@@ -3,7 +3,6 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: nut-exporter
-  namespace: networking
 spec:
   groups:
     - name: nut-exporter
@@ -28,7 +27,8 @@ spec:
             severity: critical
         - alert: UpsLowBattery
           annotations:
-            description: UPS {{ $labels.ups }} battery is low and the system is getting
+            description:
+              UPS {{ $labels.ups }} battery is low and the system is getting
               ready to shutdown.
             summary: UPS battery is low.
           expr: |
