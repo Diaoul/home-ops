@@ -9,6 +9,7 @@ resources:
   - calico-system
   - kube-system
   - ./kyverno
+  - ./network
   - networking
   - monitoring
   - home-automation
