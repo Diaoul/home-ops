@@ -33,8 +33,8 @@ session:
       authelia_url: https://auth2.${DOMAIN}
       default_redirection_url: https://${DOMAIN}
   redis:
-    database_index: 2
     host: dragonfly.database.svc.cluster.milkyway
+    database_index: 2
 
 notifier:
   disable_startup_check: true
