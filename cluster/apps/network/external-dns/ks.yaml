@@ -3,10 +3,13 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: external-dns
+  name: &app external-dns
   namespace: flux-system
 spec:
   targetNamespace: network
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
   path: ./cluster/apps/network/external-dns/app
   prune: true
   sourceRef:
