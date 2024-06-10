@@ -28,8 +28,7 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    sources:
-      - ingress
+    sources: ["crd", "ingress"]
     provider: cloudflare
     env:
       - name: CF_API_EMAIL
@@ -40,13 +39,12 @@ spec:
             name: &secret external-dns
             key: CF_API_TOKEN
     policy: sync
-    domainFilters:
-      - ${DOMAIN}
+    domainFilters: ["${DOMAIN}"]
     extraArgs:
       - --cloudflare-proxied
+      - --events
+      - --ignore-ingress-tls-spec
       - --annotation-filter=external-dns.home.arpa/enabled in (true)
-      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
     serviceMonitor:
       enabled: true
     resources:
