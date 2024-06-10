@@ -34,7 +34,7 @@ spec:
           nodeSelector:
             ups.feature.node.kubernetes.io/apc: "true"
         containers:
-          main:
+          app:
             image:
               repository: ghcr.io/jr0dd/network-ups-tools
               tag: v2.8.1@sha256:7999ff0ed6f4e31d64f8a6afc66dce26e147608c9d595f4f4fb7b4a6e442ae00
@@ -67,7 +67,7 @@ spec:
         externalTrafficPolicy: Local
       metrics:
         enabled: true
-        controller: main
+        controller: nut-server-basement
         ports:
           metrics:
             enabled: true
