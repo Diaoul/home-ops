@@ -44,7 +44,7 @@ spec:
       - --cloudflare-proxied
       - --events
       - --ignore-ingress-tls-spec
-      - --annotation-filter=external-dns.home.arpa/enabled in (true)
+      - --ingress-class=external
     serviceMonitor:
       enabled: true
     resources:

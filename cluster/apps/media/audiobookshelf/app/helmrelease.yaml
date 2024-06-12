@@ -83,19 +83,15 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+        className: external
         hosts:
-          - host: &host audiobookshelf.${DOMAIN}
+          - host: audiobookshelf.${DOMAIN}
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: audiobookshelf-tls
     persistence:
       config:
         existingClaim: audiobookshelf
