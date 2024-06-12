@@ -14,6 +14,8 @@
       net.bridge.bridge-nf-call-ip6tables: 1
       net.ipv4.conf.default.rp_filter: 0
       net.ipv4.conf.all.rp_filter: 0
+      net.core.rmem_max: 2500000
+      net.core.wmem_max: 2500000
   when: '"kubernetes" in group_names'
 
 - name: Update hostname

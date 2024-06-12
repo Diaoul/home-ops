@@ -1,0 +1,10 @@
+---
+originRequest:
+  originServerName: external.${DOMAIN}
+
+ingress:
+  - hostname: ${DOMAIN}
+    service: https://nginx-external-controller.network.svc.cluster.milkyway:443
+  - hostname: "*.${DOMAIN}"
+    service: https://nginx-external-controller.network.svc.cluster.milkyway:443
+  - service: http_status:404

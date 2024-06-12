@@ -6,6 +6,7 @@ resources:
   - ./namespace.yaml
   - ./milkyway-ca-secret.yaml
   - ./blocky/ks.yaml
+  - ./cloudflared/ks.yaml
   - ./nginx/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./external-dns/ks.yaml
