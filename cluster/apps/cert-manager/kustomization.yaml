@@ -5,4 +5,3 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./cert-manager/ks.yaml
-  - ./certificates/ks.yaml
