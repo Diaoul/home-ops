@@ -11,10 +11,10 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./cluster/apps/network/external-dns/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-cluster
+  prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
