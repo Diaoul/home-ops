@@ -59,6 +59,7 @@ spec:
               OIDC_SIGNUP_ENABLED: true
               OIDC_CONFIGURATION_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
               OIDC_CLIENT_ID: mealie
+              OIDC_USER_CLAIM: preferred_username
               OIDC_AUTO_REDIRECT: false
               OIDC_GROUPS_CLAIM: groups
               OIDC_ADMIN_GROUP: admins
