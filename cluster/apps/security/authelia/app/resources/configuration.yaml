@@ -101,6 +101,8 @@ identity_providers:
         require_pkce: true
         pkce_challenge_method: "S256"
         scopes: ["openid", "profile", "groups", "email"]
-        redirect_uris: ["https://mealie.${DOMAIN}/login"]
+        redirect_uris:
+          - https://mealie.${DOMAIN}/login
+          - https://mealie.${DOMAIN}/login?direct=1
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: none
