@@ -36,8 +36,8 @@ spec:
       - name: CF_API_TOKEN
         valueFrom:
           secretKeyRef:
-            name: &secret external-dns
-            key: CF_API_TOKEN
+            name: &secret external-dns-cloudflare
+            key: api-token
     policy: sync
     domainFilters: ["${DOMAIN}"]
     extraArgs:
