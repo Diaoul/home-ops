@@ -30,7 +30,7 @@ spec:
     controller:
       replicaCount: 2
       service:
-        internalIPs:
+        externalIPs:
           - ${INGRESS_NGINX_INTERNAL_IP}
         enableHttp: false
         internalTrafficPolicy: Local
