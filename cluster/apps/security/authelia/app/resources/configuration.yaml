@@ -60,7 +60,6 @@ identity_providers:
       - key: {{ secret "/config/oidc-jwks-key.pem" | mindent 10 "|" | msquote }}
     cors:
       endpoints: ["authorization", "token", "revocation", "introspection"]
-      allowed_origins_from_client_redirect_uris: true
     clients:
       - client_name: Grafana
         client_id: grafana
