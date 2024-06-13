@@ -27,6 +27,6 @@ spec:
     keepHistory: false
   dependsOn:
     - name: cert-manager
-      namespace: networking
+      namespace: cert-manager
   values:
     fullnameOverride: emqx-operator

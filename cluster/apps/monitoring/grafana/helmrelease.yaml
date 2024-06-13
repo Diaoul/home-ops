@@ -27,7 +27,7 @@ spec:
     keepHistory: false
   values:
     env:
-      VAR_BLOCKY_URL: "http://blocky.networking.svc.${CLUSTER_DOMAIN}:4000"
+      VAR_BLOCKY_URL: "http://blocky.network.svc.${CLUSTER_DOMAIN}:4000"
     adminPassword: ${GRAFANA_ADMIN_PASSWORD}
     grafana.ini:
       analytics:
