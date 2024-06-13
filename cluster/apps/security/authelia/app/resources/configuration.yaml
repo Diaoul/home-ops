@@ -92,3 +92,13 @@ identity_providers:
         scopes: ["openid", "profile", "groups", "email"]
         redirect_uris: ["https://miniflux.${DOMAIN}/oauth2/oidc/callback"]
         userinfo_signed_response_alg: none
+      - client_name: Mealie
+        client_id: mealie
+        public: true
+        authorization_policy: two_factor
+        require_pkce: true
+        pkce_challenge_method: "S256"
+        scopes: ["openid", "profile", "groups", "email"]
+        redirect_uris: ["https://mealie.${DOMAIN}/login"]
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: none

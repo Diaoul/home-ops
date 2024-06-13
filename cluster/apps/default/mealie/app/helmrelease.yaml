@@ -55,6 +55,13 @@ spec:
               SMTP_PORT: 25
               SMTP_AUTH_STRATEGY: NONE
               SMTP_FROM_EMAIL: mealie@${DOMAIN}
+              OIDC_AUTH_ENABLED: true
+              OIDC_SIGNUP_ENABLED: true
+              OIDC_CONFIGURATION_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
+              OIDC_CLIENT_ID: mealie
+              OIDC_AUTO_REDIRECT: false
+              OIDC_ADMIN_GROUP: admins
+              OIDC_USER_GROUP: family
             envFrom:
               - secretRef:
                   name: mealie
