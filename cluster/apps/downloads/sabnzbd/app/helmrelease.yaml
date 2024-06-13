@@ -90,21 +90,16 @@ spec:
             port: *port
     ingress:
       app:
-        enabled: true
+        className: external
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
         hosts:
-          - host: &host sabnzbd.${DOMAIN}
+          - host: sabnzbd.${DOMAIN}
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: sabnzbd-tls
     persistence:
       config:
         existingClaim: sabnzbd

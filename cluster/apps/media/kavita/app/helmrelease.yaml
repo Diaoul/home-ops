@@ -64,21 +64,16 @@ spec:
             port: 5000
     ingress:
       app:
-        enabled: true
+        className: external
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
         hosts:
-          - host: &host kavita.${DOMAIN}
+          - host: kavita.${DOMAIN}
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: kavita-tls
     persistence:
       config:
         existingClaim: kavita

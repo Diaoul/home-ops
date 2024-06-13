@@ -40,6 +40,16 @@ spec:
               tag: 2024.5.5@sha256:4f8a9218ab21224b7c744bc2943af28c1157671319d3246ae65d9ea568f930b9
             env:
               ESPHOME_DASHBOARD_USE_PING: true
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 100m
@@ -54,7 +64,6 @@ spec:
             port: 6052
     ingress:
       app:
-        enabled: true
         className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${DOMAIN}

@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: postgres-lb
   annotations:
-    external-dns.home.arpa/enabled: "true"
+    external-dns.alpha.kubernetes.io/hostname: postgres.${DOMAIN}
 spec:
   type: LoadBalancer
   externalIPs:

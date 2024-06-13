@@ -81,10 +81,8 @@ spec:
             port: 3012
     ingress:
       app:
-        enabled: true
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
         hosts:
           - host: &host vaultwarden.${DOMAIN}
             paths:
@@ -100,15 +98,9 @@ spec:
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: vaultwarden-tls
       admin:
-        enabled: true
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
           # disabled for 401 because it is used for the admin login page
           nginx.ingress.kubernetes.io/custom-http-errors: 403,404,500,501,502,503
           nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
@@ -119,10 +111,6 @@ spec:
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: vaultwarden-tls
     persistence:
       data:
         existingClaim: vaultwarden

@@ -82,9 +82,9 @@ spec:
             port: *port
     ingress:
       app:
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
-        className: external
         hosts:
           - host: audiobookshelf.${DOMAIN}
             paths:

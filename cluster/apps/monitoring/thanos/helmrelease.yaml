@@ -51,14 +51,11 @@ spec:
     queryFrontend:
       ingress:
         enabled: true
-        hostname: &host thanos-query.${DOMAIN}
+        ingressClassName: internal
+        hostname: thanos-query.${DOMAIN}
         annotations:
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
         tls: true
-        extraTls:
-          - hosts:
-              - *host
-            secretName: thanos-query-tls
     bucketweb:
       enabled: true
       replicaCount: 2

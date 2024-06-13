@@ -38,19 +38,14 @@ spec:
     alertmanager:
       ingress:
         enabled: true
+        ingressClassName: internal
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
-          auth.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
         hosts:
-          - &host-alert-manager alert-manager.${DOMAIN}
+          - alert-manager.${DOMAIN}
         paths:
           - /
         pathType: Prefix
-        tls:
-          - hosts:
-              - *host-alert-manager
-            secretName: alert-manager-tls
       alertManagerSpec:
         storage:
           volumeClaimTemplate:
@@ -122,35 +117,30 @@ spec:
     prometheus:
       ingress:
         enabled: true
+        ingressClassName: internal
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
-          auth.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
         hosts:
-          - &host-prometheus prometheus.${DOMAIN}
+          - prometheus.${DOMAIN}
         paths:
           - /
         pathType: Prefix
-        tls:
-          - hosts:
-              - *host-prometheus
-            secretName: prometheus-tls
       thanosService:
         enabled: true
       thanosServiceMonitor:
         enabled: true
       thanosIngress:
         enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
+        ingressClassName: internal
         annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
           nginx.ingress.kubernetes.io/ssl-redirect: "true"
           nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
         hosts:
-          - &host-thanos-sidecar "thanos-sidecar.${DOMAIN}"
-        tls:
-          - hosts:
-              - *host-thanos-sidecar
+          - thanos-sidecar.${DOMAIN}
+        paths:
+          - /
+        pathType: Prefix
       prometheusSpec:
         enableAdminAPI: true
         replicaExternalLabelName: __replica__

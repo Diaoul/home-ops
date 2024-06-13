@@ -79,14 +79,10 @@ spec:
         deviceFilter: nvme0n1
     ingress:
       dashboard:
-        ingressClassName: nginx
+        ingressClassName: internal
         host:
-          name: &host rook.${DOMAIN}
+          name: rook.${DOMAIN}
           path: /
-        tls:
-          - hosts:
-              - *host
-            secretName: rook-tls
     # NOTE: same as default
     cephBlockPools:
       - name: ceph-blockpool

@@ -82,21 +82,16 @@ spec:
             port: *port
     ingress:
       app:
-        enabled: true
+        className: external
         annotations:
-          external-dns.home.arpa/enabled: "true"
-          cert-manager.home.arpa/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
         hosts:
-          - host: &host qb.${DOMAIN}
+          - host: qb.${DOMAIN}
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
-            secretName: qb-tls
     persistence:
       config:
         existingClaim: qbittorrent
