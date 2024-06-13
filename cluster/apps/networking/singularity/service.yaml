@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: singularity
-  namespace: networking
-spec:
-  type: ExternalName
-  externalName: singularity.${LOCAL_DOMAIN}
