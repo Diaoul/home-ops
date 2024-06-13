@@ -102,6 +102,7 @@ spec:
             port: 8080
     ingress:
       app:
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -109,7 +110,6 @@ spec:
             add_header Pragma "no-cache";
             add_header X-Frame-Options "SAMEORIGIN";
             add_header X-XSS-Protection "1; mode=block";
-        className: external
         hosts:
           - host: auth.${DOMAIN}
             paths:

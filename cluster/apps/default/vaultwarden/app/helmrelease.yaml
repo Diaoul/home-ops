@@ -81,6 +81,7 @@ spec:
             port: 3012
     ingress:
       app:
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
         hosts:
@@ -99,6 +100,7 @@ spec:
                   identifier: app
                   port: http
       admin:
+        className: external
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
           # disabled for 401 because it is used for the admin login page
