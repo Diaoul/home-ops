@@ -14,8 +14,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-cluster
-  prune: false
-  wait: true
+  prune: true
+  wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
