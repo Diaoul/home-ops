@@ -99,7 +99,7 @@ identity_providers:
         public: true
         authorization_policy: two_factor
         require_pkce: true
-        pkce_challenge_method: "S256"
+        pkce_challenge_method: S256
         scopes: ["openid", "profile", "groups", "email"]
         redirect_uris:
           - https://mealie.${DOMAIN}/login
