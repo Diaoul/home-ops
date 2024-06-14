@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - flux-system.yaml
   - media.yaml
-  - monitoring.yaml
   - rook-ceph.yaml
   - system-upgrade.yaml
   - tigera-operator.yaml
