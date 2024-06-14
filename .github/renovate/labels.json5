@@ -1,0 +1,58 @@
+
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    // datasource specific settings
+    {
+      "matchDatasources": ["docker"],
+      "addLabels": ["renovate/container"]
+    },
+    {
+      "matchDatasources": ["helm"],
+      "addLabels": ["renovate/helm"]
+    },
+    {
+      "matchDatasources": ["galaxy", "galaxy-collection"],
+      "addLabels": ["renovate/ansible"]
+    },
+    {
+      "matchDatasources": ["terraform-provider"],
+      "addLabels": ["renovate/terraform"]
+    },
+    {
+      "matchDatasources": ["github-releases", "github-tags"],
+      "addLabels": ["renovate/github-release"]
+    },
+    {
+      "matchDatasources": ["pypi"],
+      "addLabels": ["renovate/python"]
+    },
+    // manager specific settings
+    //
+    {
+      "matchManagers": ["github-actions"],
+      "addLabels": ["renovate/github-actions"]
+    },
+    {
+      "matchManagers": ["pre-commit"],
+      "addLabels": ["renovate/pre-commit"]
+    },
+    // update types specific settings
+    {
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["dependency/major"]
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "addLabels": ["dependency/minor"]
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "addLabels": ["dependency/patch"]
+    },
+    {
+      "matchUpdateTypes": ["digest"],
+      "addLabels": ["dependency/digest"]
+    },
+  ]
+}

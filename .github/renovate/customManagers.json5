@@ -1,0 +1,40 @@
+
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": ["Process custom dependencies"],
+      "fileMatch": [
+        "(^|/).taskfiles/.+\\.ya?ml(?:\\.j2)?$",
+        "(^|/)ansible/.+\\.ya?ml(?:\\.j2)?$",
+        "(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$",
+      ],
+      "matchStrings": [
+        // generic matcher
+        // see https://regex101.com/r/fzaLfV/2
+        "datasource=(?<datasource>helm) registryUrl=(?<registryUrl>\\S+) chart=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>docker) image=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>github-releases) repos=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>pypi) package=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\n.*?\"?(?<currentValue>[^-\\s]*?)\"?\n",
+        // url matcher
+        // see https://regex101.com/r/qBmdwk/2
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)"
+      ],
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "description": ["Process CloudnativePG Postgresql version"],
+      "fileMatch": [
+        "(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$"
+      ],
+      "matchStrings": [
+        "imageName: (?<depName>\\S+):(?<currentValue>.*\\-.*)"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "redhat"
+    }
+  ],
+}
