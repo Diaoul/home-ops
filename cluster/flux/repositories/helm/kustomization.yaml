@@ -37,6 +37,7 @@ resources:
   - rook.yaml
   - runix.yaml
   - stakater.yaml
+  - stevehipwell.yaml
   - strimzi.yaml
   - traefik.yaml
   - vector.yaml

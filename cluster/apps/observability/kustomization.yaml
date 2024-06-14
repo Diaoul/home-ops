@@ -9,5 +9,6 @@ resources:
   - ./loki/ks.yaml
   - ./nut-server-basement/ks.yaml
   - ./prometheus-operator-crds/ks.yaml
+  - ./thanos/ks.yaml
   - ./unpoller/ks.yaml
   - ./vector/ks.yaml
