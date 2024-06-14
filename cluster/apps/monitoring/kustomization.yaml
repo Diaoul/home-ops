@@ -6,4 +6,3 @@ resources:
   - grafana
   - kube-state-metrics
   - thanos
-  - vector/ks.yaml

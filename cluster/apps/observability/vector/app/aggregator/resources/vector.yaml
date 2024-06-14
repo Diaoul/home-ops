@@ -29,7 +29,7 @@ sinks:
   journald:
     inputs: ["journald_source"]
     type: loki
-    endpoint: http://loki-gateway.monitoring.svc.cluster.milkyway
+    endpoint: http://loki-gateway.observability.svc.cluster.milkyway
     encoding: { codec: json }
     out_of_order_action: accept
     remove_label_fields: true
@@ -40,7 +40,7 @@ sinks:
   kubernetes:
     inputs: ["kubernetes_remap"]
     type: loki
-    endpoint: http://loki-gateway.monitoring.svc.cluster.milkyway
+    endpoint: http://loki-gateway.observability.svc.cluster.milkyway
     encoding: { codec: json }
     out_of_order_action: accept
     remove_label_fields: true
