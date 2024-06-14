@@ -32,6 +32,7 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   values:
+    clusterDomain: cluster.milkyway
     objstoreConfig:
       value:
         type: s3
