@@ -10,7 +10,6 @@ resources:
   - calico-system
   - kube-system
   - ./network
-  - monitoring
   - home-automation
   - media
   - ./observability
