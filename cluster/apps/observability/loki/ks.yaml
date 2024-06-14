@@ -6,13 +6,13 @@ metadata:
   name: loki
   namespace: flux-system
 spec:
-  targetNamespace: monitoring
-  path: ./cluster/apps/monitoring/loki/app
-  prune: true
+  targetNamespace: observability
+  path: ./cluster/apps/observability/loki/app
   sourceRef:
     kind: GitRepository
     name: flux-cluster
+  prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
-  timeout: 5m
+  timeout: 15m

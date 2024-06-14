@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - grafana
   - kube-state-metrics
-  - loki/ks.yaml
   - thanos
   - vector/ks.yaml
