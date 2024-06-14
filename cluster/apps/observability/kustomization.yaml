@@ -7,4 +7,5 @@ resources:
   - ./milkyway-ca-secret.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./nut-server-basement/ks.yaml
+  - ./prometheus-operator-crds/ks.yaml
   - ./unpoller/ks.yaml
