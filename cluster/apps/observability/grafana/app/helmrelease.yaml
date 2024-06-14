@@ -38,7 +38,7 @@ spec:
         image: ghcr.io/onedr0p/postgres-init:16
         envFrom:
           - secretRef:
-              name: grafana
+              name: grafana-env
     replicas: 2
     env:
       GF_AUTH_GENERIC_OAUTH_API_URL: https://auth.${DOMAIN}/api/oidc/userinfo
@@ -53,7 +53,7 @@ spec:
       GF_SECURITY_COOKIE_SAMESITE: grafana
       GF_SERVER_ROOT_URL: https://grafana.${DOMAIN}
     envFromSecrets:
-      - name: grafana
+      - name: grafana-env
     grafana.ini:
       analytics:
         check_for_updates: false
