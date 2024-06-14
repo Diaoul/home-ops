@@ -8,5 +8,4 @@ resources:
   - kube-state-metrics
   - loki/ks.yaml
   - thanos
-  - unpoller
   - vector/ks.yaml

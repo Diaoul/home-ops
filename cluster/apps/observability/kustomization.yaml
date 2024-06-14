@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   - ./milkyway-ca-secret.yaml
   - ./nut-server-basement/ks.yaml
+  - ./unpoller/ks.yaml
