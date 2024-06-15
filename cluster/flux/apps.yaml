@@ -6,7 +6,7 @@ metadata:
   name: apps
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 10m
   path: ./cluster/apps
   prune: true
   sourceRef:
