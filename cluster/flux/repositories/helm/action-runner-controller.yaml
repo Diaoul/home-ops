@@ -3,8 +3,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: dex
+  name: actions-runner-controller
   namespace: flux-system
 spec:
-  interval: 2h
-  url: https://charts.dexidp.io
+  type: oci
+  interval: 5m
+  url: oci://ghcr.io/actions/actions-runner-controller-charts
