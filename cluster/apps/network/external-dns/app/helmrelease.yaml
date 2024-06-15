@@ -16,12 +16,10 @@ spec:
         namespace: flux-system
   maxHistory: 2
   install:
-    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
     remediation:
       strategy: rollback
       retries: 3
@@ -30,9 +28,17 @@ spec:
   values:
     sources: ["crd", "ingress"]
     provider: cloudflare
-    envFrom:
-      - secretRef:
-          name: &secret external-dns-cloudflare
+    env:
+      - name: CF_API_EMAIL
+        valueFrom:
+          secretKeyRef:
+            name: &secret external-dns-cloudflare
+            key: api-email
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: api-token
     policy: sync
     domainFilters: ["${DOMAIN}"]
     extraArgs:
