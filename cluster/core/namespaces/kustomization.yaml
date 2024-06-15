@@ -8,4 +8,3 @@ resources:
   - rook-ceph.yaml
   - system-upgrade.yaml
   - tigera-operator.yaml
-  - vpn.yaml

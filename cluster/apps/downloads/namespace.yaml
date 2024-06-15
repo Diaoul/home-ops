@@ -7,4 +7,4 @@ metadata:
     kustomize.toolkit.fluxcd.io/prune: disabled
     volsync.backube/privileged-movers: "true"
   labels:
-    downloads-routed-gateway: "true"
+    vpn.milkyway.arpa/routed-gateway: "true"

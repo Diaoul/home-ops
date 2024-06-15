@@ -3,10 +3,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: downloads-gateway
-  namespace: vpn
+  name: vpn-gateway
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: pod-gateway
@@ -15,13 +14,14 @@ spec:
         kind: HelmRepository
         name: angelnu
         namespace: flux-system
-  maxHistory: 3
+  maxHistory: 2
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
@@ -30,6 +30,9 @@ spec:
       repository: ghcr.io/angelnu/pod-gateway
       tag: v1.10.0@sha256:d728eac85f750b37c96a0dafd038561ea4b8035857802be1128ea9b19c61e181
     clusterName: ${CLUSTER_DOMAIN}
+    podAnnotations:
+      configmap.reloader.stakater.com/reload: vpn-gateway
+      secret.reloader.stakater.com/reload: vpn-gateway
     addons:
       netshoot:
         enabled: true
@@ -47,10 +50,10 @@ spec:
             repository: ghcr.io/qdm12/gluetun
             tag: v3.38.0@sha256:5522794f5cce6d84bc7f06b1e3a3b836ede9100c64aec94543cb503bb2ecb72f
         env:
-          - name: VPN_TYPE
-            value: wireguard
           - name: VPN_SERVICE_PROVIDER
             value: nordvpn
+          - name: VPN_TYPE
+            value: wireguard
           - name: VPN_INTERFACE
             value: wg0
           - name: FIREWALL
@@ -59,32 +62,14 @@ spec:
             value: "off"
           - name: LOG_LEVEL
             value: debug
-          - name: WIREGUARD_PRIVATE_KEY
-            valueFrom:
-              secretKeyRef:
-                name: downloads-gateway
-                key: WIREGUARD_PRIVATE_KEY
-          - name: SERVER_COUNTRIES
-            valueFrom:
-              secretKeyRef:
-                name: downloads-gateway
-                key: SERVER_COUNTRIES
-          - name: SERVER_REGIONS
-            valueFrom:
-              secretKeyRef:
-                name: downloads-gateway
-                key: SERVER_REGIONS
-          - name: SERVER_HOSTNAMES
-            valueFrom:
-              secretKeyRef:
-                name: downloads-gateway
-                key: SERVER_HOSTNAMES
+        envFrom:
+          secretKeyRef: vpn-gateway
         resources:
           requests:
             cpu: 5m
-            memory: 128M
+            memory: 10M
           limits:
-            memory: 128M
+            memory: 10M
         securityContext:
           capabilities:
             add:
@@ -127,10 +112,7 @@ spec:
         repository: ghcr.io/angelnu/gateway-admision-controller
         tag: v3.10.0@sha256:a8ed630613de277244dfe203cd11d05905d7eeba8d8c41e399b02ee9a847b2f5
       gatewayDefault: false
-      gatewayLabel: setDownloadGateway
-      gatewayAnnotation: setDownloadGateway
+      gatewayAnnotation: vpn.milkyway.arpa/enabled
+      gatewayLabel: vpn.milkyway.arpa/enabled
       namespaceSelector:
-        label: downloads-routed-gateway
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: downloads-gateway-pod-gateway,downloads-gateway-pod-gateway-addon-vpn
-      secret.reloader.stakater.com/reload: downloads-gateway
+        label: vpn.milkyway.arpa/routed-gateway
