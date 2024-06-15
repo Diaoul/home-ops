@@ -30,14 +30,9 @@ spec:
   values:
     sources: ["crd", "ingress"]
     provider: cloudflare
-    env:
-      - name: CF_API_EMAIL
-        value: ${CLOUDFLARE_EMAIL}
-      - name: CF_API_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: &secret external-dns-cloudflare
-            key: api-token
+    envFrom:
+      - secretRef:
+          name: &secret external-dns-cloudflare
     policy: sync
     domainFilters: ["${DOMAIN}"]
     extraArgs:
