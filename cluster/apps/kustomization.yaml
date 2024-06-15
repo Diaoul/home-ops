@@ -8,6 +8,7 @@ resources:
   - default
   - downloads
   - calico-system
+  - ./flux-system
   - kube-system
   - ./network
   - home-automation
