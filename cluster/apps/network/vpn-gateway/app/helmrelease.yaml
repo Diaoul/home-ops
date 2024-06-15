@@ -63,7 +63,8 @@ spec:
           - name: LOG_LEVEL
             value: debug
         envFrom:
-          secretKeyRef: vpn-gateway
+          - secretRef:
+              name: vpn-gateway
         resources:
           requests:
             cpu: 5m
