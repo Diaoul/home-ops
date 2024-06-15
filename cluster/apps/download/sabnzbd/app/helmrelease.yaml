@@ -30,14 +30,10 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
-    - name: vpn-gateway
-      namespace: network
   values:
     controllers:
       sabnzbd:
         pod:
-          annotations:
-            vpn.milkyway.arpa/enabled: "true"
           securityContext:
             runAsNonRoot: true
             runAsUser: 568
@@ -54,10 +50,10 @@ spec:
               SABNZBD__PORT: &port 8080
               SABNZBD__HOST_WHITELIST_ENTRIES: >-
                 sabnzbd,
-                sabnzbd.downloads,
-                sabnzbd.downloads.svc,
-                sabnzbd.downloads.svc.cluster,
-                sabnzbd.downloads.svc.${CLUSTER_DOMAIN},
+                sabnzbd.download,
+                sabnzbd.download.svc,
+                sabnzbd.download.svc.cluster,
+                sabnzbd.download.svc.${CLUSTER_DOMAIN},
                 sabnzbd.${DOMAIN}
             securityContext:
               allowPrivilegeEscalation: false

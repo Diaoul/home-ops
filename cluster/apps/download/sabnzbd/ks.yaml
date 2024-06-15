@@ -6,11 +6,11 @@ metadata:
   name: &app sabnzbd
   namespace: flux-system
 spec:
-  targetNamespace: downloads
+  targetNamespace: download
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./cluster/apps/downloads/sabnzbd/app
+  path: ./cluster/apps/download/sabnzbd/app
   sourceRef:
     kind: GitRepository
     name: flux-cluster

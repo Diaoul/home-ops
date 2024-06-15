@@ -6,3 +6,4 @@ resources:
   - ./namespace.yaml
   - ./milkyway-ca-secret.yaml
   - ./qbittorrent/ks.yaml
+  - ./sabnzbd/ks.yaml
