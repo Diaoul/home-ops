@@ -42,6 +42,6 @@ repos:
       - id: kustomize
         name: Kustomize
         files: ^cluster/
-        entry: hack/kustomize.sh
+        entry: scripts/kustomize.sh
         language: system
         pass_filenames: false
