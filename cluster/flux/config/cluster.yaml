@@ -1,11 +1,12 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/gitrepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
   name: flux-cluster
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 30m
   ref:
     branch: main
   url: https://github.com/Diaoul/home-ops
@@ -15,13 +16,14 @@ spec:
     # include cluster directory
     !/cluster
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: flux-cluster
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 30m
   path: ./cluster/flux
   prune: true
   wait: false
@@ -32,3 +34,11 @@ spec:
     provider: sops
     secretRef:
       name: sops-gpg
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: false
+      - kind: Secret
+        name: cluster-secrets
+        optional: false

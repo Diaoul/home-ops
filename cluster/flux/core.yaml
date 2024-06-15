@@ -6,7 +6,7 @@ metadata:
   name: core
   namespace: flux-system
 spec:
-  interval: 30m
+  interval: 10m
   path: ./cluster/core
   prune: false
   sourceRef:
