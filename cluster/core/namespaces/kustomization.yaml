@@ -4,7 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - flux-system.yaml
-  - media.yaml
   - rook-ceph.yaml
   - system-upgrade.yaml
   - tigera-operator.yaml

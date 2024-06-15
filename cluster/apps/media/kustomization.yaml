@@ -3,16 +3,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - milkyway-ca-secret.yaml
-  - audiobookshelf/ks.yaml
-  - flaresolverr/ks.yaml
-  - jellyfin/ks.yaml
-  - kavita/ks.yaml
-  - lidarr/ks.yaml
-  - prowlarr/ks.yaml
-  - radarr/ks.yaml
-  - readarr/ks.yaml
-  - readarr-audio/ks.yaml
-  - recyclarr/ks.yaml
-  - sonarr/ks.yaml
-  - unpackerr/ks.yaml
+  - ./namespace.yaml
+  - ./milkyway-ca-secret.yaml
+  - ./audiobookshelf/ks.yaml
+  - ./flaresolverr/ks.yaml
+  - ./jellyfin/ks.yaml
+  - ./kavita/ks.yaml
+  - ./lidarr/ks.yaml
+  - ./prowlarr/ks.yaml
+  - ./radarr/ks.yaml
+  - ./readarr-audio/ks.yaml
+  - ./readarr/ks.yaml
+  - ./recyclarr/ks.yaml
+  - ./sonarr/ks.yaml
+  - ./unpackerr/ks.yaml
