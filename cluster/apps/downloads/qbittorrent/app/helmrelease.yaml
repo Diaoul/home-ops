@@ -30,6 +30,8 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
+    - name: vpn-gateway
+      namespace: network
   values:
     controllers:
       qbittorrent:
