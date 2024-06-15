@@ -11,10 +11,10 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./cluster/apps/system-upgrade/system-upgrade-controller/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-cluster
+  prune: true
   wait: true
   interval: 30m
   retryInterval: 1m
@@ -31,13 +31,13 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: system-upgrade-controller
   path: ./cluster/apps/system-upgrade/system-upgrade-controller/plans
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-cluster
+  dependsOn:
+    - name: system-upgrade-controller
+  prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
