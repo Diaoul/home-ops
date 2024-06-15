@@ -7,6 +7,7 @@ resources:
   - ./milkyway-ca-secret.yaml
   - ./blocky/ks.yaml
   - ./cloudflared/ks.yaml
+  - ./echo-server/ks.yaml
   - ./external-dns/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./vpn-gateway/ks.yaml
