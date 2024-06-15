@@ -6,4 +6,3 @@ resources:
   - namespaces
   - tigera-operator
   - flux-system
-  - rook-ceph

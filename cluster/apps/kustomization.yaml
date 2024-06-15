@@ -14,6 +14,7 @@ resources:
   - media
   - ./observability
   - ./openebs-system
+  - ./rook-ceph
   - ./security
   - system-upgrade
   - ./volsync-system
