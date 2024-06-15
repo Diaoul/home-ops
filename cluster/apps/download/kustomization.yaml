@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./milkyway-ca-secret.yaml
-  - ./sabnzbd/ks.yaml
+  - ./qbittorrent/ks.yaml
