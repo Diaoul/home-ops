@@ -9,13 +9,11 @@ spec:
   interval: 30m
   ref:
     branch: main
-  url: ssh://git@gihub.com/Diaoul/home-ops
-  secretRef:
-    name: github-deploy-key
+  url: https://github.com/Diaoul/home-ops
   ignore: |
     # exclude all
     /*
-    # include flux directory
+    # include cluster directory
     !/cluster
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
