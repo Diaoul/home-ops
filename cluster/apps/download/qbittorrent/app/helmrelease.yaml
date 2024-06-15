@@ -53,20 +53,16 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-            # FIXME: disabled because of authentication issues
             probes:
-              liveness: &probes
-                enabled: false
-                custom: true
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
                 spec:
-                  httpGet:
-                    path: /api/v2/app/version
-                    port: &port 8080
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  failureThreshold: 30
+                  periodSeconds: 5
             resources:
               requests:
                 cpu: 100m
@@ -81,7 +77,7 @@ spec:
               VPN_SERVICE_PROVIDER: nordvpn
               VPN_TYPE: wireguard
               VPN_INTERFACE: wg0
-              FIREWALL_INPUT_PORTS: *port
+              FIREWALL_INPUT_PORTS: &port 8080
               FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
             envFrom:
               - secretRef:
