@@ -30,12 +30,10 @@ spec:
     controller:
       replicaCount: 2
       service:
-        externalIPs:
-          - ${INGRESS_NGINX_EXTERNAL_IP}
         enableHttp: false
-        externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: ${DOMAIN}
+          io.cilium/lb-ipam-ips: ${INGRESS_NGINX_EXTERNAL_IP}
       ingressClassResource:
         name: external
         default: false

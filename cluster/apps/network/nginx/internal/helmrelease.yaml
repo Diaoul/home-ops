@@ -30,12 +30,10 @@ spec:
     controller:
       replicaCount: 2
       service:
-        externalIPs:
-          - ${INGRESS_NGINX_INTERNAL_IP}
         enableHttp: false
-        internalTrafficPolicy: Local
         annotations:
-          internal-dns.alpha.kubernetes.io/hostname: ${DOMAIN}
+          external-dns.alpha.kubernetes.io/hostname: internal.${DOMAIN}
+          io.cilium/lb-ipam-ips: ${INGRESS_NGINX_INTERNAL_IP}
       ingressClassResource:
         name: internal
         default: true
