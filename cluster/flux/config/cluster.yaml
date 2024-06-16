@@ -9,7 +9,9 @@ spec:
   interval: 30m
   ref:
     branch: main
-  url: https://github.com/Diaoul/home-ops
+  url: ssh://git@gihub.com/Diaoul/home-ops
+  secretRef:
+    name: github-deploy-key
   ignore: |
     # exclude all
     /*
