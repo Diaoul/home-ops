@@ -5,6 +5,5 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: lb-ip-pool
 spec:
-  allowFirstLastIPs: "Yes"
   blocks:
     - cidr: ${K8S_LB_CIDR}
