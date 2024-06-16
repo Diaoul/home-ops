@@ -1,7 +1,7 @@
 ---
 autoDirectNodeRoutes: true
 bgpControlPlane:
-  enabled: false
+  enabled: true
 bpf:
   masquerade: false
 cgroup:
@@ -19,15 +19,13 @@ hubble:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 10.42.0.0/16
-# TODO: change host for Talos with KubePrism
+ipv4NativeRoutingCIDR: ${K8S_CLUSTER_CIDR}
 k8sServiceHost: 127.0.0.1
-k8sServicePort: 6444
-# TODO: change to true for Talos
-# kubeProxyReplacement: true
-# kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+k8sServicePort: 7445
+kubeProxyReplacement: true
+kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: true
+  enabled: false
 loadBalancer:
   algorithm: maglev
   mode: snat
