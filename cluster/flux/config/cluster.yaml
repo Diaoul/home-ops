@@ -15,7 +15,7 @@ spec:
   ignore: |
     # exclude all
     /*
-    # include cluster directory
+    # include flux directory
     !/cluster
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
