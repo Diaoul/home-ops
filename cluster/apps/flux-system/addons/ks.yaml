@@ -6,7 +6,7 @@ metadata:
   name: &app flux-addons
   namespace: flux-system
 spec:
-  targetNamespace: security
+  targetNamespace: flux-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
