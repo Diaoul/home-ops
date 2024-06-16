@@ -37,9 +37,8 @@ spec:
       - Service
     service:
       type: LoadBalancer
-      metadata:
-        annotations:
-          io.cilium/lb-ipam-ips: ${K8S_GATEWAY_IP}
+      annotations:
+        io.cilium/lb-ipam-ips: ${K8S_GATEWAY_IP}
     fallthrough:
       enabled: true
       zones:
