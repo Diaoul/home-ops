@@ -46,6 +46,8 @@ spec:
           enabled: true
           annotations:
             grafana_folder: Cilium
+      peerService:
+        clusterDomain: cluster.milkyway
       relay:
         enabled: true
         rollOutPods: true
