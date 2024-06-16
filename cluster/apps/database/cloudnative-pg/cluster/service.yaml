@@ -5,11 +5,9 @@ metadata:
   name: postgres-lb
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres.${DOMAIN}
+    io.cilium/lb-ipam-ips: ${POSTGRES_IP}
 spec:
   type: LoadBalancer
-  externalIPs:
-    - ${POSTGRES_IP}
-  externalTrafficPolicy: Local
   ports:
     - name: postgres
       port: 5432
