@@ -7,4 +7,4 @@ metadata:
 spec:
   allowFirstLastIPs: "Yes"
   blocks:
-    - cidr: ${K8S_POD_CIDR}
+    - cidr: ${K8S_LB_CIDR}
