@@ -92,9 +92,8 @@ spec:
       app:
         controller: jellyfin
         type: LoadBalancer
-        externalIPs:
-          - ${JELLYFIN_IP}
-        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: ${JELLYFIN_IP}
         ports:
           http:
             port: *port

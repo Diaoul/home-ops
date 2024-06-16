@@ -57,14 +57,13 @@ spec:
     service:
       app:
         controller: nut-server-basement
+        type: LoadBalancer
+        annotations:
+          io.cilium/lb-ipam-ips: ${NUT_BASEMENT_IP}
         ports:
           http:
             port: 3493
             protocol: TCP
-        type: LoadBalancer
-        externalIPs:
-          - ${NUT_BASEMENT_IP}
-        externalTrafficPolicy: Local
       metrics:
         enabled: true
         controller: nut-server-basement

@@ -86,9 +86,8 @@ spec:
       dns:
         controller: blocky
         type: LoadBalancer
-        externalIPs:
-          - ${BLOCKY_IP}
-        externalTrafficPolicy: Local
+        annotations:
+          io.cilium/lb-ipam-ips: ${BLOCKY_IP}
         ports:
           dns-tcp:
             enabled: true

@@ -37,9 +37,9 @@ spec:
       - Service
     service:
       type: LoadBalancer
-      externalIPs:
-        - ${K8S_GATEWAY_IP}
-      externalTrafficPolicy: Local
+      metadata:
+        annotations:
+          io.cilium/lb-ipam-ips: ${K8S_GATEWAY_IP}
     fallthrough:
       enabled: true
       zones:
