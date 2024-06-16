@@ -19,4 +19,4 @@ spec:
             restartTimeSeconds: 120
       serviceSelector:
         matchExpressions:
-          - { key: io.cilium/bgp, operator: NotIn, values: ["false"] }
+          - { key: somekey, operator: NotIn, values: ["never-used-value"] }
