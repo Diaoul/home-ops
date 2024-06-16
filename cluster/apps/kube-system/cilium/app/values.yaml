@@ -1,7 +1,7 @@
 ---
 autoDirectNodeRoutes: true
 bgpControlPlane:
-  enabled: true
+  enabled: false
 bpf:
   masquerade: false
 cgroup:
@@ -27,7 +27,7 @@ k8sServicePort: 6443
 # kubeProxyReplacement: true
 # kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: false
+  enabled: true
 loadBalancer:
   algorithm: maglev
   mode: snat
