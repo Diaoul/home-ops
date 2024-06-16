@@ -21,8 +21,8 @@ ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 10.42.0.0/16
 # TODO: change host for Talos with KubePrism
-k8sServiceHost: k8s-apiserver.milkyway
-k8sServicePort: 6443
+k8sServiceHost: 127.0.0.1
+k8sServicePort: 6444
 # TODO: change to true for Talos
 # kubeProxyReplacement: true
 # kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
