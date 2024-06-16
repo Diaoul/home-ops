@@ -20,8 +20,8 @@ hubble:
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: ${K8S_CLUSTER_CIDR}
-k8sServiceHost: 127.0.0.1
-k8sServicePort: 7445
+k8sServiceHost: k8s-apiserver
+k8sServicePort: 6443
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
