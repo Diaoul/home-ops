@@ -47,7 +47,7 @@ spec:
           app:
             image:
               repository: ghcr.io/onedr0p/home-assistant
-              tag: 2024.6.3@sha256:74e6ffd612eed81f093a3a2423518c849d84a8944459f806ad08777bf3a45d4d
+              tag: 2024.6.3@sha256:35b49d32f55365f7125f7050da3c40d81623ff6f9115863e57f58f8aaf4fcb30
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
