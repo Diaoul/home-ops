@@ -70,7 +70,7 @@ stuff.
 #### HAProxy
 I use HAProxy as loadbalancer to provide HA over the API Server
 
-1. Services > HAProxy | Real Servers (for each **master note**)
+1. Services > HAProxy | Real Servers (for each **master node**)
     1. `Enabled` = `true`
     2. `Name or Prefix` = `k8s-node-x-apiserver`
     3. `FQDN or IP` = `k8s-node-x`
