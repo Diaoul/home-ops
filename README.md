@@ -30,6 +30,39 @@ I try to run everything bare metal to get the most out of each device
 | Intel NUC8i5BEH         | 3     | 120GB SSD + 500GB NVMe   | Kubernetes masters + storage                 |
 | Intel NUC8i3BEH         | 2     | 120GB SSD                | Kubernetes workers                           |
 
+### Intel NUC
+
+#### BIOS
+Intel NUC bios can now be found on [Asus support](https://www.asus.com/supportonly/nuc8i5beh/helpdesk_bios/).
+
+Configuration on top of Defaults (F9):
+
+1. Devices > Onboard Devices > Onboard Device Configuration
+  - Uncheck `WLAN`
+  - Uncheck `Bluetooth`
+2. Cooling > CPU Fan Header
+  - Uncheck `Fan off capability`
+3. Power > Secondary Power Settings
+  - Set `After Power Failure` to `Last State`
+4. Boot > Boot Configuration > Boot Display Config
+  - Check `Display F12 for Network Boot`
+
+In addition, to install Talos Linex with secure boot, we need to allow enrolling other keys.
+Enrolling new keys is done by booting the ISO and selecting the appropriate option.
+
+1. Boot > Secure Boot > Secure Boot Config
+  - Check `Clear Secure Boot Data`
+
+There is a [boot menu](https://www.intel.com/content/www/us/en/support/articles/000090607/intel-nuc.html) that can be helpful in case of boot failures:
+
+> Press and hold down the power button for three seconds, then release it before the 4 second shutdown override. The Power Button Menu displays. (Options on the menu can vary, depending on the Intel NUC model.) Press F7 to start the BIOS update.
+
+#### Hardware
+The fans on the Intel NUC are known to wear off. In case of overheating this is likely the issue. Amazon and Youtube are your best friends.
+
+
+The CMOS battery can die and need replacing. Symptoms are the NUC not powering on at all.
+
 ### Router
 In addition to the regular things like a firewall, my router runs other useful
 stuff.
