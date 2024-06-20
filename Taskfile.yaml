@@ -3,9 +3,13 @@
 version: "3"
 
 vars:
+  # Directories
   ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
+  # Files
+  AGE_FILE: "{{.ROOT_DIR}}/age.key"
+  KUBECONFIG_FILE: "{{.ROOT_DIR}}/kubeconfig"
 
 env:
   KUBECONFIG: "{{.KUBECONFIG_FILE}}"
