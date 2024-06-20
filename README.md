@@ -4,30 +4,23 @@
 </p>
 
 ### Operations for my home...
-_...with Ansible and Kubernetes!_ :sailboat:
+_...with Ansible and Kubernetes!_ ⛵
 <br/><br/><br/><br/>
 ![lint](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/lint.yml?label=lint&style=for-the-badge)
 ![pre-commit](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/pre-commit.yml?label=pre-commit&style=for-the-badge)
 
-## :closed_book: Overview
-This repository contains everything I use to setup and run the devices in my home. For more
-details, see the README of the following directories
-* [os](os/) automated installation with PXE or USB for AMD64 and ARM64
-* [ansible](ansible/) roles for additional configuration and application installation
-* [cluster](cluster/) to manage my Kubernetes cluster with [Flux](https://fluxcd.io/)
-   and maintained with the the help of
-   [:robot: Renovate](https://github.com/renovatebot/renovate)
-* [hack](hack/) is a collection of scripts to ease the maintenance of all this!
+## 📕 Overview
+This repository contains everything I use to setup and run the devices in my home. It is based off [cluster-template](https://github.com/onedr0p/cluster-template).
 
-## :gear: Hardware
-I try to run everything bare metal to get the most out of each device
+## ⚙️  Hardware
+I run everything bare metal.
 
 | Device                  | Count | Storage                  | Purpose                                      |
 |-------------------------|-------|--------------------------|----------------------------------------------|
 | Protectli FW4B clone    | 1     | 120GB                    | Opnsense router                              |
 | Synology NAS            | 1     | 12TB RAID 5 + 2TB RAID 1 | Main storage                                 |
 | Raspberry Pi 3          | 2     | 16GB SD                  | Unifi Controller / 3D Printer with OctoPrint |
-| Intel NUC8i5BEH         | 3     | 120GB SSD + 500GB NVMe   | Kubernetes masters + storage                 |
+| Intel NUC8i5BEH         | 3     | 120GB SSD + 500GB NVMe   | Kubernetes control planes + storage                 |
 | Intel NUC8i3BEH         | 2     | 120GB SSD                | Kubernetes workers                           |
 
 ### Intel NUC
@@ -68,7 +61,17 @@ In addition to the regular things like a firewall, my router runs other useful
 stuff.
 
 #### HAProxy
-I use HAProxy as loadbalancer to provide HA over the API Server
+I have Talos configured with a Virtual IP to provide HA over the control nodes' API server but I also use HAProxy as loadbalancer.
+
+First, create a Virtual IP to listen on:
+
+1. Interfaces > Virtual IPs > Settings > Add
+   1. `Mode` = `IP Alias`
+   2. `Interface` = `SERVER` (my VLAN for k8s nodes)
+   3. `Network / Address` = `10.0.3.2/32`
+   4. `Description` = `k8s-apiserver`
+
+Then, create the HAProxy configuration:
 
 1. Services > HAProxy | Real Servers (for each **master node**)
     1. `Enabled` = `true`
@@ -93,21 +96,16 @@ I use HAProxy as loadbalancer to provide HA over the API Server
 4. Services > HAProxy | Virtual Services > Public Services
     1. `Enabled` = `true`
     2. `Name` = `k8s-apiserver`
-    3. `Listen Addresses` = `10.0.3.1:6443` (Your Opnsense IP address)
+    3. `Listen Addresses` = `10.0.3.2:6443` (the Virtual IP created above, alternatively, the router IP)
     4. `Type` = `TCP`
     5. `Default Backend Pool` = `k8s-apiserver`
 5. Services > HAProxy | Settings > Service
     1. `Enable HAProxy` = `true`
-6. Services > HAProxy | Settings > Global Parameters
-    1. `Verify SSL Server Certificates` = `disable-verify`
-7. Services > HAProxy | Settings > Default Parameters
-    1. `Client Timeout` = `4h`
-    2. `Connection Timeout` = `10s`
-    3. `Server Timeout` = `4h`
+
+Note that Health Monitors require `anonymous-auth` to be enabled on Talos, otherwise we need to rely on TCP health checks instead.
 
 #### BGP
-The Calico CNI is configured with BGP to advertise load balancer IPs directly
-over BGP. Coupled with ECMP, this allows to spread workload in my cluster.
+Cilium is configured with BGP to advertise load balancer IPs directly over BGP. Coupled with ECMP, this allows to spread workload in my cluster.
 
 1. Routing > BPG | General
     1. `enable` = `true`
@@ -163,53 +161,9 @@ I run the Postfix plugin with the following configuration:
     ```sh
     swaks --server opnsense.milkyway --port 25 --to <email-address> --from <email-address>
     ```
-
-## :bug: Troubleshooting
-### Etcd
-Run this on a master node within the etcd cluster
-
-1. Get the etcd version with
-   ```
-   curl -L \
-     --cacert /var/lib/rancher/k3s/server/tls/etcd/server-ca.crt \
-     --cert /var/lib/rancher/k3s/server/tls/etcd/server-client.crt \
-     --key /var/lib/rancher/k3s/server/tls/etcd/server-client.key \
-     https://127.0.0.1:2379/version
-   ```
-2. Install etcd locally (change the version below accordingly)
-   ```
-   ETCD_VER=v3.5.7
-   DOWNLOAD_URL=https://github.com/etcd-io/etcd/releases/download
-
-   rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-   rm -rf /tmp/etcd-download-test && mkdir -p /tmp/etcd-download-test
-
-   curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-   tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /usr/local/bin --strip-components=1
-   rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-
-   etcd --version
-   etcdctl version
-   ```
-3. Export environment variables for an easy way to configure etcdctl
-   ```
-   export ETCDCTL_ENDPOINTS='https://127.0.0.1:2379'
-   export ETCDCTL_CACERT='/var/lib/rancher/k3s/server/tls/etcd/server-ca.crt'
-   export ETCDCTL_CERT='/var/lib/rancher/k3s/server/tls/etcd/server-client.crt'
-   export ETCDCTL_KEY='/var/lib/rancher/k3s/server/tls/etcd/server-client.key'
-   export ETCDCTL_API=3
-   ```
-4. Start troubleshooting (example commands below)
-   - `etcdctl member list`
-   - `etcdctl endpoint status`
-   - `etcdctl endpoint health`
-   - `etcdctl defrag --cluster`
-   - `etcdctl check perf`
-
-## :handshake:&nbsp; Thanks
+## 🤝 Thanks
 I learned a lot from the people that have shared their clusters over at
-[awesome-home-kubernetes](https://nanne.dev/k8s-at-home-search/)
-and from the [k8s@home discord channel](https://discord.gg/DNCynrJ).
+[kubesearch](https://kubesearch.dev/) and from the [Home Operations discord channel](https://discord.gg/DNCynrJ).
 
 Want to get started? I recommend that you take a look at the
-[template-cluster-k3s](https://github.com/onedr0p/flux-cluster-template) repository!
+[cluster-template](https://github.com/onedr0p/cluster-template) repository!
