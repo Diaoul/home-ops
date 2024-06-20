@@ -16,11 +16,6 @@ repos:
     rev: v1.5.5
     hooks:
       - id: remove-tabs
-  - repo: https://github.com/adrienverge/yamllint
-    rev: v1.35.1
-    hooks:
-      - id: yamllint
-        args: [--strict]
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 3.0.0
     hooks:

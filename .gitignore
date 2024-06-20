@@ -11,6 +11,12 @@ os/amd64/www/
 
 # k8s
 kubeconfig
+talosconfig
+.decrypted~*.yaml
+.config.env
+*.agekey
+*.pub
+*.key
 
 # binaries
 bin/
