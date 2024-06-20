@@ -1,0 +1,26 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${job}
+  namespace: ${ns}
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure
+      containers:
+        - name: main
+          image: docker.io/library/alpine:latest
+          command: ["/bin/sh", "-c", "rm -rf /data/*"]
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            privileged: true
+          resources: {}
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ${claim}

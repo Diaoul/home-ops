@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-settings
+  namespace: flux-system
+data:
+  TIMEZONE: Europe/Paris
+  K8S_CLUSTER_CIDR: 10.42.0.0/16
+  K8S_POD_CIDR: 10.42.0.0/16
+  K8S_SERVICE_CIDR: 10.43.0.0/16
+  K8S_LB_CIDR: 10.44.0.0/16
+  SERVER_CIDR: 10.0.3.0/24
+  ROUTER_IP: 10.0.3.1
+  INGRESS_NGINX_EXTERNAL_IP: 10.44.0.1
+  INGRESS_NGINX_INTERNAL_IP: 10.44.0.2
+  K8S_GATEWAY_IP: 10.44.0.3
+  BLOCKY_IP: 10.44.0.6
+  NUT_BASEMENT_IP: 10.44.0.8
+  VECTOR_IP: 10.44.0.12
+  EMQX_IP: 10.44.0.16
+  POSTGRES_IP: 10.44.0.17
+  JELLYFIN_IP: 10.44.0.20
+  QBITTORRENT_IP: 10.44.0.64
+  LOCAL_DOMAIN: milkyway
+  UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
+  VOLSYNC_RESTIC_REPOSITORY: s3:http://singularity.milkyway:9000/volsync

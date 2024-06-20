@@ -1,19 +1,11 @@
-# ansible roles
-ansible/roles/xanmanning.k3s/
-
-# ansible-lint cache
-.cache/
-
-# os build directories and files
-os/amd64/tftp/
-os/amd64/www/
-*.iso
-
 # k8s
 kubeconfig
-
-# binaries
-bin/
+talosconfig
+.decrypted~*.yaml
+.config.env
+*.agekey
+*.pub
+*.key
 
 # direnv
 .direnv/

@@ -1,7 +1,0 @@
----
-upsmon_upsname: ups
-upsmon_host: 10.44.0.8
-upsmon_powervalue: 1
-upsmon_username: monmaster
-upsmon_password: secret
-upsmon_mode: master

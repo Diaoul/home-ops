@@ -1,0 +1,152 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
+---
+# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+talosVersion: v1.7.5
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.30.2
+
+clusterName: home-kubernetes
+endpoint: https://10.0.3.3:6443
+clusterPodNets:
+  - 10.42.0.0/16
+clusterSvcNets:
+  - 10.43.0.0/16
+additionalApiServerCertSans: &sans
+  - 10.0.3.2 # HAProxy LB
+  - 10.0.3.3 # Cluster LB
+  - 127.0.0.1 # KubePrism
+additionalMachineCertSans: *sans
+
+allowSchedulingOnControlPlanes: true
+
+# Disable built-in Flannel to use Cilium
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: k8s-node-1
+    ipAddress: 10.0.3.24
+    installDiskSelector:
+      model: PNY CS900 120GB
+    machineSpec:
+      secureboot: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - net.ifnames=0
+          - mitigations=off
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 94:c6:91:a3:f7:a4
+        dhcp: true
+        vip:
+          ip: 10.0.3.3
+  - hostname: k8s-node-2
+    ipAddress: 10.0.3.25
+    installDiskSelector:
+      model: PNY CS900 120GB
+    machineSpec:
+      secureboot: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - net.ifnames=0
+          - mitigations=off
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 1c:69:7a:60:5f:cf
+        dhcp: true
+        vip:
+          ip: 10.0.3.3
+  - hostname: k8s-node-3
+    ipAddress: 10.0.3.26
+    installDiskSelector:
+      model: PNY CS900 120GB
+    machineSpec:
+      secureboot: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - net.ifnames=0
+          - mitigations=off
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 1c:69:7a:a3:1a:a1
+        dhcp: true
+        vip:
+          ip: 10.0.3.3
+  - hostname: k8s-node-4
+    ipAddress: 10.0.3.27
+    installDiskSelector:
+      model: PNY CS900 120GB
+    machineSpec:
+      secureboot: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - net.ifnames=0
+          - mitigations=off
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/gasket-driver
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 1c:69:7a:07:22:5d
+        dhcp: true
+  - hostname: k8s-node-5
+    ipAddress: 10.0.3.28
+    installDiskSelector:
+      model: PNY CS900 120GB
+    machineSpec:
+      secureboot: true
+    schematic:
+      customization:
+        extraKernelArgs:
+          - net.ifnames=0
+          - mitigations=off
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/gasket-driver
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 1c:69:7a:0e:da:8a
+        dhcp: true
+
+# Global patches
+patches:
+  - "@./patches/global/cluster-discovery.yaml"
+  - "@./patches/global/containerd.yaml"
+  - "@./patches/global/disable-search-domain.yaml"
+  - "@./patches/global/hostdns.yaml"
+  - "@./patches/global/kubelet.yaml"
+  - "@./patches/global/openebs-local.yaml"
+  - "@./patches/global/sysctl.yaml"
+
+# Controller patches
+controlPlane:
+  patches:
+    - "@./patches/controller/api-access.yaml"
+    - "@./patches/controller/cluster.yaml"
+    - "@./patches/controller/disable-admission-controller.yaml"
+    - "@./patches/controller/etcd.yaml"

@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  - ./grafana/ks.yaml
+  - ./kube-prometheus-stack/ks.yaml
+  - ./loki/ks.yaml
+  - ./nut-server-basement/ks.yaml
+  - ./prometheus-operator-crds/ks.yaml
+  - ./promtail/ks.yaml
+  - ./unpoller/ks.yaml

@@ -8,7 +8,7 @@
       "fileMatch": [
         "(^|/).taskfiles/.+\\.ya?ml(?:\\.j2)?$",
         "(^|/)ansible/.+\\.ya?ml(?:\\.j2)?$",
-        "(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$",
+        "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$",
       ],
       "matchStrings": [
         // generic matcher
@@ -24,7 +24,7 @@
       "customType": "regex",
       "description": ["Process CloudnativePG Postgresql version"],
       "fileMatch": [
-        "(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$"
+        "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"
       ],
       "matchStrings": [
         "imageName: (?<depName>\\S+):(?<currentValue>.*\\-.*)"

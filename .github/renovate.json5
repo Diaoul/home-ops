@@ -25,15 +25,15 @@
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "ignorePaths": ["**/*.sops.*", "**/resources/**"],
   "flux": {
-    "fileMatch": ["(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$"],
-    "ignorePaths": ["(^|/)cluster/flux/flux-system"]
+    "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"],
+    "ignorePaths": ["(^|/)kubernetes/flux/flux-system"]
   },
   "helm-values": {
-    "fileMatch": ["(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$"],
-    "ignorePaths": ["(^|/)cluster/flux/flux-system"]
+    "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"],
+    "ignorePaths": ["(^|/)kubernetes/flux/flux-system"]
   },
   "kubernetes": {
-    "fileMatch": ["(^|/)cluster/.+\\.ya?ml(?:\\.j2)?$"],
-    "ignorePaths": ["(^|/)cluster/flux/flux-system"]
+    "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"],
+    "ignorePaths": ["(^|/)kubernetes/flux/flux-system"]
   }
 }

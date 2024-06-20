@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
+  values:
+    controllers:
+      qbittorrent:
+        pod:
+          annotations:
+            secret.reloader.stakater.com/reload: qbittorrent
+          securityContext:
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        # TODO: use a VPN provider that supports port-forward and use that container (see bjw-s)
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.6.5@sha256:c019af23966ebafcaf1713d4553bc043246858b711a7d57d8bee358a89990a3e
+            env:
+              QBT_Preferences__WebUI__LocalHostAuth: false
+            securityContext:
+              runAsUser: 568
+              runAsGroup: 568
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 100m
+                memory: 3Gi
+              limits:
+                memory: 5Gi
+          gluetun:
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.38.0
+            env:
+              VPN_SERVICE_PROVIDER: nordvpn
+              VPN_TYPE: wireguard
+              VPN_INTERFACE: wg0
+              FIREWALL_INPUT_PORTS: &port 8080
+              FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
+            envFrom:
+              - secretRef:
+                  name: qbittorrent
+            securityContext:
+              capabilities: { add: ["NET_ADMIN"] }
+              allowPrivilegeEscalation: false
+    service:
+      app:
+        controller: qbittorrent
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+        hosts:
+          - host: qb.${DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+    persistence:
+      config:
+        existingClaim: qbittorrent
+      media:
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
+        globalMounts:
+          - path: /media

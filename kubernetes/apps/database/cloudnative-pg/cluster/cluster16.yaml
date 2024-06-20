@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres16
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.3-4
+  storage:
+    size: 5Gi
+    storageClass: openebs-hostpath
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: cloudnative-pg
+  resources:
+    requests:
+      cpu: 200m
+    limits:
+      memory: 2Gi
+  monitoring:
+    enablePodMonitor: true
+    # see https://github.com/cloudnative-pg/cloudnative-pg/issues/2501
+    podMonitorMetricRelabelings:
+      - sourceLabels: ["cluster"]
+        targetLabel: cnpg_cluster
+        action: replace
+      - regex: cluster
+        action: labeldrop
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore: &barmanObjectStore
+      endpointURL: http://singularity.milkyway:9000
+      s3Credentials:
+        accessKeyId:
+          name: cloudnative-pg
+          key: aws-access-key-id
+        secretAccessKey:
+          name: cloudnative-pg
+          key: aws-secret-access-key
+      destinationPath: s3://cloudnative-pg/
+      data:
+        compression: bzip2
+      wal:
+        compression: bzip2
+        maxParallel: 4
+      # NOTE: serverName version needs to be incremented
+      # when recovering from an existing cnpg cluster
+      serverName: &currentCluster postgres16-002
+  # NOTE: previousCluster needs to be set to the name of the previous
+  # cluster when recovering from an existing cnpg cluster
+  bootstrap:
+    recovery:
+      source: &previousCluster postgres16-001
+  # NOTE: externalClusters is needed when recovering from an existing cnpg cluster
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
