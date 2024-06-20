@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./cluster/apps/flux-system/addons/app
+  path: ./kubernetes/apps/flux-system/addons/app
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
