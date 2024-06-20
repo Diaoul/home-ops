@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+vars:
+  ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
+  SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
+
+env:
+  KUBECONFIG: "{{.KUBECONFIG_FILE}}"
+  SOPS_AGE_KEY_FILE: "{{.AGE_FILE}}"
+
+includes:
+  flux: .taskfiles/Flux
+  kubernetes: .taskfiles/Kubernetes
+  sops: .taskfiles/Sops
+  talos: .taskfiles/Talos
+  volsync: .taskfiles/VolSync
+
+tasks:
+  default:
+    silent: true
+    cmd: task -l
