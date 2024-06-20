@@ -3,8 +3,14 @@ creation_rules:
   - path_regex: ansible/.*\.sops\.ya?ml
     pgp: >-
       86170CE5CB464ADDC6BE8E597450F180356132B6
-  - path_regex: cluster/.*\.sops\.ya?ml
+  - path_regex: talos/.*\.sops\.ya?ml
+    pgp: >-
+      86170CE5CB464ADDC6BE8E597450F180356132B6
+    age: >-
+      age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+  - path_regex: kubernetes/.*\.sops\.ya?ml
     encrypted_regex: "^(data|stringData)$"
     pgp: >-
-      48AEFCFB09BDDFCAD93175EF476C4C1F306D9DFD,
       86170CE5CB464ADDC6BE8E597450F180356132B6
+    age: >-
+      age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
