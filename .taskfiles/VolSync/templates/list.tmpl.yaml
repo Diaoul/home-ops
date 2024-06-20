@@ -1,0 +1,28 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${job}
+  namespace: ${ns}
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure
+      containers:
+        - name: main
+          image: docker.io/restic/restic:0.16.4
+          args: ["snapshots", "--cacert", "/etc/milkyway-ca/ca.crt"]
+          envFrom:
+            - secretRef:
+                name: ${app}-volsync
+          resources: {}
+          volumeMounts:
+            - name: milkyway-ca
+              mountPath: /etc/milkyway-ca
+              readOnly: true
+      volumes:
+        - name: milkyway-ca
+          secret:
+            secretName: milkyway-ca
