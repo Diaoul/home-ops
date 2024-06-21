@@ -7,7 +7,6 @@ kubernetesVersion: v1.30.2
 
 clusterName: home-kubernetes
 endpoint: https://10.0.3.3:6443
-domain: cluster.milkyway
 clusterPodNets:
   - 10.42.0.0/16
 clusterSvcNets:

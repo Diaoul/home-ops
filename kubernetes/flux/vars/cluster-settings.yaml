@@ -22,7 +22,6 @@ data:
   POSTGRES_IP: 10.44.0.17
   JELLYFIN_IP: 10.44.0.20
   QBITTORRENT_IP: 10.44.0.64
-  UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
   LOCAL_DOMAIN: milkyway
-  CLUSTER_DOMAIN: cluster.milkyway
+  UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
   VOLSYNC_RESTIC_REPOSITORY: s3:https://singularity.milkyway:9001/volsync
