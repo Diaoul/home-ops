@@ -17,6 +17,7 @@ env:
 
 includes:
   flux: .taskfiles/Flux
+  rook: .taskfiles/Rook
   sops: .taskfiles/Sops
   talos: .taskfiles/Talos
   volsync: .taskfiles/VolSync
