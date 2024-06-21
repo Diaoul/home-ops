@@ -13,9 +13,9 @@ spec:
       neighbors:
         - peerAddress: ${ROUTER_IP}/32
           peerASN: 64512
-      gracefulRestart:
-        enabled: true
-        restartTimeSeconds: 120
+          gracefulRestart:
+            enabled: true
+            restartTimeSeconds: 120
       serviceSelector:
         matchExpressions:
           - { key: io.cilium/bgp, operator: NotIn, values: ["false"] }
