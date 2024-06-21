@@ -1,0 +1,21 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: singularity
+  annotations:
+    external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+spec:
+  ingressClassName: external
+  rules:
+    - host: singularity.${DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: singularity
+                port:
+                  number: 5001
