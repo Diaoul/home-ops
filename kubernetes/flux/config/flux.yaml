@@ -86,3 +86,18 @@ spec:
       target:
         kind: Deployment
         name: helm-controller
+    # Replace cluster domain
+    - patch: |
+        - op: replace
+          path: /spec/template/spec/containers/0/args/0
+          value: --events-addr=http://notification-controller.flux-system.svc.cluster.milkyway./
+      target:
+        kind: Deployment
+        name: (helm-controller|image-automation-controller|image-reflector-controller|kustomize-controller|source-controller)
+    - patch: |
+        - op: replace
+          path: /spec/template/spec/containers/0/args/6
+          value: --storage-adv-addr=source-controller.$(RUNTIME_NAMESPACE).svc.cluster.milkyway.
+      target:
+        kind: Deployment
+        name: source-controller
