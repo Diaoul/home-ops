@@ -31,20 +31,20 @@ Intel NUC bios can now be found on [Asus support](https://www.asus.com/supporton
 Configuration on top of Defaults (F9):
 
 1. Devices > Onboard Devices > Onboard Device Configuration
-  - Uncheck `WLAN`
-  - Uncheck `Bluetooth`
+  1. Uncheck `WLAN`
+  2. Uncheck `Bluetooth`
 2. Cooling > CPU Fan Header
-  - Uncheck `Fan off capability`
+   1. Uncheck `Fan off capability`
 3. Power > Secondary Power Settings
-  - Set `After Power Failure` to `Last State`
+   1. Set `After Power Failure` to `Last State`
 4. Boot > Boot Configuration > Boot Display Config
-  - Check `Display F12 for Network Boot`
+   1. Check `Display F12 for Network Boot`
 
 In addition, to install Talos Linex with secure boot, we need to allow enrolling other keys.
 Enrolling new keys is done by booting the ISO and selecting the appropriate option.
 
 1. Boot > Secure Boot > Secure Boot Config
-  - Check `Clear Secure Boot Data`
+   1. Check `Clear Secure Boot Data`
 
 There is a [boot menu](https://www.intel.com/content/www/us/en/support/articles/000090607/intel-nuc.html) that can be helpful in case of boot failures:
 
