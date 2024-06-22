@@ -1,0 +1,6 @@
+[monuser]
+  password = secret
+  upsmon slave
+[monmaster]
+  password = secret
+  upsmon master
