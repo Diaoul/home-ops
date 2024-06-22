@@ -2,7 +2,7 @@
 set -o errexit
 set -o pipefail
 
-files=$(git diff --staged --name-only | grep "^cluster/")
+files=$(git diff --staged --name-only | grep "^kubernetes/")
 lcp=$(echo "$files" | sed -e 'N;s/^\(.*\).*\n\1.*$/\1\n\1/;D')
 parent=$(echo "$lcp" | sed 's/\(.*\)\/.*/\1/')
 
