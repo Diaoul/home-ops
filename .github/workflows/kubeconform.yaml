@@ -1,11 +1,14 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "kubeconform"
+name: Kubeconform
 
 on:
   pull_request:
     branches: ["main"]
-    paths: ["cluster/**"]
+    paths: ["kubernetes/**"]
+  push:
+    branches: ["main"]
+    paths: ["kubernetes/**"]
 
 jobs:
   kubeconform:
