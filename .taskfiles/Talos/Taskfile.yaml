@@ -13,6 +13,17 @@ env:
   TALOSCONFIG: "{{.TALOSCONFIG_FILE}}"
 
 tasks:
+  genconfig:
+    desc: Generate Talos cluster config files
+    dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
+    cmds:
+      - talhelper genconfig --config-file {{.TALHELPER_CONFIG_FILE}} --secret-file {{.TALHELPER_SECRET_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}}
+    preconditions:
+      - msg: Missing talhelper config file
+        sh: test -f {{.TALHELPER_CONFIG_FILE}}
+      - msg: Missing talhelper secret file
+        sh: test -f {{.TALHELPER_SECRET_FILE}}
+
   bootstrap:
     desc: Bootstrap the Talos cluster
     dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
@@ -22,7 +33,7 @@ tasks:
             talhelper gensecret > {{.TALHELPER_SECRET_FILE}}
             sops --encrypt --in-place {{.TALHELPER_SECRET_FILE}}
         fi
-      - talhelper genconfig --config-file {{.TALHELPER_CONFIG_FILE}} --secret-file {{.TALHELPER_SECRET_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}}
+      - task: genconfig
       - talhelper gencommand apply --config-file {{.TALHELPER_CONFIG_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} --extra-flags="--insecure" | bash
       - until talhelper gencommand bootstrap --config-file {{.TALHELPER_CONFIG_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} | bash; do sleep 10; done
       - task: fetch-kubeconfig
@@ -61,12 +72,13 @@ tasks:
     desc: Upgrade Talos on a node
     dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
     cmds:
-      - talosctl --nodes {{.node}} upgrade --image {{.image}} --wait=true --timeout=10m --preserve=true --reboot-mode={{.mode}}
+      - task: genconfig
+      - talhelper gencommand upgrade --node {{.node}} --config-file {{.TALHELPER_CONFIG_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} --extra-flags="--preserve=true" | bash
       - talosctl --nodes {{.node}} health --wait-timeout=10m --server=false
     vars:
       mode: '{{.mode | default "default"}}'
     requires:
-      vars: ["node", "image"]
+      vars: ["node"]
     preconditions:
       - msg: Missing talosconfig
         sh: test -f {{.TALOSCONFIG_FILE}}
@@ -78,16 +90,18 @@ tasks:
   upgrade-k8s:
     desc: Upgrade Kubernetes across the cluster
     dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
-    cmd: talosctl --nodes {{.controller}} upgrade-k8s --to {{.to}}
+    cmds:
+      - task: genconfig
+      - talhelper gencommand upgrade-k8s --node {{.node}} --config-file {{.TALHELPER_CONFIG_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} | bash
     requires:
-      vars: ["controller", "to"]
+      vars: ["node"]
     preconditions:
       - msg: Missing talosconfig
         sh: test -f {{.TALOSCONFIG_FILE}}
       - msg: Unable to retrieve Talos config
         sh: talosctl config info >/dev/null 2>&1
       - msg: Node not found
-        sh: talosctl --nodes {{.controller}} get machineconfig >/dev/null 2>&1
+        sh: talosctl --nodes {{.node}} get machineconfig >/dev/null 2>&1
 
   nuke:
     desc: Resets nodes back to maintenance mode
