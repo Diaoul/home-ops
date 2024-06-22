@@ -1,0 +1,45 @@
+---
+upstreams:
+  groups:
+    default:
+      - tcp-tls:1dot1dot1dot1.cloudflare-dns.com
+      - tcp-tls:dns.google
+      - tcp-tls:dns10.quad9.net
+conditional:
+  mapping:
+    ${DOMAIN}: tcp+udp:${K8S_GATEWAY_IP}
+    milkyway: tcp+udp:${ROUTER_IP}
+clientLookup:
+  upstream: tcp+udp:${ROUTER_IP}
+blocking:
+  blackLists:
+    ads:
+      - https://dbl.oisd.nl/
+    tvs:
+      # Wassname
+      # https://gist.github.com/wassname/b594c63222f9e4c83ea23c818440901b
+      - https://gist.githubusercontent.com/wassname/b594c63222f9e4c83ea23c818440901b/raw
+      # https://gist.github.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7
+      - https://gist.githubusercontent.com/wassname/78eeaaad299dc4cddd04e372f20a9aa7/raw
+      # Perflyst
+      # https://github.com/Perflyst/PiHoleBlocklist/blob/master/SmartTV.txt
+      - https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt
+      # hkamran80
+      # https://gist.github.com/hkamran80/779019103fcd306979411d44c8d38459
+      - https://gist.githubusercontent.com/hkamran80/779019103fcd306979411d44c8d38459/raw
+  clientGroupsBlock:
+    default:
+      - ads
+    10.0.30.0/24:
+      - ads
+      - tvs
+caching:
+  cacheTimeNegative: 30s
+redis:
+  address: dragonfly.database.svc.cluster.local:6379
+  database: 1
+prometheus:
+  enable: true
+bootstrapDns: tcp+udp:1.1.1.1
+ports:
+  http: 4000
