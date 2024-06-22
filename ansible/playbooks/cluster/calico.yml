@@ -1,6 +1,0 @@
----
-- hosts:
-    - kubernetes
-  gather_facts: false
-  roles:
-    - calico
