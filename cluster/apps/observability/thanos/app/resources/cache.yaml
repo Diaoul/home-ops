@@ -1,5 +1,0 @@
----
-type: REDIS
-config:
-  addr: dragonfly.database.svc.cluster.milkyway:6379
-  db: 3
