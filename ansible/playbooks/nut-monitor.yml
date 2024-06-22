@@ -1,7 +1,6 @@
 ---
 - name: NUT monitor
   hosts:
-    - kubernetes
     - unifi_controller
   gather_facts: false
   roles:
