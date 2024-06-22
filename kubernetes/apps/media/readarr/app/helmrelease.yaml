@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: unpackerr
+  name: readarr
 spec:
   interval: 30m
   chart:
@@ -20,6 +20,7 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   dependsOn:
     - name: rook-ceph-cluster
@@ -28,7 +29,7 @@ spec:
       namespace: volsync-system
   values:
     controllers:
-      unpackerr:
+      readarr:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
@@ -42,58 +43,65 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/unpackerr/unpackerr
-              tag: 0.13.1@sha256:04fcb43fa70e6db88331962760607842cdf19889e6d35d9d2fde0cf6a1550eaf
-            env:
-              UN_WEBSERVER_METRICS: true
-              UN_SONARR_0_URL: http://sonarr.media.svc.cluster.local:8989
-              UN_SONARR_0_PATHS_0: /media/downloads/complete/tv
-              UN_RADARR_0_URL: http://radarr.media.svc.cluster.local:7878
-              UN_RADARR_0_PATHS_0: /media/downloads/complete/movie
-              UN_LIDARR_0_URL: http://lidarr.media.svc.cluster.local:8686
-              UN_LIDARR_0_PATHS_0: /media/downloads/complete/music
-              UN_READARR_0_URL: http://readarr.media.svc.cluster.local:8787
-              UN_READARR_0_PATHS_0: /media/downloads/complete/book
-              UN_READARR_1_URL: http://readarr-audio.media.svc.cluster.local:8787
-              UN_READARR_1_PATHS_0: /media/downloads/complete/audiobook
+              repository: ghcr.io/onedr0p/readarr-develop
+              tag: 0.3.28.2554@sha256:4beda7d63d2cb014a860bf4f8fa367f9621e378675396b684d300f1e3a0380dc
             envFrom:
               - secretRef:
-                  name: unpackerr
+                  name: readarr
+            env:
+              READARR__AUTH__METHOD: External
+              READARR__AUTH__REQUIRED: DisabledForLocalAddresses
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 8787
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
-                cpu: 500m
-                memory: 250Mi
+                cpu: 200m
+                memory: 300Mi
               limits:
-                memory: 2Gi
+                memory: 500Mi
     service:
       app:
-        controller: unpackerr
+        controller: readarr
         ports:
           http:
-            port: 5656
-    serviceMonitor:
+            port: *port
+    ingress:
       app:
-        serviceName: unpackerr
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+          nginx.ingress.kubernetes.io/auth-method: GET
+          nginx.ingress.kubernetes.io/auth-url: http://authelia.security.svc.cluster.local/api/verify
+          nginx.ingress.kubernetes.io/auth-signin: https://auth.${DOMAIN}?rm=$request_method
+          nginx.ingress.kubernetes.io/auth-response-headers: Remote-User,Remote-Name,Remote-Groups,Remote-Email
+        hosts:
+          - host: readarr.${DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
     persistence:
+      config:
+        existingClaim: readarr
       media:
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
         globalMounts:
           - path: /media
-            readOnly: true

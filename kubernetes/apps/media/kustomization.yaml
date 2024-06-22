@@ -8,4 +8,11 @@ resources:
   - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./kavita/ks.yaml
+  - ./lidarr/ks.yaml
+  - ./prowlarr/ks.yaml
+  - ./radarr/ks.yaml
+  - ./readarr-audio/ks.yaml
+  - ./readarr/ks.yaml
+  - ./recyclarr/ks.yaml
+  - ./sonarr/ks.yaml
   - ./unpackerr/ks.yaml
