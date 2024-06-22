@@ -12,6 +12,8 @@ clusterPodNets:
 clusterSvcNets:
   - 10.43.0.0/16
 additionalApiServerCertSans: &sans
+  - k8s-apiserver
+  - k8s-apiserver.milkyway
   - 10.0.3.2 # HAProxy LB
   - 10.0.3.3 # Cluster LB
   - 127.0.0.1 # KubePrism
