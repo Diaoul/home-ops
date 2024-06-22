@@ -24,4 +24,4 @@ data:
   QBITTORRENT_IP: 10.44.0.64
   LOCAL_DOMAIN: milkyway
   UNIFI_CONTROLLER_URL: https://sun.milkyway:8443/
-  VOLSYNC_RESTIC_REPOSITORY: s3:https://singularity.milkyway:9001/volsync
+  VOLSYNC_RESTIC_REPOSITORY: s3:http://singularity.milkyway:9000/volsync

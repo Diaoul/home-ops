@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: "${APP}"
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: "${APP}-volsync"
+    copyMethod: Snapshot
+    volumeSnapshotClassName: ceph-block
+    cacheStorageClassName: openebs-hostpath
+    cacheAccessModes:
+      - ReadWriteOnce
+    cacheCapacity: 4Gi
+    storageClassName: ceph-block
+    accessModes:
+      - ReadWriteOnce
+    capacity: "${CAPACITY}"
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
