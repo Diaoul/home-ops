@@ -35,8 +35,8 @@ spec:
     deploymentStrategy:
       type: Recreate
     env:
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: http://authelia.security.svc.cluster.local:9091/api/oidc/token
-      GF_AUTH_GENERIC_OAUTH_API_URL: http://authelia.security.svc.cluster.local:9091/api/oidc/userinfo
+      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: http://authelia.security.svc.cluster.local/api/oidc/token
+      GF_AUTH_GENERIC_OAUTH_API_URL: http://authelia.security.svc.cluster.local/api/oidc/userinfo
       GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.${DOMAIN}/api/oidc/authorization
       GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
       GF_NEWS_NEWS_FEED_ENABLED: false
