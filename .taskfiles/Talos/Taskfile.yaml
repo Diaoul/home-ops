@@ -72,7 +72,6 @@ tasks:
     desc: Upgrade Talos on a node
     dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
     cmds:
-      - task: genconfig
       - talhelper gencommand upgrade --node {{.node}} --config-file {{.TALHELPER_CONFIG_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} --extra-flags="--preserve=true" | bash
       - talosctl --nodes {{.node}} health --wait-timeout=10m --server=false
     vars:
@@ -91,7 +90,6 @@ tasks:
     desc: Upgrade Kubernetes across the cluster
     dir: "{{.KUBERNETES_DIR}}/bootstrap/talos"
     cmds:
-      - task: genconfig
       - talhelper gencommand upgrade-k8s --node {{.node}} --config-file {{.TALHELPER_CONFIG_FILE}} --out-dir {{.TALHELPER_CLUSTER_DIR}} | bash
     requires:
       vars: ["node"]
