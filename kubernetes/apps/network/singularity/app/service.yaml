@@ -1,0 +1,8 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: singularity
+spec:
+  type: ExternalName
+  externalName: singularity.milkyway
