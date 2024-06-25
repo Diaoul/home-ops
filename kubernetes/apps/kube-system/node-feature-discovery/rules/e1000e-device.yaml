@@ -1,0 +1,14 @@
+---
+apiVersion: nfd.k8s-sigs.io/v1alpha1
+kind: NodeFeatureRule
+metadata:
+  name: e1000e-device
+spec:
+  rules:
+    - name: e1000e
+      labels:
+        nic.feature.node.kubernetes.io/e1000e: "true"
+      matchFeatures:
+        - feature: kernel.loadedmodule
+          matchExpressions:
+            e1000e: { op: Exists }
