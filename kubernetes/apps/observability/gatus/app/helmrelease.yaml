@@ -72,6 +72,9 @@ spec:
             env:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
+            envFrom:
+              - secretRef:
+                  name: gatus
             probes:
               liveness: &probes
                 enabled: true
