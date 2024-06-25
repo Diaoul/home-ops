@@ -34,7 +34,7 @@ spec:
           configmap.reloader.stakater.com/reload: frigate-config
         pod:
           nodeSelector:
-            google.feature.node.kubernetes.io/coral: "true"
+            feature.node.kubernetes.io/custom-google-coral: "true"
             intel.feature.node.kubernetes.io/gpu: "true"
         containers:
           app:

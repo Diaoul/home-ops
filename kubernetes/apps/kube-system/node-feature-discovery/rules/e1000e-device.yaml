@@ -7,7 +7,7 @@ spec:
   rules:
     - name: e1000e
       labels:
-        nic.feature.node.kubernetes.io/e1000e: "true"
+        feature.node.kubernetes.io/custom-e1000e: "true"
       matchFeatures:
         - feature: kernel.loadedmodule
           matchExpressions:

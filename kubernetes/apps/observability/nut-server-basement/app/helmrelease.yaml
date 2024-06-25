@@ -29,7 +29,7 @@ spec:
           annotations:
             configmap.reloader.stakater.com/reload: &config nut-server-basement-config
           nodeSelector:
-            ups.feature.node.kubernetes.io/apc: "true"
+            feature.node.kubernetes.io/custom-ups-apc: "true"
         containers:
           app:
             image:

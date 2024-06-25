@@ -31,7 +31,7 @@ spec:
           hostNetwork: true
           hostPID: true
           nodeSelector:
-            nic.feature.node.kubernetes.io/e1000e: "true"
+            feature.node.kubernetes.io/custom-e1000e: "true"
         containers:
           app:
             image:

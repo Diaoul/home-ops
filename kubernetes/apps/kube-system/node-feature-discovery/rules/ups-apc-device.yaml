@@ -7,7 +7,7 @@ spec:
   rules:
     - name: ups.apc
       labels:
-        ups.feature.node.kubernetes.io/apc: "true"
+        feature.node.kubernetes.io/custom-ups-apc: "true"
       matchFeatures:
         - feature: usb.device
           matchExpressions:
