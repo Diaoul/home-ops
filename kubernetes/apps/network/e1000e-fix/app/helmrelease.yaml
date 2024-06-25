@@ -1,0 +1,80 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: e1000e-fix
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      e1000e-fix:
+        type: daemonset
+        pod:
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          hostNetwork: true
+          hostPID: true
+        containers:
+          app:
+            image:
+              repository: ghcr.io/nicolaka/netshoot
+              tag: v0.13@sha256:a20c2531bf35436ed3766cd6cfe89d352b050ccc4d7005ce6400adf97503da1b
+            command: ["/bin/bash", "-c"]
+            args:
+              - |
+                find /sys/class/net/*/device/driver/module/drivers -maxdepth 1 -path "*e1000e*" | \
+                awk -F'/' '{print $5}' | \
+                xargs -I% nsenter --mount=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/mnt \
+                                  --net=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/net \
+                                  -- sh -c "
+                                    echo '% - BEFORE' && \
+                                    echo '==========' && \
+                                    ethtool -k % && \
+                                    echo '==========' && \
+                                    echo 'Disabling offloads for %...' && \
+                                    ethtool -K % tso off gso off gro off && \
+                                    echo '==========' && \
+                                    echo '% - AFTER' && \
+                                    echo '==========' && \
+                                    ethtool -k % && \
+                                    echo '=========='
+                                  " && \
+                sleep infinity
+            securityContext:
+              privileged: true
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 50Mi
+    persistence:
+      procfs:
+        type: hostPath
+        hostPath: /proc
+        hostPathType: Directory
+        globalMounts:
+          - path: /host/proc
+            readOnly: true
+      netfs:
+        type: hostPath
+        hostPath: /sys
+        hostPathType: Directory
+        globalMounts:
+          - path: /host/net
+            readOnly: true

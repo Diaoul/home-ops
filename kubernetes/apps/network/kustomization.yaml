@@ -6,6 +6,7 @@ resources:
   - ./namespace.yaml
   - ./blocky/ks.yaml
   - ./cloudflared/ks.yaml
+  - ./e1000e-fix/ks.yaml
   - ./echo-server/ks.yaml
   - ./external-dns/ks.yaml
   - ./k8s-gateway/ks.yaml
