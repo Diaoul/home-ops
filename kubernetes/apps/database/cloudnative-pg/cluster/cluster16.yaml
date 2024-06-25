@@ -46,12 +46,12 @@ spec:
         maxParallel: 4
       # NOTE: serverName version needs to be incremented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres16-002
+      serverName: &currentCluster postgres16-003
   # NOTE: previousCluster needs to be set to the name of the previous
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres16-001
+      source: &previousCluster postgres16-002
   # NOTE: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
     - name: *previousCluster
