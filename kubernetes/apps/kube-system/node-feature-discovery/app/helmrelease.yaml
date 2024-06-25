@@ -28,22 +28,6 @@ spec:
     worker:
       config:
         core:
-          sources:
-            - custom
-            - pci
-            - usb
-        sources:
-          usb:
-            deviceClassWhitelist:
-              - "02"
-              - "03"
-              - "0e"
-              - "ef"
-              - "fe"
-              - "ff"
-            deviceLabelFields:
-              - class
-              - vendor
-              - device
+          sources: [custom, pci, usb]
     prometheus:
       enable: true
