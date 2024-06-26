@@ -23,4 +23,4 @@ spec:
     substitute:
       APP: *app
       CAPACITY: 1Gi
-      GATUS_PATH: /api/system/status
+      GATUS_PATH: /ping
