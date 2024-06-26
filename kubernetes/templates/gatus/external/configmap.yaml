@@ -14,5 +14,6 @@ data:
         interval: 1m
         client:
           dns-resolver: tcp://1.1.1.1:53
+          ignore-redirect: ${GATUS_IGNORE_REDIRECT:-true}
         conditions:
           - "[STATUS] == ${GATUS_STATUS:-200}"
