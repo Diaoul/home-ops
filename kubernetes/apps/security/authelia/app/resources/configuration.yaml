@@ -64,6 +64,12 @@ access_control:
         - sonarr.${DOMAIN}
       resources:
         - "^/api/.*$"
+        - "^/ping*$"
+      policy: bypass
+    - domain:
+        - sabnzbd.${DOMAIN}
+      resources:
+        - "^/api/.*$"
       policy: bypass
     - domain:
         - qb.${DOMAIN}
