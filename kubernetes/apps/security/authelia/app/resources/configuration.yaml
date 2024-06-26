@@ -55,6 +55,7 @@ access_control:
     - domain: auth.${DOMAIN}
       policy: bypass
     - domain:
+        - audiobookshelf.${DOMAIN}
         - lidarr.${DOMAIN}
         - prowlarr.${DOMAIN}
         - radarr.${DOMAIN}
