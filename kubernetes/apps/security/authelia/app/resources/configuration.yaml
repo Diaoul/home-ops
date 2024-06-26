@@ -51,6 +51,23 @@ access_control:
   networks:
     - name: internal
       networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+  rules:
+    - resources:
+        - "^/api/.*$"
+      domain:
+        - lidarr.${DOMAIN}
+        - prowlarr.${DOMAIN}
+        - radarr.${DOMAIN}
+        - readarr-audio.${DOMAIN}
+        - readarr.${DOMAIN}
+        - sabnzbd.${DOMAIN}
+        - sonarr.${DOMAIN}
+      policy: bypass
+    - resources:
+        - "^/api/v2/.*$"
+      domain:
+        - qb.${DOMAIN}
+      policy: bypass
 
 identity_providers:
   oidc:
