@@ -77,6 +77,11 @@ access_control:
       resources:
         - "^/api/v2/.*$"
       policy: bypass
+    - domain:
+        - frigate.${DOMAIN}
+      resources:
+        - "^/api/version$"
+      policy: bypass
 
 identity_providers:
   oidc:

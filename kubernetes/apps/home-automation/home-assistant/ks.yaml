@@ -25,3 +25,4 @@ spec:
     substitute:
       APP: *app
       CAPACITY: 600Mi
+      GATUS_SUBDOMAIN: hass
