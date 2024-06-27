@@ -7,6 +7,7 @@ resources:
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
+  - ./kromgo/ks.yaml
   - ./loki/ks.yaml
   - ./nut-server-basement/ks.yaml
   - ./prometheus-operator-crds/ks.yaml
