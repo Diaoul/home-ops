@@ -21,6 +21,7 @@ spec:
   timeout: 5m
   postBuild:
     substitute:
+      APP: *app
       GATUS_SUBDOMAIN: hubble
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json

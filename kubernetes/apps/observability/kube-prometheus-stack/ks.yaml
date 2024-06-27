@@ -21,4 +21,5 @@ spec:
   timeout: 15m
   postBuild:
     substitute:
+      APP: *app
       GATUS_SUBDOMAIN: prometheus
