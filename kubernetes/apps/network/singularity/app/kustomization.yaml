@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./ingress.yaml
   - ./service.yaml
+  - ../../../../templates/gatus/external
