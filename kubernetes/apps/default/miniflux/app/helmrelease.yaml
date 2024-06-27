@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: miniflux
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.2.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      miniflux:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile: { type: RuntimeDefault }
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: miniflux
+        containers:
+          app:
+            image:
+              repository: ghcr.io/miniflux/miniflux
+              tag: 2.1.3-distroless@sha256:64037785614ddcc06676b71d1e451b4100ca4f9e15a72b75a695a42af7bad094
+            env:
+              BASE_URL: https://miniflux.${DOMAIN}
+              CREATE_ADMIN: "1"
+              LOG_DATE_TIME: "1"
+              METRICS_ALLOWED_NETWORKS: 10.42.0.0/16
+              METRICS_COLLECTOR: "1"
+              POLLING_SCHEDULER: entry_frequency
+              POLLING_FREQUENCY: "15"
+              RUN_MIGRATIONS: "1"
+              OAUTH2_CLIENT_ID: miniflux
+              OAUTH2_USER_CREATION: "1"
+              OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.${DOMAIN}
+              OAUTH2_PROVIDER: oidc
+              OAUTH2_REDIRECT_URL: https://miniflux.${DOMAIN}/oauth2/oidc/callback
+            envFrom: *envFrom
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /healthcheck
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+    service:
+      app:
+        controller: miniflux
+        ports:
+          http:
+            port: *port
+    serviceMonitor:
+      app:
+        serviceName: miniflux
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+    ingress:
+      app:
+        className: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+        hosts:
+          - host: miniflux.${DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
