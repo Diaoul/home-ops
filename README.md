@@ -1,27 +1,44 @@
-<p align="left">
-   <img src="https://i.imgur.com/4l9bHvG.png" alt="ansible logo" width="150" align="left" />
+<div align="center">
+
    <img src="https://i.imgur.com/EXNTJnA.png" alt="kubernetes home logo" width="150" align="left" />
-</p>
 
 ### Operations for my home...
-_...with Ansible and Kubernetes!_ ⛵
-<br/><br/><br/><br/>
-![lint](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/lint.yml?label=lint&style=for-the-badge)
-![pre-commit](https://img.shields.io/github/actions/workflow/status/Diaoul/home-ops/pre-commit.yml?label=pre-commit&style=for-the-badge)
+_...managed by Flux, Renovate and GitHub Actions!_ ⛵
+
+</div>
+
+<div align="center">
+
+[![Talos](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dtalos_version&style=for-the-badge&logo=talos&logoColor=white&color=blue&label=%20)](https://www.talos.dev/)&nbsp;&nbsp;
+[![Kubernetes](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dkubernetes_version&style=for-the-badge&logo=kubernetes&logoColor=white&color=blue&label=%20)](https://www.talos.dev/)&nbsp;&nbsp;
+
+</div>
+
+<div align="center">
+
+[![Age-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_age_days&style=flat-square&label=Age)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Uptime-Days](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_uptime_days&style=flat-square&label=Uptime)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Node-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_node_count&style=flat-square&label=Nodes)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Pod-Count](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_pod_count&style=flat-square&label=Pods)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![CPU-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_cpu_usage&style=flat-square&label=CPU)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+[![Memory-Usage](https://img.shields.io/endpoint?url=https%3A%2F%2Fkromgo.diaoul.io%2Fquery%3Fformat%3Dendpoint%26metric%3Dcluster_memory_usage&style=flat-square&label=Memory)](https://github.com/kashalls/kromgo/)&nbsp;&nbsp;
+
+</div>
 
 ## 📕 Overview
-This repository contains everything I use to setup and run the devices in my home. It is based off [cluster-template](https://github.com/onedr0p/cluster-template).
+This mono repository contains everything I use to setup and run the devices in my home. It is based off the awesome [cluster-template](https://github.com/onedr0p/cluster-template).
+
+It is fully managed following GitOps practices and using tools like [Ansible](https://www.ansible.com/), [Kubernetes](https://kubernetes.io/), [Flux](https://github.com/fluxcd/flux2), [Renovate](https://github.com/renovatebot/renovate), and [GitHub Actions](https://github.com/features/actions).
 
 ## ⚙️  Hardware
-I run everything bare metal.
 
 | Device                  | Count | Storage                  | Purpose                                      |
 |-------------------------|-------|--------------------------|----------------------------------------------|
-| Protectli FW4B clone    | 1     | 120GB                    | Opnsense router                              |
+| Protectli FW4B clone    | 1     | 120GB                    | OPNsense router                              |
 | Synology NAS            | 1     | 12TB RAID 5 + 2TB RAID 1 | Main storage                                 |
-| Raspberry Pi 3          | 2     | 16GB SD                  | Unifi Controller / 3D Printer with OctoPrint |
-| Intel NUC8i5BEH         | 3     | 120GB SSD + 500GB NVMe   | Kubernetes control planes + storage                 |
+| Intel NUC8i5BEH         | 3     | 120GB SSD + 500GB NVMe   | Kubernetes control planes + storage          |
 | Intel NUC8i3BEH         | 2     | 120GB SSD                | Kubernetes workers                           |
+| Raspberry Pi 3          | 2     | 16GB SD                  | Unifi Controller / 3D Printer with OctoPrint |
 
 ### Intel NUC
 
@@ -159,11 +176,9 @@ I run the Postfix plugin with the following configuration:
     - Apply
 4. Verify
     ```sh
-    swaks --server opnsense.milkyway --port 25 --to <email-address> --from <email-address>
+    swaks --server 10.0.3.1 --port 25 --to <email-address> --from <email-address>
     ```
 ## 🤝 Thanks
-I learned a lot from the people that have shared their clusters over at
-[kubesearch](https://kubesearch.dev/) and from the [Home Operations discord channel](https://discord.gg/DNCynrJ).
+I learned a lot from the people that have shared their clusters over at [kubesearch](https://kubesearch.dev/) and from the [Home Operations](https://discord.gg/DNCynrJ) Discord Community.
 
-Want to get started? I recommend that you take a look at the
-[cluster-template](https://github.com/onedr0p/cluster-template) repository!
+Want to get started? I highly recommend that you take a look at the [cluster-template](https://github.com/onedr0p/cluster-template) repository!
