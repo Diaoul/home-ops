@@ -6,4 +6,4 @@ resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
   - ../../../../templates/persistence
-  - ../../../../templates/gatus/external
+  - ../../../../templates/gatus/guarded

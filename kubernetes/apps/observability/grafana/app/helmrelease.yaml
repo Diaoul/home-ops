@@ -369,8 +369,8 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
-      ingressClassName: internal
+        external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
+      ingressClassName: external
       hosts: ["grafana.${DOMAIN}"]
     persistence:
       enabled: false
