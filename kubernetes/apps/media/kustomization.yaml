@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./audiobookshelf/ks.yaml
+  - ./autobrr/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./kavita/ks.yaml
