@@ -17,6 +17,7 @@ env:
 
 includes:
   flux: .taskfiles/Flux
+  kubernetes: .taskfiles/Kubernetes
   rook: .taskfiles/Rook
   sops: .taskfiles/Sops
   talos: .taskfiles/Talos
