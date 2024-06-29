@@ -8,9 +8,6 @@ spec:
   trigger:
     manual: restore-once
   restic:
-    customCA:
-      secretName: milkyway-ca
-      key: ca.crt
     repository: ${app}-volsync
     destinationPVC: ${claim}
     copyMethod: Direct

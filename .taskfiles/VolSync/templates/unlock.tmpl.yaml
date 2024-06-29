@@ -13,17 +13,8 @@ spec:
       containers:
         - name: main
           image: docker.io/restic/restic:0.16.4
-          args:
-            ["unlock", "--remove-all", "--cacert", "/etc/milkyway-ca/ca.crt"]
+          args: ["unlock", "--remove-all"]
           envFrom:
             - secretRef:
                 name: ${app}-volsync
           resources: {}
-          volumeMounts:
-            - name: milkyway-ca
-              mountPath: /etc/milkyway-ca
-              readOnly: true
-      volumes:
-        - name: milkyway-ca
-          secret:
-            secretName: milkyway-ca
