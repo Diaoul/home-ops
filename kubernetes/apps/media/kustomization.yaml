@@ -8,6 +8,7 @@ resources:
   - ./autobrr/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./jellyseerr/ks.yaml
   - ./kavita/ks.yaml
   - ./lidarr/ks.yaml
   - ./prowlarr/ks.yaml
