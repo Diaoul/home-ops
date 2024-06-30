@@ -97,7 +97,8 @@ identity_providers:
         public: false
         authorization_policy: two_factor
         scopes: ["openid", "profile", "groups", "email"]
-        redirect_uris: ["https://grafana.${DOMAIN}/login/generic_oauth"]
+        redirect_uris:
+          - https://grafana.${DOMAIN}/login/generic_oauth
         userinfo_signed_response_alg: none
       - client_name: Jellyfin
         client_id: jellyfin
@@ -118,7 +119,8 @@ identity_providers:
         public: false
         authorization_policy: two_factor
         scopes: ["openid", "profile", "groups", "email"]
-        redirect_uris: ["https://miniflux.${DOMAIN}/oauth2/oidc/callback"]
+        redirect_uris:
+          - https://miniflux.${DOMAIN}/oauth2/oidc/callback
         userinfo_signed_response_alg: none
       - client_name: Mealie
         client_id: mealie
@@ -127,6 +129,16 @@ identity_providers:
         require_pkce: true
         pkce_challenge_method: S256
         scopes: ["openid", "profile", "groups", "email"]
-        redirect_uris: ["https://mealie.${DOMAIN}/login"]
+        redirect_uris:
+          - https://mealie.${DOMAIN}/login
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: none
+      - client_name: Paperless
+        client_id: paperless
+        client_secret: "$${PAPERLESS_OAUTH_CLIENT_SECRET}"
+        public: false
+        authorization_policy: two_factor
+        scopes: ["openid", "profile", "groups", "email"]
+        redirect_uris:
+          - https://paperless.${DOMAIN}/accounts/oidc/authelia/login/callback/
+        userinfo_signed_response_alg: none
