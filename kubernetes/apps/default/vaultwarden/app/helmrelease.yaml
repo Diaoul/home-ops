@@ -97,12 +97,9 @@ spec:
                   identifier: app
                   port: http
       admin:
-        className: external
+        className: internal
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
-          # disabled for 401 because it is used for the admin login page
-          nginx.ingress.kubernetes.io/custom-http-errors: 403,404,500,501,502,503
-          nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
+          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
         hosts:
           - host: *host
             paths:
