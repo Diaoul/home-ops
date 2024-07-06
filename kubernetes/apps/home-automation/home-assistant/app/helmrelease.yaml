@@ -55,12 +55,31 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 1Gi
+          code-server:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.90.3@sha256:f54483e9794f1bbd42bf55346ebeadb057a4f0dc9da1a50670e3a335ee295a35
+            args:
+              - "--auth"
+              - "none"
+              - "--user-data-dir"
+              - "/config/.vscode"
+              - "--extensions-dir"
+              - "/config/.vscode"
+              - "/config"
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
     service:
       app:
         controller: home-assistant
         ports:
           http:
             port: 8123
+          code-server:
+            port: 8080
     ingress:
       app:
         className: external
@@ -73,6 +92,17 @@ spec:
                 service:
                   identifier: app
                   port: http
+      code-server:
+        className: internal
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
+        hosts:
+          - host: hass-code.${DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: code-server
     persistence:
       config:
         existingClaim: home-assistant
