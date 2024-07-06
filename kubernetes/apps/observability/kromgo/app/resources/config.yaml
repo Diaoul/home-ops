@@ -32,7 +32,7 @@ metrics:
     suffix: "%"
     colors:
       - { color: green, min: 0, max: 35 }
-      - { color: orange, min: 36, max: 75 }
+      - { color: orange, min: 51, max: 75 }
       - { color: red, min: 76, max: 9999 }
 
   - name: cluster_age_days
