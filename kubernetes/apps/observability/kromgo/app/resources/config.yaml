@@ -31,7 +31,7 @@ metrics:
     query: round(sum(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / sum(node_memory_MemTotal_bytes) * 100, 0.1)
     suffix: "%"
     colors:
-      - { color: green, min: 0, max: 35 }
+      - { color: green, min: 0, max: 50 }
       - { color: orange, min: 51, max: 75 }
       - { color: red, min: 76, max: 9999 }
 
