@@ -37,11 +37,21 @@ go2rtc:
   streams:
     crate_hq: rtsp://10.0.4.18:554/s0
     crate_lq: rtsp://10.0.4.18:554/s2
+    living_room_hq: rtsp://10.0.4.19:554/s0
+    living_room_lq: rtsp://10.0.4.19:554/s2
 cameras:
   crate:
     ffmpeg:
       inputs:
         - path: rtsp://localhost:8554/crate_hq
+          roles:
+            - record
+    detect:
+      enabled: false
+  living_room:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/living_room_hq
           roles:
             - record
     detect:
