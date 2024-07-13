@@ -51,7 +51,7 @@ spec:
               SMTP_HOST: ${ROUTER_IP}
               SMTP_PORT: 25
               SMTP_AUTH_STRATEGY: NONE
-              SMTP_FROM_EMAIL: mealie@${DOMAIN}
+              SMTP_FROM_EMAIL: admin@${DOMAIN}
               OIDC_AUTH_ENABLED: true
               OIDC_SIGNUP_ENABLED: true
               OIDC_CONFIGURATION_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
