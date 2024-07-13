@@ -22,4 +22,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      CAPACITY: 100Mi
+      CAPACITY: 500Mi

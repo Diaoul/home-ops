@@ -76,6 +76,14 @@ spec:
         existingClaim: kavita
         globalMounts:
           - path: /kavita/config
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /kavita/config/logs
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /kavita/config/cache
       media:
         type: nfs
         server: singularity.milkyway
