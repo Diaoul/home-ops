@@ -178,6 +178,21 @@ I run the Postfix plugin with the following configuration:
     ```sh
     swaks --server 10.0.3.1 --port 25 --to <email-address> --from <email-address>
     ```
+
+## 🔍 Troubleshooting
+### cloudnative-pg
+It can happen that a node is corrupt and fails to start, destroying it will trigger the creation of a new one.
+Run this command replacing {x} with the instance to destroy.
+```
+kubectl cnpg -n database destroy postgres16 {x}
+```
+
+### Browsing PVCs
+It's sometimes useful to make some edits in a PVC or change permissions.
+```
+task kubernetes:browse-pvc ns=media claim=jellystat
+```
+
 ## 🤝 Thanks
 I learned a lot from the people that have shared their clusters over at [kubesearch](https://kubesearch.dev/) and from the [Home Operations](https://discord.gg/DNCynrJ) Discord Community.
 
