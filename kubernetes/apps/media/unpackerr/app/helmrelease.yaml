@@ -43,7 +43,7 @@ spec:
           app:
             image:
               repository: ghcr.io/unpackerr/unpackerr
-              tag: 0.14.0@sha256:92e76f59dffc11379c1cb900bc4a4dd10bcb1ad15a8a34797fdf07e4d28f22f8
+              tag: 0.14.4@sha256:1b62f65a94276a517c711891ba8c52efa2bbaa77b168419656e9b3d63dd1da0b
             env:
               UN_WEBSERVER_METRICS: true
               UN_SONARR_0_URL: http://sonarr.media.svc.cluster.local:8989
