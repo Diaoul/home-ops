@@ -31,6 +31,5 @@ endpoints:
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
-      ignore-redirect: true
     conditions:
       - "[STATUS] == 404"
