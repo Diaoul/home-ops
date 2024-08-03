@@ -33,6 +33,9 @@ nodes:
     machineSpec:
       secureboot: true
     schematic:
+      # NOTE: this is the same for all nodes. In case of modification,
+      # also update schematic id and system-upgrade-controller
+      # id: e2db9ecf15bafbac72ddc250d35e082f8523f1fd582ce1259e1ebeda31e34675
       customization:
         extraKernelArgs:
           - mitigations=off
@@ -40,6 +43,7 @@ nodes:
           officialExtensions:
             - siderolabs/i915-ucode
             - siderolabs/intel-ucode
+            - siderolabs/gasket-driver
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -61,6 +65,7 @@ nodes:
           officialExtensions:
             - siderolabs/i915-ucode
             - siderolabs/intel-ucode
+            - siderolabs/gasket-driver
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -82,6 +87,7 @@ nodes:
           officialExtensions:
             - siderolabs/i915-ucode
             - siderolabs/intel-ucode
+            - siderolabs/gasket-driver
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
