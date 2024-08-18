@@ -39,6 +39,8 @@ spec:
               repository: ghcr.io/kashalls/kromgo
               tag: v0.4.1@sha256:237e6ac3f3bc791343e1ee84122ce9b97abf7eed86cd522d8bf4cba10a041e9f
             env:
+              SERVER_HOST: 0.0.0.0
+              HEALTH_HOST: 0.0.0.0
               PROMETHEUS_URL: http://prometheus-operated.observability.svc.cluster.local:9090
             probes:
               liveness:
@@ -47,9 +49,9 @@ spec:
                 spec:
                   httpGet:
                     path: /-/health
-                    port: &port 8080
+                    port: &healthPort 8888
                   initialDelaySeconds: 0
-                  periodSeconds: 10
+                  periodSeconds: 5
                   timeoutSeconds: 1
                   failureThreshold: 5
               readiness:
@@ -58,9 +60,9 @@ spec:
                 spec:
                   httpGet:
                     path: /-/ready
-                    port: 8888
+                    port: *healthPort
                   initialDelaySeconds: 0
-                  periodSeconds: 10
+                  periodSeconds: 5
                   timeoutSeconds: 1
                   failureThreshold: 3
             securityContext:
@@ -77,7 +79,7 @@ spec:
         controller: kromgo
         ports:
           http:
-            port: *port
+            port: 8080
     ingress:
       app:
         className: external
