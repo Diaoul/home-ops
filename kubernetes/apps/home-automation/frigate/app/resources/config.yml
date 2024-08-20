@@ -19,40 +19,73 @@ birdseye:
 record:
   enabled: true
   retain:
-    days: 30
+    days: 5
     mode: motion
+  events:
+    retain:
+      default: 15
+      mode: motion
+      objects:
+        person: 30
 snapshots:
   enabled: true
-  timestamp: false
-  bounding_box: true
   retain:
-    default: 30
+    default: 5
+    objects:
+      person: 30
 objects:
-  track: ["person"]
+  track:
+    - person
+    - dog
+    - cat
 detect:
   width: 1024
   height: 576
-  fps: 10
+  fps: 5
 go2rtc:
   streams:
-    crate_hq: rtsp://10.0.4.18:554/s0
-    crate_lq: rtsp://10.0.4.18:554/s2
+    second_floor_hq: rtsp://10.0.4.16:554/s0
+    second_floor_lq: rtsp://10.0.4.16:554/s2
+    entrance_hq: rtsp://10.0.4.17:554/s0
+    entrance_lq: rtsp://10.0.4.17:554/s2
+    dining_room_hq: rtsp://10.0.4.18:554/s0
+    dining_room_lq: rtsp://10.0.4.18:554/s2
     living_room_hq: rtsp://10.0.4.19:554/s0
     living_room_lq: rtsp://10.0.4.19:554/s2
 cameras:
-  crate:
+  second_floor:
     ffmpeg:
       inputs:
-        - path: rtsp://localhost:8554/crate_hq
+        - path: rtsp://localhost:8554/second_floor_hq
           roles:
             - record
-    detect:
-      enabled: false
+        - path: rtsp://localhost:8554/second_floor_lq
+          roles:
+            - detect
+  entrance:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/entrance_hq
+          roles:
+            - record
+        - path: rtsp://localhost:8554/entrance_lq
+          roles:
+            - detect
+  dining_room:
+    ffmpeg:
+      inputs:
+        - path: rtsp://localhost:8554/dining_room_hq
+          roles:
+            - record
+        - path: rtsp://localhost:8554/dining_room_lq
+          roles:
+            - detect
   living_room:
     ffmpeg:
       inputs:
         - path: rtsp://localhost:8554/living_room_hq
           roles:
             - record
-    detect:
-      enabled: false
+        - path: rtsp://localhost:8554/living_room_lq
+          roles:
+            - detect
