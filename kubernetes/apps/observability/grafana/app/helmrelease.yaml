@@ -182,7 +182,8 @@ spec:
           # renovate: depName="Prometheus NUT Exporter for DRuggeri"
           gnetId: 19308
           revision: 3
-          datasource: Prometheus
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457
