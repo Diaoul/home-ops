@@ -178,6 +178,11 @@ spec:
               implementation: prometheus
     dashboards:
       default:
+        network-ups-tools:
+          # renovate: depName="Prometheus NUT Exporter for DRuggeri"
+          gnetId: 19308
+          revision: 3
+          datasource: Prometheus
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457
