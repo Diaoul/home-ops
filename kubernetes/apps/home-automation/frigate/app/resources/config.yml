@@ -38,14 +38,8 @@ objects:
     - person
     - dog
     - cat
-detect:
-  width: 1024
-  height: 576
-  fps: 5
 go2rtc:
   streams:
-    entrance_hq: rtspx://10.0.1.3:7441/tRQBbVxBgt53Kiq0
-    entrance_lq: rtspx://10.0.1.3:7441/aR7s7R2TTtXyxYU6
     dining_room_hq: rtsp://10.0.4.18:554/s0
     dining_room_lq: rtsp://10.0.4.18:554/s2
     living_room_hq: rtsp://10.0.4.19:554/s0
@@ -54,10 +48,7 @@ cameras:
   entrance:
     ffmpeg:
       inputs:
-        - path: rtsp://localhost:8554/entrance_hq
-          roles:
-            - record
-        - path: rtsp://localhost:8554/entrance_lq
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance?mp4
           roles:
             - detect
   dining_room:
