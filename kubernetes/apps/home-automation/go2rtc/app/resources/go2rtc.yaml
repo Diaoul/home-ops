@@ -1,0 +1,16 @@
+---
+api:
+  listen: :80
+rtsp:
+  listen: :554
+webrtc:
+  listen: :8555
+  candidates:
+    - 10.44.0.24:8555
+    - stun:8555
+  ice_servers:
+    - urls:
+        - stun:stun.cloudflare.com:3478
+streams:
+  entrance:
+    - rtspx://10.0.1.3:7441/aR7s7R2TTtXyxYU6
