@@ -38,34 +38,40 @@ objects:
     - person
     - dog
     - cat
-go2rtc:
-  streams:
-    dining_room_hq: rtsp://10.0.4.18:554/s0
-    dining_room_lq: rtsp://10.0.4.18:554/s2
-    living_room_hq: rtsp://10.0.4.19:554/s0
-    living_room_lq: rtsp://10.0.4.19:554/s2
 cameras:
   entrance:
     ffmpeg:
       inputs:
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance_lq?mp4
           roles:
             - detect
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance_hq?mp4
+          roles:
+            - record
   dining_room:
     ffmpeg:
       inputs:
-        - path: rtsp://localhost:8554/dining_room_hq
-          roles:
-            - record
-        - path: rtsp://localhost:8554/dining_room_lq
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/dining_room_lq?mp4
           roles:
             - detect
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/dining_room_hq?mp4
+          roles:
+            - record
   living_room:
     ffmpeg:
       inputs:
-        - path: rtsp://localhost:8554/living_room_hq
-          roles:
-            - record
-        - path: rtsp://localhost:8554/living_room_lq
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_lq?mp4
           roles:
             - detect
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_hq?mp4
+          roles:
+            - record
+  office:
+    ffmpeg:
+      inputs:
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/office_lq
+          roles:
+            - detect
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/office_hq
+          roles:
+            - record
