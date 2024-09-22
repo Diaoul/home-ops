@@ -42,28 +42,28 @@ cameras:
   entrance:
     ffmpeg:
       inputs:
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance_lq?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance_lq
           roles:
             - detect
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance_hq?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/entrance_hq
           roles:
             - record
   dining_room:
     ffmpeg:
       inputs:
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/dining_room_lq?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/dining_room_lq
           roles:
             - detect
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/dining_room_hq?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/dining_room_hq
           roles:
             - record
   living_room:
     ffmpeg:
       inputs:
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_lq?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_lq
           roles:
             - detect
-        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_hq?mp4
+        - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_hq
           roles:
             - record
   office:
