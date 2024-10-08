@@ -36,7 +36,7 @@ spec:
             name: emqx
       extraContainers:
         - name: init-mqtt
-          image: docker.io/library/python:3.12-alpine
+          image: docker.io/library/python:3.13-alpine
           env:
             - name: X_EMQX_ADDRESS
               value: emqx-dashboard.database.svc.cluster.local:18083
