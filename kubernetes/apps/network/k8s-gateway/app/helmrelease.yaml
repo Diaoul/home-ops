@@ -33,7 +33,7 @@ spec:
     service:
       type: LoadBalancer
       annotations:
-        io.cilium/lb-ipam-ips: ${K8S_GATEWAY_IP}
+        lbipam.cilium.io/ips: ${K8S_GATEWAY_IP}
     fallthrough:
       enabled: true
       zones:

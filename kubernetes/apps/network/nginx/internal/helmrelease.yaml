@@ -30,7 +30,7 @@ spec:
         enableHttp: false
         annotations:
           external-dns.alpha.kubernetes.io/hostname: internal.${DOMAIN}
-          io.cilium/lb-ipam-ips: ${INGRESS_NGINX_INTERNAL_IP}
+          lbipam.cilium.io/ips: ${INGRESS_NGINX_INTERNAL_IP}
       ingressClassResource:
         name: internal
         default: true

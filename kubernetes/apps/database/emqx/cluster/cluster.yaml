@@ -53,6 +53,6 @@ spec:
   listenersServiceTemplate:
     metadata:
       annotations:
-        io.cilium/lb-ipam-ips: ${EMQX_IP}
+        lbipam.cilium.io/ips: ${EMQX_IP}
     spec:
       type: LoadBalancer
