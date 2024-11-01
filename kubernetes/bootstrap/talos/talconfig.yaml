@@ -136,6 +136,8 @@ nodes:
           hardwareAddr: 1c:69:7a:0e:da:8a
         dhcp: true
 
+# NOTE: don't use dns and ntp patches from upstream, default from DHCP is fine
+
 # Global patches
 patches:
   - "@./patches/global/cluster-discovery.yaml"
