@@ -25,5 +25,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      CAPACITY: 1Gi
+      CAPACITY: 2Gi
       GATUS_PATH: /api/version
