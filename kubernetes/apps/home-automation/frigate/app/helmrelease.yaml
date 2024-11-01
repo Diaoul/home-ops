@@ -64,9 +64,9 @@ spec:
             resources:
               requests:
                 cpu: 250m
-                memory: 1Gi
+                memory: 2Gi
               limits:
-                memory: 4Gi
+                memory: 8Gi
                 gpu.intel.com/i915: 1
     service:
       app:
@@ -99,7 +99,7 @@ spec:
       cache:
         type: emptyDir
         medium: Memory
-        sizeLimit: 2Gi
+        sizeLimit: 4Gi
         globalMounts:
           - path: /dev/shm
       pci:
