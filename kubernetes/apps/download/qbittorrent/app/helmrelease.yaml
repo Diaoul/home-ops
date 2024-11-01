@@ -73,6 +73,9 @@ spec:
             securityContext:
               capabilities: { add: ["NET_ADMIN"] }
               allowPrivilegeEscalation: false
+            resources:
+              limits:
+                squat.ai/tun: "1"
           port-forward:
             image:
               repository: ghcr.io/bjw-s/gluetun-qb-port-sync
