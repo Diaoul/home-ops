@@ -41,8 +41,6 @@ spec:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.1@sha256:7fc5af4f7f9c8e4998aaa18b5e2e634757c55f70c23b9bd46b40e09a4c7acda5
-            env:
-              QBT_Preferences__WebUI__LocalHostAuth: false
             securityContext:
               runAsUser: 568
               runAsGroup: 568
@@ -50,16 +48,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
             resources:
               requests:
                 cpu: 100m
