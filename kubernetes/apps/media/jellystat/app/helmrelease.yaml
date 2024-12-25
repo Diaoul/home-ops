@@ -47,7 +47,7 @@ spec:
           app:
             image:
               repository: cyfershepard/jellystat
-              tag: 1.1.1@sha256:912ad92ffa96b08323a59773393461b04713764b5a40ce0af7e73af4177feace
+              tag: 1.1.2@sha256:51a23529a6da006bcbeb9f1929c639d151d624ff94aae6e7bd651dd4550e91d2
             envFrom:
               - secretRef:
                   name: jellystat
