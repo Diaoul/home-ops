@@ -41,7 +41,7 @@ nodes:
           - mitigations=off
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915-ucode
+            - siderolabs/i915
             - siderolabs/intel-ucode
             - siderolabs/gasket-driver
     controlPlane: true
@@ -63,7 +63,7 @@ nodes:
           - mitigations=off
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915-ucode
+            - siderolabs/i915
             - siderolabs/intel-ucode
             - siderolabs/gasket-driver
     controlPlane: true
@@ -85,7 +85,7 @@ nodes:
           - mitigations=off
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915-ucode
+            - siderolabs/i915
             - siderolabs/intel-ucode
             - siderolabs/gasket-driver
     controlPlane: true
@@ -107,7 +107,7 @@ nodes:
           - mitigations=off
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915-ucode
+            - siderolabs/i915
             - siderolabs/intel-ucode
             - siderolabs/gasket-driver
     controlPlane: false
@@ -127,7 +127,7 @@ nodes:
           - mitigations=off
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915-ucode
+            - siderolabs/i915
             - siderolabs/intel-ucode
             - siderolabs/gasket-driver
     controlPlane: false
