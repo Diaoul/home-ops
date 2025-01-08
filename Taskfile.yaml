@@ -13,6 +13,7 @@ vars:
 
 env:
   KUBECONFIG: "{{.KUBECONFIG_FILE}}"
+  MINIJINJA_CONFIG_FILE: "{{.ROOT_DIR}}/.minijinja.toml"
   SOPS_AGE_KEY_FILE: "{{.AGE_FILE}}"
 
 includes:
@@ -21,7 +22,7 @@ includes:
   rook: .taskfiles/Rook
   sops: .taskfiles/Sops
   talos: .taskfiles/Talos
-  volsync: .taskfiles/VolSync
+  volsync: .taskfiles/volsync
 
 tasks:
   default:

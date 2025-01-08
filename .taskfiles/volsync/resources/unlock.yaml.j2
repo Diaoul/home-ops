@@ -2,8 +2,8 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: ${job}
-  namespace: ${ns}
+  name: volsync-unlock-{{ ENV.APP }}
+  namespace: {{ ENV.NS }}
 spec:
   ttlSecondsAfterFinished: 3600
   template:
@@ -12,9 +12,12 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: main
-          image: docker.io/restic/restic:0.16.4
+          image: docker.io/restic/restic:latest
           args: ["unlock", "--remove-all"]
           envFrom:
             - secretRef:
-                name: ${app}-volsync
+                name: {{ ENV.APP }}-volsync
+          volumeMounts:
+            - name: repository
+              mountPath: /repository
           resources: {}
