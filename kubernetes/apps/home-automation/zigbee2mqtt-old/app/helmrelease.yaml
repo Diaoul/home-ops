@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: zigbee2mqtt
+  name: zigbee2mqtt-old
 spec:
   interval: 30m
   chart:
@@ -29,7 +29,7 @@ spec:
       namespace: volsync-system
   values:
     controllers:
-      zigbee2mqtt:
+      zigbee2mqtt-old:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
@@ -47,12 +47,13 @@ spec:
               tag: 1.42.0@sha256:732ae43d714610040bd049487b60af3b2dbcfdefb5f169897455b60d715e2131
             env:
               ZIGBEE2MQTT_DATA: /data
+              ZIGBEE2MQTT_CONFIG_MQTT_BASE_TOPIC: zigbee2mqtt-old
               ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://emqx-listeners.database.svc.cluster.local:1883
               ZIGBEE2MQTT_CONFIG_MQTT_USER: ${EMQX_USER_USERNAME}
               ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD: ${EMQX_USER_PASSWORD}
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
               ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://zigbee.milkyway:6638
-              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: "https://zigbee2mqtt.${DOMAIN}"
+              ZIGBEE2MQTT_CONFIG_FRONTEND_URL: https://zigbee2mqtt-old.${DOMAIN}
               ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_API: "false"
               ZIGBEE2MQTT_CONFIG_ADVANCED_LEGACY_AVAILABILITY_PAYLOAD: "false"
               ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
@@ -66,7 +67,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT: "true"
             envFrom:
               - secretRef:
-                  name: zigbee2mqtt
+                  name: zigbee2mqtt-old
             probes:
               liveness:
                 enabled: true
@@ -89,7 +90,7 @@ spec:
                 memory: 500Mi
     service:
       app:
-        controller: zigbee2mqtt
+        controller: zigbee2mqtt-old
         ports:
           http:
             port: 8080
@@ -99,7 +100,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
         hosts:
-          - host: zigbee2mqtt.${DOMAIN}
+          - host: zigbee2mqtt-old.${DOMAIN}
             paths:
               - path: /
                 service:
@@ -107,4 +108,4 @@ spec:
                   port: http
     persistence:
       data:
-        existingClaim: zigbee2mqtt
+        existingClaim: zigbee2mqtt-old
