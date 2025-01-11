@@ -8,4 +8,5 @@ resources:
   - ./frigate/ks.yaml
   - ./go2rtc/ks.yaml
   - ./home-assistant/ks.yaml
+  - ./zigbee2mqtt/ks.yaml
   - ./zigbee2mqtt-old/ks.yaml
