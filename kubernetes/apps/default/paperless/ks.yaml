@@ -22,4 +22,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      CAPACITY: 1Gi
+      CAPACITY: 5Gi
