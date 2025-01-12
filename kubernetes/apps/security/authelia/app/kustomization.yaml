@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
-  - ./oidc-jwks-key-secret.sops.yaml
 configMapGenerator:
   - name: authelia
     files:

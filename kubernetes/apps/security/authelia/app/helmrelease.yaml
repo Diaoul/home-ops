@@ -65,7 +65,7 @@ spec:
               AUTHELIA_TELEMETRY_METRICS_ENABLED: "true"
               AUTHELIA_THEME: dark
               X_AUTHELIA_CONFIG: /config/configuration.yaml
-              X_AUTHELIA_CONFIG_FILTERS: expand-env,template
+              X_AUTHELIA_CONFIG_FILTERS: template
             envFrom: *envFrom
             probes:
               liveness: &probes
@@ -131,10 +131,9 @@ spec:
           - path: /config/configuration.yaml
             subPath: configuration.yaml
             readOnly: true
-      oidc-jwks:
+      secrets:
         type: secret
-        name: authelia-oidc-jwks-key
+        name: authelia
         globalMounts:
-          - path: /config/oidc-jwks-key.pem
-            subPath: oidc-jwks-key.pem
+          - path: /config/secrets
             readOnly: true

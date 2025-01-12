@@ -1,5 +1,4 @@
 ---
-# NOTE: Authelia vars should be escaped with $${VAR_NAME} to avoid interpolation by Flux
 authentication_backend:
   ldap:
     address: ldap://glauth.security.svc.cluster.local:389
@@ -52,8 +51,15 @@ access_control:
     - name: internal
       networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
   rules:
+    # bypass for authelia
     - domain: auth.${DOMAIN}
       policy: bypass
+    # one factor for local
+    - domain: "*.${DOMAIN}"
+      policy: one_factor
+      networks:
+        - internal
+    # bypass for API access
     - domain:
         - audiobookshelf.${DOMAIN}
         - lidarr.${DOMAIN}
@@ -86,14 +92,14 @@ access_control:
 identity_providers:
   oidc:
     jwks:
-      # prettier-ignore
-      - key: {{ secret "/config/oidc-jwks-key.pem" | mindent 10 "|" | msquote }}
+      - key: |
+          {{ secret "/config/secrets/OIDC_JWKS_KEY" | mindent 10 "|" | msquote }}
     cors:
       endpoints: ["authorization", "token", "revocation", "introspection"]
     clients:
       - client_name: Grafana
         client_id: grafana
-        client_secret: "$${GRAFANA_OAUTH_CLIENT_SECRET}"
+        client_secret: '{{ secret "/config/secrets/GRAFANA_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
         scopes: ["openid", "profile", "groups", "email"]
@@ -102,7 +108,7 @@ identity_providers:
         userinfo_signed_response_alg: none
       - client_name: Jellyfin
         client_id: jellyfin
-        client_secret: "$${JELLYFIN_OAUTH_CLIENT_SECRET}"
+        client_secret: '{{ secret "/config/secrets/JELLYFIN_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
         require_pkce: true
@@ -115,7 +121,7 @@ identity_providers:
         token_endpoint_auth_method: client_secret_post
       - client_name: Miniflux
         client_id: miniflux
-        client_secret: "$${MINIFLUX_OAUTH_CLIENT_SECRET}"
+        client_secret: '{{ secret "/config/secrets/MINIFLUX_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
         scopes: ["openid", "profile", "groups", "email"]
@@ -135,7 +141,7 @@ identity_providers:
         token_endpoint_auth_method: none
       - client_name: Paperless
         client_id: paperless
-        client_secret: "$${PAPERLESS_OAUTH_CLIENT_SECRET}"
+        client_secret: '{{ secret "/config/secrets/PAPERLESS_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
         scopes: ["openid", "profile", "groups", "email"]
