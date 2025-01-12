@@ -4,7 +4,6 @@ kind: Ingress
 metadata:
   name: singularity
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
   ingressClassName: external

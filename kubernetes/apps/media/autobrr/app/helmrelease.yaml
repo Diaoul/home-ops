@@ -85,7 +85,6 @@ spec:
       app:
         className: internal
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
           # disabled for 40x and 503 because it is used for authentication and onboarding
           nginx.ingress.kubernetes.io/custom-http-errors: 500,501,502,504,505,506,510
         hosts:

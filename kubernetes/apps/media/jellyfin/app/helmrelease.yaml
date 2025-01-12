@@ -97,8 +97,6 @@ spec:
     ingress:
       app:
         className: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.${DOMAIN}
         hosts:
           - host: jellyfin.${DOMAIN}
             paths:

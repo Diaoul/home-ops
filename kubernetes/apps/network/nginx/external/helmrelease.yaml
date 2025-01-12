@@ -29,7 +29,7 @@ spec:
       service:
         enableHttp: false
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: external.${DOMAIN}
+          external-dns.alpha.kubernetes.io/hostname: &hostname external.${DOMAIN}
           lbipam.cilium.io/ips: ${INGRESS_NGINX_EXTERNAL_IP}
       ingressClassResource:
         name: external
@@ -41,17 +41,23 @@ spec:
             - key: ingress-class
               operator: In
               values: ["external"]
-      allowSnippetAnnotations: true
       config:
-        # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
-        block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*"
-        client-body-buffer-size: 50M
+        allow-snippet-annotations: true
+        annotations-risk-level: Critical
+        # taken from https://github.com/ai-robots-txt/ai.robots.txt
+        block-user-agents: "AdsBot-Google,Amazonbot,anthropic-ai,Applebot-Extended,Bytespider,CCBot,ChatGPT-User,ClaudeBot,Claude-Web,cohere-ai,Diffbot,FacebookBot,FriendlyCrawler,Google-Extended,GoogleOther,GPTBot,img2dataset,omgili,omgilibot,peer39_crawler,peer39_crawler/1.0,PerplexityBot,YouBot,"
+        client-body-buffer-size: 100M
+        client-body-timeout: 120
+        client-header-timeout: 120
         custom-http-errors: 400,403,404,405,409,410,411,412,413,414,415,416,417,418,421,425,431,451,500,501,502,503,504,505,506,510
         enable-brotli: "true"
         enable-ocsp: "true"
         enable-real-ip: "true"
         force-ssl-redirect: "true"
         hide-headers: Server,X-Powered-By
+        hsts-max-age: 31449600
+        keep-alive-requests: 10000
+        keep-alive: 120
         log-format-escape-json: "true"
         log-format-upstream: >
           {"time": "$time_iso8601", "remote_addr": "$proxy_protocol_addr",
@@ -64,7 +70,6 @@ spec:
         proxy-body-size: 0
         proxy-buffer-size: 16k
         ssl-protocols: TLSv1.3 TLSv1.2
-        use-geoip2: "true"
         use-forwarded-headers: "true"
       metrics:
         enabled: true
@@ -74,6 +79,10 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/${DOMAIN/./-}-tls
+        publish-status-address: *hostname
+      terminationGracePeriodSeconds: 120
+      publishService:
+        enabled: false
       resources:
         requests:
           cpu: 100m
@@ -97,8 +106,3 @@ spec:
       extraEnvs:
         - name: TEMPLATE_NAME
           value: app-down
-  valuesFrom:
-    - targetPath: controller.maxmindLicenseKey
-      kind: Secret
-      name: nginx-external-maxmind
-      valuesKey: MAXMIND_LICENSE_KEY

@@ -77,8 +77,6 @@ spec:
     ingress:
       app:
         className: internal
-        annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
         hosts:
           - host: frigate.${DOMAIN}
             paths:
