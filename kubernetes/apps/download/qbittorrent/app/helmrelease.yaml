@@ -36,6 +36,38 @@ spec:
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-19
+              tag: 1.9.8@sha256:e2629289dfb0fdaa33643d8aefc83e1ae72f6d0b4a25a43e0a58aff7940aeb09
+            restartPolicy: Always
+          gluetun:
+            dependsOn:
+              - dnsdist
+            image:
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
+            env:
+              DOT: "off"
+              DNS_ADDRESS: 127.0.0.2
+              VPN_SERVICE_PROVIDER: custom
+              VPN_TYPE: wireguard
+              VPN_INTERFACE: wg0
+              WIREGUARD_ENDPOINT_PORT: 51820
+              VPN_PORT_FORWARDING: on
+              VPN_PORT_FORWARDING_PROVIDER: protonvpn
+              FIREWALL_INPUT_PORTS: &port 8080
+              FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
+            envFrom:
+              - secretRef:
+                  name: qbittorrent
+            securityContext:
+              capabilities: { add: ["NET_ADMIN"] }
+              allowPrivilegeEscalation: false
+            resources:
+              limits:
+                squat.ai/tun: "1"
         containers:
           app:
             image:
@@ -64,28 +96,6 @@ spec:
                 memory: 3Gi
               limits:
                 memory: 5Gi
-          gluetun:
-            image:
-              repository: ghcr.io/qdm12/gluetun
-              tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
-            env:
-              VPN_SERVICE_PROVIDER: custom
-              VPN_TYPE: wireguard
-              VPN_INTERFACE: wg0
-              WIREGUARD_ENDPOINT_PORT: 51820
-              VPN_PORT_FORWARDING: on
-              VPN_PORT_FORWARDING_PROVIDER: protonvpn
-              FIREWALL_INPUT_PORTS: &port 8080
-              FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
-            envFrom:
-              - secretRef:
-                  name: qbittorrent
-            securityContext:
-              capabilities: { add: ["NET_ADMIN"] }
-              allowPrivilegeEscalation: false
-            resources:
-              limits:
-                squat.ai/tun: "1"
           port-forward:
             image:
               repository: ghcr.io/bjw-s/gluetun-qb-port-sync
@@ -130,9 +140,24 @@ spec:
     persistence:
       config:
         existingClaim: qbittorrent
+      empty-config:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            port-forward:
+              - path: /config
       media:
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
         globalMounts:
           - path: /media
+      dnsdist:
+        type: configMap
+        name: qbittorrent-dnsdist
+        advancedMounts:
+          qbittorrent:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
+                readOnly: true
