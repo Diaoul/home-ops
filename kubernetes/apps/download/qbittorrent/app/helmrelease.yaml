@@ -140,6 +140,10 @@ spec:
     persistence:
       config:
         existingClaim: qbittorrent
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /config
       empty-config:
         type: emptyDir
         advancedMounts:
