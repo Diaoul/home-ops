@@ -46,7 +46,7 @@ duo_api:
   disable: true
 
 access_control:
-  default_policy: two_factor
+  default_policy: deny
   networks:
     - name: internal
       networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
@@ -54,11 +54,6 @@ access_control:
     # bypass for authelia
     - domain: auth.${DOMAIN}
       policy: bypass
-    # one factor for local
-    - domain: "*.${DOMAIN}"
-      policy: one_factor
-      networks:
-        - internal
     # bypass for API access
     - domain:
         - audiobookshelf.${DOMAIN}
@@ -71,7 +66,7 @@ access_control:
         - sonarr.${DOMAIN}
       resources:
         - "^/api/.*$"
-        - "^/ping*$"
+        - "^/ping$"
       policy: bypass
     - domain:
         - sabnzbd.${DOMAIN}
@@ -88,6 +83,14 @@ access_control:
       resources:
         - "^/api/version$"
       policy: bypass
+    # one factor for local
+    - domain: "*.${DOMAIN}"
+      networks:
+        - internal
+      policy: one_factor
+    # default policy for domain
+    - domain: "*.${DOMAIN}"
+      policy: two_factor
 
 identity_providers:
   oidc:
