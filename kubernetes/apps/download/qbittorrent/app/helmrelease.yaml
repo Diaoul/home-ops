@@ -30,12 +30,13 @@ spec:
   values:
     controllers:
       qbittorrent:
+        annotations:
+          secret.reloader.stakater.com/reload: qbittorrent
         pod:
-          annotations:
-            secret.reloader.stakater.com/reload: qbittorrent
           securityContext:
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
+          terminationGracePeriodSeconds: 120
         initContainers:
           dnsdist:
             image:
@@ -48,6 +49,7 @@ spec:
             image:
               repository: ghcr.io/qdm12/gluetun
               tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
+            restartPolicy: Always
             env:
               DOT: "off"
               DNS_ADDRESS: 127.0.0.2
@@ -70,6 +72,7 @@ spec:
                 squat.ai/tun: "1"
         containers:
           app:
+            nameOverride: qbittorrent
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.3@sha256:19597e4a5c5e52702ff6b4ea5c4b5f9f42433d6c2f1ef1d2db5964938bf44557
