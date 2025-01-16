@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.14.2@sha256:6dd31d32f1be8f3c2c0138e666ec70f2ef9f012882379f3f2ddc8ee3d06985f4
+              tag: 2.14.3@sha256:81a73a8d7c4bc014811d452febec81c06e22c55307a9718a0f595bdd043105fc
             env:
               PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
               PAPERLESS_URL: https://paperless.${DOMAIN}
