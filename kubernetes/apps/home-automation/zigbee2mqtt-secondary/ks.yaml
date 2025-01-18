@@ -3,14 +3,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app zigbee2mqtt-old
+  name: &app zigbee2mqtt-secondary
   namespace: flux-system
 spec:
   targetNamespace: home-automation
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/home-automation/zigbee2mqtt-old/app
+  path: ./kubernetes/apps/home-automation/zigbee2mqtt-secondary/app
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
