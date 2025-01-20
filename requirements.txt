@@ -1,2 +1,2 @@
-pre-commit==4.0.1
+pre-commit==4.1.0
 -r ansible/requirements.txt
