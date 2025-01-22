@@ -47,7 +47,7 @@ spec:
           app:
             image:
               repository: jellyfin/jellyfin
-              tag: 10.10.3@sha256:17c3a8d9dddb97789b5f37112840ebf96566442c14d4754193a6c2eb154bc221
+              tag: 10.10.4@sha256:5ff40713373c1a9b069a2f452b652ee965987f39d5c48ee52462008209b7ad6a
             env:
               JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
             securityContext:
