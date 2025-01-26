@@ -26,4 +26,3 @@ spec:
     substitute:
       APP: *app
       CAPACITY: 2Gi
-      GATUS_PATH: /api/version
