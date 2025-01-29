@@ -29,7 +29,7 @@ repos:
         always_run: false
         entry: bash -c "cd ansible/ && exec ansible-lint --force-color"
   - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.23.2
+    rev: v8.23.3
     hooks:
       - id: gitleaks
   - repo: local
