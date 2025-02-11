@@ -1,0 +1,38 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: qbittorrent-gluetun
+stringData:
+    auth.toml: ENC[AES256_GCM,data:L9o+5eLpqjaku9W5/JQXNpRcBJhuxQ7MVuXdzPB+luO4tU83x+RYvoTBYjhsSFYSD79bXGDHsss6G0+W4pmiNvTCX7lS3bDemGSSAaG6S8arx8dmIEVNsp9ZDXjJHiFJnTYiNW1NCqY6EES064um9CNjBbGdfjJdTp9Xpx67tNxeaZ3KpKETTU3o/mTnI4/ZWjS/vViIDMBfZz5zpgcKDvXK,iv:MZSei/Gtuv4E7Ir7yerRkzZ0b/kum2DbwrRYrHmPrB8=,tag:eW95aW2zevf34M7Q8RKOvA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA2SVFWVlZ0Nkp6NkE3RFVT
+            ZFpkR1NOODBsb014UGJIdUFRMVc2bFBWUWhNClhtdUhZQ3NpMmo3NjBiaFZEanZO
+            NDJiTytlNEN5SmZmMnRsMUtKMkpCaWMKLS0tIHBFdE1hRUpqVHVMWStmZ3p4VE5M
+            V3RMR29HVTdyOXpNNjRzNU1KdG1nTWsK9URnNKTpfYsADe8BXk5vdA+sNvUgahda
+            4652kx8N+PdUsxmIDsT9A7/JoLrH6nBKpSiCcOj2/BOfoq8bdJwxZg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-02-11T20:29:17Z"
+    mac: ENC[AES256_GCM,data:6am0lqb6qqQwJXnAaX0pJmuzD2RrOHdkZdFd5D6BjcGJTszHoDPsDHQREsM/Js94fEwsf6Y+czGnfOwYxqLE9STSE/M7WC9vxI+YiovdYqQB3vv23WAPfgwaMUPMKae8Ckt+fSg3leNCKrF6oqohOThT8UjU6GDd9ukdf/NSFD0=,iv:rIui1eL2hy8bwz9hRfrrHnieJUM6PGzAtcaNgGiVRMU=,tag:dhyiAH606zKv9giF4S4FLw==,type:str]
+    pgp:
+        - created_at: "2025-02-11T20:27:00Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAaudJD1ERZOrKGJpB3ASwC+lEARP1oThVf4CEjDaqfjAw
+            9DaXfNMZEW27bYLHl6rUa8tAeKyu9I+cYQLXYIdcXrCONzWxWoKTUHmNISX3pdAP
+            0l4BgrDVNjoDJcZvnaWZYxxSpqHzR+6CACZX6LliIuUt3fMyBm7tYtSYqoiaV4ev
+            ijjB0O4A7th0jLL2BFOY4Gf0IzSJKpPNXY+9mQJ6cWkQ5zyBTWcEBytuI7SPEDqE
+            =ZUl1
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    encrypted_regex: ^(data|stringData)$
+    version: 3.9.3

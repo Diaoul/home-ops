@@ -31,7 +31,7 @@ spec:
     controllers:
       qbittorrent:
         annotations:
-          secret.reloader.stakater.com/reload: qbittorrent
+          secret.reloader.stakater.com/reload: qbittorrent,qbittorrent-gluetun
         pod:
           securityContext:
             fsGroup: 568
@@ -53,6 +53,7 @@ spec:
             env:
               DOT: "off"
               DNS_ADDRESS: 127.0.0.2
+              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
               VPN_SERVICE_PROVIDER: custom
               VPN_TYPE: wireguard
               VPN_INTERFACE: wg0
@@ -64,6 +65,13 @@ spec:
             envFrom:
               - secretRef:
                   name: qbittorrent
+            lifecycle:
+              postStart:
+                exec:
+                  command:
+                    - "/bin/sh"
+                    - "-c"
+                    - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
             securityContext:
               capabilities: { add: ["NET_ADMIN"] }
               allowPrivilegeEscalation: false
@@ -106,6 +114,11 @@ spec:
             env:
               GLUETUN_CONTROL_SERVER_HOST: localhost
               GLUETUN_CONTROL_SERVER_PORT: 8000
+              GLUETUN_CONTROL_SERVER_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: qbittorrent
+                    key: GLUETUN_CONTROL_SERVER_API_KEY
               QBITTORRENT_HOST: localhost
               QBITTORRENT_WEBUI_PORT: *port
               CRON_ENABLED: true
@@ -159,6 +172,14 @@ spec:
         path: /volume1/media
         globalMounts:
           - path: /media
+      gluetun-auth:
+        type: secret
+        name: qbittorrent-gluetun
+        advancedMounts:
+          qbittorrent:
+            gluetun:
+              - path: *gluetunAuthPath
+                subPath: auth.toml
       dnsdist:
         type: configMap
         name: qbittorrent-dnsdist
