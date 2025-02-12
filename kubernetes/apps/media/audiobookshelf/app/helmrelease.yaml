@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: ghcr.io/advplyr/audiobookshelf
-              tag: 2.19.0@sha256:46f36b2f533e30347ae6d1e35ede6dc805a8d82211e26c4eee1f8f99cc245d48
+              tag: 2.19.2@sha256:b7f7da1d46d3350798fdee0c1bcef298dfbdb2ed19b28a975630e51ddf54f6d3
             env:
               AUDIOBOOKSHELF_UID: 568
               AUDIOBOOKSHELF_GID: 568
