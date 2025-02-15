@@ -30,7 +30,6 @@ cluster:
             score:
               disabled:
                 - name: ImageLocality
-        - schedulerName: default-scheduler
           pluginConfig:
             - name: PodTopologySpread
               args:
