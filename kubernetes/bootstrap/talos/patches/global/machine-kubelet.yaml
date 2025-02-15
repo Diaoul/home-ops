@@ -1,5 +1,9 @@
 machine:
   kubelet:
+    nodeIP:
+      validSubnets:
+        - 10.0.3.0/24
+    # TODO: change to /var/mnt/extra and have openebs-system write to /var/mnt/extra/openebs/local
     extraMounts:
       - destination: /var/openebs/local
         type: bind

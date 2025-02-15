@@ -21,10 +21,6 @@ additionalMachineCertSans: *sans
 
 allowSchedulingOnControlPlanes: true
 
-# Disable built-in Flannel to use Cilium
-cniConfig:
-  name: none
-
 nodes:
   - hostname: k8s-node-1
     ipAddress: 10.0.3.24
@@ -32,13 +28,20 @@ nodes:
       model: PNY CS900 120GB
     machineSpec:
       secureboot: true
-    schematic:
-      # NOTE: this is the same for all nodes. In case of modification,
-      # also update schematic id and system-upgrade-controller
-      # id: e2db9ecf15bafbac72ddc250d35e082f8523f1fd582ce1259e1ebeda31e34675
+    # NOTE: this is the same for all nodes. In case of modification,
+    # also update schematic id and system-upgrade-controller
+    # id: d0e2445a225c455154ecda9c3f6ce0be13db69fbb0d9a477074dd6813d241d57
+    schematic: &schematic
       customization:
         extraKernelArgs:
-          - mitigations=off
+          - apparmor=0 # Less security, faster puter
+          - init_on_alloc=0 # Less security, faster puter
+          - init_on_free=0 # Less security, faster puter
+          - intel_iommu=on # PCI Passthrough
+          - iommu=pt # PCI Passthrough
+          - mitigations=off # Less security, faster puter
+          - security=none # Less security, faster puter
+          - talos.auditd.disabled=1 # Less security, faster puter
         systemExtensions:
           officialExtensions:
             - siderolabs/i915
@@ -57,15 +60,7 @@ nodes:
       model: PNY CS900 120GB
     machineSpec:
       secureboot: true
-    schematic:
-      customization:
-        extraKernelArgs:
-          - mitigations=off
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
-            - siderolabs/gasket-driver
+    schematic: *schematic
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -79,15 +74,7 @@ nodes:
       model: PNY CS900 120GB
     machineSpec:
       secureboot: true
-    schematic:
-      customization:
-        extraKernelArgs:
-          - mitigations=off
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
-            - siderolabs/gasket-driver
+    schematic: *schematic
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -101,15 +88,7 @@ nodes:
       model: PNY CS900 120GB
     machineSpec:
       secureboot: true
-    schematic:
-      customization:
-        extraKernelArgs:
-          - mitigations=off
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
-            - siderolabs/gasket-driver
+    schematic: *schematic
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
@@ -121,37 +100,28 @@ nodes:
       model: PNY CS900 120GB
     machineSpec:
       secureboot: true
-    schematic:
-      customization:
-        extraKernelArgs:
-          - mitigations=off
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
-            - siderolabs/gasket-driver
+    schematic: *schematic
     controlPlane: false
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 1c:69:7a:0e:da:8a
         dhcp: true
 
-# NOTE: don't use dns and ntp patches from upstream, default from DHCP is fine
+# NOTE: don't use nameservers in machine-network and servers in machine-time patches from upstream
+# default from DHCP is fine
 
 # Global patches
 patches:
-  - "@./patches/global/cluster-discovery.yaml"
-  - "@./patches/global/containerd.yaml"
-  - "@./patches/global/disable-search-domain.yaml"
-  - "@./patches/global/hostdns.yaml"
-  - "@./patches/global/kubelet.yaml"
-  - "@./patches/global/openebs-local.yaml"
-  - "@./patches/global/sysctl.yaml"
+  - "@./patches/global/machine-features.yaml"
+  - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-kubelet.yaml"
+  - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-sysctls.yaml"
 
 # Controller patches
 controlPlane:
   patches:
+    - "@./patches/controller/admission-control.yaml"
     - "@./patches/controller/api-access.yaml"
+    - "@./patches/controller/audit-policy.yaml"
     - "@./patches/controller/cluster.yaml"
-    - "@./patches/controller/disable-admission-controller.yaml"
-    - "@./patches/controller/etcd.yaml"
