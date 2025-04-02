@@ -12,9 +12,11 @@ spec:
         backend = "built_in_database"
         mechanism = "password_based"
         password_hash_algorithm {
-            name = "bcrypt",
+            name = "bcrypt"
         }
         user_id_type = "username"
+        bootstrap_file = "/opt/init-user.json"
+        bootstrap_type = "plain"
       }
       authorization {
         sources = [
@@ -31,25 +33,18 @@ spec:
         reloader.stakater.com/auto: "true"
     spec:
       replicas: 3
-      envFrom: &envFrom
+      envFrom:
         - secretRef:
             name: emqx
-      extraContainers:
-        - name: init-mqtt
-          image: docker.io/library/python:3.13-alpine
-          env:
-            - name: X_EMQX_ADDRESS
-              value: emqx-dashboard.database.svc.cluster.local:18083
-          envFrom: *envFrom
-          command: ["python", "/init-mqtt.py"]
-          volumeMounts:
-            - name: init-mqtt
-              mountPath: /init-mqtt.py
-              subPath: init-mqtt.py
+      extraVolumeMounts:
+        - name: init-user
+          mountPath: /opt/init-user.json
+          subPath: init-user.json
+          readOnly: true
       extraVolumes:
-        - name: init-mqtt
-          configMap:
-            name: emqx-init-mqtt
+        - name: init-user
+          secret:
+            secretName: emqx-init-user
   listenersServiceTemplate:
     metadata:
       annotations:
