@@ -43,7 +43,7 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/radarr-develop
+              repository: ghcr.io/home-operations/radarr-develop
               tag: 5.20.1.9773@sha256:8187c129a78fdfe15b1603db9175abd2be0e1ca2e99ea3733987c3ae941da165
             env:
               RADARR__AUTH__METHOD: External
