@@ -37,7 +37,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/home-operations/postgres-init
-              tag: 16
+              tag: 17
             envFrom:
               - secretRef:
                   name: autobrr
