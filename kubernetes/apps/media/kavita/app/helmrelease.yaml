@@ -42,7 +42,7 @@ spec:
           app:
             image:
               repository: ghcr.io/kareadita/kavita
-              tag: 0.8.6@sha256:b72ad913486b015ff136d4ac8834a49c28da2348af26e25c45d5dbf7b416d2a4
+              tag: 0.8.6@sha256:d6cc8dfa1b339a152452a0b97a3b784c3a45b6eb9c5c515b19d44c63ca26d389
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
