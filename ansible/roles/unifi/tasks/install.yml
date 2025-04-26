@@ -57,7 +57,7 @@
 - name: Install unifi
   community.general.docker_container:
     name: unifi
-    image: jacobalberty/unifi:v9.0.114
+    image: jacobalberty/unifi:v9.1.120
     pull: true
     restart_policy: always
     network_mode: host
