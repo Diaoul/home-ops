@@ -22,7 +22,7 @@ repos:
       - id: shellcheck
         args: [--severity=error]
   - repo: https://github.com/ansible-community/ansible-lint
-    rev: v25.2.1
+    rev: v25.4.0
     hooks:
       - id: ansible-lint
         files: ^ansible/
