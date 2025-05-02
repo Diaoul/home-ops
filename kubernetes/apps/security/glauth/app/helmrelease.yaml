@@ -46,7 +46,7 @@ spec:
           app:
             image:
               repository: glauth/glauth
-              tag: v2.3.2@sha256:1656842d8d202cdb53de9eb753963a66a49eb6a180e8ade0602548e64b4f6877
+              tag: v2.4.0@sha256:b3efd79fc32ac626ad1b18e36ab42fac2e2ac662454582fdfa21cc82efab786b
             command: ["/app/glauth", "-c", "/config"]
             probes:
               liveness: &probes
