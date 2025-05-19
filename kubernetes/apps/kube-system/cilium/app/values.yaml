@@ -1,7 +1,13 @@
 ---
 autoDirectNodeRoutes: true
+bpf:
+  masquerade: true
+  # see https://github.com/siderolabs/talos/issues/10002
+  hostLegacyRouting: true
 bgpControlPlane:
   enabled: true
+cni:
+  exclusive: false
 cgroup:
   automount:
     enabled: false
@@ -9,9 +15,11 @@ cgroup:
 cluster:
   id: 1
   name: home-kubernetes
-cni:
-  exclusive: false
 endpointRoutes:
+  enabled: true
+envoy:
+  enabled: false
+dashboard:
   enabled: true
 hubble:
   enabled: false
@@ -23,14 +31,27 @@ k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: false # https://github.com/cilium/cilium/issues/28985
+  enabled: false
 loadBalancer:
   algorithm: maglev
-  mode: snat
+  mode: dsr
 localRedirectPolicy: true
 operator:
+  dashboards:
+    enabled: true
+    annotations:
+      grafana_folder: Cilium
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
   replicas: 1
   rollOutPods: true
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
@@ -43,6 +64,8 @@ securityContext:
       - IPC_LOCK
       - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
@@ -51,3 +74,5 @@ securityContext:
       - NET_ADMIN
       - SYS_ADMIN
       - SYS_RESOURCE
+socketLB:
+  hostNamespaceOnly: true
