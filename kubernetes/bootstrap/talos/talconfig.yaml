@@ -1,9 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
-# renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-talosVersion: v1.10.2
-# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-kubernetesVersion: v1.33.1
+talosVersion: "${talosVersion}"
+kubernetesVersion: "${kubernetesVersion}"
 
 clusterName: home-kubernetes
 endpoint: https://10.0.3.3:6443
@@ -30,10 +28,13 @@ nodes:
       secureboot: true
     # NOTE: this is the same for all nodes. In case of modification,
     # also update schematic id and system-upgrade-controller
-    # id: d0e2445a225c455154ecda9c3f6ce0be13db69fbb0d9a477074dd6813d241d57
+    # id: 2217b30e27c5da2d16fda30ff29db5a2c1a2c44c5b3e81c6faed2a6f351584e2
     schematic: &schematic
       customization:
         extraKernelArgs:
+          - -init_on_alloc # Less security, faster puter
+          - -init_on_free # Less security, faster puter
+          - -selinux # Less security, faster puter
           - apparmor=0 # Less security, faster puter
           - init_on_alloc=0 # Less security, faster puter
           - init_on_free=0 # Less security, faster puter
