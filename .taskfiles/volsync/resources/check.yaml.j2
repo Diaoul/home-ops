@@ -1,0 +1,20 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: volsync-check-{{ ENV.APP }}
+  namespace: {{ ENV.NS }}
+spec:
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      automountServiceAccountToken: false
+      restartPolicy: OnFailure
+      containers:
+        - name: main
+          image: docker.io/restic/restic:latest
+          args: ["check", "--read-data"]
+          envFrom:
+            - secretRef:
+                name: {{ ENV.APP }}-volsync
+          resources: {}

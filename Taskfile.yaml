@@ -6,13 +6,13 @@ vars:
   # Directories
   ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
   KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
-  TALHELPER_DIR: "{{.ROOT_DIR}}/kubernetes/bootstrap/talos"
+  TALOS_DIR: "{{.ROOT_DIR}}/talos"
   SCRIPTS_DIR: "{{.ROOT_DIR}}/scripts"
 
   # Files
   AGE_FILE: "{{.ROOT_DIR}}/age.key"
   KUBECONFIG_FILE: "{{.ROOT_DIR}}/kubeconfig"
-  TALOSCONFIG_FILE: "{{.ROOT_DIR}}/kubernetes/bootstrap/talos/clusterconfig/talosconfig"
+  TALOSCONFIG_FILE: "{{.ROOT_DIR}}/talos/clusterconfig/talosconfig"
 
 env:
   KUBECONFIG: "{{.KUBECONFIG_FILE}}"
