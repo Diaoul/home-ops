@@ -32,19 +32,20 @@ spec:
       enabled: true
       resources:
         requests:
-          cpu: 50m
-          memory: 128Mi
+          cpu: 50m # 100m
+          memory: 128Mi # 128Mi
         limits:
-          memory: 1Gi
+          memory: 1Gi # 1Gi
     monitoring:
       enabled: true
       createPrometheusRules: true
-    configOverride: |
-      [global]
-      bdev_enable_discard = true
-      bdev_async_discard = true
-      osd_class_update_on_start = false
     cephClusterSpec:
+      cephConfig:
+        global:
+          bdev_enable_discard: "true"
+          bdev_async_discard_threads: "1"
+          osd_class_update_on_start: "false"
+          device_failure_prediction_mode: local # requires mgr module
       network:
         provider: host
         connections:
@@ -65,7 +66,13 @@ spec:
         prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
       mgr:
         modules:
+          - name: diskprediction_local
+            enabled: true
+          - name: insights
+            enabled: true
           - name: pg_autoscaler
+            enabled: true
+          - name: rook
             enabled: true
       # NOTE: only overriding problematic resource constraints
       resources:
@@ -100,6 +107,8 @@ spec:
         storageClass:
           enabled: true
           name: ceph-block
+          annotations: {}
+          labels: {}
           isDefault: true
           reclaimPolicy: Delete
           allowVolumeExpansion: true
@@ -146,6 +155,8 @@ spec:
           reclaimPolicy: Delete
           allowVolumeExpansion: true
           volumeBindingMode: Immediate
+          labels: {}
+          annotations: {}
           mountOptions: []
           parameters:
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
@@ -155,13 +166,6 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
-        metadataServer:
-          resources:
-            requests:
-              cpu: 100m
-              memory: 1Gi
-            limits:
-              memory: 4Gi
     # NOTE: same as default except enabled and not default
     cephFileSystemVolumeSnapshotClass:
       enabled: true
@@ -209,6 +213,8 @@ spec:
           name: ceph-bucket
           reclaimPolicy: Delete
           volumeBindingMode: Immediate
+          annotations: {}
+          labels: {}
           parameters:
             region: us-east-1
         ingress:
