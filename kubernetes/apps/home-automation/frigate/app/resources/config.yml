@@ -1,4 +1,6 @@
 ---
+auth:
+  enabled: false
 mqtt:
   host: emqx-listeners.database.svc.cluster.local
   user: "{FRIGATE_MQTT_USERNAME}"
@@ -10,29 +12,40 @@ detectors:
     type: edgetpu
     device: pci
 ffmpeg:
-  global_args: ["-hide_banner", "-loglevel", "warning"]
-  hwaccel_args: preset-intel-qsv-h264
   output_args:
     record: preset-record-ubiquiti
 birdseye:
+  enabled: true
   mode: continuous
 record:
   enabled: true
   retain:
-    days: 5
+    days: 7
     mode: motion
-  events:
+  alerts:
     retain:
-      default: 15
+      days: 30
       mode: motion
-      objects:
-        person: 30
+  detections:
+    retain:
+      days: 30
+      mode: motion
 snapshots:
   enabled: true
   retain:
     default: 5
     objects:
       person: 30
+review:
+  alerts:
+    labels:
+      - car
+      - person
+      - speech
+  detections:
+    labels:
+      - bark
+      - dog
 objects:
   track:
     - person

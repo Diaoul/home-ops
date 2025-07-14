@@ -40,8 +40,6 @@ spec:
             image:
               repository: ghcr.io/blakeblackshear/frigate
               tag: 0.15.2@sha256:44745918b0124253890b389e41ed9e24553bd156ab3f9e2b06723c0dfed2af8c
-            env:
-              LIBVA_DRIVER_NAME: i965
             envFrom:
               - secretRef:
                   name: frigate
@@ -53,17 +51,20 @@ spec:
                   httpGet:
                     path: /api/version
                     port: &port 5000
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 120
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+              startup:
+                enabled: false
             securityContext:
               privileged: true
             resources:
               requests:
-                cpu: 250m
+                cpu: 500m
                 memory: 1Gi
+                gpu.intel.com/i915: 1
               limits:
                 memory: 4Gi
                 gpu.intel.com/i915: 1
@@ -96,7 +97,7 @@ spec:
       cache:
         type: emptyDir
         medium: Memory
-        sizeLimit: 2Gi
+        sizeLimit: 4Gi
         globalMounts:
           - path: /dev/shm
       pci:
