@@ -59,7 +59,8 @@ spec:
               WIREGUARD_ENDPOINT_PORT: 51820
               VPN_PORT_FORWARDING: on
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
-              FIREWALL_INPUT_PORTS: &port 8080
+              FIREWALL_INPUT_PORTS: "8080,9999" # webui, healthcheck
+              HEALTH_SERVER_ADDRESS: ":9999"
               FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
             envFrom:
               - secretRef:
@@ -71,6 +72,23 @@ spec:
                     - "/bin/sh"
                     - "-c"
                     - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /check
+                    port: 9999
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /check
+                    port: 9999
+                  initialDelaySeconds: 10
             securityContext:
               capabilities: { add: ["NET_ADMIN"] }
               allowPrivilegeEscalation: false
@@ -119,7 +137,7 @@ spec:
                     name: qbittorrent
                     key: GLUETUN_CONTROL_SERVER_API_KEY
               QBITTORRENT_HOST: localhost
-              QBITTORRENT_WEBUI_PORT: *port
+              QBITTORRENT_WEBUI_PORT: &port 8080
               CRON_ENABLED: true
               CRON_SCHEDULE: "*/5 * * * *"
               LOG_TIMESTAMP: false
