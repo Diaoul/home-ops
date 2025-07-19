@@ -75,8 +75,7 @@ spec:
               seccompProfile:
                 type: RuntimeDefault
     serviceAccount:
-      create: true
-      name: system-upgrade
+      system-upgrade: {}
     persistence:
       tmp:
         type: emptyDir
