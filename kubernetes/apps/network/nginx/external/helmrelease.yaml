@@ -26,29 +26,27 @@ spec:
     controller:
       replicaCount: 2
       service:
-        enableHttp: false
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: &hostname external.${DOMAIN}
+          external-dns.alpha.kubernetes.io/hostname: external.${DOMAIN}
           lbipam.cilium.io/ips: ${INGRESS_NGINX_EXTERNAL_IP}
       ingressClassResource:
         name: external
         default: false
-        controllerValue: k8s.io/external
+        controllerValue: k8s.io/ingress-nginx-external
       admissionWebhooks:
         objectSelector:
           matchExpressions:
             - key: ingress-class
               operator: In
               values: ["external"]
+      allowSnippetAnnotations: true
       config:
-        allow-snippet-annotations: true
         annotations-risk-level: Critical
-        # taken from https://github.com/ai-robots-txt/ai.robots.txt
-        block-user-agents: "AdsBot-Google,Amazonbot,anthropic-ai,Applebot-Extended,Bytespider,CCBot,ChatGPT-User,ClaudeBot,Claude-Web,cohere-ai,Diffbot,FacebookBot,FriendlyCrawler,Google-Extended,GoogleOther,GPTBot,img2dataset,omgili,omgilibot,peer39_crawler,peer39_crawler/1.0,PerplexityBot,YouBot,"
+        block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*"
         client-body-buffer-size: 100M
         client-body-timeout: 120
         client-header-timeout: 120
-        custom-http-errors: 400,403,404,405,409,410,411,412,413,414,415,416,417,418,421,425,431,451,500,501,502,503,504,505,506,510
+        # custom-http-errors: 404,500,502,503
         enable-brotli: "true"
         enable-ocsp: "true"
         enable-real-ip: "true"
@@ -67,6 +65,8 @@ spec:
           "duration": $request_time,"method": "$request_method", "http_referrer": "$http_referer",
           "http_user_agent": "$http_user_agent"}
         proxy-body-size: 0
+        proxy-buffer-size: 32k
+        proxy-busy-buffers-size: 32k
         ssl-protocols: TLSv1.3 TLSv1.2
         use-forwarded-headers: "true"
       metrics:
@@ -77,8 +77,6 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/${DOMAIN/./-}-tls
-        publish-status-address: *hostname
-      terminationGracePeriodSeconds: 120
       publishService:
         enabled: false
       resources:
@@ -97,10 +95,10 @@ spec:
               app.kubernetes.io/instance: nginx-external
               app.kubernetes.io/component: controller
     defaultBackend:
-      enabled: true
+      enabled: false
       image:
         repository: ghcr.io/tarampampam/error-pages
-        tag: 3.3.3
+        tag: 3.3.3@sha256:df7d8d24740316f3918b8c280eff61c30c4055daeef2041d3f557bb54187133d
       extraEnvs:
         - name: TEMPLATE_NAME
           value: app-down
