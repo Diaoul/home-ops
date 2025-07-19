@@ -27,7 +27,7 @@ spec:
       replicaCount: 2
       service:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: external.${DOMAIN}
+          external-dns.alpha.kubernetes.io/hostname: &hostname external.${DOMAIN}
           lbipam.cilium.io/ips: ${INGRESS_NGINX_EXTERNAL_IP}
       ingressClassResource:
         name: external
@@ -77,6 +77,7 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/${DOMAIN/./-}-tls
+        publish-status-address: *hostname
       publishService:
         enabled: false
       resources:
