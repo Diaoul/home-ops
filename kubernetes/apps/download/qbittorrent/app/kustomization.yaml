@@ -6,7 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
   - ./gluetun.sops.yaml
-  - ../../../../templates/persistence
 configMapGenerator:
   - name: qbittorrent-dnsdist
     files:

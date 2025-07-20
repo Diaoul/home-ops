@@ -4,66 +4,96 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app nginx-shared
-  namespace: flux-system
+  namespace: &namespace network
 spec:
-  targetNamespace: network
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   path: ./kubernetes/apps/network/nginx/shared
   sourceRef:
     kind: GitRepository
-    name: home-kubernetes
+    name: flux-system
+    namespace: flux-system
   dependsOn:
-    - name: cert-manager-issuers
+    - name: cert-manager
+      namespace: cert-manager
   prune: true
   wait: true
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app nginx-external
-  namespace: flux-system
+  namespace: &namespace network
 spec:
-  targetNamespace: network
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   path: ./kubernetes/apps/network/nginx/external
   sourceRef:
     kind: GitRepository
-    name: home-kubernetes
+    name: flux-system
+    namespace: flux-system
   dependsOn:
     - name: nginx-shared
+      namespace: network
   prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app nginx-internal
-  namespace: flux-system
+  namespace: &namespace network
 spec:
-  targetNamespace: network
+  targetNamespace: *namespace
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   path: ./kubernetes/apps/network/nginx/internal
   sourceRef:
     kind: GitRepository
-    name: home-kubernetes
+    name: flux-system
+    namespace: flux-system
   dependsOn:
     - name: nginx-shared
+      namespace: network
   prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret

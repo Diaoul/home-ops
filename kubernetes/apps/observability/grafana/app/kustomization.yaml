@@ -6,4 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./env-secret.sops.yaml
   - ./admin-secret.sops.yaml
-  - ../../../../templates/gatus/external

@@ -10,10 +10,15 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   path: ./kubernetes/apps/network/cloudflared/app
   sourceRef:
     kind: GitRepository
-    name: home-kubernetes
+    name: flux-system
+    namespace: flux-system
   dependsOn:
     - name: external-dns
   prune: true
@@ -21,3 +26,7 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 5m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret

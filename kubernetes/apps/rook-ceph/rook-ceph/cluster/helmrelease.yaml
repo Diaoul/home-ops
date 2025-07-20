@@ -125,56 +125,6 @@ spec:
             csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
             csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
             csi.storage.k8s.io/fstype: ext4
-    # NOTE: same as default except resources
-    cephFileSystems:
-      - name: ceph-filesystem
-        spec:
-          metadataPool:
-            replicated:
-              size: 3
-          dataPools:
-            - failureDomain: host
-              replicated:
-                size: 3
-              name: data0
-          metadataServer:
-            activeCount: 1
-            activeStandby: true
-            resources:
-              requests:
-                cpu: 100m # 1000m
-                memory: 1Gi # 4Gi
-              limits:
-                memory: 4Gi # 4Gi
-            priorityClassName: system-cluster-critical
-        storageClass:
-          enabled: true
-          isDefault: false
-          name: ceph-filesystem
-          pool: data0
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          volumeBindingMode: Immediate
-          labels: {}
-          annotations: {}
-          mountOptions: []
-          parameters:
-            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/provisioner-secret-namespace: rook-ceph
-            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
-            csi.storage.k8s.io/controller-expand-secret-namespace: rook-ceph
-            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
-            csi.storage.k8s.io/node-stage-secret-namespace: rook-ceph
-            csi.storage.k8s.io/fstype: ext4
-    # NOTE: same as default except enabled and not default
-    cephFileSystemVolumeSnapshotClass:
-      enabled: true
-      name: ceph-filesystem
-      isDefault: false
-      deletionPolicy: Delete
-      annotations: {}
-      labels: {}
-      parameters: {}
     # NOTE: same as default except enabled
     cephBlockPoolsVolumeSnapshotClass:
       enabled: true
@@ -184,45 +134,3 @@ spec:
       annotations: {}
       labels: {}
       parameters: {}
-    # NOTE: same as default except resources
-    cephObjectStores:
-      - name: ceph-objectstore
-        spec:
-          metadataPool:
-            failureDomain: host
-            replicated:
-              size: 3
-          dataPool:
-            failureDomain: host
-            erasureCoded:
-              dataChunks: 2
-              codingChunks: 1
-          preservePoolsOnDelete: true
-          gateway:
-            port: 80
-            resources:
-              requests:
-                cpu: 200m # 1000m
-                memory: 1Gi # 1Gi
-              limits:
-                memory: 2Gi # 2Gi
-            instances: 1
-            priorityClassName: system-cluster-critical
-        storageClass:
-          enabled: true
-          name: ceph-bucket
-          reclaimPolicy: Delete
-          volumeBindingMode: Immediate
-          annotations: {}
-          labels: {}
-          parameters:
-            region: us-east-1
-        ingress:
-          enabled: true
-          ingressClassName: internal
-          annotations:
-            nginx.ingress.kubernetes.io/proxy-body-size: "0"
-            nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          host:
-            name: rgw.${DOMAIN}
-            path: /

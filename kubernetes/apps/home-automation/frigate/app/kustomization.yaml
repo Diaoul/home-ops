@@ -5,8 +5,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
-  - ../../../../templates/persistence
-  - ../../../../templates/gatus/guarded
 configMapGenerator:
   - name: frigate-config
     files:

@@ -2,6 +2,9 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: "3"
 
+set: [pipefail]
+shopt: [globstar]
+
 vars:
   # Directories
   ANSIBLE_DIR: "{{.ROOT_DIR}}/ansible"
@@ -25,10 +28,16 @@ includes:
   kubernetes: .taskfiles/Kubernetes
   rook: .taskfiles/Rook
   sops: .taskfiles/Sops
+  bootstrap: .taskfiles/bootstrap
   talos: .taskfiles/talos
   volsync: .taskfiles/volsync
 
 tasks:
-  default:
-    silent: true
-    cmd: task -l
+  default: task --list
+
+  reconcile:
+    desc: Force Flux to pull in changes from your Git repository
+    cmd: flux --namespace flux-system reconcile kustomization flux-system --with-source
+    preconditions:
+      - test -f {{.KUBECONFIG}}
+      - which flux

@@ -10,16 +10,26 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  components:
+    - ../../../../components/gatus/external
   path: ./kubernetes/apps/observability/grafana/app
   sourceRef:
     kind: GitRepository
-    name: home-kubernetes
+    name: flux-system
+    namespace: flux-system
   prune: true
   wait: false
   interval: 30m
   retryInterval: 1m
   timeout: 5m
   postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
     substitute:
       APP: *app
       GATUS_PATH: /login
