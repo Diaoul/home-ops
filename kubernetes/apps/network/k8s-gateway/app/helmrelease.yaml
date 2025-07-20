@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: k8s-gateway
-      version: 2.4.0
+      version: 3.2.3
       sourceRef:
         kind: HelmRepository
         name: k8s-gateway
@@ -22,17 +22,14 @@ spec:
     remediation:
       retries: 3
   values:
-    fullnameOverride: k8s-gateway
-    image:
-      registry: quay.io
-      repository: oriedge/k8s_gateway
-      tag: v0.4.0
     replicaCount: 2
+    watchedResources: ["Ingress", "HTTPRoute"]
     domain: ${DOMAIN}
+    ttl: 5
     service:
-      type: LoadBalancer
       annotations:
         lbipam.cilium.io/ips: ${K8S_GATEWAY_IP}
+      externalTrafficPolicy: Cluster
     fallthrough:
       enabled: true
       zones:
