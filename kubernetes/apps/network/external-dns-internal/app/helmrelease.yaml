@@ -30,7 +30,7 @@ spec:
     provider:
       name: rfc2136
     extraArgs:
-      - --rfc2136-host=${ROUTER_IP}
+      - --rfc2136-host=10.0.3.1
       - --rfc2136-port=53530
       - --rfc2136-zone=${DOMAIN}
       - --rfc2136-tsig-secret=${ROUTER_RNDC_KEY}

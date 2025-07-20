@@ -28,7 +28,7 @@ spec:
     ttl: 5
     service:
       annotations:
-        lbipam.cilium.io/ips: ${K8S_GATEWAY_IP}
+        lbipam.cilium.io/ips: 10.44.0.3
       externalTrafficPolicy: Cluster
     fallthrough:
       enabled: true

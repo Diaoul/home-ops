@@ -61,7 +61,7 @@ spec:
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
               FIREWALL_INPUT_PORTS: "8080,9999" # webui, healthcheck
               HEALTH_SERVER_ADDRESS: ":9999"
-              FIREWALL_OUTBOUND_SUBNETS: ${K8S_CLUSTER_CIDR},${K8S_SERVICE_CIDR}
+              FIREWALL_OUTBOUND_SUBNETS: 10.42.0.0/16,10.43.0.0/16
             envFrom:
               - secretRef:
                   name: qbittorrent

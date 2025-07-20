@@ -65,7 +65,7 @@ spec:
         type: LoadBalancer
         annotations:
           external-dns.alpha.kubernetes.io/hostname: go2rtc.${DOMAIN}
-          lbipam.cilium.io/ips: ${GO2RTC_IP}
+          lbipam.cilium.io/ips: 10.44.0.24
         ports:
           http:
             port: *port

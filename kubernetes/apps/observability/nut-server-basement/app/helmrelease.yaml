@@ -55,7 +55,7 @@ spec:
         controller: nut-server-basement
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: ${NUT_BASEMENT_IP}
+          lbipam.cilium.io/ips: 10.44.0.8
         ports:
           http:
             port: 3493

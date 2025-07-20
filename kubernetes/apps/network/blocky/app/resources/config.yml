@@ -7,10 +7,10 @@ upstreams:
       - tcp-tls:dns10.quad9.net
 conditional:
   mapping:
-    ${DOMAIN}: tcp+udp:${K8S_GATEWAY_IP}
-    milkyway: tcp+udp:${ROUTER_IP}
+    ${DOMAIN}: tcp+udp:10.44.0.3
+    milkyway: tcp+udp:10.0.3.1
 clientLookup:
-  upstream: tcp+udp:${ROUTER_IP}
+  upstream: tcp+udp:10.0.3.1
 blocking:
   blackLists:
     ads:

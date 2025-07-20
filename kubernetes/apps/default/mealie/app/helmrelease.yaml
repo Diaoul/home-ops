@@ -47,7 +47,7 @@ spec:
             env:
               BASE_URL: https://mealie.${DOMAIN}
               API_DOCS: false
-              SMTP_HOST: ${ROUTER_IP}
+              SMTP_HOST: 10.0.3.1
               SMTP_PORT: 25
               SMTP_AUTH_STRATEGY: NONE
               SMTP_FROM_EMAIL: admin@${DOMAIN}

@@ -38,7 +38,7 @@ session:
 notifier:
   disable_startup_check: true
   smtp:
-    address: ${ROUTER_IP}
+    address: 10.0.3.1
     sender: Authelia <admin@${DOMAIN}>
     disable_require_tls: true
 

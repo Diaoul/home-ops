@@ -11,7 +11,7 @@ spec:
   virtualRouters:
     - localASN: 64512
       neighbors:
-        - peerAddress: ${ROUTER_IP}/32
+        - peerAddress: 10.0.3.1/32
           peerASN: 64512
           gracefulRestart:
             enabled: true
