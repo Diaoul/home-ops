@@ -6,7 +6,7 @@ metadata:
   namespace: database
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:16.9-17
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.9-19
   storage:
     size: 5Gi
     storageClass: openebs-hostpath
