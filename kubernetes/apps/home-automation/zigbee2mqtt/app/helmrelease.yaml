@@ -60,7 +60,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_MQTT_VERSION: 5
               ZIGBEE2MQTT_CONFIG_ADVANCED_LAST_SEEN: ISO_8601
               # zigbee network
-              ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL: 25
+              ZIGBEE2MQTT_CONFIG_ADVANCED_CHANNEL: 11
               # frontend
               ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED: true
               ZIGBEE2MQTT_CONFIG_FRONTEND_URL: https://zigbee2mqtt.${DOMAIN}
