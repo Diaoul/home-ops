@@ -3,39 +3,6 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nginx-shared
-  namespace: &namespace network
-spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
-  path: ./kubernetes/apps/network/nginx/shared
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
-  prune: true
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: &app nginx-external
   namespace: &namespace network
 spec:
@@ -52,9 +19,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  dependsOn:
-    - name: nginx-shared
-      namespace: network
   prune: true
   wait: false
   interval: 30m
@@ -85,9 +49,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  dependsOn:
-    - name: nginx-shared
-      namespace: network
   prune: true
   wait: false
   interval: 30m

@@ -1,0 +1,10 @@
+---
+originRequest:
+  originServerName: external.${DOMAIN}
+
+ingress:
+  - hostname: "${DOMAIN}"
+    service: &svc https://cilium-gateway-external.kube-system.svc.cluster.local
+  - hostname: "*.${DOMAIN}"
+    service: *svc
+  - service: http_status:404

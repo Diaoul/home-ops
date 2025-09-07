@@ -4,12 +4,8 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./helmrelease.yaml
-  - ./secret.sops.yaml
-  - ./ingress.yaml
+  - ./httproute.yaml
+  - ./ocirepository.yaml
+  - ./prometheusrule.yaml
   - ./receiver.yaml
-configMapGenerator:
-  - name: flux-instance-values
-    files:
-      - values.yaml=./helm/values.yaml
-configurations:
-  - ./helm/kustomizeconfig.yaml
+  - ./secret.sops.yaml

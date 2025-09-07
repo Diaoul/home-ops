@@ -1,35 +1,32 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: k8s-gateway
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: k8s-gateway
-      version: 3.2.7
-      sourceRef:
-        kind: HelmRepository
-        name: k8s-gateway
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: k8s-gateway
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
   values:
-    replicaCount: 2
-    watchedResources: ["Ingress", "HTTPRoute"]
-    domain: ${DOMAIN}
-    ttl: 5
+    fullnameOverride: k8s-gateway
+    domain: "${DOMAIN}"
+    ttl: 1
     service:
+      type: LoadBalancer
+      port: 53
       annotations:
-        lbipam.cilium.io/ips: 10.44.0.3
+        lbipam.cilium.io/ips: 10.0.3.32
       externalTrafficPolicy: Cluster
+    watchedResources: ["HTTPRoute", "Service"]
     fallthrough:
       enabled: true
       zones:
