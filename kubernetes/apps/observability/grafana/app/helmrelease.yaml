@@ -371,10 +371,15 @@ spec:
       - vonage-status-panel
     serviceMonitor:
       enabled: true
-    ingress:
-      enabled: true
-      ingressClassName: external
-      hosts: ["grafana.${DOMAIN}"]
+    route:
+      main:
+        enabled: true
+        hostnames:
+          - grafana.${DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
     persistence:
       enabled: false
     testFramework:
