@@ -5,19 +5,14 @@ kind: HelmRelease
 metadata:
   name: rook-ceph-cluster
 spec:
-  interval: 30m
+  interval: 1h
   timeout: 15m
-  chart:
-    spec:
-      chart: rook-ceph-cluster
-      version: v1.18.1
-      sourceRef:
-        kind: HelmRepository
-        name: rook
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: rook-ceph-cluster
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -91,12 +86,16 @@ spec:
             memory: 2Gi # 4Gi
       storage:
         deviceFilter: nvme0n1
-    ingress:
+    route:
       dashboard:
-        ingressClassName: internal
         host:
           name: rook.${DOMAIN}
           path: /
+          pathType: PathPrefix
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
     # NOTE: same as default
     cephBlockPools:
       - name: ceph-blockpool
