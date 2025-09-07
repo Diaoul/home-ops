@@ -1,22 +1,17 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: jellyfin
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.2.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: jellyfin
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -45,7 +40,7 @@ spec:
         containers:
           app:
             image:
-              repository: jellyfin/jellyfin
+              repository: ghcr.io/jellyfin/jellyfin
               tag: 10.10.7@sha256:7ae36aab93ef9b6aaff02b37f8bb23df84bb2d7a3f6054ec8fc466072a648ce2
             env:
               JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
@@ -68,14 +63,8 @@ spec:
               readiness: *probes
               startup:
                 enabled: true
-                custom: true
                 spec:
-                  httpGet:
-                    path: /health
-                    port: *port
-                  initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
                   failureThreshold: 30
             resources:
               requests:
@@ -86,10 +75,6 @@ spec:
                 gpu.intel.com/i915: 1
     service:
       app:
-        controller: jellyfin
-        type: LoadBalancer
-        annotations:
-          lbipam.cilium.io/ips: 10.44.0.20
         ports:
           http:
             port: *port
@@ -104,10 +89,21 @@ spec:
     persistence:
       config:
         existingClaim: jellyfin
-      cache:
+      config-cache:
+        existingClaim: jellyfin-cache
+        globalMounts:
+          - path: /config/metadata
+      tmpfs:
         type: emptyDir
-      transcode:
-        type: emptyDir
+        advancedMounts:
+          jellyfin:
+            app:
+              - path: /cache
+                subPath: cache
+              - path: /config/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp
       media:
         type: nfs
         server: singularity.milkyway
