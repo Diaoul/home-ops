@@ -133,7 +133,7 @@ Cilium is configured with BGP to advertise load balancer IPs directly over BGP. 
     - Add a neighbor for each Kubernetes node
       1. `Enabled` = `true`
       2. `Peer-IP` = `10.0.3.x` (Kubernetes node IP)
-      3. `Remote AS` = `64512`
+      3. `Remote AS` = `64513`
       4. `Update-Source Interface` = `SERVER` (VLAN of Kubernetes nodes)
       5. Save
       6. Continue adding neighbors until all your nodes are present
