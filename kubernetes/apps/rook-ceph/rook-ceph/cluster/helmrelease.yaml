@@ -18,7 +18,7 @@ spec:
     remediation:
       retries: 3
   dependsOn:
-    - name: rook-ceph-operator
+    - name: rook-ceph
       namespace: rook-ceph
     - name: snapshot-controller
       namespace: volsync-system
