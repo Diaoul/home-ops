@@ -1,23 +1,20 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
+clusterName: home-kubernetes
+
 talosVersion: "${talosVersion}"
 kubernetesVersion: "${kubernetesVersion}"
 
-clusterName: home-kubernetes
 endpoint: https://10.0.3.3:6443
-clusterPodNets:
-  - 10.42.0.0/16
-clusterSvcNets:
-  - 10.43.0.0/16
 additionalApiServerCertSans: &sans
-  - k8s-apiserver
-  - k8s-apiserver.milkyway
+  - 127.0.0.1 # KubePrism
   - 10.0.3.2 # HAProxy LB
   - 10.0.3.3 # Cluster LB
-  - 127.0.0.1 # KubePrism
-additionalMachineCertSans: *sans
+  - k8s-apiserver
+  - k8s-apiserver.milkyway
 
-allowSchedulingOnControlPlanes: true
+clusterPodNets: [10.42.0.0/16]
+clusterSvcNets: [10.43.0.0/16]
 
 nodes:
   - hostname: k8s-node-1
@@ -28,7 +25,7 @@ nodes:
       secureboot: true
     # NOTE: this is the same for all nodes. In case of modification,
     # also update schematic id and system-upgrade-controller
-    # id: 2217b30e27c5da2d16fda30ff29db5a2c1a2c44c5b3e81c6faed2a6f351584e2
+    # id: 821cba43a73770c2f3ec1bde1373b0d2bea291d04ea91ece00413f247c33f939
     schematic: &schematic
       customization:
         extraKernelArgs:
@@ -36,18 +33,23 @@ nodes:
           - -init_on_free # Less security, faster puter
           - -selinux # Less security, faster puter
           - apparmor=0 # Less security, faster puter
+          - i915.enable_guc=3 # Meteor Lake CPU & Intel iGPU
           - init_on_alloc=0 # Less security, faster puter
           - init_on_free=0 # Less security, faster puter
           - intel_iommu=on # PCI Passthrough
           - iommu=pt # PCI Passthrough
           - mitigations=off # Less security, faster puter
           - security=none # Less security, faster puter
+          - sysctl.kernel.kexec_load_disabled=1 # Meteor Lake CPU & Intel iGPU
           - talos.auditd.disabled=1 # Less security, faster puter
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
-            - siderolabs/gasket-driver
+            - siderolabs/i915 # Intel iGPU
+            - siderolabs/intel-ucode # Intel iGPU
+            - siderolabs/mei # Intel iGPU
+            - siderolabs/gasket-driver # Coral TPU
+            - siderolabs/nfsrahead # NFS Performance
+            - siderolabs/thunderbolt # Thunderbolt NICs
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -55,6 +57,7 @@ nodes:
         dhcp: true
         vip:
           ip: 10.0.3.3
+    certSANs: *sans
   - hostname: k8s-node-2
     ipAddress: 10.0.3.25
     installDiskSelector:
@@ -69,6 +72,7 @@ nodes:
         dhcp: true
         vip:
           ip: 10.0.3.3
+    certSANs: *sans
   - hostname: k8s-node-3
     ipAddress: 10.0.3.26
     installDiskSelector:
@@ -83,6 +87,7 @@ nodes:
         dhcp: true
         vip:
           ip: 10.0.3.3
+    certSANs: *sans
   - hostname: k8s-node-4
     ipAddress: 10.0.3.27
     installDiskSelector:
@@ -95,6 +100,7 @@ nodes:
       - deviceSelector:
           hardwareAddr: 1c:69:7a:07:22:5d
         dhcp: true
+    certSANs: *sans
   - hostname: k8s-node-5
     ipAddress: 10.0.3.28
     installDiskSelector:
@@ -107,13 +113,14 @@ nodes:
       - deviceSelector:
           hardwareAddr: 1c:69:7a:0e:da:8a
         dhcp: true
+    certSANs: *sans
 
 # NOTE: don't use nameservers in machine-network and servers in machine-time patches from upstream
 # default from DHCP is fine
 
 # Global patches
 patches:
-  - "@./patches/global/machine-features.yaml"
+  # - "@./patches/global/machine-features.yaml"
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
@@ -124,5 +131,5 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-control.yaml"
     - "@./patches/controller/api-access.yaml"
-    - "@./patches/controller/audit-policy.yaml"
+    # - "@./patches/controller/audit-policy.yaml"
     - "@./patches/controller/cluster.yaml"

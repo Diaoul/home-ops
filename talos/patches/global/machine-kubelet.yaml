@@ -5,9 +5,8 @@ machine:
     nodeIP:
       validSubnets:
         - 10.0.3.0/24
-    extraArgs:
-      rotate-server-certificates: true
-    # TODO: change to /var/mnt/extra and have openebs-system write to /var/mnt/extra/openebs/local
+    # TODO: change to /var/mnt/local-hostpath and have openebs-system write to that
+    # see https://github.com/onedr0p/home-ops/pull/9531 and talos' UserVolumeConfig
     extraMounts:
       - destination: /var/openebs/local
         type: bind
