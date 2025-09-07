@@ -58,18 +58,15 @@ spec:
         ports:
           http:
             port: 6052
-    ingress:
+    route:
       app:
-        className: internal
-        annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${DOMAIN}
-        hosts:
-          - host: esphome.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        enabled: true
+        hostnames:
+          - esphome.${DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
     persistence:
       config:
         existingClaim: esphome
