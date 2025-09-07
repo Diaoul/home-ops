@@ -6,14 +6,10 @@ metadata:
   name: home-assistant
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.2.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -65,6 +61,8 @@ spec:
               - "/config/.vscode"
               - "--extensions-dir"
               - "/config/.vscode"
+              - "--port"
+              - "12321"
               - "/config"
             resources:
               requests:
@@ -78,32 +76,30 @@ spec:
           http:
             port: 8123
           code-server:
-            port: 8080
-    ingress:
+            port: 12321
+    route:
       app:
-        className: external
-        annotations:
-          # disabled for 403
-          nginx.ingress.kubernetes.io/custom-http-errors: 400,404,405,409,410,411,412,413,414,415,416,417,418,421,425,431,451,500,501,502,503,504,505,506,510
-        hosts:
-          - host: hass.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - hass.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: home-assistant
+                port: 8123
       code-server:
-        className: internal
-        annotations:
-          # disabled for 404
-          nginx.ingress.kubernetes.io/custom-http-errors: 400,403,405,409,410,411,412,413,414,415,416,417,418,421,425,431,451,500,501,502,503,504,505,506,510
-        hosts:
-          - host: hass-code.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: code-server
+        hostnames:
+          - hass-code.${DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: home-assistant
+                port: 12321
     persistence:
       config:
         existingClaim: home-assistant
