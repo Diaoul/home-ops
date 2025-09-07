@@ -5,27 +5,18 @@ kind: HelmRelease
 metadata:
   name: vaultwarden
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.2.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
   values:
     controllers:
       vaultwarden:
@@ -72,32 +63,14 @@ spec:
         ports:
           http:
             port: 80
-    ingress:
+    route:
       app:
-        className: external
-        annotations:
-          # disabled for 40x because it is used for the API
-          nginx.ingress.kubernetes.io/custom-http-errors: 500,501,502,503,504,505,506,510
-        hosts:
-          - host: &host vaultwarden.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-      admin:
-        className: external
-        annotations:
-          # disabled for 40x because it is used for the authentication
-          nginx.ingress.kubernetes.io/custom-http-errors: 500,501,502,503,504,505,506,510
-          nginx.ingress.kubernetes.io/whitelist-source-range: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16
-        hosts:
-          - host: *host
-            paths:
-              - path: /admin
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - vaultwarden.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
     persistence:
       data:
         existingClaim: vaultwarden
