@@ -96,22 +96,18 @@ spec:
             port: *port
           metrics:
             port: 8080
-    ingress:
-      app:
-        className: external
-        annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            add_header Cache-Control "no-store";
-            add_header Pragma "no-cache";
-            add_header X-Frame-Options "SAMEORIGIN";
-            add_header X-XSS-Protection "1; mode=block";
-        hosts:
-          - host: auth.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+    route:
+      main:
+        hostnames:
+          - auth.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: authelia
+                port: 9091
     serviceMonitor:
       app:
         serviceName: authelia
