@@ -102,6 +102,8 @@ spec:
                 subPath: cache
               - path: /config/log
                 subPath: log
+              - path: /transcode
+                subPath: transcode
               - path: /tmp
                 subPath: tmp
       media:
