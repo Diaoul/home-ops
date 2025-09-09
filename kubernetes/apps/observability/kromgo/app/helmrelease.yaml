@@ -79,16 +79,14 @@ spec:
         ports:
           http:
             port: 8080
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: kromgo.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - kromgo.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
     persistence:
       config-file:
         type: configMap

@@ -58,16 +58,14 @@ spec:
         ports:
           http:
             port: 5000
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: kavita.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - kavita.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
     persistence:
       config:
         existingClaim: kavita

@@ -97,13 +97,11 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: miniflux.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - miniflux.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https

@@ -76,16 +76,14 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: audiobookshelf.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - audiobookshelf.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
     persistence:
       config:
         existingClaim: audiobookshelf

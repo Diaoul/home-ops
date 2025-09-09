@@ -33,11 +33,15 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts: ["alert-manager.${DOMAIN}"]
-        pathType: Prefix
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - alert-manager.${DOMAIN}
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       alertManagerSpec:
         # TODO: add config secret
         storage:
@@ -91,11 +95,15 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts: ["prometheus.${DOMAIN}"]
-        pathType: Prefix
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - prometheus.${DOMAIN}
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         ruleSelectorNilUsesHelmValues: false

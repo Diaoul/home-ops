@@ -111,16 +111,14 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: status.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - status.${DOMAIN}
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
     serviceAccount:
       gatus: {}
     persistence:

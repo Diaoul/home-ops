@@ -80,19 +80,14 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
+    route:
       app:
-        className: internal
-        annotations:
-          # disabled for 40x and 503 because it is used for authentication and onboarding
-          nginx.ingress.kubernetes.io/custom-http-errors: 500,501,502,504,505,506,510
-        hosts:
-          - host: autobrr.${DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - autobrr.${DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
     persistence:
       tmp:
         type: emptyDir
