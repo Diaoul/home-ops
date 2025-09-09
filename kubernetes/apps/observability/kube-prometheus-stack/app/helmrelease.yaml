@@ -43,11 +43,14 @@ spec:
               namespace: kube-system
               sectionName: https
       alertManagerSpec:
-        # TODO: add config secret
+        externalUrl: https://alert-manager.${DOMAIN}
+        alertmanagerConfiguration:
+          global:
+            resolve_timeout: 5m
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: openebs-hostpath
+              storageClassName: ceph-block
               resources:
                 requests:
                   storage: 1Gi
@@ -75,23 +78,11 @@ spec:
             sourceLabels: ["__name__"]
             regex: (apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket)
     kubeControllerManager:
-      enabled: true
-      endpoints: &cp
-        - 10.0.3.24
-        - 10.0.3.25
-        - 10.0.3.26
-      serviceMonitor:
-        metricRelabelings:
-          # Remove duplicate labels provided by k3s
-          - action: keep
-            sourceLabels: ["__name__"]
-            regex: "(apiserver_audit|apiserver_client|apiserver_delegated|apiserver_envelope|apiserver_storage|apiserver_webhooks|attachdetach_controller|authenticated_user|authentication|cronjob_controller|disabled_metric|endpoint_slice|ephemeral_volume|garbagecollector_controller|get_token|go|hidden_metric|job_controller|kubernetes_build|kubernetes_feature|leader_election|node_collector|node_ipam|process_cpu|process_max|process_open|process_resident|process_start|process_virtual|pv_collector|registered_metric|replicaset_controller|rest_client|retroactive_storageclass|root_ca|running_managed|scrape_duration|scrape_samples|scrape_series|service_controller|storage_count|storage_operation|ttl_after|volume_operation|workqueue)_(.+)"
+      enabled: false
     kubeEtcd:
-      enabled: true
-      endpoints: *cp
+      enabled: false
     kubeScheduler:
-      enabled: true
-      endpoints: *cp
+      enabled: false
     kubeProxy:
       enabled: false
     prometheus:
@@ -105,6 +96,16 @@ spec:
               namespace: kube-system
               sectionName: https
       prometheusSpec:
+        image:
+          registry: docker.io
+          repository: prompp/prompp
+          tag: 2.53.2-0.4.0
+        externalUrl: https://prometheus.${DOMAIN}
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 64535
+          runAsGroup: 64535
+          fsGroup: 64535
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
@@ -117,21 +118,21 @@ spec:
           - auto-gomemlimit
           - memory-snapshot-on-shutdown
           - new-service-discovery-manager
-        retention: 2d
-        retentionSize: 8GB
+        retention: 14d
+        retentionSize: 50GB
         resources:
           requests:
             cpu: 100m
             memory: 2Gi
           limits:
-            memory: 3Gi
+            memory: 4Gi
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: openebs-hostpath
+              storageClassName: ceph-block
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 50Gi
     nodeExporter:
       enabled: true
     prometheus-node-exporter:
