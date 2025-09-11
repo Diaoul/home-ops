@@ -8,5 +8,4 @@ components:
 resources:
   - ./mealie/ks.yaml
   - ./miniflux/ks.yaml
-  - ./paperless/ks.yaml
   - ./vaultwarden/ks.yaml
