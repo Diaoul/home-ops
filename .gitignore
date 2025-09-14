@@ -1,11 +1,12 @@
-# k8s
-kubeconfig
-talosconfig
-.decrypted~*.yaml
-.config.env
-*.agekey
+# Secrets
 *.pub
 *.key
-
-# direnv
-.direnv/
+*.decrypted~*.yaml
+/age.key
+# Kubernetes
+kubeconfig
+# Talos
+talosconfig
+/talos/images
+# Misc.
+.venv/
