@@ -31,9 +31,6 @@ spec:
       automount:
         enabled: false
       hostRoot: /sys/fs/cgroup
-    cluster:
-      id: 1
-      name: home-kubernetes
     # NOTE: devices might need to be set if you have more than one active NIC on your hosts
     # devices: eno+ eth+
     dashboards:
