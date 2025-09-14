@@ -118,7 +118,6 @@ nodes:
 
 # Global patches
 patches:
-  # - "@./patches/global/machine-features.yaml"
   - "@./patches/global/machine-files.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
@@ -129,5 +128,4 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-control.yaml"
     - "@./patches/controller/api-access.yaml"
-    # - "@./patches/controller/audit-policy.yaml"
     - "@./patches/controller/cluster.yaml"
