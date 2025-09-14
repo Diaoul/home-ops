@@ -1,58 +1,45 @@
-
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
     // datasource specific settings
     {
-      "matchDatasources": ["docker"],
-      "addLabels": ["renovate/container"]
+      matchDatasources: ["docker"],
+      addLabels: ["renovate/container"],
     },
     {
-      "matchDatasources": ["helm"],
-      "addLabels": ["renovate/helm"]
+      matchDatasources: ["helm"],
+      addLabels: ["renovate/helm"],
     },
     {
-      "matchDatasources": ["galaxy", "galaxy-collection"],
-      "addLabels": ["renovate/ansible"]
-    },
-    {
-      "matchDatasources": ["terraform-provider"],
-      "addLabels": ["renovate/terraform"]
-    },
-    {
-      "matchDatasources": ["github-releases", "github-tags"],
-      "addLabels": ["renovate/github-release"]
-    },
-    {
-      "matchDatasources": ["pypi"],
-      "addLabels": ["renovate/python"]
+      matchDatasources: ["github-releases"],
+      addLabels: ["renovate/github-release"],
     },
     // manager specific settings
     //
     {
-      "matchManagers": ["github-actions"],
-      "addLabels": ["renovate/github-actions"]
+      matchManagers: ["github-actions"],
+      addLabels: ["renovate/github-actions"],
     },
     {
-      "matchManagers": ["pre-commit"],
-      "addLabels": ["renovate/pre-commit"]
+      matchManagers: ["pre-commit"],
+      addLabels: ["renovate/pre-commit"],
     },
     // update types specific settings
     {
-      "matchUpdateTypes": ["major"],
-      "addLabels": ["dependency/major"]
+      matchUpdateTypes: ["major"],
+      addLabels: ["dependency/major"],
     },
     {
-      "matchUpdateTypes": ["minor"],
-      "addLabels": ["dependency/minor"]
+      matchUpdateTypes: ["minor"],
+      addLabels: ["dependency/minor"],
     },
     {
-      "matchUpdateTypes": ["patch"],
-      "addLabels": ["dependency/patch"]
+      matchUpdateTypes: ["patch"],
+      addLabels: ["dependency/patch"],
     },
     {
-      "matchUpdateTypes": ["digest"],
-      "addLabels": ["dependency/digest"]
+      matchUpdateTypes: ["digest"],
+      addLabels: ["dependency/digest"],
     },
-  ]
+  ],
 }
