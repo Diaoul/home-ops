@@ -23,9 +23,6 @@ nodes:
       model: PNY CS900 120GB
     machineSpec:
       secureboot: true
-    # NOTE: this is the same for all nodes. In case of modification,
-    # also update schematic id and system-upgrade-controller
-    # id: 821cba43a73770c2f3ec1bde1373b0d2bea291d04ea91ece00413f247c33f939
     schematic: &schematic
       customization:
         extraKernelArgs:
@@ -44,11 +41,12 @@ nodes:
           - talos.auditd.disabled=1 # Less security, faster puter
         systemExtensions:
           officialExtensions:
+            - siderolabs/gasket-driver # Coral TPU
             - siderolabs/i915 # Intel iGPU
             - siderolabs/intel-ucode # Intel iGPU
             - siderolabs/mei # Intel iGPU
-            - siderolabs/gasket-driver # Coral TPU
-            - siderolabs/nfsrahead # NFS Performance
+            # TODO: add this on Talos v1.11.x
+            # - siderolabs/nfsrahead # NFS Performance
             - siderolabs/thunderbolt # Thunderbolt NICs
     controlPlane: true
     networkInterfaces:
