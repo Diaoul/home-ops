@@ -5,13 +5,3 @@ machine:
     nodeIP:
       validSubnets:
         - 10.0.3.0/24
-    # TODO: change to /var/mnt/local-hostpath and have openebs-system write to that
-    # see https://github.com/onedr0p/home-ops/pull/9531 and talos' UserVolumeConfig
-    extraMounts:
-      - destination: /var/openebs/local
-        type: bind
-        source: /var/openebs/local
-        options:
-          - bind
-          - rshared
-          - rw
