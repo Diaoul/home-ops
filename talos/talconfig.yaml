@@ -21,12 +21,6 @@ nodes:
     ipAddress: 10.0.3.24
     installDiskSelector:
       model: PNY CS900 120GB
-    userVolumes: &uservolumes
-      - name: local-hostpath
-        provisioning:
-          diskSelector:
-            match: system_disk
-          minSize: 20GiB
     machineSpec:
       secureboot: true
     schematic: &schematic
@@ -66,7 +60,6 @@ nodes:
     ipAddress: 10.0.3.25
     installDiskSelector:
       model: PNY CS900 120GB
-    userVolumes: *uservolumes
     machineSpec:
       secureboot: true
     schematic: *schematic
@@ -82,7 +75,6 @@ nodes:
     ipAddress: 10.0.3.26
     installDiskSelector:
       model: PNY CS900 120GB
-    userVolumes: *uservolumes
     machineSpec:
       secureboot: true
     schematic: *schematic
@@ -98,7 +90,6 @@ nodes:
     ipAddress: 10.0.3.27
     installDiskSelector:
       model: PNY CS900 120GB
-    userVolumes: *uservolumes
     machineSpec:
       secureboot: true
     schematic: *schematic
@@ -112,7 +103,6 @@ nodes:
     ipAddress: 10.0.3.28
     installDiskSelector:
       model: PNY CS900 120GB
-    userVolumes: *uservolumes
     machineSpec:
       secureboot: true
     schematic: *schematic
