@@ -13,6 +13,5 @@ resources:
   - ./kromgo/ks.yaml
   - ./loki/ks.yaml
   - ./nut-server-basement/ks.yaml
-  - ./prometheus-operator-crds/ks.yaml
   - ./promtail/ks.yaml
   - ./unpoller/ks.yaml

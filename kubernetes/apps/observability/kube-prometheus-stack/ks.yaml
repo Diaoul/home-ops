@@ -4,32 +4,28 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app kube-prometheus-stack
-  namespace: flux-system
+  namespace: &namespace observability
 spec:
-  targetNamespace: observability
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  interval: 1h
   path: ./kubernetes/apps/observability/kube-prometheus-stack/app
+  postBuild:
+    substitute:
+      APP: kube-prometheus-stack
+      GATUS_SUBDOMAIN: prometheus
+  prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
+  targetNamespace: *namespace
+  timeout: 5m
   wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 15m
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-    substitute:
-      APP: *app
-      GATUS_SUBDOMAIN: prometheus
