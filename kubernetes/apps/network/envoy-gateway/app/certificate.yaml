@@ -3,7 +3,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: domain
+  name: ${DOMAIN/./-}
 spec:
   secretName: ${DOMAIN/./-}-tls
   issuerRef:
