@@ -133,3 +133,5 @@ spec:
       annotations: {}
       labels: {}
       parameters: {}
+    cephFileSystems: []
+    cephObjectStores: []
