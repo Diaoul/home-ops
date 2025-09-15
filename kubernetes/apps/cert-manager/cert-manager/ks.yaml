@@ -21,6 +21,9 @@ spec:
     - apiVersion: cert-manager.io/v1
       kind: ClusterIssuer
       name: letsencrypt-production
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      name: ${DOMAIN/./-}
   healthCheckExprs:
     - apiVersion: cert-manager.io/v1
       kind: ClusterIssuer
