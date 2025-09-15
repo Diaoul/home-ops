@@ -11,6 +11,7 @@ resources:
   - ./cloudflare-tunnel/ks.yaml
   - ./e1000e-fix/ks.yaml
   - ./echo-server/ks.yaml
+  - ./envoy-gateway/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./nginx/ks.yaml
   - ./singularity/ks.yaml
