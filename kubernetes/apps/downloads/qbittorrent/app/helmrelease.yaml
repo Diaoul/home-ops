@@ -30,7 +30,7 @@ spec:
           dnsdist:
             image:
               repository: docker.io/powerdns/dnsdist-19
-              tag: 1.9.10@sha256:7495affd85c450050eb2fce1cb99964cb439482ffada22e9d312a761b6bf138d
+              tag: 1.9.11@sha256:720091e8702abcc863a1ad6fe8667c62f82797f33cd4924a2e49c57d5da5b451
             restartPolicy: Always
           gluetun:
             dependsOn:
