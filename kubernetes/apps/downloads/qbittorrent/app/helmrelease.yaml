@@ -8,8 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: qbittorrent
-    namespace: flux-system
+    name: app-template
   install:
     remediation:
       retries: -1
