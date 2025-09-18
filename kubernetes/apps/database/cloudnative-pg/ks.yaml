@@ -52,6 +52,8 @@ spec:
   dependsOn:
     - name: cloudnative-pg
       namespace: database
+    - name: openebs
+      namespace: openebs-system
   prune: true
   wait: false
   interval: 30m
