@@ -6,23 +6,17 @@ metadata:
   name: emqx
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: emqx-operator
-      version: 2.2.29
-      sourceRef:
-        kind: HelmRepository
-        name: emqx
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: emqx-operator
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
   values:
     fullnameOverride: emqx-operator
+    image:
+      repository: ghcr.io/emqx/emqx-operator

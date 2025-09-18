@@ -8,10 +8,11 @@ spec:
   hostnames:
     - emqx.${DOMAIN}
   parentRefs:
-    - name: external
-      namespace: kube-system
+    - name: envoy-internal
+      namespace: network
       sectionName: https
   rules:
     - backendRefs:
         - name: emqx-dashboard
           port: 18083
+

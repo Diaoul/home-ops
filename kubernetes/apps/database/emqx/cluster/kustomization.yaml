@@ -6,9 +6,3 @@ resources:
   - ./cluster.yaml
   - ./httproute.yaml
   - ./podmonitor.yaml
-configMapGenerator:
-  - name: emqx-init-mqtt
-    files:
-      - ./resources/init-mqtt.py
-generatorOptions:
-  disableNameSuffixHash: true
