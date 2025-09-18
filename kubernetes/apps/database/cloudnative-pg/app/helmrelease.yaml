@@ -6,17 +6,12 @@ metadata:
   name: cloudnative-pg
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: cloudnative-pg
-      version: 0.26.0
-      sourceRef:
-        kind: HelmRepository
-        name: cloudnative-pg
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: cloudnative-pg
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
