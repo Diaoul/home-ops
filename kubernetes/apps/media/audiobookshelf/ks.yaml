@@ -18,6 +18,11 @@ spec:
     secretRef:
       name: sops-age
   path: ./kubernetes/apps/media/audiobookshelf/app
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
   sourceRef:
     kind: GitRepository
     name: flux-system
