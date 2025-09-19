@@ -89,5 +89,10 @@ spec:
         path: /volume1/media
         globalMounts:
           - path: /media
-      tmp:
+      tmpfs:
         type: emptyDir
+        globalMounts:
+          - path: /config/logs
+            subPath: logs
+          - path: /tmp
+            subPath: tmp
