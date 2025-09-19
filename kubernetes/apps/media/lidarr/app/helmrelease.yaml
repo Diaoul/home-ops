@@ -79,6 +79,10 @@ spec:
     persistence:
       config:
         existingClaim: lidarr
+      config-cache:
+        existingClaim: lidarr-cache
+        globalMounts:
+          - path: /config/MediaCover
       tmpfs:
         type: emptyDir
         globalMounts:
