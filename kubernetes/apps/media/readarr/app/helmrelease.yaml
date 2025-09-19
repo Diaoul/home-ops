@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: radarr
+    name: app-template
   install:
     remediation:
       retries: -1
