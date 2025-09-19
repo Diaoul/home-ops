@@ -1,3 +1,0 @@
----
-providerRegex: ^(k8s-node-\d)$
-bypassDnsResolution: true
