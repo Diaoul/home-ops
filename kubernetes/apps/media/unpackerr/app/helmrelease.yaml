@@ -5,27 +5,17 @@ kind: HelmRelease
 metadata:
   name: unpackerr
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.3.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
   values:
     controllers:
       unpackerr:
@@ -76,13 +66,11 @@ spec:
                 memory: 2Gi
     service:
       app:
-        controller: unpackerr
         ports:
           http:
             port: 5656
     serviceMonitor:
       app:
-        serviceName: unpackerr
         endpoints:
           - port: http
             scheme: http
@@ -90,6 +78,8 @@ spec:
             interval: 1m
             scrapeTimeout: 10s
     persistence:
+      logs:
+        type: emptyDir
       media:
         type: nfs
         server: singularity.milkyway
