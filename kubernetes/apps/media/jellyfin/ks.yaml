@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: intel-device-plugin-gpu
+    - name: intel-device-plugins-gpu
       namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
