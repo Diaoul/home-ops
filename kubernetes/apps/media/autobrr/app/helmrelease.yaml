@@ -5,18 +5,13 @@ kind: HelmRelease
 metadata:
   name: autobrr
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.3.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -29,8 +24,9 @@ spec:
         pod:
           securityContext:
             runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
             seccompProfile: { type: RuntimeDefault }
         initContainers:
           init-db:
@@ -46,8 +42,12 @@ spec:
               repository: ghcr.io/autobrr/autobrr
               tag: v1.66.1@sha256:bf25c5c66cb1b8aa60b83932a1b59d2eb88c45edfeb8714e58e4bd1abeee01d1
             env:
-              AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__HOST: 0.0.0.0
+              AUTOBRR__PORT: &port 7474
+              AUTOBRR__METRICS_ENABLED: true
+              AUTOBRR__METRICS_HOST: 0.0.0.0
+              AUTOBRR__METRICS_PORT: &metricsPort 9094
+              AUTOBRR__CHECK_FOR_UPDATES: false
               AUTOBRR__LOG_LEVEL: INFO
             envFrom:
               - secretRef:
@@ -59,7 +59,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/healthz/liveness
-                    port: &port 7474
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -76,10 +76,15 @@ spec:
                 memory: 256Mi
     service:
       app:
-        controller: autobrr
         ports:
           http:
             port: *port
+          metrics:
+            port: *metricsPort
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics
     route:
       app:
         hostnames:
@@ -89,5 +94,14 @@ spec:
             namespace: kube-system
             sectionName: https
     persistence:
-      tmp:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+      tmpfs:
         type: emptyDir
+        advancedMounts:
+          autobrr:
+            app:
+              - path: /config/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp

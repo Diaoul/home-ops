@@ -12,6 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
+    - ../../../../components/persistence
   decryption:
     provider: sops
     secretRef:
@@ -24,6 +25,10 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
   prune: true
   wait: false
   interval: 30m
@@ -35,3 +40,4 @@ spec:
         kind: Secret
     substitute:
       APP: *app
+      CAPACITY: 100Mi

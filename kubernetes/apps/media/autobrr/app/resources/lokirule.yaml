@@ -2,13 +2,12 @@
 groups:
   - name: autobrr
     rules:
-      - alert: AutobrrNetworkUnhealthy
-        expr: |
-          sum by (app) (count_over_time({app="autobrr"} |~ "(?i)network unhealthy"[2m])) > 0
-        for: 2m
+      - alert: AutobrrDatabaseIsMalformed
+        expr: |-
+          sum by (app) (count_over_time({app=~"autobrr"} |~ "(?i)database image malformed"[5m])) > 0
+        for: 5m
+        annotations:
+          summary: >-
+            {{ $labels.app }} is experiencing database issues
         labels:
           severity: critical
-          category: logs
-        annotations:
-          app: "{{ $labels.app }}"
-          summary: "{{ $labels.app }} has a unhealthy network"
