@@ -80,7 +80,7 @@ spec:
       config:
         existingClaim: readarr
       config-cache:
-        existingClaim: radarr-cache
+        existingClaim: readarr-cache
         globalMounts:
           - path: /config/MediaCover
       media:
