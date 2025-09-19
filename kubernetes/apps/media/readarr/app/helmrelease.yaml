@@ -5,27 +5,17 @@ kind: HelmRelease
 metadata:
   name: readarr
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.3.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: radarr
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
       retries: 3
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
   values:
     controllers:
       readarr:
@@ -75,7 +65,6 @@ spec:
                 memory: 500Mi
     service:
       app:
-        controller: readarr
         ports:
           http:
             port: *port
@@ -90,9 +79,20 @@ spec:
     persistence:
       config:
         existingClaim: readarr
+      config-cache:
+        existingClaim: radarr-cache
+        globalMounts:
+          - path: /config/MediaCover
       media:
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
         globalMounts:
           - path: /media
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /config/logs
+            subPath: logs
+          - path: /tmp
+            subPath: tmp
