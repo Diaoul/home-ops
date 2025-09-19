@@ -5,18 +5,13 @@ kind: HelmRelease
 metadata:
   name: node-feature-discovery
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: node-feature-discovery
-      version: 0.17.3
-      sourceRef:
-        kind: HelmRepository
-        name: node-feature-discovery
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: node-feature-discovery
   install:
     remediation:
-      retries: 3
+      retries: -1
     crds: CreateReplace
   upgrade:
     cleanupOnFail: true
