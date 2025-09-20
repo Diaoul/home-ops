@@ -17,6 +17,9 @@ spec:
     - ../../../../components/gatus/guarded
   interval: 1h
   path: ./kubernetes/apps/observability/grafana/app
+  dependsOn:
+    - name: authelia
+      namespace: security
   postBuild:
     substituteFrom:
       - name: cluster-secrets
