@@ -6,7 +6,6 @@ namespace: network
 components:
   - ../../components/common
 resources:
-  - ./blocky/ks.yaml
   - ./cloudflare-dns/ks.yaml
   - ./cloudflare-tunnel/ks.yaml
   - ./e1000e-fix/ks.yaml
