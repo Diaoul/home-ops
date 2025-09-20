@@ -5,18 +5,13 @@ kind: HelmRelease
 metadata:
   name: unpoller
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.3.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -29,10 +24,8 @@ spec:
         pod:
           securityContext:
             runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
+            runAsUser: 1000
+            runAsGroup: 1000
             seccompProfile: { type: RuntimeDefault }
         containers:
           app:
@@ -46,33 +39,36 @@ spec:
               - secretRef:
                   name: unpoller
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
-              startup:
-                enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
+                  httpGet:
+                    path: /health
+                    port: &port 9130
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
-                memory: 36M
+                memory: 64M
               limits:
                 memory: 128M
     service:
       app:
-        controller: unpoller
         ports:
           http:
-            port: 9130
+            port: *port
     serviceMonitor:
       app:
-        serviceName: unpoller
         endpoints:
           - port: http
-            scheme: http
-            path: /metrics
             interval: 2m # Unifi API only polls at 2m intervals
             scrapeTimeout: 10s
