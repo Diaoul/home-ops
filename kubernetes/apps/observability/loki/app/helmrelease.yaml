@@ -5,40 +5,41 @@ kind: HelmRelease
 metadata:
   name: loki
 spec:
-  interval: 30m
-  timeout: 15m
-  chart:
-    spec:
-      chart: loki
-      version: 6.40.0
-      sourceRef:
-        kind: HelmRepository
-        name: grafana
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: loki
   install:
     crds: Skip
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     crds: Skip
     remediation:
       retries: 3
-  dependsOn:
-    - name: openebs
-      namespace: openebs-system
   values:
     deploymentMode: SingleBinary
     loki:
       auth_enabled: false
       analytics:
         reporting_enabled: false
-      server:
-        log_level: info
       commonConfig:
         replication_factor: 1
+      compactor:
+        working_directory: /var/loki/compactor/retention
+        delete_request_store: filesystem
+        retention_enabled: true
       ingester:
         chunk_encoding: snappy
+      limits_config:
+        retention_period: 14d
+        ingestion_rate_mb: 16
+        ingestion_burst_size_mb: 32
+      server:
+        grpc_server_max_recv_msg_size: 10485760 # 10 MiB
+        grpc_server_max_send_msg_size: 10485760 # 10 MiB
+        log_level: info
       storage:
         type: filesystem
       schemaConfig:
@@ -50,14 +51,22 @@ spec:
             index:
               prefix: loki_index_
               period: 24h
-      limits_config:
-        retention_period: 7d
+      structuredConfig:
+        ruler:
+          enable_api: true
+          enable_alertmanager_v2: true
+          alertmanager_url: http://alertmanager-operated.observability.svc.cluster.local:9093
+          storage:
+            type: local
+            local:
+              directory: /rules
+          rule_path: /rules/fake
     singleBinary:
       replicas: 1
       persistence:
         enabled: true
-        storageClass: openebs-hostpath
-        size: 10Gi
+        storageClass: ceph-block
+        size: 50Gi
     gateway:
       replicas: 0
     backend:
@@ -74,3 +83,11 @@ spec:
       enabled: false
     test:
       enabled: false
+    sidecar:
+      image:
+        repository: ghcr.io/home-operations/k8s-sidecar
+        tag: 1.30.10@sha256:dd3b1f0c4e6b4512b2deb50c58acf65fd0f0927120a59a95eec854d32a6c9ce3
+      enableUniqueFilenames: true
+      rules:
+        searchNamespace: ALL
+        folder: /rules/fake
