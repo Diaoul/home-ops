@@ -18,7 +18,7 @@ spec:
       retries: 3
   values:
     controllers:
-      nut-server-basement:
+      nut-exporter:
         containers:
           app:
             image:
@@ -70,7 +70,7 @@ spec:
                 regex: (pod)
             params:
               server:
-                - basement
+                - 10.44.0.8
             selector:
               matchLabels:
                 app.kubernetes.io/instance: nut-exporter
