@@ -11,6 +11,10 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -20,6 +24,9 @@ spec:
     substitute:
       APP: kube-prometheus-stack
       GATUS_SUBDOMAIN: prometheus
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
