@@ -12,6 +12,7 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./kromgo/ks.yaml
   - ./loki/ks.yaml
-  - ./nut-server-basement/ks.yaml
+  - ./network-ups-tools/ks.yaml
+  - ./nut-exporter/ks.yaml
   - ./promtail/ks.yaml
   - ./unpoller/ks.yaml
