@@ -35,9 +35,12 @@ spec:
               startup:
                 enabled: true
             resources:
-              limits:
+              requests:
                 cpu: 50m
-                memory: 128Mi
+                memory: 100Mi
+              limits:
+                cpu: 100m
+                memory: 100Mi
     service:
       app:
         ports:
