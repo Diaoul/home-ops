@@ -13,7 +13,8 @@ services:
       - "--path.procfs=/host/proc"
       - "--path.sysfs=/host/sys"
       - "--path.udev.data=/host/root/run/udev/data"
-      - "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|host|etc)($$|/)"
+      - "--no-collector.mdadm"
+      - "--collector.filesystem.mount-points-exclude=^/(dev|proc|sys|host|etc|volume1)($$|/)"
     network_mode: host
     pid: host
     restart: always
