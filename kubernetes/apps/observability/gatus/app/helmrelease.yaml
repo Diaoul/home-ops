@@ -5,18 +5,13 @@ kind: HelmRelease
 metadata:
   name: gatus
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 4.3.0
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
@@ -27,9 +22,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          dnsConfig:
-            options:
-              - { name: ndots, value: "1" }
           securityContext:
             runAsNonRoot: true
             runAsUser: 65534
@@ -48,8 +40,8 @@ spec:
           init-config:
             dependsOn: init-db
             image:
-              repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.30.10@sha256:835d79d8fbae62e42d8a86929d4e3c5eec2e869255dd37756b5a3166c2f22309
+              repository: ghcr.io/home-operations/k8s-sidecar
+              tag: 1.30.10@sha256:dd3b1f0c4e6b4512b2deb50c58acf65fd0f0927120a59a95eec854d32a6c9ce3
             env:
               FOLDER: /config
               LABEL: gatus.io/enabled
@@ -98,19 +90,13 @@ spec:
                 memory: 256Mi
     service:
       app:
-        controller: gatus
         ports:
           http:
             port: *port
     serviceMonitor:
       app:
-        serviceName: gatus
         endpoints:
           - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
     route:
       app:
         hostnames:
@@ -121,6 +107,27 @@ spec:
             sectionName: https
     serviceAccount:
       gatus: {}
+    rbac:
+      roles:
+        gatus:
+          type: ClusterRole
+          rules:
+            - apiGroups:
+                - ""
+              resources:
+                - configmaps
+                - secrets
+              verbs:
+                - get
+                - watch
+                - list
+      bindings:
+        gatus:
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: gatus
+          subjects:
+            - identifier: gatus
     persistence:
       config:
         type: emptyDir

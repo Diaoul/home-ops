@@ -7,21 +7,27 @@ storage:
   path: postgres://$${INIT_POSTGRES_USER}:$${INIT_POSTGRES_PASS}@$${INIT_POSTGRES_HOST}:5432/$${INIT_POSTGRES_DBNAME}?sslmode=disable
   caching: true
 metrics: true
-debug: false
 ui:
   title: Status | Gatus
   header: Status
+  logo: https://avatars.githubusercontent.com/u/319220
+  link: https://github.com/Diaoul
+  buttons:
+    - name: Github
+      link: https://github.com/Diaoul
+
+    - name: Homelab
+      link: https://github.com/Diaoul/home-ops
 connectivity:
   checker:
     target: 1.1.1.1:53
     interval: 1m
 endpoints:
-  - name: status
+  - name: flux-webhook
     group: external
-    url: https://status.${DOMAIN}
+    url: https://flux-webhook.${DOMAIN}
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
-      ignore-redirect: true
     conditions:
-      - "[STATUS] == 200"
+      - "[STATUS] == 404"
