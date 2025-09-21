@@ -107,4 +107,9 @@ spec:
               - path: /config/tts
                 subPath: tts
               - path: /tmp
-                subPath: tmp
+                subPath: hass-tmp
+            code-server:
+              - path: /tmp
+                subPath: code-server-tmp
+              - path: /nonexistent
+                subPath: nonexistent
