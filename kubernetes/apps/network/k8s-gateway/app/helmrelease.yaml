@@ -32,3 +32,18 @@ spec:
       zones:
         - andromeda.${DOMAIN}
         - sunflower.${DOMAIN}
+    zoneFiles:
+      - filename: sunflower.${DOMAIN}.db
+        domains: sunflower.${DOMAIN}
+        contents: |
+          sunflower.${DOMAIN}.   IN SOA k8s-gateway.sunflower.${DOMAIN}. admin.sunflower.${DOMAIN}. 2023120101 7200 3600 1209600 300
+          sunflower.${DOMAIN}.   IN NS  k8s-gateway.sunflower.${DOMAIN}.
+          sunflower.${DOMAIN}.   IN CNAME papouf.synology.me.
+          *.sunflower.${DOMAIN}. IN CNAME papouf.synology.me.
+      - filename: andromeda.${DOMAIN}.db
+        domains: andromeda.${DOMAIN}
+        contents: |
+          andromeda.${DOMAIN}.   IN SOA k8s-gateway.andromeda.${DOMAIN}. admin.andromeda.${DOMAIN}. 2023120101 7200 3600 1209600 300
+          andromeda.${DOMAIN}.   IN NS  k8s-gateway.andromeda.${DOMAIN}.
+          andromeda.${DOMAIN}.   IN CNAME pretongirl.synology.me.
+          *.andromeda.${DOMAIN}. IN CNAME pretongirl.synology.me.
