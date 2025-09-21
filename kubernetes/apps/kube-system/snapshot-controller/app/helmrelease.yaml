@@ -5,27 +5,20 @@ kind: HelmRelease
 metadata:
   name: snapshot-controller
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: snapshot-controller
-      version: 4.1.0
-      sourceRef:
-        kind: HelmRepository
-        name: piraeus
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
   install:
-    remediation:
-      retries: 3
     crds: CreateReplace
+    remediation:
+      retries: -1
   upgrade:
     cleanupOnFail: true
+    crds: CreateReplace
     remediation:
       retries: 3
-    crds: CreateReplace
   values:
     controller:
       serviceMonitor:
         create: true
-    webhook:
-      enabled: false
