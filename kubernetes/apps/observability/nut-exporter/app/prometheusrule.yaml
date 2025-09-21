@@ -5,7 +5,7 @@ metadata:
   name: nut-exporter
 spec:
   groups:
-    - name: nut-exporter
+    - name: nut-exporter.rules
       rules:
         - alert: NutExporterAbsent
           annotations:
