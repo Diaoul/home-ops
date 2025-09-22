@@ -41,7 +41,7 @@ spec:
                 spec:
                   httpGet:
                     path: /readyz
-                    port: *healthPort
+                    port: &healthPort 8888
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -61,6 +61,8 @@ spec:
         ports:
           http:
             port: 8080
+          health:
+            port: *healthPort
     route:
       app:
         hostnames:
