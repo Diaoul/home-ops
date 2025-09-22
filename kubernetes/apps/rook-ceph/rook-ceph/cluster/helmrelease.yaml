@@ -17,11 +17,6 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  dependsOn:
-    - name: rook-ceph
-      namespace: rook-ceph
-    - name: snapshot-controller
-      namespace: volsync-system
   values:
     toolbox:
       enabled: true
@@ -37,9 +32,9 @@ spec:
     cephClusterSpec:
       cephConfig:
         global:
-          bdev_enable_discard: "true"
-          bdev_async_discard_threads: "1"
-          osd_class_update_on_start: "false"
+          bdev_enable_discard: "true" # quote
+          bdev_async_discard_threads: "1" # quote
+          osd_class_update_on_start: "false" # quote
           device_failure_prediction_mode: local # requires mgr module
       network:
         provider: host
