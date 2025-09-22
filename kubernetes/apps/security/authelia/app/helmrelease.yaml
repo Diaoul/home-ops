@@ -82,7 +82,6 @@ spec:
                 memory: 128Mi
     service:
       app:
-        controller: authelia
         ports:
           http:
             port: *port

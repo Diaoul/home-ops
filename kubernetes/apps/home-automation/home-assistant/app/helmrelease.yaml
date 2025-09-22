@@ -64,7 +64,6 @@ spec:
                 memory: 512Mi
     service:
       app:
-        controller: home-assistant
         ports:
           http:
             port: 8123

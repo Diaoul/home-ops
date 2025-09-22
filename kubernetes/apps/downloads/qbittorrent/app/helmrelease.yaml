@@ -140,7 +140,6 @@ spec:
               capabilities: { drop: ["ALL"] }
     service:
       app:
-        controller: qbittorrent
         ports:
           http:
             port: *port

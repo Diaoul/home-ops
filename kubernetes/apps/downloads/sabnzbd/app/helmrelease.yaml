@@ -67,7 +67,6 @@ spec:
                 memory: 6Gi
     service:
       app:
-        controller: sabnzbd
         ports:
           http:
             port: *port

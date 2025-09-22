@@ -32,7 +32,6 @@ spec:
                 memory: 500Mi
     service:
       app:
-        controller: flaresolverr
         ports:
           http:
             port: 8191

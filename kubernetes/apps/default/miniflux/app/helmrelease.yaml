@@ -78,7 +78,6 @@ spec:
                 memory: 512Mi
     service:
       app:
-        controller: miniflux
         ports:
           http:
             port: *port

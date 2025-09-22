@@ -60,7 +60,6 @@ spec:
                 gpu.intel.com/i915: 1
     service:
       app:
-        controller: frigate
         ports:
           http:
             port: *port

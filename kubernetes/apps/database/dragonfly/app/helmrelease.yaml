@@ -68,7 +68,6 @@ spec:
               capabilities: { drop: ["ALL"] }
     service:
       app:
-        controller: dragonfly-operator
         ports:
           http:
             port: *port
