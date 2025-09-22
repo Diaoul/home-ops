@@ -16,6 +16,8 @@ spec:
     name: flux-system
     namespace: flux-system
   dependsOn:
+    - name: openebs
+      namespace: openebs-system
     - name: snapshot-controller
       namespace: kube-system
   prune: true
