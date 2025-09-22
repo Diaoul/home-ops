@@ -25,7 +25,6 @@ spec:
             runAsNonRoot: true
             runAsUser: 65534
             runAsGroup: 65534
-            seccompProfile: { type: RuntimeDefault }
         containers:
           app:
             image:
@@ -45,8 +44,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-              seccompProfile:
-                type: RuntimeDefault
     rawResources:
       talosServiceAccount:
         apiVersion: talos.dev/v1alpha1

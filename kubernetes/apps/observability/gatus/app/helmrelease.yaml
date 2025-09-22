@@ -28,7 +28,6 @@ spec:
             runAsGroup: 65534
             fsGroup: 65534
             fsGroupChangePolicy: OnRootMismatch
-            seccompProfile: { type: RuntimeDefault }
         initContainers:
           init-db:
             image:
