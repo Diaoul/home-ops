@@ -36,13 +36,6 @@ spec:
             runAsNonRoot: true
             runAsUser: 65534
             runAsGroup: 65534
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: authelia
         initContainers:
           init-db:
             image:
