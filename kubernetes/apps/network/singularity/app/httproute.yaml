@@ -8,10 +8,16 @@ spec:
   hostnames:
     - singularity.${DOMAIN}
   parentRefs:
-    - name: external
-      namespace: kube-system
+    - name: envoy-external
+      namespace: network
       sectionName: https
   rules:
     - backendRefs:
-        - name: singularity
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: singularity
           port: 5001
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
