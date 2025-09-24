@@ -24,6 +24,14 @@ spec:
           - name: alertname
             value: InfoInhibitor
             matchType: =
+      - receiver: "null"
+        matchers:
+          - name: alertname
+            value: NodeDiskIOSaturation
+            matchType: =
+          - name: instance
+            value: singularity.milkyway:9100
+            matchType: =
       - receiver: pushover
         matchers:
           - name: severity
