@@ -3,23 +3,28 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: "${APP}"
+  name: ${APP}
 spec:
   trigger:
     manual: restore-once
-  restic:
-    repository: "${APP}-volsync"
-    copyMethod: Snapshot
-    volumeSnapshotClassName: ceph-block
-    cacheStorageClassName: openebs-hostpath
-    cacheAccessModes:
-      - ReadWriteOnce
-    cacheCapacity: 4Gi
-    storageClassName: ceph-block
+  kopia:
     accessModes:
-      - ReadWriteOnce
-    capacity: "${CAPACITY}"
+      - ${ACCESSMODES:=ReadWriteOnce}
+    cacheAccessModes:
+      - ${CACHE_ACCESSMODES:=ReadWriteOnce}
+    cacheCapacity: ${CAPACITY:=5Gi}
+    cacheStorageClassName: ${CACHE_SNAPSHOTCLASS:=openebs-hostpath}
+    capacity: ${CAPACITY:=5Gi}
+    cleanupCachePVC: true
+    cleanupTempPVC: true
+    copyMethod: Snapshot
+    enableFileDeletion: true
     moverSecurityContext:
-      runAsUser: 568
-      runAsGroup: 568
-      fsGroup: 568
+      runAsUser: ${PUID:=568}
+      runAsGroup: ${PGID:=568}
+      fsGroup: ${PGID:=568}
+    repository: ${APP}-volsync
+    sourceIdentity:
+      sourceName: ${APP}
+    storageClassName: ${STORAGECLASS:=ceph-block}
+    volumeSnapshotClassName: ${SNAPSHOTCLASS:=csi-ceph-blockpool}
