@@ -60,8 +60,7 @@ nodes:
             - siderolabs/i915 # Intel iGPU
             - siderolabs/intel-ucode # Intel iGPU
             - siderolabs/mei # Intel iGPU
-            # TODO: add this on Talos v1.11.x
-            # - siderolabs/nfsrahead # NFS Performance
+            - siderolabs/nfsrahead # NFS Performance
             - siderolabs/thunderbolt # Thunderbolt NICs
     controlPlane: true
     networkInterfaces:
