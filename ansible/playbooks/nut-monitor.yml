@@ -1,7 +1,0 @@
----
-- name: NUT monitor
-  hosts:
-    - unifi_controller
-  gather_facts: false
-  roles:
-    - nut_monitor

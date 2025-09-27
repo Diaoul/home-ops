@@ -1,7 +1,0 @@
----
-- name: Sun
-  hosts:
-    - sun
-  roles:
-    - os
-    - unifi

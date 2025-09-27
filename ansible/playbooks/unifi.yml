@@ -1,6 +1,0 @@
----
-- name: Unifi
-  hosts:
-    - sun
-  roles:
-    - unifi

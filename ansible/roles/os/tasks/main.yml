@@ -9,12 +9,6 @@
   tags:
     - packages
 
-- name: Coral TPU
-  ansible.builtin.import_tasks: coral-tpu.yml
-  tags:
-    - coral-tpu
-  when: '"pi" not in group_names'
-
 - name: Power Button
   ansible.builtin.import_tasks: power-button.yml
   tags:

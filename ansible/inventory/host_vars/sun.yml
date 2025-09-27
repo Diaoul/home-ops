@@ -1,5 +1,0 @@
----
-ansible_python_interpreter: /usr/bin/python3
-
-unifi_cluster_domain: cluster.milkyway
-unifi_certificate_store: /mnt/singularity/certificates/sun.milkyway.pfx
