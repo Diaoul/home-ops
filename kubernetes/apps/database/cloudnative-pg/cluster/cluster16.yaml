@@ -45,11 +45,11 @@ spec:
         compression: bzip2
         maxParallel: 4
       # NOTE: serverName version needs to be incremented when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres16-005
+      serverName: &currentCluster postgres16-006
   # NOTE: previousCluster needs to be set to the name of the previous cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres16-004
+      source: &previousCluster postgres16-005
   # NOTE: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
     - name: *previousCluster
