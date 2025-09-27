@@ -103,8 +103,8 @@ spec:
         hostnames:
           - zigbee2mqtt.${DOMAIN}
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: network
             sectionName: https
     persistence:
       data:
