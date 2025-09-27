@@ -39,7 +39,7 @@ session:
     - name: milkyway_session
       domain: ${DOMAIN}
       authelia_url: https://auth.${DOMAIN}
-      default_redirection_url: https://${DOMAIN}
+      default_redirection_url: https://auth.${DOMAIN}
   redis:
     host: dragonfly.database.svc.cluster.local
     database_index: 2
@@ -114,9 +114,13 @@ identity_providers:
         client_secret: '{{ secret "/config/secrets/GRAFANA_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
-        scopes: ["openid", "profile", "groups", "email"]
+        require_pkce: true
+        pkce_challenge_method: S256
+        scopes: [openid, profile, groups, email]
         redirect_uris:
           - https://grafana.${DOMAIN}/login/generic_oauth
+        access_token_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
         userinfo_signed_response_alg: none
       - client_name: Jellyfin
         client_id: jellyfin
@@ -125,10 +129,12 @@ identity_providers:
         authorization_policy: two_factor
         require_pkce: true
         pkce_challenge_method: S256
-        scopes: ["openid", "profile", "groups"]
         redirect_uris:
-          - https://jellyfin.${DOMAIN}/sso/OID/r/authelia
           - https://jellyfin.${DOMAIN}/sso/OID/redirect/authelia
+        scopes: [openid, profile, groups]
+        response_types: [code]
+        grant_types: [authorization_code]
+        access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_post
       - client_name: Miniflux
@@ -136,33 +142,45 @@ identity_providers:
         client_secret: '{{ secret "/config/secrets/MINIFLUX_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
-        scopes: ["openid", "profile", "groups", "email"]
+        require_pkce: false
+        pkce_challenge_method: ""
         redirect_uris:
           - https://miniflux.${DOMAIN}/oauth2/oidc/callback
+        scopes: [openid, profile, groups, email]
+        response_types: [code]
+        grant_types: [authorization_code]
+        access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
       - client_name: Mealie
         client_id: mealie
         client_secret: '{{ secret "/config/secrets/MEALIE_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: two_factor
-        scopes: ["openid", "profile", "groups", "email"]
         require_pkce: true
-        pkce_challenge_method: "S256"
+        pkce_challenge_method: S256
         redirect_uris:
           - https://mealie.${DOMAIN}/login
-        response_types:
-          - "code"
-        grant_types:
-          - "authorization_code"
-        access_token_signed_response_alg: "none"
-        userinfo_signed_response_alg: "none"
-        token_endpoint_auth_method: "client_secret_basic"
-      - client_name: Paperless
-        client_id: paperless
-        client_secret: '{{ secret "/config/secrets/PAPERLESS_OAUTH_CLIENT_SECRET" }}'
+        scopes: [openid, email, groups, profile]
+        response_types: [code]
+        grant_types: [authorization_code]
+        access_token_signed_response_alg: none
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
+      - client_name: Audiobookshelf
+        client_id: audiobookshelf
+        client_secret: $pbkdf2-sha512$310000$usd2buJmYrpUbNrh2E6UYg$u6Y.I0D77N9nZ9Kcc7m78vIbh3OyJBohOcRKVQhhJOVpx9QMVbixeTIdW9qpjQYGuE8oSMYDx4oZ07aUSA4cbw
         public: false
         authorization_policy: two_factor
-        scopes: ["openid", "profile", "groups", "email"]
+        require_pkce: true
+        pkce_challenge_method: S256
         redirect_uris:
-          - https://paperless.${DOMAIN}/accounts/oidc/authelia/login/callback/
+          - https://audiobookshelf.${DOMAIN}/auth/openid/callback
+          - https://audiobookshelf.${DOMAIN}/auth/openid/mobile-redirect
+          - audiobookshelf://oauth
+        scopes: [openid, profile, groups, email]
+        response_types: [code]
+        grant_types: [authorization_code]
+        access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
