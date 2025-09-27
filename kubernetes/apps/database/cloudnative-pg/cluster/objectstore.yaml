@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://github.com/datreeio/CRDs-catalog/raw/refs/heads/main/barmancloud.cnpg.io/objectstore_v1.json
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: minio
+spec:
+  configuration:
+    endpointURL: http://singularity.milkyway:9000
+    destinationPath: s3://cloudnative-pg/
+    s3Credentials:
+      accessKeyId:
+        name: cloudnative-pg
+        key: aws-access-key-id
+      secretAccessKey:
+        name: cloudnative-pg
+        key: aws-secret-access-key
+    data:
+      compression: bzip2
+    wal:
+      compression: bzip2
+      maxParallel: 4
+  retentionPolicy: 30d
