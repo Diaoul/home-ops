@@ -24,8 +24,6 @@ spec:
       namespace: database
     - name: dragonfly-cluster
       namespace: database
-    - name: gateway-api-crds
-      namespace: kube-system
     - name: glauth
       namespace: security
   prune: true
