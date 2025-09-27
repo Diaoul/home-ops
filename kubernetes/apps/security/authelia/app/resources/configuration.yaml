@@ -1,4 +1,13 @@
 ---
+server:
+  disable_healthcheck: true
+
+telemetry:
+  metrics:
+    enabled: true
+
+theme: dark
+
 authentication_backend:
   ldap:
     address: ldap://glauth.security.svc.cluster.local:389
