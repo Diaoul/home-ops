@@ -8,4 +8,3 @@ components:
 resources:
   - ./authelia/ks.yaml
   - ./lldap/ks.yaml
-  - ./glauth/ks.yaml

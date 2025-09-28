@@ -24,7 +24,7 @@ spec:
       namespace: database
     - name: dragonfly-cluster
       namespace: database
-    - name: glauth
+    - name: lldap
       namespace: security
   prune: true
   wait: false
