@@ -10,25 +10,11 @@ theme: dark
 
 authentication_backend:
   ldap:
-    address: ldap://glauth.security.svc.cluster.local:389
-    implementation: custom
-    timeout: 5s
-    start_tls: false
+    implementation: lldap
+    address: ldap://lldap.security.svc.cluster.local:3890
     base_dn: dc=home,dc=arpa
-    additional_users_dn: ou=family,ou=users
-    users_filter: (&({username_attribute}={input})(objectClass=posixAccount))
-    additional_groups_dn: ou=users
-    groups_filter: (&(uniqueMember={dn})(objectClass=posixGroup))
-    user: cn=search,ou=svcaccts,ou=users,dc=home,dc=arpa
-    attributes:
-      username: uid
-      display_name: givenName
-      group_name: ou
-      mail: mail
-      member_of: memberOf
-  password_reset:
-    disable: true
-  refresh_interval: 1m
+    user: uid=authelia,ou=people,dc=home,DC=arpa
+    password: insecure_secret
 
 session:
   same_site: lax
