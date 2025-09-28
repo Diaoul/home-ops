@@ -59,6 +59,7 @@ spec:
       app:
         ports:
           http:
+            primary: true
             port: 8080
           health:
             port: *healthPort

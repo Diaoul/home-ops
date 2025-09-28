@@ -74,6 +74,7 @@ spec:
       app:
         ports:
           http:
+            primary: true
             port: *port
           metrics:
             port: 9959

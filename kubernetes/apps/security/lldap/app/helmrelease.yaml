@@ -55,7 +55,8 @@ spec:
       app:
         ports:
           http:
-            port: &port 17170
+            primary: true
+            port: 17170
           ldap:
             port: 3890
     route:
@@ -66,10 +67,6 @@ spec:
           - name: envoy-internal
             namespace: network
             sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       data:
         type: emptyDir

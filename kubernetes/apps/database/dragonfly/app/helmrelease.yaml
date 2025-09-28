@@ -70,6 +70,7 @@ spec:
       app:
         ports:
           http:
+            primary: true
             port: *port
           metrics:
             port: 8080

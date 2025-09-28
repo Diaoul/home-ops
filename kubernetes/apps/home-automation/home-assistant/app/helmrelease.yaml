@@ -66,9 +66,10 @@ spec:
       app:
         ports:
           http:
-            port: 8123
+            primary: true
+            port: &port 8123
           code-server:
-            port: 12321
+            port: &codePort 12321
     route:
       app:
         hostnames:
@@ -80,7 +81,7 @@ spec:
         rules:
           - backendRefs:
               - name: home-assistant
-                port: 8123
+                port: *port
       code-server:
         hostnames:
           - hass-code.${DOMAIN}
@@ -91,7 +92,7 @@ spec:
         rules:
           - backendRefs:
               - name: home-assistant
-                port: 12321
+                port: *codePort
     persistence:
       config:
         existingClaim: home-assistant
