@@ -40,3 +40,4 @@ spec:
     substitute:
       APP: *app
       CAPACITY: 100Mi
+      GATUS_SUBDOMAIN: qb
