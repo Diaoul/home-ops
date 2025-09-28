@@ -26,5 +26,5 @@
 - name: Update /etc/hosts
   ansible.builtin.lineinfile:
     dest: /etc/hosts
-    regexp: '^127\.0\.1\.1'
+    regexp: "^127\\.0\\.1\\.1"
     line: "127.0.1.1 {{ inventory_hostname }}"

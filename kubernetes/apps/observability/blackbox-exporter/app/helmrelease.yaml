@@ -59,4 +59,3 @@ spec:
           annotations:
             summary: |-
               The host {{ $labels.target }} is currently unreachable
-

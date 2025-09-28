@@ -8,8 +8,8 @@
   become: true
   ansible.builtin.replace:
     path: /etc/default/grub
-    regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT="(?:(?![ ]?{{ item.option | regex_escape }}=).)*)(?:[ ]?{{ item.option | regex_escape }}=\S+)?(.*")$'
-    replace: '\1 {{ item.option }}={{ item.value }}\2'
+    regexp: "^(GRUB_CMDLINE_LINUX_DEFAULT=\"(?:(?![ ]?{{ item.option | regex_escape }}=).)*)(?:[ ]?{{ item.option | regex_escape }}=\\S+)?(.*\")$"
+    replace: "\\1 {{ item.option }}={{ item.value }}\\2"
   loop:
     - option: apparmor
       value: 0
@@ -25,7 +25,7 @@
     path: /boot/firmware/cmdline.txt
     backrefs: true
     regexp: "^(.*splash)$"
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+    line: "\\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
   when:
     - ansible_architecture | regex_search('arm|aarch')
     - ansible_distribution == "Ubuntu"
@@ -36,7 +36,7 @@
     path: /boot/cmdline.txt
     backrefs: true
     regexp: "^(.*rootwait)$"
-    line: '\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory'
+    line: "\\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
   when:
     - ansible_architecture | regex_search('arm|aarch')
     - ansible_distribution == "Debian"

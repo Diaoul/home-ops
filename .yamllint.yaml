@@ -3,6 +3,8 @@ extends: default
 
 ignore: |
   *.sops.*
+  /talos/clusterconfig/
+  /talos/patches/
 
 rules:
   braces:
@@ -17,7 +19,10 @@ rules:
     spaces: 2
   line-length: disable
   quoted-strings:
-    quote-type: double
     required: false
+    allow-quoted-quotes: true
   truthy:
-    level: error
+    allowed-values:
+      - "true"
+      - "false"
+      - "on"

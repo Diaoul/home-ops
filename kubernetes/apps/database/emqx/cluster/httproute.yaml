@@ -15,4 +15,3 @@ spec:
     - backendRefs:
         - name: emqx-dashboard
           port: 18083
-

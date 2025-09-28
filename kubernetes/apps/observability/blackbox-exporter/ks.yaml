@@ -22,4 +22,3 @@ spec:
   timeout: 5m
   dependsOn:
     - name: kube-prometheus-stack
-
