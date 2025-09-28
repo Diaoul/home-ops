@@ -41,3 +41,5 @@ spec:
       APP: *app
       CAPACITY: 100Mi
       GATUS_SUBDOMAIN: qb
+      GATUS_PATH: /api/v2/app/version
+      GATUS_STATUS: "403"
