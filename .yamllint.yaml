@@ -2,24 +2,22 @@
 extends: default
 
 ignore: |
-  .github/
-  .direnv/
-  ansible/roles/xanmanning.k3s/
-  gotk-components.yaml
-  user-data*.yaml
-  *.sops.yml
+  *.sops.*
 
 rules:
-  indentation:
-    spaces: 2
-  comments:
-    min-spaces-from-content: 1
-  line-length: disable
-  brackets:
-    min-spaces-inside: 0
-    max-spaces-inside: 1
   braces:
     min-spaces-inside: 0
     max-spaces-inside: 1
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 1
+  comments:
+    min-spaces-from-content: 1
+  indentation:
+    spaces: 2
+  line-length: disable
+  quoted-strings:
+    quote-type: double
+    required: false
   truthy:
     level: error
