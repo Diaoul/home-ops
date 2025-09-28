@@ -1,29 +1,29 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Kubeconform
+name: Kustomization
 
 on:
   pull_request:
-    branches: ["main"]
-    paths: ["kubernetes/**"]
+    branches:
+      - main
+    paths:
+      - kubernetes/**
   push:
-    branches: ["main"]
-    paths: ["kubernetes/**"]
+    branches:
+      - main
+    paths:
+      - kubernetes/**
 
 jobs:
   kubeconform:
-    name: Kubeconform
+    name: kubeconform
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-
-      - name: Setup Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-
-      - name: Setup Workflow Tools
-        run: brew install fluxcd/tap/flux kubeconform kustomize
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
       - name: Run kubeconform
-        shell: bash
-        run: bash ./scripts/kubeconform.sh
+        uses: docker://ghcr.io/yannh/kubeconform:v0.7.0
+        with:
+          entrypoint: "/bin/bash"
+          args: "scripts/kubeconform.sh kubernetes"
