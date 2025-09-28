@@ -11,7 +11,7 @@ ui:
   title: Status | Gatus
   header: Status
   logo: https://avatars.githubusercontent.com/u/319220
-  link: https://github.com/Diaoul
+  link: https://status.${DOMAIN}
   buttons:
     - name: Github
       link: https://github.com/Diaoul
