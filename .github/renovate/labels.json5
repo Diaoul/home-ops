@@ -27,19 +27,19 @@
     // update types specific settings
     {
       matchUpdateTypes: ["major"],
-      addLabels: ["dependency/major"],
+      addLabels: ["type/major"],
     },
     {
       matchUpdateTypes: ["minor"],
-      addLabels: ["dependency/minor"],
+      addLabels: ["type/minor"],
     },
     {
       matchUpdateTypes: ["patch"],
-      addLabels: ["dependency/patch"],
+      addLabels: ["type/patch"],
     },
     {
       matchUpdateTypes: ["digest"],
-      addLabels: ["dependency/digest"],
+      addLabels: ["type/digest"],
     },
   ],
 }

@@ -19,22 +19,22 @@ log lvl msg *args:
 template file *args:
     minijinja-cli "{{ file }}" {{ args }} | op inject
 
-merge dependency="":
+merge type="":
     #!/usr/bin/env bash
     set -euo pipefail
 
-    if [[ -n "{{ dependency }}" ]]; then
-        if [[ ! "{{ dependency }}" =~ ^(digest|patch|minor|major)$ ]]; then
-            echo "Error: dependency must be one of: digest, patch, minor, major"
+    if [[ -n "{{ type }}" ]]; then
+        if [[ ! "{{ type }}" =~ ^(digest|patch|minor|major)$ ]]; then
+            echo "Error: type must be one of: digest, patch, minor, major"
             exit 1
         fi
-        dependency_types=("{{ dependency }}")
+        types=("{{ type }}")
     else
-        dependency_types=("digest" "patch" "minor" "major")
+        types=("digest" "patch" "minor" "major")
     fi
 
-    for dependency_type in "${dependency_types[@]}"; do
-        label="dependency/${dependency_type}"
+    for type in "${types[@]}"; do
+        label="type/${type}"
 
         prs=$(gh pr list \
             --label "${label}" \
