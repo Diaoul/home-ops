@@ -27,8 +27,6 @@ jobs:
         shell: bash
         run: |
           go install github.com/yannh/kubeconform/cmd/kubeconform@v0.7.0
-          echo $GOBIN
-          echo $GOPATH
           echo "$HOME/go/bin" >> $GITHUB_PATH
 
       - name: Run kubeconform
