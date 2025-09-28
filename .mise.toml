@@ -3,27 +3,23 @@ _.python.venv = { path = "{{config_root}}/.venv", create = true }
 KUBECONFIG = "{{config_root}}/kubeconfig"
 SOPS_AGE_KEY_FILE = "{{config_root}}/age.key"
 TALOSCONFIG = "{{config_root}}/talos/clusterconfig/talosconfig"
-TASK_X_ENV_PRECEDENCE = 1
-TASK_X_MAP_VARIABLES = 0
-
-[tasks.deps]
-description = "Install dependencies"
-run = "uv pip install -r requirements.txt"
 
 [tools]
 python = "3.13"
 uv = "latest"
-"aqua:budimanjojo/talhelper" = "latest"
-"aqua:cloudflare/cloudflared" = "latest"
 "aqua:FiloSottile/age" = "latest"
-"aqua:fluxcd/flux2" = "latest"
+"aqua:budimanjojo/talhelper" = "3.0.36"
+"aqua:charmbracelet/gum" = "latest"
+"aqua:cilium/cilium-cli" = "0.18.7"
+"aqua:cloudflare/cloudflared" = "2025.9.1"
+"aqua:fluxcd/flux2" = "2.6.4"
 "aqua:getsops/sops" = "latest"
 "aqua:helm/helm" = "latest"
 "aqua:helmfile/helmfile" = "latest"
 "aqua:jqlang/jq" = "latest"
 "aqua:kubernetes-sigs/kustomize" = "latest"
-"aqua:kubernetes/kubectl" = "latest"
+"aqua:kubernetes/kubectl" = "1.34.1"
 "aqua:mikefarah/yq" = "latest"
-"aqua:siderolabs/talos" = "latest"
-"aqua:yannh/kubeconform" = "latest"
-"aqua:charmbracelet/gum" = "latest"
+"aqua:siderolabs/talos" = "1.11.2"
+"aqua:yannh/kubeconform" = "0.7.0"
+"pipx:makejinja" = "latest"
