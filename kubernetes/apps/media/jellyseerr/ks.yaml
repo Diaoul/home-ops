@@ -11,7 +11,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/gatus/guarded
+    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -39,3 +39,4 @@ spec:
     substitute:
       APP: *app
       CAPACITY: 2Gi
+      GATUS_PATH: /api/v1/status
