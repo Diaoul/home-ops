@@ -16,6 +16,9 @@
         // url matcher
         // see https://regex101.com/r/qBmdwk/2
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)",
+        // go matcher
+        // see https://regex101.com/r/Ml1jTK/1
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+\\S+@(?<currentValue>\\S+)",
       ],
       datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
     },
