@@ -8,4 +8,5 @@ spec:
   endpoints:
     - dnsName: external.${DOMAIN}
       recordType: CNAME
-      targets: [e96fa582-45c2-455c-9dec-71fc6e745ce9.cfargotunnel.com]
+      targets:
+        - ${CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com
