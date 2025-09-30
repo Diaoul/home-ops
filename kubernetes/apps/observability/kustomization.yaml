@@ -7,10 +7,11 @@ components:
   - ../../components/common
 resources:
   - ./blackbox-exporter/ks.yaml
+  - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
-  - ./kube-prometheus-stack/ks.yaml
   - ./kromgo/ks.yaml
+  - ./kube-prometheus-stack/ks.yaml
   - ./loki/ks.yaml
   - ./network-ups-tools/ks.yaml
   - ./nut-exporter/ks.yaml
