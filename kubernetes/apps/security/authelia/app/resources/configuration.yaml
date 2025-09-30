@@ -102,12 +102,12 @@ identity_providers:
         authorization_policy: two_factor
         require_pkce: true
         pkce_challenge_method: S256
-        scopes: [openid, profile, groups, email]
         redirect_uris:
           - https://grafana.${DOMAIN}/login/generic_oauth
+        scopes: [openid, profile, groups, email]
         access_token_signed_response_alg: none
-        token_endpoint_auth_method: client_secret_basic
         userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
       - client_name: Jellyfin
         client_id: jellyfin
         client_secret: '{{ secret "/config/secrets/JELLYFIN_OAUTH_CLIENT_SECRET" }}'

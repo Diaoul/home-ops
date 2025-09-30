@@ -26,10 +26,6 @@ spec:
     deploymentStrategy:
       type: Recreate
     env:
-      GF_AUTH_GENERIC_OAUTH_TOKEN_URL: http://authelia.security.svc.cluster.local/api/oidc/token
-      GF_AUTH_GENERIC_OAUTH_API_URL: http://authelia.security.svc.cluster.local/api/oidc/userinfo
-      GF_AUTH_GENERIC_OAUTH_AUTH_URL: https://auth.${DOMAIN}/api/oidc/authorization
-      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
@@ -53,15 +49,20 @@ spec:
         enabled: true
         name: Authelia
         icon: signin
+        client_id: grafana
         scopes: openid profile email groups
         empty_scopes: false
+        auth_url: https://auth.${DOMAIN}/api/oidc/authorization
+        token_url: https://auth.${DOMAIN}/api/oidc/token
+        api_url: https://auth.${DOMAIN}/api/oidc/userinfo
         login_attribute_path: preferred_username
         groups_attribute_path: groups
         name_attribute_path: name
         use_pkce: true
       auth.generic_oauth.group_mapping:
         org_id: 1
-        role_attribute_path: contains(groups[*], 'admins') && 'Admin' || 'Viewer'
+        role_attribute_path: |
+          contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'people') && 'Viewer'
       auth.basic:
         enabled: true
       auth.anonymous:
@@ -282,7 +283,6 @@ spec:
         flux-logs:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/logs.json
           datasource: Prometheus
-
     sidecar:
       image:
         registry: ghcr.io
