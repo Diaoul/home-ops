@@ -40,7 +40,7 @@ merge type="":
             --label "${label}" \
             --state open \
             --json number,labels \
-            --jq '.[] | select(.labels | map(.name) | contains(["status/hold"]) | not) | .number')
+            --jq '.[] | select(.labels | map(.name) | contains(["hold"]) | not) | .number')
 
         if [[ -z "${prs}" ]]; then
             continue
