@@ -5,6 +5,8 @@ kind: Kustomization
 namespace: media
 components:
   - ../../components/namespace
+replacements:
+  - path: ../../components/replacements/ks.yaml
 resources:
   - ./audiobookshelf/ks.yaml
   - ./autobrr/ks.yaml

@@ -3,13 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app audiobookshelf
-  namespace: &namespace media
+  name: audiobookshelf
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/external
     - ../../../../components/persistence
@@ -37,6 +32,6 @@ spec:
       - name: cluster-secrets
         kind: Secret
     substitute:
-      APP: *app
+      APP: audiobookshelf
       CAPACITY: 500Mi
       GATUS_PATH: /ping

@@ -3,13 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nut-exporter
-  namespace: &namespace observability
+  name: nut-exporter
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/observability/nut-exporter/app
   sourceRef:
     kind: GitRepository

@@ -3,13 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app qbittorrent
-  namespace: &namespace downloads
+  name: qbittorrent
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/ext-auth
     - ../../../../components/gatus/external
@@ -38,7 +33,7 @@ spec:
       - name: cluster-secrets
         kind: Secret
     substitute:
-      APP: *app
+      APP: qbittorrent
       CAPACITY: 100Mi
       GATUS_SUBDOMAIN: qb
       GATUS_PATH: /api/v2/app/version

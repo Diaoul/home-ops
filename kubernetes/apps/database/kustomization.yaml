@@ -5,6 +5,8 @@ kind: Kustomization
 namespace: database
 components:
   - ../../components/namespace
+replacements:
+  - path: ../../components/replacements/ks.yaml
 resources:
   - ./cloudnative-pg/ks.yaml
   - ./dragonfly/ks.yaml

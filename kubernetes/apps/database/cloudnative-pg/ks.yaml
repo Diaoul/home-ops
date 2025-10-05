@@ -3,13 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cloudnative-pg
-  namespace: &namespace database
+  name: cloudnative-pg
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   decryption:
     provider: sops
     secretRef:
@@ -33,13 +28,8 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cloudnative-pg-barman-cloud
-  namespace: &namespace database
+  name: cloudnative-pg-barman-cloud
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   decryption:
     provider: sops
     secretRef:
@@ -69,13 +59,8 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cloudnative-pg-cluster
-  namespace: &namespace database
+  name: cloudnative-pg-cluster
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   decryption:
     provider: sops
     secretRef:

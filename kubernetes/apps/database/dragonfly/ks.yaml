@@ -3,13 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app dragonfly
-  namespace: &namespace database
+  name: dragonfly
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/database/dragonfly/app
   sourceRef:
     kind: GitRepository
@@ -25,13 +20,8 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app dragonfly-cluster
-  namespace: &namespace database
+  name: dragonfly-cluster
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/database/dragonfly/cluster
   sourceRef:
     kind: GitRepository

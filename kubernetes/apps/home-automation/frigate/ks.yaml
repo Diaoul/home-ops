@@ -3,13 +3,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app frigate
-  namespace: &namespace home-automation
+  name: frigate
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
     - ../../../../components/persistence
@@ -41,5 +36,5 @@ spec:
       - name: cluster-secrets
         kind: Secret
     substitute:
-      APP: *app
+      APP: frigate
       CAPACITY: 5Gi

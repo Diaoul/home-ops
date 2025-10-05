@@ -5,6 +5,8 @@ kind: Kustomization
 namespace: default
 components:
   - ../../components/namespace
+replacements:
+  - path: ../../components/replacements/ks.yaml
 resources:
   - ./mealie/ks.yaml
   - ./miniflux/ks.yaml
