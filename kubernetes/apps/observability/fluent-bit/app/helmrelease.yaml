@@ -69,6 +69,15 @@ spec:
           rename k_labels_app.kubernetes.io/name app
           rename k_labels_app app
           rename k_labels_k8s-app app
+          rename k_namespace_name namespace
+          rename k_host host
+          rename k_pod_name pod
+          rename k_pod_ip pod_ip
+          rename k_container_name container
+          rename k_container_hash container_hash
+          remove k_pod_id
+          remove k_docker_id
+          remove k_container_image
 
       outputs: |-
         [OUTPUT]
@@ -78,8 +87,8 @@ spec:
           port 3100
           uri /loki/api/v1/push
           line_format json
-          labels job=fluent-bit, namespace=$k_namespace_name, app=$app
-          structured_metadata container=$k_container_name, pod=$k_pod_name, host=$k_host
+          labels job=fluent-bit, namespace=$namespace, app=$app
+          structured_metadata host=$host, pod=$pod, pod_ip=$pod_ip, container=$container, container_hash=$container_hash
           compress gzip
     dashboards:
       enabled: true
