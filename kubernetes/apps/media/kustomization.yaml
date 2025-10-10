@@ -10,6 +10,7 @@ replacements:
 resources:
   - ./audiobookshelf/ks.yaml
   - ./autobrr/ks.yaml
+  - ./cross-seed/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
