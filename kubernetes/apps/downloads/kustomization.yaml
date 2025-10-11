@@ -8,6 +8,7 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
+  - ./cross-seed/ks.yaml
   - ./qbittorrent/ks.yaml
   - ./qui/ks.yaml
   - ./sabnzbd/ks.yaml

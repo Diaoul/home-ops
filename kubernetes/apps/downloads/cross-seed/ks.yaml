@@ -13,7 +13,7 @@ spec:
     - name: volsync
       namespace: volsync-system
   interval: 1h
-  path: ./kubernetes/apps/media/cross-seed/app
+  path: ./kubernetes/apps/downloads/cross-seed/app
   decryption:
     provider: sops
     secretRef:
