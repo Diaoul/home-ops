@@ -44,6 +44,11 @@ spec:
               AUTOBRR__METRICS_ENABLED: true
               AUTOBRR__CHECK_FOR_UPDATES: false
               AUTOBRR__LOG_LEVEL: INFO
+              AUTOBRR__OIDC_ENABLED: true
+              AUTOBRR__OIDC_ISSUER: https://auth.${DOMAIN}
+              AUTOBRR__OIDC_CLIENT_ID: autobrr
+              AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.${DOMAIN}/api/auth/oidc/callback
+              AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: true
             envFrom:
               - secretRef:
                   name: autobrr
