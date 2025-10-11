@@ -9,4 +9,5 @@ replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
   - ./qbittorrent/ks.yaml
+  - ./qui/ks.yaml
   - ./sabnzbd/ks.yaml
