@@ -13,3 +13,4 @@ resources:
   - ./qbittorrent/ks.yaml
   - ./qui/ks.yaml
   - ./sabnzbd/ks.yaml
+  - ./tqm/ks.yaml
