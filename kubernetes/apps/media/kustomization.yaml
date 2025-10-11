@@ -9,7 +9,6 @@ replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
   - ./audiobookshelf/ks.yaml
-  - ./autobrr/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml

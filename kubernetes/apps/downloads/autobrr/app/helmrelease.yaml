@@ -41,11 +41,7 @@ spec:
               repository: ghcr.io/autobrr/autobrr
               tag: v1.68.0@sha256:0d61a307f3569853fe876dd8a4baf3a3065ff4cde342d13e33aa108db6129f3f
             env:
-              AUTOBRR__HOST: 0.0.0.0
-              AUTOBRR__PORT: &port 7474
               AUTOBRR__METRICS_ENABLED: true
-              AUTOBRR__METRICS_HOST: 0.0.0.0
-              AUTOBRR__METRICS_PORT: &metricsPort 9094
               AUTOBRR__CHECK_FOR_UPDATES: false
               AUTOBRR__LOG_LEVEL: INFO
             envFrom:
@@ -58,7 +54,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/healthz/liveness
-                    port: *port
+                    port: &port 7474
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -80,7 +76,7 @@ spec:
             primary: true
             port: *port
           metrics:
-            port: *metricsPort
+            port: 9094
     serviceMonitor:
       app:
         endpoints:
@@ -95,7 +91,7 @@ spec:
             sectionName: https
     persistence:
       config:
-        existingClaim: "{{ .Release.Name }}"
+        existingClaim: autobrr
       tmpfs:
         type: emptyDir
         advancedMounts:

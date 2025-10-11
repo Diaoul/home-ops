@@ -12,7 +12,7 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
-  path: ./kubernetes/apps/media/autobrr/app
+  path: ./kubernetes/apps/downloads/autobrr/app
   sourceRef:
     kind: GitRepository
     name: flux-system
