@@ -6,8 +6,7 @@ metadata:
   name: qbittorrent
 spec:
   components:
-    - ../../../../components/ext-auth
-    - ../../../../components/gatus/external
+    - ../../../../components/gatus/guarded
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -36,5 +35,3 @@ spec:
       APP: qbittorrent
       CAPACITY: 100Mi
       GATUS_SUBDOMAIN: qb
-      GATUS_PATH: /api/v2/app/version
-      GATUS_STATUS: "403"
