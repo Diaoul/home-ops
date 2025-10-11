@@ -2,7 +2,7 @@
 # prettier-ignore
 clients:
   qb:
-    download_path: /media/downloads/torrents
+    download_path: /downloads
     enabled: true
     filter: default
     create_tags_upfront: false
