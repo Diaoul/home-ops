@@ -78,7 +78,7 @@ spec:
         globalMounts:
           - path: /.config/tqm/config.yaml
             subPath: config.yaml
-      downloads:
+      media:
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
