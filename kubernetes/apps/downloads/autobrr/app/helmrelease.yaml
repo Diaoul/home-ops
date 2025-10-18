@@ -43,7 +43,6 @@ spec:
             env:
               AUTOBRR__METRICS_ENABLED: true
               AUTOBRR__METRICS_HOST: 0.0.0.0
-              AUTOBRR__METRICS_PORT: 9094
               AUTOBRR__CHECK_FOR_UPDATES: false
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_ENABLED: true
@@ -83,7 +82,7 @@ spec:
             primary: true
             port: *port
           metrics:
-            port: 9094
+            port: 9074
     serviceMonitor:
       app:
         endpoints:
