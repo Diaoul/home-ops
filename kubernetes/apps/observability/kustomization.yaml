@@ -17,4 +17,5 @@ resources:
   - ./network-ups-tools/ks.yaml
   - ./nut-exporter/ks.yaml
   - ./unpoller/ks.yaml
+  - ./smartctl-exporter/ks.yaml
   - ./victoria-logs/ks.yaml
