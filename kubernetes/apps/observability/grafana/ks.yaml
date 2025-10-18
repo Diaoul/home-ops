@@ -5,17 +5,13 @@ kind: Kustomization
 metadata:
   name: grafana
 spec:
+  interval: 1h
+  path: ./kubernetes/apps/observability/grafana/app
+  prune: true
   decryption:
     provider: sops
     secretRef:
       name: sops-age
-  components:
-    - ../../../../components/gatus/guarded
-  interval: 1h
-  path: ./kubernetes/apps/observability/grafana/app
-  dependsOn:
-    - name: authelia
-      namespace: security
   postBuild:
     substituteFrom:
       - name: cluster-secrets
@@ -23,11 +19,70 @@ spec:
     substitute:
       APP: grafana
       GATUS_PATH: /login
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  timeout: 5m
+  targetNamespace: observability
+  wait: true
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-instance
+spec:
+  dependsOn:
+    - name: grafana
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: authelia
+      namespace: security
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  components:
+    - ../../../../components/gatus/guarded
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+    substitute:
+      APP: grafana
+      GATUS_PATH: /login
+  interval: 1h
+  path: ./kubernetes/apps/observability/grafana/instance
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
+  wait: false
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-dashboard
+spec:
+  dependsOn:
+    - name: grafana
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  interval: 1h
+  path: ./kubernetes/apps/observability/grafana/dashboard
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: observability
   wait: false
