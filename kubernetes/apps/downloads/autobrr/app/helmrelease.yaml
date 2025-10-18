@@ -42,6 +42,8 @@ spec:
               tag: v1.68.0@sha256:0d61a307f3569853fe876dd8a4baf3a3065ff4cde342d13e33aa108db6129f3f
             env:
               AUTOBRR__METRICS_ENABLED: true
+              AUTOBRR__METRICS_HOST: 0.0.0.0
+              AUTOBRR__METRICS_PORT: 9094
               AUTOBRR__CHECK_FOR_UPDATES: false
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_ENABLED: true
