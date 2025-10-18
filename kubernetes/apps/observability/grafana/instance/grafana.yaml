@@ -84,7 +84,7 @@ spec:
           volumes:
             - name: grafana-data
               persistentVolumeClaim:
-                claimName: grafana
+                claimName: grafana-pvc
   persistentVolumeClaim:
     spec:
       accessModes:

@@ -5,6 +5,7 @@
     "docker:enableMajor",
     "helpers:pinGitHubActionDigests",
     "github>Diaoul/home-ops//.github/renovate/autoMerge.json5",
+    "github>Diaoul/home-ops//.github/renovate/changelogs.json5",
     "github>Diaoul/home-ops//.github/renovate/customManagers.json5",
     "github>Diaoul/home-ops//.github/renovate/grafanaDashboards.json5",
     "github>Diaoul/home-ops//.github/renovate/groups.json5",
