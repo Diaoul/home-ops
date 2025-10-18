@@ -8,4 +8,4 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
-  - ./system-upgrade-controller/ks.yaml
+  - ./tuppr/ks.yaml
