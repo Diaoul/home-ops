@@ -11,7 +11,7 @@ resources:
   - ./cloudflare-dns/ks.yaml
   - ./cloudflare-tunnel/ks.yaml
   - ./e1000e-fix/ks.yaml
-  - ./echo-server/ks.yaml
+  - ./echo/ks.yaml
   - ./envoy-gateway/ks.yaml
   - ./k8s-gateway/ks.yaml
   - ./singularity/ks.yaml
