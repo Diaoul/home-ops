@@ -6,6 +6,7 @@ metadata:
   name: readarr-audio
 spec:
   components:
+    - ../../../../components/nfs-scaler
     - ../../../../components/ext-auth
     - ../../../../components/gatus/external
     - ../../../../components/persistence

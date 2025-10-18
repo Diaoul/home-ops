@@ -13,6 +13,7 @@ spec:
     - name: volsync
       namespace: volsync-system
   components:
+    - ../../../../components/nfs-scaler
     - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:

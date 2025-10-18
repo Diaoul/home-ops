@@ -6,6 +6,7 @@ metadata:
   name: audiobookshelf
 spec:
   components:
+    - ../../../../components/nfs-scaler
     - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:

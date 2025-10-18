@@ -6,6 +6,7 @@ metadata:
   name: cross-seed
 spec:
   components:
+    - ../../../../components/nfs-scaler
     - ../../../../components/persistence
   dependsOn:
     - name: rook-ceph-cluster

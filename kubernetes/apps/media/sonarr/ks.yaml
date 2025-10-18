@@ -6,6 +6,7 @@ metadata:
   name: sonarr
 spec:
   components:
+    - ../../../../components/nfs-scaler
     - ../../../../components/ext-auth
     - ../../../../components/gatus/external
     - ../../../../components/persistence
