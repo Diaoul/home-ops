@@ -5,8 +5,6 @@ kind: Kustomization
 metadata:
   name: kube-prometheus-stack
 spec:
-  components:
-    - ../../../../components/gatus/guarded
   decryption:
     provider: sops
     secretRef:
@@ -19,7 +17,6 @@ spec:
   postBuild:
     substitute:
       APP: kube-prometheus-stack
-      GATUS_SUBDOMAIN: prometheus
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

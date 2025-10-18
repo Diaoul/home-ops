@@ -5,8 +5,6 @@ kind: Kustomization
 metadata:
   name: go2rtc
 spec:
-  components:
-    - ../../../../components/gatus/guarded
   decryption:
     provider: sops
     secretRef:

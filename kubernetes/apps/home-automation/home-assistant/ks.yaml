@@ -6,7 +6,6 @@ metadata:
   name: home-assistant
 spec:
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -36,4 +35,3 @@ spec:
     substitute:
       APP: home-assistant
       CAPACITY: 2Gi
-      GATUS_SUBDOMAIN: hass

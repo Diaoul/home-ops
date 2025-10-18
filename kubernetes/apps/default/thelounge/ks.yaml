@@ -6,7 +6,6 @@ metadata:
   name: thelounge
 spec:
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/persistence
   dependsOn:
     - name: rook-ceph-cluster

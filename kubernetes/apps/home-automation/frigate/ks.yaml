@@ -7,7 +7,6 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    - ../../../../components/gatus/guarded
     - ../../../../components/persistence
   decryption:
     provider: sops

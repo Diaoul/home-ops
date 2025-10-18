@@ -49,5 +49,7 @@ spec:
     metadata:
       annotations:
         lbipam.cilium.io/ips: 10.44.0.16
+        gatus.home-operations.com/endpoint: |-
+          group: services
     spec:
       type: LoadBalancer

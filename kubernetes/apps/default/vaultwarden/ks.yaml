@@ -6,7 +6,6 @@ metadata:
   name: vaultwarden
 spec:
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   dependsOn:
     - name: rook-ceph-cluster

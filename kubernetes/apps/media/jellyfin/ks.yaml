@@ -14,7 +14,6 @@ spec:
       namespace: volsync-system
   components:
     - ../../../../components/nfs-scaler
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -37,4 +36,3 @@ spec:
     substitute:
       APP: jellyfin
       CAPACITY: 5Gi
-      GATUS_PATH: /System/Ping

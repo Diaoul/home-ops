@@ -5,8 +5,6 @@ kind: Kustomization
 metadata:
   name: kromgo
 spec:
-  components:
-    - ../../../../components/gatus/external
   decryption:
     provider: sops
     secretRef:
@@ -27,4 +25,3 @@ spec:
         kind: Secret
     substitute:
       APP: kromgo
-      GATUS_PATH: /talos_version

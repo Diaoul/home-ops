@@ -6,7 +6,6 @@ metadata:
   name: autobrr
 spec:
   components:
-    - ../../../../components/gatus/guarded
     - ../../../../components/persistence
   decryption:
     provider: sops

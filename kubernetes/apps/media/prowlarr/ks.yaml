@@ -7,7 +7,6 @@ metadata:
 spec:
   components:
     - ../../../../components/ext-auth
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -35,4 +34,3 @@ spec:
     substitute:
       APP: prowlarr
       CAPACITY: 1Gi
-      GATUS_PATH: /ping

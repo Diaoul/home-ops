@@ -8,7 +8,6 @@ spec:
   components:
     - ../../../../components/nfs-scaler
     - ../../../../components/ext-auth
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -36,4 +35,3 @@ spec:
     substitute:
       APP: readarr
       CAPACITY: 1Gi
-      GATUS_PATH: /ping

@@ -5,8 +5,6 @@ kind: Kustomization
 metadata:
   name: miniflux
 spec:
-  components:
-    - ../../../../components/gatus/external
   decryption:
     provider: sops
     secretRef:
@@ -30,4 +28,3 @@ spec:
         kind: Secret
     substitute:
       APP: miniflux
-      GATUS_PATH: /healthcheck

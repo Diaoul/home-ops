@@ -30,8 +30,6 @@ kind: Kustomization
 metadata:
   name: rook-ceph-cluster
 spec:
-  components:
-    - ../../../../components/gatus/guarded
   dependsOn:
     - name: rook-ceph
       namespace: rook-ceph
@@ -60,7 +58,6 @@ spec:
   postBuild:
     substitute:
       APP: rook-ceph-cluster
-      GATUS_SUBDOMAIN: rook
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

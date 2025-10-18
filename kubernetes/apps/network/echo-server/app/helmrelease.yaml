@@ -74,6 +74,9 @@ spec:
             scrapeTimeout: 10s
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
         hostnames:
           - echo.${DOMAIN}
         parentRefs:

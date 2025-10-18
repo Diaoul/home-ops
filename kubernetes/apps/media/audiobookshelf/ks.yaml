@@ -7,7 +7,6 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -35,4 +34,3 @@ spec:
     substitute:
       APP: audiobookshelf
       CAPACITY: 500Mi
-      GATUS_PATH: /ping

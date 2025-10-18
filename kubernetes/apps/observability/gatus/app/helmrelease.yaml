@@ -1,59 +1,37 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: gatus
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
     controllers:
       gatus:
+        type: statefulset
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
-            fsGroup: 65534
-            fsGroupChangePolicy: OnRootMismatch
+          hostUsers: false
         initContainers:
-          init-db:
+          gatus-sidecar:
             image:
-              repository: ghcr.io/home-operations/postgres-init
-              tag: 17.6@sha256:86a1992d46273c58fd4ad95b626081dfaabfe16bd56944675169e406d1a660dd
-            envFrom:
-              - secretRef:
-                  name: gatus
-          init-config:
-            dependsOn: init-db
-            image:
-              repository: ghcr.io/home-operations/k8s-sidecar
-              tag: 1.30.11@sha256:d8a53f834b0fe70030df75f3f956d1c5e56fbb067b09803708b2bc26e26cfc12
-            env:
-              FOLDER: /config
-              LABEL: gatus.io/enabled
-              NAMESPACE: ALL
-              RESOURCE: both
-              UNIQUE_FILENAMES: true
-              METHOD: WATCH
-            restartPolicy: Always
+              repository: ghcr.io/home-operations/gatus-sidecar
+              tag: 0.0.9@sha256:31a52dd0e579c1f865b2580a4bb715d2a893deb1351fedeaba73598e9a578cbe
+            args:
+              - --auto-httproute
+              - --enable-httproute
+              - --enable-service
             resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 256Mi
+                memory: 64Mi
+            restartPolicy: Always
         containers:
           app:
             image:
@@ -62,9 +40,7 @@ spec:
             env:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
-            envFrom:
-              - secretRef:
-                  name: gatus
+              GATUS_WEB_PORT: &port 80
             probes:
               liveness: &probes
                 enabled: true
@@ -72,7 +48,7 @@ spec:
                 spec:
                   httpGet:
                     path: /health
-                    port: &port 8080
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -81,12 +57,18 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { add: ["NET_RAW"], drop: ["ALL"] }
             resources:
               requests:
-                cpu: 10m
+                cpu: 100m
               limits:
                 memory: 256Mi
+        statefulset:
+          volumeClaimTemplates:
+            - name: config
+              storageClass: ceph-block
+              accessMode: ReadWriteOnce
+              size: 5Gi
     service:
       app:
         ports:
@@ -98,14 +80,14 @@ spec:
           - port: http
     route:
       app:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
         hostnames:
           - status.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
             sectionName: https
-    serviceAccount:
-      gatus: {}
     rbac:
       roles:
         gatus:
@@ -114,8 +96,16 @@ spec:
             - apiGroups:
                 - ""
               resources:
-                - configmaps
-                - secrets
+                - services
+              verbs:
+                - get
+                - watch
+                - list
+            - apiGroups:
+                - gateway.networking.k8s.io
+              resources:
+                - gateways
+                - httproutes
               verbs:
                 - get
                 - watch
@@ -127,9 +117,9 @@ spec:
             identifier: gatus
           subjects:
             - identifier: gatus
+    serviceAccount:
+      gatus: {}
     persistence:
-      config:
-        type: emptyDir
       config-file:
         type: configMap
         name: gatus

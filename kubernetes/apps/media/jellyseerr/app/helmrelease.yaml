@@ -63,6 +63,9 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
         hostnames:
           - jellyseerr.${DOMAIN}
         parentRefs:

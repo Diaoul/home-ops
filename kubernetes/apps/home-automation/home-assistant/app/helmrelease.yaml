@@ -72,6 +72,9 @@ spec:
             port: &codePort 12321
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
         hostnames:
           - hass.${DOMAIN}
         parentRefs:

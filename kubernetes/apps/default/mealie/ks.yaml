@@ -7,7 +7,6 @@ metadata:
   namespace: flux-system
 spec:
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -35,4 +34,3 @@ spec:
     substitute:
       APP: mealie
       CAPACITY: 100Mi
-      GATUS_PATH: /api/app/about

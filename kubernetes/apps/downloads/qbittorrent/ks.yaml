@@ -7,7 +7,6 @@ metadata:
 spec:
   components:
     - ../../../../components/nfs-scaler
-    - ../../../../components/gatus/guarded
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -35,4 +34,3 @@ spec:
     substitute:
       APP: qbittorrent
       CAPACITY: 100Mi
-      GATUS_SUBDOMAIN: qb

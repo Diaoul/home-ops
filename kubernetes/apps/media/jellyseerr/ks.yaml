@@ -6,7 +6,6 @@ metadata:
   name: jellyseerr
 spec:
   components:
-    - ../../../../components/gatus/external
     - ../../../../components/persistence
   decryption:
     provider: sops
@@ -34,4 +33,3 @@ spec:
     substitute:
       APP: jellyseerr
       CAPACITY: 2Gi
-      GATUS_PATH: /api/v1/status
