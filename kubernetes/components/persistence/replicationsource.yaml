@@ -27,4 +27,4 @@ spec:
       daily: 7
       weekly: 5
     storageClassName: ${STORAGECLASS:=ceph-block}
-    volumeSnapshotClassName: ${SNAPSHOTCLASS:=csi-ceph-blockpool}
+    volumeSnapshotClassName: ${SNAPSHOTCLASS:=ceph-block}
