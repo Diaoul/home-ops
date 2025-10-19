@@ -81,7 +81,7 @@ resources:
     just log info "Running stage..." "stage" "$0"
     secrets=( \
         "{{ bootstrap_dir }}/github-deploy-key.sops.yaml" \
-        "{{ kubernetes_dir }}/bootstrap/sops-age.sops.yaml" \
+        "{{ bootstrap_dir }}/sops-age.sops.yaml" \
         "{{ kubernetes_dir }}/components/common/sops/cluster-secrets.sops.yaml" \
     ); \
     for secret in "${secrets[@]}"; do \
