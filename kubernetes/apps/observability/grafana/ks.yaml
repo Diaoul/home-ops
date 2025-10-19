@@ -8,10 +8,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/observability/grafana/app
   prune: true
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   postBuild:
     substituteFrom:
       - name: cluster-secrets
@@ -35,10 +31,6 @@ spec:
       namespace: rook-ceph
     - name: authelia
       namespace: security
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   postBuild:
     substituteFrom:
       - name: cluster-secrets

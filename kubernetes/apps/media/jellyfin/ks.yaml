@@ -15,10 +15,6 @@ spec:
   components:
     - ../../../../components/nfs-scaler
     - ../../../../components/persistence
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/media/jellyfin/app
   sourceRef:
     kind: GitRepository

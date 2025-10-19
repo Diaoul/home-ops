@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: singularity
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/network/singularity/app
   sourceRef:
     kind: GitRepository

@@ -81,8 +81,8 @@ resources:
     just log info "Running stage..." "stage" "$0"
     secrets=( \
         "{{ bootstrap_dir }}/github-deploy-key.sops.yaml" \
-        "{{ kubernetes_dir }}/components/common/sops/cluster-secrets.sops.yaml" \
-        "{{ kubernetes_dir }}/components/common/sops/sops-age.sops.yaml" \
+        "{{ kubernetes_dir }}/bootstrap/sops-age.sops.yaml" \
+        "{{ kubernetes_dir }}/components/namespace/sops/cluster-secrets.sops.yaml" \
     ); \
     for secret in "${secrets[@]}"; do \
         if ! sops exec-file "$secret" "kubectl --namespace flux-system apply --server-side --filename {}"; then \

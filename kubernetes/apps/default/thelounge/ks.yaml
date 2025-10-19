@@ -12,10 +12,6 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/default/thelounge/app
   sourceRef:
     kind: GitRepository

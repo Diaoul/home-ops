@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: cloudnative-pg
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/database/cloudnative-pg/app
   sourceRef:
     kind: GitRepository
@@ -30,10 +26,6 @@ kind: Kustomization
 metadata:
   name: cloudnative-pg-barman-cloud
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: cert-manager
       namespace: cert-manager
@@ -61,10 +53,6 @@ kind: Kustomization
 metadata:
   name: cloudnative-pg-cluster
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/database/cloudnative-pg/cluster
   sourceRef:
     kind: GitRepository

@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: flux-instance
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: flux-operator
       namespace: flux-system

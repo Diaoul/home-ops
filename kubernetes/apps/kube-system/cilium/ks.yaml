@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: cilium
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   interval: 1h
   path: ./kubernetes/apps/kube-system/cilium/app
   postBuild:
@@ -30,10 +26,6 @@ kind: Kustomization
 metadata:
   name: cilium-gateway
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: cert-manager
       namespace: cert-manager

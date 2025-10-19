@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: kromgo
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/observability/kromgo/app
   sourceRef:
     kind: GitRepository

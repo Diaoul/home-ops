@@ -15,10 +15,6 @@ spec:
       namespace: volsync-system
   interval: 1h
   path: ./kubernetes/apps/downloads/cross-seed/app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   postBuild:
     substituteFrom:
       - name: cluster-secrets

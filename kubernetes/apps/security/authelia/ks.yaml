@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: authelia
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/security/authelia/app
   sourceRef:
     kind: GitRepository

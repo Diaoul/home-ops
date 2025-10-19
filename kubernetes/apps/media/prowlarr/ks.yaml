@@ -8,10 +8,6 @@ spec:
   components:
     - ../../../../components/ext-auth
     - ../../../../components/persistence
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/media/prowlarr/app
   dependsOn:
     - name: rook-ceph-cluster

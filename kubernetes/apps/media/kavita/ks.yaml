@@ -8,10 +8,6 @@ spec:
   components:
     - ../../../../components/nfs-scaler
     - ../../../../components/persistence
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/media/kavita/app
   dependsOn:
     - name: rook-ceph-cluster

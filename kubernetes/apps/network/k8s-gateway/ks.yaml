@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: k8s-gateway
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   interval: 1h
   path: ./kubernetes/apps/network/k8s-gateway/app
   postBuild:

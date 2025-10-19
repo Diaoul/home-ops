@@ -9,10 +9,6 @@ spec:
     - ../../../../components/nfs-scaler
     - ../../../../components/ext-auth
     - ../../../../components/persistence
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/media/readarr-audio/app
   dependsOn:
     - name: rook-ceph-cluster

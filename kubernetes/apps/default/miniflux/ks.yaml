@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: miniflux
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/default/miniflux/app
   sourceRef:
     kind: GitRepository

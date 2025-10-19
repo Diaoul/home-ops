@@ -8,10 +8,6 @@ metadata:
 spec:
   components:
     - ../../../../components/persistence
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/default/mealie/app
   sourceRef:
     kind: GitRepository

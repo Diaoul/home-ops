@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: go2rtc
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/home-automation/go2rtc/app
   sourceRef:
     kind: GitRepository

@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: gatus
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/observability/gatus/app
   sourceRef:
     kind: GitRepository

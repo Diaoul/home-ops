@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: lldap
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/security/lldap/app
   sourceRef:
     kind: GitRepository

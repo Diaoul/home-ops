@@ -11,10 +11,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/observability/victoria-logs/app
   prune: true
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   postBuild:
     substituteFrom:
       - name: cluster-secrets

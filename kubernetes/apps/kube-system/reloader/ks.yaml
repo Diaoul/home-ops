@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: reloader
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   interval: 1h
   path: ./kubernetes/apps/kube-system/reloader/app
   postBuild:
