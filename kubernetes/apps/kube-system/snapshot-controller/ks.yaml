@@ -20,3 +20,4 @@ spec:
   interval: 30m
   retryInterval: 2m
   timeout: 5m
+  targetNamespace: kube-system

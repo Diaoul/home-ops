@@ -31,3 +31,4 @@ spec:
     substitute:
       APP: zigbee2mqtt
       CAPACITY: 500Mi
+  targetNamespace: home-automation

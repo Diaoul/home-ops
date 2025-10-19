@@ -5,7 +5,5 @@ kind: Kustomization
 namespace: volsync-system
 components:
   - ../../components/common
-replacements:
-  - path: ../../components/replacements/ks.yaml
 resources:
   - ./volsync/ks.yaml

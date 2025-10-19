@@ -22,3 +22,4 @@ spec:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
+  targetNamespace: downloads

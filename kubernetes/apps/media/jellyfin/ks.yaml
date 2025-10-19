@@ -32,3 +32,4 @@ spec:
     substitute:
       APP: jellyfin
       CAPACITY: 5Gi
+  targetNamespace: media

@@ -5,7 +5,5 @@ kind: Kustomization
 namespace: system-upgrade
 components:
   - ../../components/common
-replacements:
-  - path: ../../components/replacements/ks.yaml
 resources:
   - ./tuppr/ks.yaml

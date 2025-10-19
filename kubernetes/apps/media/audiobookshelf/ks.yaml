@@ -30,3 +30,4 @@ spec:
     substitute:
       APP: audiobookshelf
       CAPACITY: 500Mi
+  targetNamespace: media

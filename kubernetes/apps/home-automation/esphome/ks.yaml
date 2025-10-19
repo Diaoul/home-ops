@@ -29,3 +29,4 @@ spec:
     substitute:
       APP: esphome
       CAPACITY: 3Gi
+  targetNamespace: home-automation

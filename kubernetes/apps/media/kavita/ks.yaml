@@ -30,3 +30,4 @@ spec:
     substitute:
       APP: kavita
       CAPACITY: 500Mi
+  targetNamespace: media

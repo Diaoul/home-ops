@@ -34,3 +34,4 @@ spec:
     substitute:
       APP: frigate
       CAPACITY: 5Gi
+  targetNamespace: home-automation

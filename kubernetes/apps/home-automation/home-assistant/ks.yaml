@@ -31,3 +31,4 @@ spec:
     substitute:
       APP: home-assistant
       CAPACITY: 2Gi
+  targetNamespace: home-automation

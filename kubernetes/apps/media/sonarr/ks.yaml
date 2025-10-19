@@ -31,3 +31,4 @@ spec:
     substitute:
       APP: sonarr
       CAPACITY: 1Gi
+  targetNamespace: media

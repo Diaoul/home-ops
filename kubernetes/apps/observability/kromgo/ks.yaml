@@ -21,3 +21,4 @@ spec:
         kind: Secret
     substitute:
       APP: kromgo
+  targetNamespace: observability

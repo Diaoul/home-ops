@@ -31,3 +31,4 @@ spec:
     substitute:
       APP: autobrr
       CAPACITY: 100Mi
+  targetNamespace: downloads

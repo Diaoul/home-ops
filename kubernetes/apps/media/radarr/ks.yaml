@@ -31,3 +31,4 @@ spec:
     substitute:
       APP: radarr
       CAPACITY: 1Gi
+  targetNamespace: media

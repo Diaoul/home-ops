@@ -21,3 +21,4 @@ spec:
         kind: Secret
     substitute:
       APP: singularity
+  targetNamespace: network

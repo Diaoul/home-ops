@@ -22,3 +22,4 @@ spec:
     namespace: flux-system
   timeout: 5m
   wait: false
+  targetNamespace: flux-system

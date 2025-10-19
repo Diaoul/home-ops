@@ -19,3 +19,4 @@ spec:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
+  targetNamespace: observability
