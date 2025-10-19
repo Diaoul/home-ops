@@ -8,6 +8,7 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
+  - ./namespace.yaml
   - ./cloudnative-pg/ks.yaml
   - ./dragonfly/ks.yaml
   - ./emqx/ks.yaml

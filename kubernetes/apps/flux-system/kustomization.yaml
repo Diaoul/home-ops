@@ -8,5 +8,6 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
+  - ./namespace.yaml
   - ./flux-instance/ks.yaml
   - ./flux-operator/ks.yaml

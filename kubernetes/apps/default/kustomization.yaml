@@ -8,6 +8,7 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
+  - ./namespace.yaml
   - ./thelounge/ks.yaml
   - ./mealie/ks.yaml
   - ./miniflux/ks.yaml

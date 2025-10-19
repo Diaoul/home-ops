@@ -8,6 +8,7 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
+  - ./namespace.yaml
   - ./cloudflare-dns/ks.yaml
   - ./cloudflare-tunnel/ks.yaml
   - ./e1000e-fix/ks.yaml

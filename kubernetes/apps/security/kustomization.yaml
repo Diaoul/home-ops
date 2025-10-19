@@ -8,5 +8,6 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
+  - ./namespace.yaml
   - ./authelia/ks.yaml
   - ./lldap/ks.yaml
