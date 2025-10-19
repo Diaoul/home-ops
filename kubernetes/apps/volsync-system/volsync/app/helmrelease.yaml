@@ -14,13 +14,6 @@ spec:
         kind: HelmRepository
         name: backube
         namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     manageCRDs: true
     metrics:
