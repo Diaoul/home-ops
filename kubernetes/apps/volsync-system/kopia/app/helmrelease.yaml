@@ -5,17 +5,10 @@ kind: HelmRelease
 metadata:
   name: kopia
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: kopia
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
     controllers:
       kopia:
@@ -58,9 +51,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
@@ -113,3 +106,5 @@ spec:
                 subPath: cache
               - path: /config/logs
                 subPath: logs
+              - path: /tmp
+                subPath: tmp
