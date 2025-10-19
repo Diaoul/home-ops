@@ -8,7 +8,6 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
-  - ./namespace.yaml
   - ./blackbox-exporter/ks.yaml
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml

@@ -8,5 +8,4 @@ components:
 replacements:
   - path: ../../components/replacements/ks.yaml
 resources:
-  - ./namespace.yaml
   - ./tuppr/ks.yaml
