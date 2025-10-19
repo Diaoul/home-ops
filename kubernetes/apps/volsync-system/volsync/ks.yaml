@@ -5,10 +5,6 @@ kind: Kustomization
 metadata:
   name: volsync
 spec:
-  targetNamespace: *namespace
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/volsync-system/volsync/app
   dependsOn:
     - name: openebs
@@ -18,8 +14,8 @@ spec:
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
-      name: *app
-      namespace: *namespace
+      name: volsync
+      namespace: volsync-system
   sourceRef:
     kind: GitRepository
     name: flux-system
