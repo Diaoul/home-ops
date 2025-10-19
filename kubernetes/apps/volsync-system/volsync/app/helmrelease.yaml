@@ -5,22 +5,15 @@ kind: HelmRelease
 metadata:
   name: volsync
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: volsync
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
     fullnameOverride: volsync # Required for volsync-perfectra1n fork
     image: &image
       repository: ghcr.io/perfectra1n/volsync
-      tag: 0.15.45
+      tag: v0.16.12
     kopia: *image
     rclone: *image
     restic: *image
@@ -32,5 +25,5 @@ spec:
       disableAuth: true
     podSecurityContext:
       runAsNonRoot: true
-      runAsUser: 568
-      runAsGroup: 568
+      runAsUser: 1000
+      runAsGroup: 1000
