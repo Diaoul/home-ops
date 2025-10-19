@@ -7,7 +7,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: kopia
+    name: app-template
   interval: 1h
   values:
     controllers:
