@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: "${APP}"
+  name: ${APP}
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ${ACCESSMODES:=ReadWriteOnce}
   dataSourceRef:
     kind: ReplicationDestination
     apiGroup: volsync.backube
-    name: "${APP}"
+    name: ${APP}
   resources:
     requests:
-      storage: "${CAPACITY}"
-  storageClassName: ceph-block
+      storage: ${CAPACITY:=5Gi}
+  storageClassName: ${STORAGECLASS:=ceph-block}
