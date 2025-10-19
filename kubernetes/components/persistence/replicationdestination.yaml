@@ -27,4 +27,4 @@ spec:
     sourceIdentity:
       sourceName: ${APP}
     storageClassName: ${STORAGECLASS:=ceph-block}
-    volumeSnapshotClassName: ${SNAPSHOTCLASS:=csi-ceph-blockpool}
+    volumeSnapshotClassName: ${SNAPSHOTCLASS:=ceph-block}
