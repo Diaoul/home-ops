@@ -31,5 +31,5 @@ spec:
         kind: Secret
     substitute:
       APP: jellyfin
-      CAPACITY: 5Gi
+      CAPACITY: 10Gi
   targetNamespace: media
