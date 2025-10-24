@@ -80,6 +80,9 @@ spec:
         existingClaim: jellyfin-cache
         globalMounts:
           - path: /config/metadata
+            subPath: metadata
+          - path: /config/cache
+            subPath: cache
       tmpfs:
         type: emptyDir
         advancedMounts:
@@ -89,8 +92,6 @@ spec:
                 subPath: cache
               - path: /config/log
                 subPath: log
-              - path: /transcode
-                subPath: transcode
               - path: /tmp
                 subPath: tmp
       media:
