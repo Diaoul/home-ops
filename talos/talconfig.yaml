@@ -64,9 +64,23 @@ nodes:
             - siderolabs/thunderbolt # Thunderbolt NICs
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 94:c6:91:a3:f7:a4
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: 94:c6:91:a3:f7:a4
+              driver: e1000e
+          mode: active-backup
         dhcp: true
+        mtu: 9000
+        vlans: &vlans
+          - # IOT
+            vlanId: 30
+            dhcp: false
+            mtu: 9000
+          - # VPN
+            vlanId: 90
+            dhcp: false
+            mtu: 9000
         vip:
           ip: 10.0.3.3
     certSANs: *sans
@@ -81,9 +95,15 @@ nodes:
     schematic: *schematic
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 1c:69:7a:60:5f:cf
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: 1c:69:7a:60:5f:cf
+              driver: e1000e
+          mode: active-backup
         dhcp: true
+        mtu: 9000
+        vlans: *vlans
         vip:
           ip: 10.0.3.3
     certSANs: *sans
@@ -98,9 +118,15 @@ nodes:
     schematic: *schematic
     controlPlane: true
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 1c:69:7a:a3:1a:a1
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: 1c:69:7a:a3:1a:a1
+              driver: e1000e
+          mode: active-backup
         dhcp: true
+        mtu: 9000
+        vlans: *vlans
         vip:
           ip: 10.0.3.3
     certSANs: *sans
@@ -115,9 +141,15 @@ nodes:
     schematic: *schematic
     controlPlane: false
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 1c:69:7a:07:22:5d
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: 1c:69:7a:07:22:5d
+              driver: e1000e
+          mode: active-backup
         dhcp: true
+        mtu: 9000
+        vlans: *vlans
     certSANs: *sans
   - hostname: k8s-node-5
     ipAddress: 10.0.3.28
@@ -130,9 +162,15 @@ nodes:
     schematic: *schematic
     controlPlane: false
     networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: 1c:69:7a:0e:da:8a
+      - interface: bond0
+        bond:
+          deviceSelectors:
+            - hardwareAddr: 1c:69:7a:0e:da:8a
+              driver: e1000e
+          mode: active-backup
         dhcp: true
+        mtu: 9000
+        vlans: *vlans
     certSANs: *sans
 
 # NOTE: don't use nameservers in machine-network and servers in machine-time patches from upstream
