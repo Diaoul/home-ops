@@ -17,7 +17,9 @@ spec:
         pod:
           nodeSelector:
             feature.node.kubernetes.io/custom-google-coral: "true"
-            intel.feature.node.kubernetes.io/gpu: "true"
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: frigate
         containers:
           app:
             image:
@@ -47,10 +49,10 @@ spec:
               requests:
                 cpu: 500m
                 memory: 1Gi
-                gpu.intel.com/i915: 1
               limits:
                 memory: 4Gi
-                gpu.intel.com/i915: 1
+              claims:
+                - name: gpu
     service:
       app:
         ports:

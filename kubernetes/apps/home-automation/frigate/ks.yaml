@@ -16,6 +16,8 @@ spec:
   dependsOn:
     - name: emqx-cluster
       namespace: database
+    - name: intel-gpu-resource-driver
+      namespace: kube-system
     - name: node-feature-discovery-rules
       namespace: kube-system
     - name: rook-ceph-cluster

@@ -13,8 +13,9 @@ spec:
     controllers:
       jellyfin:
         pod:
-          nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: jellyfin
           securityContext:
             runAsNonRoot: true
             runAsUser: 568
@@ -59,7 +60,8 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 8Gi
-                gpu.intel.com/i915: 1
+              claims:
+                - name: gpu
     service:
       app:
         ports:
