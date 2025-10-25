@@ -148,6 +148,5 @@ patches:
 # Controller patches
 controlPlane:
   patches:
-    - "@./patches/controller/admission-control.yaml"
     - "@./patches/controller/api-access.yaml"
     - "@./patches/controller/cluster.yaml"
