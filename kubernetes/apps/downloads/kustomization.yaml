@@ -9,6 +9,7 @@ resources:
   - ./autobrr/ks.yaml
   - ./cross-seed/ks.yaml
   - ./qbittorrent/ks.yaml
+  - ./qbittorrent-test/ks.yaml
   - ./qui/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./tqm/ks.yaml
