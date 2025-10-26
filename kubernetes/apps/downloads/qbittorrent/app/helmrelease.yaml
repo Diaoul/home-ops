@@ -36,19 +36,19 @@ spec:
               tag: 5.1.2@sha256:31ac39705e31f7cdcc04dc46c1c0b0cdf8dc6f9865d4894efc097a33adc41524
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /api/v2/app/version
                     port: &port 8080
-                  initialDelaySeconds: 15
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
               startup:
-                enabled: false
+                enabled: true
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
