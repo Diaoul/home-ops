@@ -10,87 +10,70 @@ spec:
     kind: OCIRepository
     name: app-template
   values:
+    defaultPodOptions:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "vpn",
+            "namespace": "network",
+            "ips": ["10.0.90.8/24"],
+            "mac": "32:0b:d8:1f:b6:e9"
+          }]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       qbittorrent:
         annotations:
-          secret.reloader.stakater.com/reload: qbittorrent,qbittorrent-gluetun
-        pod:
-          securityContext:
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-          terminationGracePeriodSeconds: 120
-        initContainers:
-          dnsdist:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
             image:
-              repository: docker.io/powerdns/dnsdist-19
-              tag: 1.9.11@sha256:720091e8702abcc863a1ad6fe8667c62f82797f33cd4924a2e49c57d5da5b451
-            restartPolicy: Always
-          gluetun:
-            dependsOn:
-              - dnsdist
-            image:
-              repository: ghcr.io/qdm12/gluetun
-              tag: v3.40.0@sha256:2b42bfa046757145a5155acece417b65b4443c8033fb88661a8e9dcf7fda5a00
-            restartPolicy: Always
-            env:
-              DOT: "off"
-              DNS_ADDRESS: 127.0.0.2
-              HTTP_CONTROL_SERVER_AUTH_CONFIG_FILEPATH: &gluetunAuthPath /gluetun/auth.toml
-              VPN_SERVICE_PROVIDER: custom
-              VPN_TYPE: wireguard
-              VPN_INTERFACE: wg0
-              WIREGUARD_ENDPOINT_PORT: 51820
-              VPN_PORT_FORWARDING: on
-              VPN_PORT_FORWARDING_PROVIDER: protonvpn
-              FIREWALL_INPUT_PORTS: "8080,9999" # webui, healthcheck
-              HEALTH_SERVER_ADDRESS: ":9999"
-              FIREWALL_OUTBOUND_SUBNETS: 10.42.0.0/16,10.43.0.0/16
-            envFrom:
-              - secretRef:
-                  name: qbittorrent
-            lifecycle:
-              postStart:
-                exec:
-                  command:
-                    - "/bin/sh"
-                    - "-c"
-                    - "(ip rule del table 51820; ip -6 rule del table 51820) || true"
+              repository: ghcr.io/home-operations/qbittorrent
+              tag: 5.1.2@sha256:31ac39705e31f7cdcc04dc46c1c0b0cdf8dc6f9865d4894efc097a33adc41524
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /check
-                    port: 9999
+                    path: /api/v2/app/version
+                    port: &port 8080
+                  initialDelaySeconds: 15
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
               readiness: *probes
               startup:
                 enabled: true
-                custom: true
                 spec:
-                  httpGet:
-                    path: /check
-                    port: 9999
-                  initialDelaySeconds: 10
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext:
-              capabilities: { add: ["NET_ADMIN"] }
-              allowPrivilegeEscalation: false
-            resources:
-              limits:
-                squat.ai/tun: "1"
-        containers:
-          app:
-            nameOverride: qbittorrent
-            image:
-              repository: ghcr.io/home-operations/qbittorrent
-              tag: 5.1.2@sha256:31ac39705e31f7cdcc04dc46c1c0b0cdf8dc6f9865d4894efc097a33adc41524
-            securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-              runAsNonRoot: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 6Gi
+              limits:
+                memory: 8Gi
+          qbop:
+            image:
+              repository: ghcr.io/clajiness/qbop
+              tag: v2.2.0@sha256:34af52fec6d4fe32f630797e5810c7c4805ea91b32957fd805da9b084de9c77b
+            env:
+              PROTON_GATEWAY: 10.2.0.1
+              QBIT_ADDR: http://localhost:8080
+              OPN_INTERFACE_ADDR: https://opnsense.milkyway
+              OPN_PROTON_ALIAS_NAME: torrent_port
+            envFrom:
+              - secretRef:
+                  name: qbop
             probes:
               liveness:
                 enabled: true
@@ -98,44 +81,24 @@ spec:
                 enabled: true
               startup:
                 enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-            resources:
-              requests:
-                cpu: 100m
-                memory: 6Gi
-              limits:
-                memory: 8Gi
-          port-forward:
-            image:
-              repository: ghcr.io/bjw-s-labs/gluetun-qb-port-sync
-              tag: 0.0.4@sha256:6060da1978c5ec8ea1cad56d8538f35b504b1dcb3fc9845f1f69b18d1b36020a
-            env:
-              GLUETUN_CONTROL_SERVER_HOST: localhost
-              GLUETUN_CONTROL_SERVER_PORT: 8000
-              GLUETUN_CONTROL_SERVER_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: qbittorrent
-                    key: GLUETUN_CONTROL_SERVER_API_KEY
-              QBITTORRENT_HOST: localhost
-              QBITTORRENT_WEBUI_PORT: &port 8080
-              CRON_ENABLED: true
-              CRON_SCHEDULE: "*/5 * * * *"
-              LOG_TIMESTAMP: false
             securityContext:
-              runAsUser: 568
-              runAsGroup: 568
-              runAsNonRoot: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
     service:
       app:
         ports:
           http:
+            primary: true
             port: *port
+          qbop:
+            port: &qbopPort 4567
     route:
       app:
         hostnames:
@@ -144,6 +107,27 @@ spec:
           - name: envoy-internal
             namespace: network
             sectionName: https
+        rules:
+          - backendRefs:
+              - name: qbittorrent
+                port: *port
+      qbop:
+        hostnames:
+          - qbop.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: qbittorrent
+                port: *qbopPort
+    configMaps:
+      config:
+        data:
+          .qbt.toml: |-
+            [qbittorrent]
+            addr = "http://localhost:8080"
     persistence:
       config:
         existingClaim: qbittorrent
@@ -151,32 +135,34 @@ spec:
           qbittorrent:
             app:
               - path: /config
-      empty-config:
-        type: emptyDir
+      config-file:
+        type: configMap
+        identifier: config
         advancedMounts:
           qbittorrent:
-            port-forward:
-              - path: /config
+            app:
+              - path: /config/.qbt.toml
+                subPath: .qbt.toml
       media:
         type: nfs
         server: singularity.milkyway
         path: /volume1/media
-        globalMounts:
-          - path: /media
-      gluetun-auth:
-        type: secret
-        name: qbittorrent-gluetun
         advancedMounts:
           qbittorrent:
-            gluetun:
-              - path: *gluetunAuthPath
-                subPath: auth.toml
-      dnsdist:
-        type: configMap
-        name: qbittorrent-dnsdist
+            app:
+              - path: /media
+      qbop:
+        existingClaim: qbittorrent-qbop
         advancedMounts:
           qbittorrent:
-            dnsdist:
-              - path: /etc/dnsdist/dnsdist.conf
-                subPath: dnsdist.conf
-                readOnly: true
+            qbop:
+              - path: /opt/qbop/data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            qbop:
+              - path: /opt/qbop/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp

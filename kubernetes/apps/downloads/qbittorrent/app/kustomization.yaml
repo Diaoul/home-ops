@@ -4,13 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./helmrelease.yaml
-  - ./secret.sops.yaml
-  - ./gluetun.sops.yaml
-configMapGenerator:
-  - name: qbittorrent-dnsdist
-    files:
-      - ./resources/dnsdist.conf
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled
+  - ./pvc.yaml
+  - ./qbop-secret.sops.yaml
