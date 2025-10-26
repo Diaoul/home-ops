@@ -16,7 +16,7 @@ spec:
           [{
             "name": "vpn",
             "namespace": "network",
-            "ips": ["10.0.90.19/24"],
+            "ips": ["10.0.90.8/24"],
             "mac": "32:0b:d8:1f:b6:e9"
           }]
       securityContext:
@@ -62,11 +62,42 @@ spec:
                 memory: 2Gi
               limits:
                 memory: 4Gi
+          qbop:
+            image:
+              repository: ghcr.io/clajiness/qbop
+              tag: v2.2.0@sha256:34af52fec6d4fe32f630797e5810c7c4805ea91b32957fd805da9b084de9c77b
+            env:
+              PROTON_GATEWAY: 10.2.0.1
+              QBIT_ADDR: http://localhost:8080
+              OPN_INTERFACE_ADDR: https://opnsense.milkyway
+              OPN_PROTON_ALIAS_NAME: torrent_port
+            envFrom:
+              - secretRef:
+                  name: qbop
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
     service:
       app:
         ports:
           http:
             port: *port
+          qbop:
+            port: &qbopPort 4567
     route:
       app:
         hostnames:
@@ -75,6 +106,40 @@ spec:
           - name: envoy-internal
             namespace: network
             sectionName: https
+        rules:
+          - backendRefs:
+              - name: qbittorrent-test
+                port: *port
+      qbop:
+        hostnames:
+          - qbop.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: qbittorrent-test
+                port: *qbopPort
     persistence:
       config:
         existingClaim: qbittorrent-test
+        advancedMounts:
+          qbittorrent-test:
+            app:
+              - path: /config
+      qbop-data:
+        existingClaim: qbittorrent-test-qbop
+        advancedMounts:
+          qbittorrent-test:
+            qbop:
+              - path: /opt/qbop/data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent-test:
+            qbop:
+              - path: /opt/qbop/log
+                subPath: log
+              - path: /tmp
+                subPath: tmp
