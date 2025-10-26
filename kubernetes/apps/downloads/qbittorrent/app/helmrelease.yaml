@@ -59,9 +59,9 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 6Gi
-              limits:
                 memory: 8Gi
+              limits:
+                memory: 16Gi
           qbop:
             image:
               repository: ghcr.io/clajiness/qbop
