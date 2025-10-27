@@ -47,12 +47,12 @@ metrics:
     title: Memory
 
   - name: cluster_power_usage
-    query: round(upsHighPrecOutputLoad, 0.1)
+    query: round(network_ups_tools_ups_realpower_nominal * network_ups_tools_ups_load / 100)
     suffix: "w"
     colors:
-      - { color: "green", min: 0, max: 400 }
-      - { color: "orange", min: 401, max: 750 }
-      - { color: "red", min: 751, max: 9999 }
+      - { color: "green", min: 0, max: 200 }
+      - { color: "orange", min: 201, max: 300 }
+      - { color: "red", min: 301, max: 9999 }
     title: Power
 
   - name: cluster_age_days
