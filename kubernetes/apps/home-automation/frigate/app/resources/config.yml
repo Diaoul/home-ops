@@ -2,9 +2,7 @@
 auth:
   enabled: false
 mqtt:
-  host: emqx-listeners.database.svc.cluster.local
-  user: "{FRIGATE_MQTT_USERNAME}"
-  password: "{FRIGATE_MQTT_PASSWORD}"
+  host: mqtt.${DOMAIN}
 database:
   path: /data/frigate.db
 detectors:

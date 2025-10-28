@@ -14,7 +14,7 @@ spec:
     name: flux-system
     namespace: flux-system
   dependsOn:
-    - name: emqx-cluster
+    - name: mostquitto
       namespace: database
     - name: intel-gpu-resource-driver
       namespace: kube-system
