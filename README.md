@@ -189,7 +189,7 @@ I run the Postfix plugin with the following configuration:
 It can happen that a node is corrupt and fails to start, destroying it will trigger the creation of a new one.
 Run this command replacing {x} with the instance to destroy.
 ```
-kubectl cnpg -n database destroy postgres16 {x}
+kubectl cnpg -n database destroy postgres17 {x}
 ```
 
 ### Browsing PVCs
