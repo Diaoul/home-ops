@@ -53,6 +53,4 @@ spec:
       config:
         existingClaim: esphome
       cache:
-        type: emptyDir
-        globalMounts:
-          - path: /config/.esphome
+        existingClaim: esphome-cache
