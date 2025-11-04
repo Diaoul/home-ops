@@ -195,7 +195,7 @@ kubectl cnpg -n database destroy postgres17 {x}
 ### Browsing PVCs
 It's sometimes useful to make some edits in a PVC or change permissions.
 ```
-task kubernetes:browse-pvc ns=media claim=jellystat
+just kubernetes::browse-pvc media jellyfin
 ```
 
 ## 🤝 Thanks
