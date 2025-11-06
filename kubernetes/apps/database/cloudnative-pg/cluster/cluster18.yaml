@@ -3,13 +3,13 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres17
+  name: postgres18
   annotations:
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.6
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.0
   storage:
     size: 5Gi
     storageClass: openebs-hostpath
@@ -28,7 +28,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: minio
-        serverName: postgres17-0
+        serverName: postgres18-0
   bootstrap:
     initdb:
       import:
