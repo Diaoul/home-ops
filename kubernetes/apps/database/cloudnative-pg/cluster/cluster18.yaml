@@ -26,25 +26,16 @@ spec:
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
-      parameters:
+      parameters: &barmanParameters
         barmanObjectName: minio
         serverName: postgres18-0
   bootstrap:
-    initdb:
-      import:
-        type: monolith
-        databases:
-          - "*"
-        roles:
-          - "*"
-        source:
-          externalCluster: postgres16
+    recovery:
+      source: source
   externalClusters:
-    - name: postgres16
-      connectionParameters:
-        host: postgres16-rw
-        dbname: postgres
-        user: postgres
-      password:
-        name: cloudnative-pg
-        key: password
+    - name: source
+      plugin:
+        enabled: true
+        isWALArchiver: false
+        name: barman-cloud.cloudnative-pg.io
+        parameters: *barmanParameters
