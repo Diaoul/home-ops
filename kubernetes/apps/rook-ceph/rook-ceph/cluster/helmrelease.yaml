@@ -86,7 +86,6 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
-            sectionName: https
     # NOTE: same as default
     cephBlockPools:
       - name: ceph-blockpool
