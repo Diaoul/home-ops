@@ -48,7 +48,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_DEVICES: devices.yaml
               ZIGBEE2MQTT_CONFIG_GROUPS: groups.yaml
               # logging
-              ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: debug
+              ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_LEVEL: info
               ZIGBEE2MQTT_CONFIG_ADVANCED_LOG_OUTPUT: '["console"]'
               # device-availability
               ZIGBEE2MQTT_CONFIG_AVAILABILITY_ENABLED: true
