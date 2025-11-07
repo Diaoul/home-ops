@@ -90,6 +90,13 @@ spec:
     persistence:
       config:
         existingClaim: home-assistant
+      config-cache:
+        existingClaim: home-assistant-cache
+        advancedMounts:
+          home-assistant:
+            app:
+              - path: /config/.venv
+                subPath: hass-venv
       tmpfs:
         type: emptyDir
         advancedMounts:
