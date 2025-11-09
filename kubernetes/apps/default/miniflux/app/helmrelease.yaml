@@ -24,9 +24,9 @@ spec:
             image:
               repository: ghcr.io/home-operations/postgres-init
               tag: 17.6@sha256:86a1992d46273c58fd4ad95b626081dfaabfe16bd56944675169e406d1a660dd
-            envFrom: &envFrom
+            envFrom:
               - secretRef:
-                  name: miniflux
+                  name: miniflux-init-db
         containers:
           app:
             image:
@@ -46,7 +46,9 @@ spec:
               OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.${DOMAIN}
               OAUTH2_PROVIDER: oidc
               OAUTH2_REDIRECT_URL: https://miniflux.${DOMAIN}/oauth2/oidc/callback
-            envFrom: *envFrom
+            envFrom:
+              - secretRef:
+                  name: miniflux
             probes:
               liveness: &probes
                 enabled: true

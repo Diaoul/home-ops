@@ -27,7 +27,7 @@ spec:
               tag: 17.6@sha256:86a1992d46273c58fd4ad95b626081dfaabfe16bd56944675169e406d1a660dd
             envFrom:
               - secretRef:
-                  name: autobrr
+                  name: autobrr-init-db
         containers:
           app:
             image:
