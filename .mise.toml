@@ -5,7 +5,7 @@ SOPS_AGE_KEY_FILE = "{{config_root}}/age.key"
 TALOSCONFIG = "{{config_root}}/talos/clusterconfig/talosconfig"
 
 [tools]
-python = "3.14.0"
+python = "3.14.1"
 uv = "latest"
 "aqua:FiloSottile/age" = "latest"
 "aqua:budimanjojo/talhelper" = "3.0.41"
