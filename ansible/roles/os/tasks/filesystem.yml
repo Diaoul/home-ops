@@ -27,7 +27,8 @@
   block:
     - name: Disable swap
       ansible.builtin.command: swapoff -a
-      when: ansible_swaptotal_mb > 0
+      when: ansible_facts["swaptotal_mb"] > 0
+      changed_when: true
     - name: Disable swap system start
       ansible.posix.mount:
         name: "{{ item }}"

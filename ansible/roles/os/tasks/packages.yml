@@ -17,7 +17,7 @@
     update_cache: true
     cache_valid_time: 3600
     autoclean: true
-  when: os_packages.install
+  when: os_packages.install | length > 0
 
 - name: Remove snaps
   community.general.snap:
@@ -38,4 +38,4 @@
     state: absent
     autoremove: true
     purge: true
-  when: os_packages.remove
+  when: os_packages.remove | length > 0

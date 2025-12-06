@@ -2,7 +2,7 @@
 - name: Check that grub exists
   ansible.builtin.stat:
     path: /etc/default/grub
-  register: grub
+  register: os_grub
 
 - name: Adjust grub cmdline linux default
   become: true
@@ -17,7 +17,7 @@
       value: "off"
   notify: grub configuration changed
   when:
-    - grub.stat.exists
+    - os_grub.stat.exists
     - '"kubernetes" in group_names'
 
 - name: Adjust cmdline.txt (Ubuntu)
@@ -27,8 +27,8 @@
     regexp: "^(.*splash)$"
     line: "\\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
   when:
-    - ansible_architecture | regex_search('arm|aarch')
-    - ansible_distribution == "Ubuntu"
+    - ansible_facts["architecture"] | regex_search('arm|aarch') | length > 0
+    - ansible_facts["distribution"] == "Ubuntu"
     - '"kubernetes" in group_names'
 
 - name: Adjust cmdline.txt (Debian)
@@ -38,8 +38,8 @@
     regexp: "^(.*rootwait)$"
     line: "\\1 cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory"
   when:
-    - ansible_architecture | regex_search('arm|aarch')
-    - ansible_distribution == "Debian"
+    - ansible_facts["architecture"] | regex_search('arm|aarch') | length > 0
+    - ansible_facts["distribution"] == "Debian"
     - '"kubernetes" in group_names'
 
 - name: Enable modules

@@ -28,7 +28,7 @@
     proto: "{{ item.proto }}"
   loop: "{{ ufw_allow }}"
   become: true
-  when: ufw_allow is defined and ufw_allow|length
+  when: ufw_allow is defined and ufw_allow | length > 0
 
 - name: Deny incoming traffic
   community.general.ufw:

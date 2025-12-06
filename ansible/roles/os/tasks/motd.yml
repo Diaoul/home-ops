@@ -4,4 +4,4 @@
     dest: /etc/default/motd-news
     regexp: "^ENABLED="
     line: "ENABLED=0"
-  when: ansible_distribution == "Ubuntu"
+  when: ansible_facts["distribution"] == "Ubuntu"
