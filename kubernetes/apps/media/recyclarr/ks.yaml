@@ -28,5 +28,5 @@ spec:
         kind: Secret
     substitute:
       APP: recyclarr
-      CAPACITY: 200Mi
+      CAPACITY: 1Gi
   targetNamespace: media
