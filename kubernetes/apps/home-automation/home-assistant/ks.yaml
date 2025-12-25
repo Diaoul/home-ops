@@ -30,5 +30,5 @@ spec:
         kind: Secret
     substitute:
       APP: home-assistant
-      CAPACITY: 2Gi
+      CAPACITY: 5Gi
   targetNamespace: home-automation
