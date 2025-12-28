@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/druggeri/nut_exporter
-              tag: 3.2.2@sha256:0fea859933ebf68b7d46d3d5e996ee99ab2608d7d635608ec65a9dc665105223
+              tag: 3.2.3@sha256:cea69628d46bf8d47eb093ad7304991c9987c551f92658e10f5f47f641c470cc
             args:
               # export all variables
               - --nut.vars_enable=
