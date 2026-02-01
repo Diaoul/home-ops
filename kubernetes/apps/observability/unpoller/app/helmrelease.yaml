@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v2.24.0@sha256:8ce4cfa443e833a3c9a300a8fd379742490869683f4a952c36c6c17fc6252a56
+              tag: v2.31.0@sha256:f4f1e080489dc91e9f7d1d92c7848c9872a8394575be137deb445b63b56b36ca
             env:
               UP_UNIFI_DEFAULT_URL: https://sun.milkyway/
               UP_INFLUXDB_DISABLE: true
