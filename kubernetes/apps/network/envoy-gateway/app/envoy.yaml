@@ -149,7 +149,8 @@ metadata:
 spec:
   clientIPDetection:
     xForwardedFor:
-      numTrustedHops: 1
+      trustedCIDRs:
+        - 10.42.0.0/16
   connection:
     bufferLimit: 4Mi
     maxAcceptPerSocketEvent: 0
