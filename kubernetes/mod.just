@@ -10,7 +10,7 @@ default:
 [doc('Apply local Flux Kustomization')]
 apply-ks dir ks="*":
     just kube render-local-ks "{{ dir }}" "{{ ks }}" \
-        | kubectl apply --server-side --field-manager=kustomize-controller -f /dev/stdin
+        | kubectl apply --server-side --force-conflicts --field-manager=kustomize-controller -f /dev/stdin
 
 [doc('Browse a PVC')]
 browse-pvc namespace claim:
