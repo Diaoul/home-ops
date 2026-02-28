@@ -13,7 +13,7 @@ spec:
       - ${SNAP_ACCESSMODES:=ReadWriteOnce}
     cacheAccessModes:
       - ${CACHE_ACCESSMODES:=ReadWriteOnce}
-    cacheCapacity: ${CAPACITY:=5Gi}
+    cacheCapacity: ${CACHE_CAPACITY:=2Gi}
     cacheStorageClassName: ${CACHE_SNAPSHOTCLASS:=openebs-hostpath}
     compression: zstd-fastest
     copyMethod: Snapshot
