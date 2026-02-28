@@ -7,7 +7,7 @@ metadata:
 spec:
   sourcePVC: ${APP}
   trigger:
-    schedule: 0 * * * *
+    schedule: 0 */12 * * *
   kopia:
     accessModes:
       - ${SNAP_ACCESSMODES:=ReadWriteOnce}
