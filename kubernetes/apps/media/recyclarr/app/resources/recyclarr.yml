@@ -5,30 +5,34 @@ sonarr:
     base_url: http://sonarr.media.svc.cluster.local:8989
     api_key: !env_var SONARR__API_KEY
     delete_old_custom_formats: true
-    replace_existing_custom_formats: true
-    # Templates from https://github.com/recyclarr/config-templates
-    include:
-      # Quality definitions
-      - template: sonarr-quality-definition-series
-      - template: sonarr-quality-definition-anime
+    quality_definition:
+      type: series
+    quality_profiles:
       # WEB-1080p
-      - template: sonarr-v4-quality-profile-web-1080p
-      - template: sonarr-v4-custom-formats-web-1080p
+      - trash_id: 72dae194fc92bf828f32cde7744e51a1  # WEB-1080p
+        name: WEB-1080p
+        reset_unmatched_scores:
+          enabled: true
       # WEB-2160p
-      - template: sonarr-v4-quality-profile-web-2160p
-      - template: sonarr-v4-custom-formats-web-2160p
+      - trash_id: d1498e7d189fbe6c7110ceaabb7473e6  # WEB-2160p
+        name: WEB-2160p
+        reset_unmatched_scores:
+          enabled: true
       # FR-MULTi-VO-WEB-1080p
-      - template: sonarr-v4-quality-profile-bluray-web-1080p-french-multi-vo
-      - template: sonarr-v4-custom-formats-bluray-web-1080p-french-multi-vo
+      - trash_id: 4c48f506c1116a3a57ae33f12346bd15  # [French MULTi.VO] HD Bluray + WEB (1080p)
+        name: FR-MULTi-VO-WEB-1080p
+        reset_unmatched_scores:
+          enabled: true
       # FR-MULTi-VO-WEB-2160p
-      - template: sonarr-v4-quality-profile-bluray-web-2160p-french-multi-vo
-      - template: sonarr-v4-custom-formats-bluray-web-2160p-french-multi-vo
+      - trash_id: 6fa7364373e8f06206871d9c20a4fb3e  # [French MULTi.VO] UHD Bluray + WEB (2160p)
+        name: FR-MULTi-VO-WEB-2160p
+        reset_unmatched_scores:
+          enabled: true
       # Remux-1080p - Anime
-      - template: sonarr-v4-quality-profile-anime
-      - template: sonarr-v4-custom-formats-anime
-      # FR-ANIME-VOSTFR
-      - template: sonarr-v4-quality-profile-1080p-french-anime-vostfr
-      - template: sonarr-v4-custom-formats-1080p-french-anime-vostfr
+      - trash_id: 20e0fc959f1f1704bed501f23bdae76f  # [Anime] Remux-1080p
+        name: Remux-1080p - Anime
+        reset_unmatched_scores:
+          enabled: true
     custom_formats:
       # Optional
       - trash_ids:
@@ -125,21 +129,29 @@ radarr:
     base_url: http://radarr.media.svc.cluster.local:7878
     api_key: !env_var RADARR__API_KEY
     delete_old_custom_formats: true
-    replace_existing_custom_formats: true
-    include:
-      - template: radarr-quality-definition-movie
+    quality_definition:
+      type: movie
+    quality_profiles:
       # HD Bluray + WEB
-      - template: radarr-quality-profile-hd-bluray-web
-      - template: radarr-custom-formats-hd-bluray-web
+      - trash_id: d1d67249d3890e49bc12e275d989a7e9  # HD Bluray + WEB
+        name: HD Bluray + WEB
+        reset_unmatched_scores:
+          enabled: true
       # UHD Bluray + WEB
-      - template: radarr-quality-profile-uhd-bluray-web
-      - template: radarr-custom-formats-uhd-bluray-web
+      - trash_id: 64fb5f9858489bdac2af690e27c8f42f  # UHD Bluray + WEB
+        name: UHD Bluray + WEB
+        reset_unmatched_scores:
+          enabled: true
       # FR-MULTi-VO-HD
-      - template: radarr-quality-profile-hd-bluray-web-french-multi-vo
-      - template: radarr-custom-formats-hd-bluray-web-french-multi-vo
+      - trash_id: 2572ce3ea4eef1c19d59e0e20ed1cea7  # [French MULTi.VO] HD Bluray + WEB
+        name: FR-MULTi-VO-HD
+        reset_unmatched_scores:
+          enabled: true
       # FR-MULTi-VO-UHD
-      - template: radarr-quality-profile-uhd-bluray-web-french-multi-vo
-      - template: radarr-custom-formats-uhd-bluray-web-french-multi-vo
+      - trash_id: 92ead7022d13a7858d54e328e6a2f8f9  # [French MULTi.VO] UHD Bluray + WEB
+        name: FR-MULTi-VO-UHD
+        reset_unmatched_scores:
+          enabled: true
     custom_formats:
       # Optional
       - trash_ids:
