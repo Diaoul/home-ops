@@ -30,8 +30,7 @@ spec:
               - |
                 find /sys/class/net/*/device/driver/module/drivers -maxdepth 1 -path "*e1000e*" | \
                 awk -F'/' '{print $5}' | \
-                xargs -I% nsenter --mount=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/mnt \
-                                  --net=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/net \
+                xargs -I% nsenter --net=/host/proc/$(pidof /usr/local/bin/kubelet)/ns/net \
                                   -- sh -c "
                                     echo '% - BEFORE' && \
                                     echo '==========' && \
