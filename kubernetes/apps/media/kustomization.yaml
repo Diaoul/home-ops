@@ -11,7 +11,7 @@ resources:
   - ./jellyfin/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./kavita/ks.yaml
-  - ./lidarr/ks.yaml
+  - ./bazarr/ks.yaml
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./readarr-audio/ks.yaml
