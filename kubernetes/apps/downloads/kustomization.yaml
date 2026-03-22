@@ -10,7 +10,6 @@ resources:
   - ./cross-seed/ks.yaml
   - ./deduparr/ks.yaml
   - ./qbittorrent/ks.yaml
-  - ./seasonpackarr/ks.yaml
   - ./qui/ks.yaml
   - ./sabnzbd/ks.yaml
   - ./tqm/ks.yaml
