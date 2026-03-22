@@ -38,18 +38,27 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             probes:
-              liveness: &probes
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /api/system/ping
                     port: &port 6767
-                  initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             resources:
               requests:
                 cpu: 10m
@@ -76,10 +85,5 @@ spec:
         path: /volume1/media
         globalMounts:
           - path: /media
-      tmpfs:
+      tmp:
         type: emptyDir
-        globalMounts:
-          - path: /config/log
-            subPath: log
-          - path: /tmp
-            subPath: tmp

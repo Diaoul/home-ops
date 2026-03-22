@@ -24,8 +24,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/deduparr-dev/deduparr
-              tag: 0.4.1@sha256:f2a52c5f623cc20132fa5087de76e218f8fdb23458794203a158855d0e4c649f
+              repository: quay.io/kernald/deduparr
+              tag: 1.2.0@sha256:6e579f684a147dcd2dcd4468c50ffb0848e23b8306f1355037a2419931fe4b7f
             env:
               TZ: Europe/Paris
               DEDUPARR_LOG_LEVEL: info
@@ -48,14 +48,9 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 256Mi
+                memory: 128Mi
     service:
       app:
         ports:
           http:
             port: *port
-    persistence:
-      tmpfs:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
