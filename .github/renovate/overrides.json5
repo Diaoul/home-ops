@@ -19,5 +19,11 @@
       matchPackageNames: ["ghcr.io/lldap/lldap"],
       versioning: "loose",
     },
+    {
+      description: "Restrict frigate to semver tags only",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/blakeblackshear/frigate"],
+      allowedVersions: "/^[0-9]+\\.[0-9]+\\.[0-9]+$/",
+    },
   ],
 }
