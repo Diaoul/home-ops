@@ -11,10 +11,14 @@ spec:
     name: cilium
   values:
     autoDirectNodeRoutes: true
+    bandwidthManager:
+      enabled: true
+      bbr: true
     bpf:
       masquerade: true
       # Ref: https://github.com/siderolabs/talos/issues/10002
       hostLegacyRouting: true
+      preallocateMaps: true
     bgpControlPlane:
       enabled: true
     cni:
@@ -41,6 +45,8 @@ spec:
       enabled: false
     ipam:
       mode: kubernetes
+    ipv4BigTCP:
+      enabled: true
     ipv4NativeRoutingCIDR: 10.42.0.0/16
     k8sServiceHost: 127.0.0.1
     k8sServicePort: 7445
@@ -60,7 +66,7 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
-      replicas: 1
+      replicas: 2
       rollOutPods: true
     prometheus:
       enabled: true
@@ -68,6 +74,8 @@ spec:
         enabled: true
         trustCRDsExist: true
     rollOutCiliumPods: true
+    pmtuDiscovery:
+      enabled: true
     routingMode: native
     securityContext:
       capabilities:
