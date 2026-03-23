@@ -31,9 +31,9 @@ spec:
               TZ: Europe/Paris
               DEDUPARR_LOG_LEVEL: info
               DEDUPARR_RADARR_MOVIES_ENABLED: "true"
-              DEDUPARR_RADARR_MOVIES_URL: http://radarr.media.svc.cluster.local
+              DEDUPARR_RADARR_MOVIES_URL: http://radarr.media.svc.cluster.local:7878
               DEDUPARR_SONARR_SERIES_ENABLED: "true"
-              DEDUPARR_SONARR_SERIES_URL: http://sonarr.media.svc.cluster.local
+              DEDUPARR_SONARR_SERIES_URL: http://sonarr.media.svc.cluster.local:8989
               DEDUPARR_REMOVE_FROM_CLIENT: "false"
               DEDUPARR_SCHEDULE: service
               DEDUPARR_SERVICE__INTERVAL: 2m
