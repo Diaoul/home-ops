@@ -71,6 +71,9 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: https://bazarr.${DOMAIN}/api/system/ping
         hostnames:
           - bazarr.${DOMAIN}
         parentRefs:
@@ -85,5 +88,9 @@ spec:
         path: /volume1/media
         globalMounts:
           - path: /media
+      log:
+        type: emptyDir
+        globalMounts:
+          - path: /config/log
       tmp:
         type: emptyDir

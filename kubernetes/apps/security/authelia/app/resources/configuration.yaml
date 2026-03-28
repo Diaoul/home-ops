@@ -52,6 +52,7 @@ access_control:
     # bypass for API access
     - domain:
         - audiobookshelf.${DOMAIN}
+        - bazarr.${DOMAIN}
         - lidarr.${DOMAIN}
         - prowlarr.${DOMAIN}
         - radarr.${DOMAIN}
