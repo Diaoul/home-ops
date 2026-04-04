@@ -15,7 +15,6 @@ resources:
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./readarr-audio/ks.yaml
-  - ./readarr/ks.yaml
   - ./recyclarr/ks.yaml
   - ./shelfmark/ks.yaml
   - ./sonarr/ks.yaml
