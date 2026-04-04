@@ -1,0 +1,129 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: shelfmark
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      shelfmark:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/calibrain/shelfmark
+              tag: v1.2.1@sha256:5e00d47cccaa3b67234855d950d016c50691b78197a68adf15a624f6c08acee2
+            command:
+              - gunicorn
+            args:
+              - --access-logfile=-
+              - --error-logfile=-
+              - --worker-class=geventwebsocket.gunicorn.workers.GeventWebSocketWorker
+              - --workers=1
+              - -t
+              - "300"
+              - -b
+              - 0.0.0.0:8084
+              - shelfmark.main:app
+            env:
+              TZ: Europe/Paris
+              AUTH_METHOD: oidc
+              OIDC_DISCOVERY_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
+              OIDC_CLIENT_ID: shelfmark
+              OIDC_ADMIN_GROUP: admins
+              OIDC_AUTO_PROVISION: "true"
+              OIDC_AUTO_REDIRECT: "true"
+              HIDE_LOCAL_AUTH: "true"
+            envFrom:
+              - secretRef:
+                  name: shelfmark
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health
+                    port: &port 8084
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+    service:
+      app:
+        controller: shelfmark
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - shelfmark.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - name: shelfmark
+                port: *port
+    persistence:
+      config:
+        existingClaim: shelfmark
+        globalMounts:
+          - path: /config
+      media:
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
+        globalMounts:
+          - path: /media
+      tmpfs:
+        type: emptyDir
+        sizeLimit: 1Gi
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
+          - path: /var/log
+            subPath: var-log
