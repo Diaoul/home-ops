@@ -40,11 +40,22 @@ notifier:
 duo_api:
   disable: true
 
+authorization_policies:
+  default:
+    default_policy: two_factor
+    rules:
+      - networks:
+          - internal
+        policy: one_factor
+
 access_control:
   default_policy: deny
   networks:
     - name: internal
-      networks: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+      networks:
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
   rules:
     # bypass for authelia
     - domain: auth.${DOMAIN}
@@ -94,18 +105,26 @@ identity_providers:
       - key: |
           {{ secret "/config/secrets/OIDC_JWKS_KEY" | mindent 10 "|" | msquote }}
     cors:
-      endpoints: ["authorization", "token", "revocation", "introspection"]
+      endpoints:
+        - "authorization"
+        - "token"
+        - "revocation"
+        - "introspection"
     clients:
       - client_name: Grafana
         client_id: grafana
         client_secret: '{{ secret "/config/secrets/GRAFANA_OAUTH_CLIENT_SECRET" }}'
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: true
         pkce_challenge_method: S256
         redirect_uris:
           - https://grafana.${DOMAIN}/login/generic_oauth
-        scopes: [openid, profile, groups, email]
+        scopes:
+          - openid
+          - profile
+          - groups
+          - email
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
@@ -113,14 +132,19 @@ identity_providers:
         client_id: jellyfin
         client_secret: '{{ secret "/config/secrets/JELLYFIN_OAUTH_CLIENT_SECRET" }}'
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: true
         pkce_challenge_method: S256
         redirect_uris:
           - https://jellyfin.${DOMAIN}/sso/OID/redirect/authelia
-        scopes: [openid, profile, groups]
-        response_types: [code]
-        grant_types: [authorization_code]
+        scopes:
+          - openid
+          - profile
+          - groups
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_post
@@ -128,14 +152,20 @@ identity_providers:
         client_id: miniflux
         client_secret: '{{ secret "/config/secrets/MINIFLUX_OAUTH_CLIENT_SECRET" }}'
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: false
         pkce_challenge_method: ""
         redirect_uris:
           - https://miniflux.${DOMAIN}/oauth2/oidc/callback
-        scopes: [openid, profile, groups, email]
-        response_types: [code]
-        grant_types: [authorization_code]
+        scopes:
+          - openid
+          - profile
+          - groups
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
@@ -143,14 +173,20 @@ identity_providers:
         client_id: mealie
         client_secret: '{{ secret "/config/secrets/MEALIE_OAUTH_CLIENT_SECRET" }}'
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: true
         pkce_challenge_method: S256
         redirect_uris:
           - https://mealie.${DOMAIN}/login
-        scopes: [openid, email, groups, profile]
-        response_types: [code]
-        grant_types: [authorization_code]
+        scopes:
+          - openid
+          - email
+          - groups
+          - profile
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
@@ -158,16 +194,22 @@ identity_providers:
         client_id: audiobookshelf
         client_secret: $pbkdf2-sha512$310000$usd2buJmYrpUbNrh2E6UYg$u6Y.I0D77N9nZ9Kcc7m78vIbh3OyJBohOcRKVQhhJOVpx9QMVbixeTIdW9qpjQYGuE8oSMYDx4oZ07aUSA4cbw
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: true
         pkce_challenge_method: S256
         redirect_uris:
           - https://audiobookshelf.${DOMAIN}/auth/openid/callback
           - https://audiobookshelf.${DOMAIN}/auth/openid/mobile-redirect
           - audiobookshelf://oauth
-        scopes: [openid, profile, groups, email]
-        response_types: [code]
-        grant_types: [authorization_code]
+        scopes:
+          - openid
+          - profile
+          - groups
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
@@ -175,14 +217,20 @@ identity_providers:
         client_id: qui
         client_secret: $pbkdf2-sha512$310000$TUbwunv.EL3U5yMGDKSK4w$nuJRc71N83BPVXT08B5va5DX8p7Mgkdw4jCKhK55v4mRbWfgYvzWD56/MvyDJSOpjzLZP3gp1sp/ippN2UONjg
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: false
         pkce_challenge_method: ""
         redirect_uris:
           - https://qui.${DOMAIN}/api/auth/oidc/callback
-        scopes: [openid, profile, groups, email]
-        response_types: [code]
-        grant_types: [authorization_code]
+        scopes:
+          - openid
+          - profile
+          - groups
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
@@ -190,14 +238,20 @@ identity_providers:
         client_id: autobrr
         client_secret: $pbkdf2-sha512$310000$r8pIK38GLnDAXlZyWNTthA$O8HDLkd3rvDWoWJWIE0NJVbbmZPBJjozt3YHnATDy/5egdzi.YaSnxwacxTHsnDZoG.eMKnYYfZ61ca.j.Cq4Q
         public: false
-        authorization_policy: two_factor
+        authorization_policy: default
         require_pkce: false
         pkce_challenge_method: ""
         redirect_uris:
           - https://autobrr.${DOMAIN}/api/auth/oidc/callback
-        scopes: [openid, profile, groups, email]
-        response_types: [code]
-        grant_types: [authorization_code]
+        scopes:
+          - openid
+          - profile
+          - groups
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
