@@ -7,6 +7,7 @@ components:
   - ../../components/common
 resources:
   - ./autobrr/ks.yaml
+  - ./mam/ks.yaml
   - ./cross-seed/ks.yaml
   - ./deduparr/ks.yaml
   - ./qbittorrent/ks.yaml
