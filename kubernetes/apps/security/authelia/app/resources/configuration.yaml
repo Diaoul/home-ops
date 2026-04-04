@@ -192,7 +192,7 @@ identity_providers:
         token_endpoint_auth_method: client_secret_basic
       - client_name: Audiobookshelf
         client_id: audiobookshelf
-        client_secret: $pbkdf2-sha512$310000$usd2buJmYrpUbNrh2E6UYg$u6Y.I0D77N9nZ9Kcc7m78vIbh3OyJBohOcRKVQhhJOVpx9QMVbixeTIdW9qpjQYGuE8oSMYDx4oZ07aUSA4cbw
+        client_secret: '{{ secret "/config/secrets/AUDIOBOOKSHELF_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: default
         require_pkce: true
@@ -215,7 +215,7 @@ identity_providers:
         token_endpoint_auth_method: client_secret_basic
       - client_name: qui
         client_id: qui
-        client_secret: $pbkdf2-sha512$310000$TUbwunv.EL3U5yMGDKSK4w$nuJRc71N83BPVXT08B5va5DX8p7Mgkdw4jCKhK55v4mRbWfgYvzWD56/MvyDJSOpjzLZP3gp1sp/ippN2UONjg
+        client_secret: '{{ secret "/config/secrets/QUI_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: default
         require_pkce: false
@@ -236,7 +236,7 @@ identity_providers:
         token_endpoint_auth_method: client_secret_basic
       - client_name: autobrr
         client_id: autobrr
-        client_secret: $pbkdf2-sha512$310000$r8pIK38GLnDAXlZyWNTthA$O8HDLkd3rvDWoWJWIE0NJVbbmZPBJjozt3YHnATDy/5egdzi.YaSnxwacxTHsnDZoG.eMKnYYfZ61ca.j.Cq4Q
+        client_secret: '{{ secret "/config/secrets/AUTOBRR_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: default
         require_pkce: false
