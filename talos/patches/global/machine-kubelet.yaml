@@ -1,3 +1,4 @@
+---
 machine:
   kubelet:
     extraConfig:

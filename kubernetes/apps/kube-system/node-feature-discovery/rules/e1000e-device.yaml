@@ -11,4 +11,4 @@ spec:
       matchFeatures:
         - feature: kernel.loadedmodule
           matchExpressions:
-            e1000e: { op: Exists }
+            e1000e: {op: Exists}

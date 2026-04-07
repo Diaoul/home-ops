@@ -292,6 +292,32 @@ Reference: `kubernetes/apps/default/vaultwarden/app/` or `kubernetes/apps/defaul
 
 ---
 
+## YAML Formatting
+
+All YAML is formatted with **yamlfmt** (config in `.yamlfmt.yaml`). The formatter runs
+automatically via lefthook on staged files before every commit.
+
+### Quote style
+
+Do **not** add unnecessary double quotes around plain string values. Only quote when
+YAML would misparse the value without them:
+
+| Value type | Example | Quoted? |
+|---|---|---|
+| Plain string | `sync`, `enabled`, `get` | No |
+| Boolean lookalike | `"true"`, `"false"`, `"off"` | Yes — unquoted becomes a boolean |
+| Integer lookalike | `"0"`, `"1"`, `"9090"` | Yes — unquoted becomes a number |
+| Empty string | `""` | Yes — unquoted becomes null |
+| `@`-prefixed | `"@daily"`, `"@hourly"` | Yes — `@` is a reserved YAML indicator |
+| `*`-prefixed | `"*.example.com"` | Yes — `*` is a reserved YAML indicator |
+| PromQL / LogQL | `'absent(up{job="foo"})'` | Yes — contains special characters |
+
+Note: yamlfmt cannot remove unnecessary quotes automatically. Existing files may have
+legacy quoted strings that are safe but not worth bulk-editing. Write new files
+without unnecessary quotes from the start.
+
+---
+
 ## Validation
 
 Before committing, validate your YAML:

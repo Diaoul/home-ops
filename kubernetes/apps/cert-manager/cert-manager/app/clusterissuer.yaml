@@ -18,4 +18,5 @@ spec:
               name: cert-manager-cloudflare
               key: api-token
         selector:
-          dnsZones: ["${DOMAIN}"]
+          dnsZones:
+            - "${DOMAIN}"

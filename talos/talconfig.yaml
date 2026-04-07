@@ -13,8 +13,10 @@ additionalApiServerCertSans: &sans
   - k8s-apiserver
   - k8s-apiserver.milkyway
 
-clusterPodNets: [10.42.0.0/16]
-clusterSvcNets: [10.43.0.0/16]
+clusterPodNets:
+  - 10.42.0.0/16
+clusterSvcNets:
+  - 10.43.0.0/16
 
 nodes:
   - hostname: k8s-node-1

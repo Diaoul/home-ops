@@ -1,3 +1,4 @@
+---
 machine:
   network:
     disableSearchDomain: true

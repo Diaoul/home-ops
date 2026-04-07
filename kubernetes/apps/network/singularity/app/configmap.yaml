@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: milkyway-ca
 data:
-  ca.crt: |
+  ca.crt: |-
     -----BEGIN CERTIFICATE-----
     MIIDdjCCAl6gAwIBAgIUAKPlD9GkFrR+u29ACgIM4WBJQh8wDQYJKoZIhvcNAQEL
     BQAwLjEZMBcGA1UEAwwQTWlsa3lXYXkgUm9vdCBDQTERMA8GA1UECgwITWlsa3lX

@@ -13,6 +13,9 @@ spec:
     worker:
       config:
         core:
-          sources: [system, pci, usb]
+          sources:
+            - system
+            - pci
+            - usb
     prometheus:
       enable: true

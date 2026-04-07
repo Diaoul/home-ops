@@ -19,7 +19,9 @@ spec:
       annotations:
         lbipam.cilium.io/ips: 10.44.0.3
       externalTrafficPolicy: Cluster
-    watchedResources: ["HTTPRoute", "Service"]
+    watchedResources:
+      - HTTPRoute
+      - Service
     fallthrough:
       enabled: true
       zones:
@@ -35,7 +37,7 @@ spec:
           *.sunflower.${DOMAIN}. IN CNAME papouf.synology.me.
       - filename: andromeda.${DOMAIN}.db
         domains: andromeda.${DOMAIN}
-        contents: |
+        contents: |-
           andromeda.${DOMAIN}.   IN SOA k8s-gateway.andromeda.${DOMAIN}. admin.andromeda.${DOMAIN}. 2023120101 7200 3600 1209600 300
           andromeda.${DOMAIN}.   IN NS  k8s-gateway.andromeda.${DOMAIN}.
           andromeda.${DOMAIN}.   IN CNAME pretongirl.synology.me.

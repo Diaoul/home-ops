@@ -26,10 +26,13 @@ spec:
       - --gateway-name=envoy-external
     triggerLoopOnEvent: true
     policy: sync
-    sources: ["crd", "gateway-httproute"]
+    sources:
+      - crd
+      - gateway-httproute
     txtPrefix: k8s.
     txtOwnerId: default
-    domainFilters: ["${DOMAIN}"]
+    domainFilters:
+      - "${DOMAIN}"
     serviceMonitor:
       enabled: true
     podAnnotations:
