@@ -40,14 +40,6 @@ notifier:
 duo_api:
   disable: true
 
-authorization_policies:
-  default:
-    default_policy: two_factor
-    rules:
-      - networks:
-          - internal
-        policy: one_factor
-
 access_control:
   default_policy: deny
   networks:
@@ -101,6 +93,13 @@ access_control:
 
 identity_providers:
   oidc:
+    authorization_policies:
+      default:
+        default_policy: two_factor
+        rules:
+          - networks:
+              - internal
+            policy: one_factor
     jwks:
       - key: |
           {{ secret "/config/secrets/OIDC_JWKS_KEY" | mindent 10 "|" | msquote }}
