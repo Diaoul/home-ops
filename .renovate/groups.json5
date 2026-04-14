@@ -2,6 +2,16 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
+      description: "Barman Cloud Plugin Group",
+      groupName: "cloudnative-pg-plugin-barman-cloud",
+      matchDatasources: ["docker", "github-releases"],
+      matchPackageNames: ["/plugin-barman-cloud/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
       description: "Actions Runner Controller Group",
       groupName: "actions-runner-controller",
       matchDatasources: ["docker"],
