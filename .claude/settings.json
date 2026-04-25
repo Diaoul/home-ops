@@ -1,0 +1,67 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:autobrr.com)",
+      "WebFetch(domain:gateway.envoyproxy.io)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:hub.docker.com)",
+      "WebFetch(domain:kubesearch.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:recyclarr.dev)",
+      "WebFetch(domain:torrentleech.org)",
+      "WebFetch(domain:trash-guides.info)",
+      "WebFetch(domain:wiki.torrentleech.org)",
+      "WebFetch(domain:www.authelia.com)",
+      "WebFetch(domain:www.talos.dev)",
+      "Bash(dig *)",
+      "Bash(flux get *)",
+      "Bash(flux logs *)",
+      "Bash(flux-local *)",
+      "Bash(gh api *)",
+      "Bash(gh run watch *)",
+      "Bash(gh status *)",
+      "Bash(kubectl cnpg status postgres18 -n database 2>&1)",
+      "Bash(kubectl describe *)",
+      "Bash(kubectl get *)",
+      "Bash(kubectl logs *)",
+      "Bash(kubectl rollout status *)",
+      "Bash(kubectl top *)",
+      "Bash(kubeconform *)",
+      "Bash(mise list *)",
+      "Bash(nslookup *)",
+      "Bash(talosctl get *)",
+      "Bash(talosctl logs *)",
+      "Bash(talosctl ls *)",
+      "Bash(talosctl read *)",
+      "Bash(talosctl usage *)",
+      "Bash(yamllint *)",
+      "Bash(bash scripts/kubeconform.sh)",
+      "Bash(bash scripts/sops-mismatch.sh)"
+    ],
+    "deny": [
+      "Bash(age *)",
+      "Bash(kubectl describe secret *)",
+      "Bash(kubectl describe secrets *)",
+      "Bash(kubectl get secret *)",
+      "Bash(kubectl get secrets *)",
+      "Bash(sops *)",
+      "Read(.venv/)",
+      "Read(talos/clusterconfig)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command'); if echo \"$cmd\" | grep -qE '^kubectl[[:space:]]+-n[[:space:]]+'; then echo '{\"decision\":\"block\",\"reason\":\"kubectl -n flag must be placed at the end, not immediately after kubectl\"}'; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

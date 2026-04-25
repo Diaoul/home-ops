@@ -229,7 +229,7 @@ Secret template before encryption:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: <app>-secret
+  name: <app>
 stringData:
   SECRET_KEY: "value"
 ```
@@ -345,9 +345,31 @@ CI runs `kubeconform`, `yamllint`, `flux-local test`, and `flux-local diff` on a
 ```sh
 just talos apply-node <ip>      # Apply Talos config to a node
 just talos upgrade-node <ip>    # Upgrade Talos on a node
-just kube <kubectl args>        # Run kubectl with the cluster kubeconfig
 just bootstrap <step>           # Bootstrap steps (talos/k8s/namespaces/resources/apps)
 ```
+
+---
+
+## kubectl Conventions
+
+- Use plain `kubectl` directly — do not use `just kube` wrapper
+- Put `-n <namespace>` at the **end** of kubectl commands, not immediately after `kubectl`
+  - Correct: `kubectl logs -l app=foo -n media`
+  - Wrong: `kubectl -n media logs -l app=foo`
+- Do not exec into pods to retrieve cluster info — use `kubectl get`, `kubectl logs`, or the Prometheus HTTP API
+- A PreToolUse hook enforces the `-n` placement rule and will block `kubectl -n <ns> ...` commands
+
+---
+
+## Git Conventions
+
+Use [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` for adding or removing apps/features
+- `fix:` for bug fixes
+- `chore:` for maintenance (dependency bumps, formatting) — **not** for adding/removing apps
+
+Before implementing a new app or configuration pattern, check the
+[onedr0p/home-ops](https://github.com/onedr0p/home-ops) repo as a reference.
 
 ---
 
@@ -361,3 +383,5 @@ just bootstrap <step>           # Bootstrap steps (talos/k8s/namespaces/resource
 - Do not create a new `OCIRepository` for app-template — use the shared one in `components/common/`
 - Do not skip `# yaml-language-server: $schema=...` headers on YAML files
 - Do not use `latest` tags for any container image
+- Do not use `NetworkPolicy` or `CiliumNetworkPolicy` — cluster does not use them
+- Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)
