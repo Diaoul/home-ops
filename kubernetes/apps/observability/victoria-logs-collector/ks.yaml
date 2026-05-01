@@ -6,7 +6,7 @@ metadata:
   name: victoria-logs-collector
 spec:
   interval: 1h
-  path: ./kubernetes/apps/observability/fluent-bit/app
+  path: ./kubernetes/apps/observability/victoria-logs-collector/app
   prune: true
   retryInterval: 2m
   sourceRef:

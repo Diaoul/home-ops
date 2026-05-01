@@ -7,7 +7,7 @@ components:
   - ../../components/common
 resources:
   - ./blackbox-exporter/ks.yaml
-  - ./fluent-bit/ks.yaml
+  - ./victoria-logs-collector/ks.yaml
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
   - ./keda/ks.yaml
