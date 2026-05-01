@@ -23,6 +23,12 @@ spec:
       runAsUser: ${PUID:=568}
       runAsGroup: ${PGID:=568}
       fsGroup: ${PGID:=568}
+    moverVolumes:
+      - mountPath: repository
+        volumeSource:
+          nfs:
+            server: singularity.milkyway
+            path: /volume2/backups/volsync
     repository: ${APP}-volsync
     sourceIdentity:
       sourceName: ${APP}

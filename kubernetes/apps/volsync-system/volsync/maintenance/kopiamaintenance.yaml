@@ -15,3 +15,9 @@ spec:
     runAsGroup: 568
     fsGroup: 568
   cacheStorageClassName: openebs-hostpath
+  moverVolumes:
+    - mountPath: repository
+      volumeSource:
+        nfs:
+          server: singularity.milkyway
+          path: /volume2/backups/volsync
