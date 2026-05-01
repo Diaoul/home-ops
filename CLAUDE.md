@@ -15,7 +15,7 @@ Read this file before making any changes.
 | CNI | Cilium (BGP, native routing, kube-proxy replacement) |
 | Ingress | Envoy Gateway (Kubernetes Gateway API) |
 | Storage | Rook-Ceph (block) + OpenEBS (local hostpath) |
-| Backup | VolSync + Kopia → MinIO S3 |
+| Backup | VolSync + Kopia → NFS (singularity.milkyway) |
 | Database | CloudNative-PG (PostgreSQL 18, HA) |
 | Secrets | SOPS + Age + PGP |
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
@@ -240,7 +240,7 @@ These are available via `postBuild.substituteFrom` and can be used as `${VAR}`:
 - `${DOMAIN}` — homelab domain
 - `${CLOUDFLARE_TUNNEL_ID}`
 - `${EMAIL_ADDRESS_1}`
-- `${VOLSYNC_RESTIC_PASSWORD}`, `${VOLSYNC_MINIO_ACCESS_KEY}`, `${VOLSYNC_MINIO_SECRET_KEY}`
+- `${VOLSYNC_RESTIC_PASSWORD}`
 
 ---
 
@@ -257,7 +257,7 @@ substitute:
 
 The component creates:
 - A `PersistentVolumeClaim` named `<app>` using `ceph-block` StorageClass
-- A `ReplicationSource` (hourly backup to MinIO via Kopia)
+- A `ReplicationSource` (backup every 12h to NFS via Kopia)
 - A `ReplicationDestination` (for restore)
 
 For NFS-mounted media (downloads/media namespace), use `local-hostpath` StorageClass
