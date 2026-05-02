@@ -163,7 +163,7 @@ spec:
       fullnameOverride: node-exporter
     victoria-metrics-operator:
       admissionWebhooks:
-        enabled: false
+        policy: Ignore
       crds:
         cleanup:
           enabled: false
