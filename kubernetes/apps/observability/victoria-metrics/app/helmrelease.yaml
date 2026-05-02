@@ -78,11 +78,11 @@ spec:
                 title: >-
                   [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
                 token:
-                  name: alertmanager
+                  name: vmalertmanager
                   key: pushover_api_token
                 url_title: View in Alertmanager
                 user_key:
-                  name: alertmanager
+                  name: vmalertmanager
                   key: pushover_user_key
       route:
         enabled: true
@@ -195,7 +195,7 @@ spec:
               url_prefix: http://vmsingle-victoria-metrics.observability.svc.cluster.local:8428
             - src_paths:
                 - /select/logsql/.*
-              url_prefix: http://victoria-logs-server.observability.svc.cluster.local:9428
+              url_prefix: http://victoria-logs.observability.svc.cluster.local:9428
     vmsingle:
       route:
         enabled: true
