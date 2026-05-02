@@ -117,17 +117,11 @@ spec:
         enabled: true
         spec:
           allowCrossNamespaceImport: true
-          instanceSelector:
-            matchLabels:
-              grafana.internal/instance: grafana
     defaultDatasources:
       grafanaOperator:
         enabled: true
         spec:
           allowCrossNamespaceImport: true
-          instanceSelector:
-            matchLabels:
-              grafana.internal/instance: grafana
     grafana:
       enabled: false
       forceDeployDatasource: true
