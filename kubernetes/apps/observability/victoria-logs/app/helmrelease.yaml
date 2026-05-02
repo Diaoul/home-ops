@@ -11,6 +11,9 @@ spec:
   interval: 1h
   values:
     fullnameOverride: victoria-logs
+    global:
+      image:
+        registry: quay.io
     retentionPeriod: 14d
     server:
       persistentVolume:
@@ -24,19 +27,16 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
-        extraRules:
-          - filters:
-              - type: RequestRedirect
-                requestRedirect:
-                  path:
-                    type: ReplaceFullPath
-                    replaceFullPath: /select/vmui/
-                  statusCode: 302
-            matches:
-              - path:
-                  type: Exact
-                  value: /
       serviceMonitor:
         enabled: true
     dashboards:
       enabled: true
+      grafanaOperator:
+        enabled: true
+        spec:
+          allowCrossNamespaceImport: true
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
+    vector:
+      enabled: false
