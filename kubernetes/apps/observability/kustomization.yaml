@@ -7,17 +7,17 @@ components:
   - ../../components/common
 resources:
   - ./blackbox-exporter/ks.yaml
-  - ./kube-state-metrics/ks.yaml
-  - ./node-exporter/ks.yaml
-  - ./victoria-logs-collector/ks.yaml
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
   - ./keda/ks.yaml
   - ./kromgo/ks.yaml
-  - ./victoria-metrics/ks.yaml
+  - ./kube-state-metrics/ks.yaml
   - ./network-ups-tools/ks.yaml
+  - ./node-exporter/ks.yaml
   - ./nut-exporter/ks.yaml
-  - ./unpoller/ks.yaml
+  - ./prometheus-operator-crds/ks.yaml
   - ./silence-operator/ks.yaml
   - ./smartctl-exporter/ks.yaml
+  - ./unpoller/ks.yaml
   - ./victoria-logs/ks.yaml
+  - ./victoria-metrics/ks.yaml

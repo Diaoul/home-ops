@@ -6,6 +6,7 @@ metadata:
   name: victoria-metrics
 spec:
   dependsOn:
+    - name: prometheus-operator-crds
     - name: rook-ceph-cluster
       namespace: rook-ceph
   interval: 1h
