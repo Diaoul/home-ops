@@ -13,8 +13,8 @@ spec:
   path: ./kubernetes/apps/observability/victoria-metrics/app
   postBuild:
     substituteFrom:
-      - kind: Secret
-        name: cluster-secrets
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   sourceRef:
     kind: GitRepository
