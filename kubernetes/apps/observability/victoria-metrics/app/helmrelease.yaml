@@ -9,10 +9,6 @@ spec:
     kind: OCIRepository
     name: victoria-metrics
   interval: 1h
-  valuesFrom:
-    - kind: ConfigMap
-      name: flux-metrics-configmap
-      valuesKey: flux-metrics.yaml
   values:
     fullnameOverride: victoria-metrics
     global:
@@ -126,8 +122,7 @@ spec:
       enabled: false
       forceDeployDatasource: true
     kube-state-metrics:
-      enabled: true
-      fullnameOverride: kube-state-metrics
+      enabled: false
     kubeControllerManager:
       vmScrape:
         spec:
@@ -159,8 +154,7 @@ spec:
               tlsConfig:
                 insecureSkipVerify: true
     prometheus-node-exporter:
-      enabled: true
-      fullnameOverride: node-exporter
+      enabled: false
     victoria-metrics-operator:
       admissionWebhooks:
         policy: Ignore
