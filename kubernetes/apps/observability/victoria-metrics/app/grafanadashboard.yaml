@@ -123,7 +123,7 @@ spec:
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: prometheus
+  name: zfs
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -132,4 +132,4 @@ spec:
   datasources:
     - datasourceName: prometheus
       inputName: DS_PROMETHEUS
-  url: https://grafana.com/api/dashboards/19105/revisions/9/download
+  url: https://grafana.com/api/dashboards/24987/revisions/2/download

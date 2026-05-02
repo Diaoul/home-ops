@@ -15,6 +15,9 @@ spec:
       valuesKey: flux-metrics.yaml
   values:
     fullnameOverride: victoria-metrics
+    global:
+      image:
+        registry: quay.io
     alertmanager:
       config:
         route:
@@ -36,8 +39,9 @@ spec:
                 - severity = critical
           group_by:
             - alertname
+            - cluster
             - job
-          group_interval: 10m
+          group_interval: 5m
           group_wait: 1m
         inhibit_rules:
           - equal:
@@ -76,8 +80,7 @@ spec:
                 send_resolved: true
                 sound: gamelan
                 title: >-
-                  [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
-                  {{ .CommonLabels.alertname }}
+                  [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }}
                 token:
                   name: alertmanager
                   key: pushover_api_token
@@ -94,6 +97,8 @@ spec:
             namespace: network
       spec:
         externalURL: https://alertmanager.${DOMAIN}
+        image:
+          repository: quay.io/prometheus/alertmanager
         securityContext:
           runAsGroup: 2000
           runAsNonRoot: true
@@ -109,12 +114,23 @@ spec:
       useManagedConfig: true
     defaultDashboards:
       grafanaOperator:
-        enabled: false
+        enabled: true
+        spec:
+          allowCrossNamespaceImport: true
+          instanceSelector:
+            matchLabels:
+              grafana.internal/instance: grafana
     defaultDatasources:
       grafanaOperator:
-        enabled: false
+        enabled: true
+        spec:
+          allowCrossNamespaceImport: true
+          instanceSelector:
+            matchLabels:
+              grafana.internal/instance: grafana
     grafana:
       enabled: false
+      forceDeployDatasource: true
     kube-state-metrics:
       enabled: true
       fullnameOverride: kube-state-metrics
@@ -196,7 +212,7 @@ spec:
       route:
         enabled: true
         hostnames:
-          - prometheus.${DOMAIN}
+          - vmsingle.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
