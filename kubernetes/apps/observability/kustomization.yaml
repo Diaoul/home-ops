@@ -7,6 +7,8 @@ components:
   - ../../components/common
 resources:
   - ./blackbox-exporter/ks.yaml
+  - ./kube-state-metrics/ks.yaml
+  - ./node-exporter/ks.yaml
   - ./victoria-logs-collector/ks.yaml
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
