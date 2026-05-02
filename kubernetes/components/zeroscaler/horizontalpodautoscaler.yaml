@@ -18,7 +18,7 @@ spec:
           name: probe_success
           selector:
             matchLabels:
-              job: nfs-probe
+              job: nfs_probe
         target:
           type: Value
           value: "1"
