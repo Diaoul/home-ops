@@ -6,7 +6,7 @@ metadata:
   name: sabnzbd
 spec:
   components:
-    - ../../../../components/nfs-scaler
+    - ../../../../components/zeroscaler
     - ../../../../components/ext-auth
     - ../../../../components/persistence
   path: ./kubernetes/apps/downloads/sabnzbd/app

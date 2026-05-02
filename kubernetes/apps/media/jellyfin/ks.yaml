@@ -13,7 +13,7 @@ spec:
     - name: volsync
       namespace: volsync-system
   components:
-    - ../../../../components/nfs-scaler
+    - ../../../../components/zeroscaler
     - ../../../../components/persistence
   path: ./kubernetes/apps/media/jellyfin/app
   sourceRef:

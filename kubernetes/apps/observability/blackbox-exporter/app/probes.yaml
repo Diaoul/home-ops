@@ -20,7 +20,7 @@ spec:
 apiVersion: monitoring.coreos.com/v1
 kind: Probe
 metadata:
-  name: nfs
+  name: nfs_probe
 spec:
   module: tcp_connect
   prober:

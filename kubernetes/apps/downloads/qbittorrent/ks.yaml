@@ -6,7 +6,7 @@ metadata:
   name: qbittorrent
 spec:
   components:
-    - ../../../../components/nfs-scaler
+    - ../../../../components/zeroscaler
     - ../../../../components/persistence
   path: ./kubernetes/apps/downloads/qbittorrent/app
   sourceRef:

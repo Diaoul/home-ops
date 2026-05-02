@@ -6,7 +6,7 @@ metadata:
   name: bazarr
 spec:
   components:
-    - ../../../../components/nfs-scaler
+    - ../../../../components/zeroscaler
     - ../../../../components/ext-auth
     - ../../../../components/persistence
   path: ./kubernetes/apps/media/bazarr/app

@@ -6,7 +6,7 @@ metadata:
   name: shelfmark
 spec:
   components:
-    - ../../../../components/nfs-scaler
+    - ../../../../components/zeroscaler
     - ../../../../components/persistence
   path: ./kubernetes/apps/media/shelfmark/app
   dependsOn:
