@@ -58,6 +58,8 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
+        pod:
+          automountServiceAccountToken: true
         serviceAccount:
           name: *app
     defaultPodOptions:
