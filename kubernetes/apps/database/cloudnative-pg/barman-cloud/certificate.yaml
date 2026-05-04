@@ -20,7 +20,7 @@ spec:
     name: barman-cloud
     kind: Issuer
     group: cert-manager.io
-  renewBefore: 360h
+  renewBefore: 720h
   secretName: barman-cloud-client-tls
   usages:
     - client auth
@@ -40,7 +40,7 @@ spec:
     name: barman-cloud
     kind: Issuer
     group: cert-manager.io
-  renewBefore: 360h
+  renewBefore: 720h
   secretName: barman-cloud-server-tls
   usages:
     - server auth
