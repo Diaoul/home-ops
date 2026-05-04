@@ -169,6 +169,9 @@ spec:
           promscrape.dropOriginalLabels: "true"
           promscrape.maxScrapeSize: 50MiB
           promscrape.streamParse: "true"
+        resources:
+          limits:
+            cpu: 500m
     vmalert:
       spec:
         extraArgs:
