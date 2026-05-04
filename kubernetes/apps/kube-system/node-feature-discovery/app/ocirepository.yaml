@@ -11,4 +11,4 @@ spec:
     operation: copy
   ref:
     tag: 0.18.3
-  url: oci://ghcr.io/kubernetes-sigs/node-feature-discovery/charts/node-feature-discovery
+  url: oci://registry.k8s.io/nfd/charts/node-feature-discovery
