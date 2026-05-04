@@ -14,6 +14,7 @@ spec:
       dragonfly-operator:
         strategy: RollingUpdate
         pod:
+          automountServiceAccountToken: true
           securityContext:
             runAsNonRoot: true
             runAsUser: 65534
