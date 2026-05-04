@@ -205,8 +205,6 @@ spec:
           - name: envoy-internal
             namespace: network
       spec:
-        extraArgs:
-          maxConcurrentInserts: "8"
         retentionPeriod: 14d
         storage:
           accessModes:
