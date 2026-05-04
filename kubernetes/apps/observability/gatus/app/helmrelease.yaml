@@ -16,6 +16,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
+          automountServiceAccountToken: true
           hostUsers: false
         initContainers:
           gatus-sidecar:
@@ -116,8 +117,6 @@ spec:
             identifier: gatus
           subjects:
             - identifier: gatus
-    serviceAccount:
-      gatus: {}
     persistence:
       config-file:
         type: configMap
