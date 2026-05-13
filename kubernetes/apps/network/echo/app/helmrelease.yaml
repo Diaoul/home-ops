@@ -67,5 +67,5 @@ spec:
         hostnames:
           - echo.${DOMAIN}
         parentRefs:
-          - name: envoy-external
+          - name: envoy-internal
             namespace: network
