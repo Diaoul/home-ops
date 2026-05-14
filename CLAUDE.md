@@ -373,6 +373,12 @@ Before implementing a new app or configuration pattern, check the
 
 ---
 
+## Flux Reconciliation
+
+Flux is configured with a GitHub webhook — reconciliation triggers immediately on push. Do not tell the user to "wait X minutes for Flux to reconcile."
+
+---
+
 ## What NOT to Do
 
 - Do not use `Ingress` resources — use `HTTPRoute`
