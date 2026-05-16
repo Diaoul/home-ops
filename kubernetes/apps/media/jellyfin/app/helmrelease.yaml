@@ -77,13 +77,14 @@ spec:
     persistence:
       config:
         existingClaim: jellyfin
+      config-metadata:
+        existingClaim: jellyfin-metadata
+        globalMounts:
+          - path: /config/metadata
       config-cache:
         existingClaim: jellyfin-cache
         globalMounts:
-          - path: /config/metadata
-            subPath: metadata
           - path: /config/cache
-            subPath: cache
       tmpfs:
         type: emptyDir
         advancedMounts:
