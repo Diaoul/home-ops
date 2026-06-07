@@ -27,6 +27,25 @@
       "Bash(talosctl read *)",
       "Bash(talosctl usage *)",
       "Bash(yamllint *)",
+      "Bash(rtk gh api *)",
+      "Bash(rtk gh run watch *)",
+      "Bash(rtk gh status *)",
+      "Bash(rtk kubectl cnpg status postgres18 -n database 2>&1)",
+      "Bash(rtk kubectl describe *)",
+      "Bash(rtk kubectl exec -n kube-system ds/cilium -- cilium bgp peers)",
+      "Bash(rtk kubectl exec -n kube-system ds/cilium -- cilium status --brief)",
+      "Bash(rtk kubectl get *)",
+      "Bash(rtk kubectl logs *)",
+      "Bash(rtk kubectl rollout status *)",
+      "Bash(rtk kubectl top *)",
+      "Bash(rtk proxy kubectl get *)",
+      "Bash(rtk yamllint *)",
+      "Bash(curl * https://alertmanager.diaoul.io*)",
+      "Bash(curl * https://vmsingle.diaoul.io*)",
+      "Bash(curl * https://vmalert.diaoul.io*)",
+      "Bash(rtk curl * https://alertmanager.diaoul.io*)",
+      "Bash(rtk curl * https://vmsingle.diaoul.io*)",
+      "Bash(rtk curl * https://vmalert.diaoul.io*)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:autobrr.com)",
       "WebFetch(domain:gateway.envoyproxy.io)",
@@ -49,6 +68,10 @@
       "Bash(kubectl get secret *)",
       "Bash(kubectl get secrets *)",
       "Bash(sops *)",
+      "Bash(rtk kubectl describe secret *)",
+      "Bash(rtk kubectl describe secrets *)",
+      "Bash(rtk kubectl get secret *)",
+      "Bash(rtk kubectl get secrets *)",
       "Read(.venv/)",
       "Read(talos/clusterconfig)"
     ]
@@ -60,7 +83,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cmd=$(jq -r '.tool_input.command'); if echo \"$cmd\" | grep -qE '^kubectl[[:space:]]+-n[[:space:]]+'; then echo '{\"decision\":\"block\",\"reason\":\"kubectl -n flag must be placed at the end, not immediately after kubectl\"}'; fi"
+            "command": "cmd=$(jq -r '.tool_input.command'); if echo \"$cmd\" | grep -qE '^(rtk )?kubectl[[:space:]]+-n[[:space:]]+'; then echo '{\"decision\":\"block\",\"reason\":\"kubectl -n flag must be placed at the end, not immediately after kubectl\"}'; fi"
           }
         ]
       }
