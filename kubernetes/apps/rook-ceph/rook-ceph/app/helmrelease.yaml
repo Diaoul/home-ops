@@ -12,7 +12,8 @@ spec:
     name: rook-ceph
   values:
     csi:
-      cephFSKernelMountOptions: ms_mode=prefer-crc
+      serviceMonitor:
+        enabled: false # liveness metrics require Driver.spec.liveness (not yet in ceph-csi-drivers chart v1.0.1)
     image:
       repository: ghcr.io/rook/ceph
     monitoring:
