@@ -32,6 +32,11 @@ spec:
           mon_data_avail_warn: "15"
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
+      csi:
+        readAffinity:
+          enabled: true
+          crushLocationLabels:
+            - kubernetes.io/hostname
       network:
         provider: host
         connections:
