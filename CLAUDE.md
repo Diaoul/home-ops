@@ -59,7 +59,7 @@ Every app follows this exact two-file pattern. Study an existing app (e.g.,
 ### `ks.yaml` — Flux Kustomization
 
 ```yaml
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
@@ -101,7 +101,7 @@ spec:
 ### `app/helmrelease.yaml` — HelmRelease (app-template)
 
 ```yaml
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -186,7 +186,7 @@ Both gateways are in namespace `network`.
 ### HTTPRoute example
 
 ```yaml
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/gateway.networking.k8s.io/httproute_v1.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -225,7 +225,7 @@ sops --encrypt --in-place kubernetes/apps/<namespace>/<app>/app/secret.sops.yaml
 
 Secret template before encryption:
 ```yaml
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/secret.json
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
 apiVersion: v1
 kind: Secret
 metadata:
