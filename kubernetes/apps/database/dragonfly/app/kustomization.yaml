@@ -6,4 +6,3 @@ resources:
   # renovate: datasource=github-releases depName=dragonflydb/dragonfly-operator
   - https://raw.githubusercontent.com/dragonflydb/dragonfly-operator/v1.6.1/manifests/crd.yaml
   - ./helmrelease.yaml
-  - ./rbac.yaml

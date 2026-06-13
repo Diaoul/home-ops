@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: dragonfly-operator
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: dragonfly-operator
+  interval: 30m
   values:
     controllers:
       dragonfly-operator:

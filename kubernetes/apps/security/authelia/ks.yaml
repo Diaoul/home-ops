@@ -10,10 +10,17 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  components:
+    - ../../../../components/dragonfly
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      failed: status.phase != 'ready'
+      current: status.phase == 'ready'
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-    - name: dragonfly-cluster
+    - name: dragonfly-operator
       namespace: database
     - name: lldap
       namespace: security
@@ -26,4 +33,7 @@ spec:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
+    substitute:
+      APP: authelia
+      DRAGONFLY_REPLICAS: "3"
   targetNamespace: security

@@ -3,37 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: dragonfly
+  name: dragonfly-operator
 spec:
-  path: ./kubernetes/apps/database/dragonfly/app
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: database
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: dragonfly-cluster
-spec:
-  path: ./kubernetes/apps/database/dragonfly/cluster
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  dependsOn:
-    - name: dragonfly
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: dragonfly-operator
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: dragonfly-operator
       namespace: database
-  prune: true
-  wait: false
   interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  path: ./kubernetes/apps/database/dragonfly/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
   targetNamespace: database
+  timeout: 5m
+  wait: false
