@@ -1,50 +1,22 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
-    "config:recommended",
-    "docker:enableMajor",
-    "helpers:pinGitHubActionDigests",
+    "github>home-operations/renovate-presets#2.0.0",
     "github>Diaoul/home-ops//.renovate/autoMerge.json5",
     "github>Diaoul/home-ops//.renovate/changelogs.json5",
-    "github>Diaoul/home-ops//.renovate/customManagers.json5",
-    "github>Diaoul/home-ops//.renovate/grafanaDashboards.json5",
     "github>Diaoul/home-ops//.renovate/groups.json5",
     "github>Diaoul/home-ops//.renovate/labels.json5",
     "github>Diaoul/home-ops//.renovate/overrides.json5",
-    "github>Diaoul/home-ops//.renovate/semanticCommits.json5",
     ":automergeDigest",
-    ":automergeBranch",
-    ":disableRateLimiting",
-    ":dependencyDashboard",
     ":semanticCommits",
     ":timezone(Europe/Paris)",
   ],
-  registryAliases: {
-    "mirror.gcr.io": "docker.io",
-  },
-  dependencyDashboardTitle: "Renovate Dashboard 🤖",
   suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
   ignorePaths: ["**/*.sops.*", "**/resources/**"],
   flux: {
-    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
-  },
-  helmfile: {
-    managerFilePatterns: [
-      "/(^|/)helmfile\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
-      "/(^|/)helmfile\\.d/.+\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
-    ],
+    managerFilePatterns: ["/^kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
   kubernetes: {
-    managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
-  },
-  kustomize: {
-    managerFilePatterns: ["/^kustomization\\.ya?ml(?:\\.j2)?$/"],
-  },
-  customDatasources: {
-    "talos-factory": {
-      defaultRegistryUrlTemplate: "https://factory.talos.dev/versions",
-      format: "json",
-      transformTemplates: ['{"releases": [$.{"version": $}]}'],
-    },
+    managerFilePatterns: ["/^kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
 }
