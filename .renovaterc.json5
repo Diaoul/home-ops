@@ -40,4 +40,11 @@
   kustomize: {
     managerFilePatterns: ["/^kustomization\\.ya?ml(?:\\.j2)?$/"],
   },
+  customDatasources: {
+    "talos-factory": {
+      defaultRegistryUrlTemplate: "https://factory.talos.dev/versions",
+      format: "json",
+      transformTemplates: ['{"releases": [$.{"version": $}]}'],
+    },
+  },
 }
