@@ -9,7 +9,7 @@ metadata:
 spec:
   instances: 3
   # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.0
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.4
   storage:
     size: 5Gi
     storageClass: openebs-hostpath
