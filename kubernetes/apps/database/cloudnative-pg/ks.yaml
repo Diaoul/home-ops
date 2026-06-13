@@ -30,6 +30,8 @@ spec:
   dependsOn:
     - name: cert-manager
       namespace: cert-manager
+    - name: cloudnative-pg
+      namespace: database
   path: ./kubernetes/apps/database/cloudnative-pg/barman-cloud
   sourceRef:
     kind: GitRepository
@@ -41,9 +43,6 @@ spec:
   retryInterval: 1m
   timeout: 5m
   postBuild:
-    substitute:
-      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
-      SIDECAR_IMAGE_VERSION: v0.13.0
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

@@ -21,6 +21,10 @@ spec:
       cpu: 200m
     limits:
       memory: 2Gi
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: preferred
+    topologyKey: kubernetes.io/hostname
   monitoring:
     enablePodMonitor: true
   plugins:

@@ -3,85 +3,21 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app barman-cloud
+  name: barman-cloud
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
+    name: plugin-barman-cloud
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
   values:
-    controllers:
-      barman-cloud:
-        containers:
-          app:
-            image:
-              repository: ghcr.io/cloudnative-pg/plugin-barman-cloud
-              tag: v0.13.0@sha256:71589dbac582333442812b07b31f7ea4d00324a8358aac7ca507dabf9f4b6c96
-            args:
-              - operator
-              - --leader-elect
-              - --server-cert=/server/tls.crt
-              - --server-key=/server/tls.key
-              - --client-cert=/client/tls.crt
-              - --server-address=:9090
-            env:
-              SIDECAR_IMAGE: ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar:${SIDECAR_IMAGE_VERSION}
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /healthz
-                    port: &port 8081
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /readyz
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-        pod:
-          automountServiceAccountToken: true
-        serviceAccount:
-          name: *app
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-    persistence:
-      client:
-        type: secret
-        name: &clientCert barman-cloud-client-tls
-      server:
-        type: secret
-        name: &serverCert barman-cloud-server-tls
-    service:
-      app:
-        annotations:
-          cnpg.io/pluginClientSecret: *clientCert
-          cnpg.io/pluginPort: "9090"
-          cnpg.io/pluginServerSecret: *serverCert
-        labels:
-          cnpg.io/pluginName: barman-cloud.cloudnative-pg.io
-        ports:
-          http:
-            port: 9090
+    crds:
+      create: true
+    namespaceOverride: database
