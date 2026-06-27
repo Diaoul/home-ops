@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: konflate
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: konflate
+  interval: 1h
+  values:
+    config:
+      repo: github://Diaoul/home-ops
+      statusChecks: true
+      prComments: true
+      publicUrl: https://konflate.${DOMAIN}
+      mcp: true
+    secret:
+      existingSecret: konflate
+    httpRoute:
+      enabled: true
+      annotations:
+        gatus.home-operations.com/endpoint: |-
+          conditions: ["[STATUS] == 200"]
+      parentRefs:
+        - name: envoy-external
+          namespace: network
+      hostnames:
+        - konflate.${DOMAIN}
+    persistence:
+      enabled: true
+      storageClass: ceph-block
+      size: 5Gi
+    monitoring:
+      serviceMonitor:
+        enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
