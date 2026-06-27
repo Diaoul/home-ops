@@ -1,5 +1,4 @@
 ---
-# Note: Gatus vars should be escaped with $${VAR_NAME} to avoid interpolation by Flux
 connectivity:
   checker:
     target: 1.1.1.1:53
@@ -32,13 +31,13 @@ metrics: true
 storage:
   type: sqlite
   caching: true
-  path: $${GATUS_CONFIG_PATH}/gatus.db
+  path: ${GATUS_CONFIG_PATH}/gatus.db
 
 ui:
   title: Status | Gatus
   header: Status
   logo: https://avatars.githubusercontent.com/u/319220
-  link: https://status.${DOMAIN}
+  link: https://status.diaoul.io
   buttons:
     - name: Github
       link: https://github.com/Diaoul
@@ -46,4 +45,4 @@ ui:
       link: https://github.com/Diaoul/home-ops
 
 web:
-  port: $${GATUS_WEB_PORT}
+  port: ${GATUS_WEB_PORT}
