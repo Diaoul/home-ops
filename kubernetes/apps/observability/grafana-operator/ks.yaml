@@ -3,10 +3,10 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: grafana
+  name: grafana-operator
 spec:
   interval: 1h
-  path: ./kubernetes/apps/observability/grafana/app
+  path: ./kubernetes/apps/observability/grafana-operator/app
   prune: true
   postBuild:
     substituteFrom:
@@ -23,10 +23,10 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: grafana-instance
+  name: grafana-operator-instance
 spec:
   dependsOn:
-    - name: grafana
+    - name: grafana-operator
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: authelia
@@ -36,7 +36,7 @@ spec:
       - name: cluster-secrets
         kind: Secret
   interval: 1h
-  path: ./kubernetes/apps/observability/grafana/instance
+  path: ./kubernetes/apps/observability/grafana-operator/instance
   prune: true
   sourceRef:
     kind: GitRepository
