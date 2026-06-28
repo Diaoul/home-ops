@@ -1,105 +1,122 @@
-set positional-arguments := true
-set quiet := true
+set no-exit-message
+set quiet
 set shell := ['bash', '-euo', 'pipefail', '-c']
+set script-interpreter := ['bash', '-euo', 'pipefail']
 
-bootstrap_dir := justfile_dir() + '/bootstrap'
 kubernetes_dir := justfile_dir() + '/kubernetes'
-controller := `talosctl config info -o yaml | yq -e '.endpoints[0]'`
-nodes := `talosctl config info -o yaml | yq -e '.nodes | join (" ")'`
 
 [private]
-default: talos k8s (kubeconfig "node") wait namespaces resources crds apps kubeconfig
+default:
+    just bootstrap -l
 
 [doc('Reset all nodes')]
+[working-directory('../talos')]
 reset-all-nodes:
     gum confirm "Reset ALL nodes?" --default="No" && \
-    for n in {{ nodes }}; do \
-        if op=$(talosctl -n "$n" reset --system-labels-to-wipe EPHEMERAL,STATE --graceful=false --wait=false --reboot 2>&1); then \
-            just log info "Node reset successfully" "node" "$n"; \
-        elif [[ "$op" == *"certificate required"* ]]; then \
-            just log info "Node already reset" "node" "$n"; \
-        else \
-            just log error "Failed to reset node" "node" "$n" "output" "$op"; \
-        fi; \
-    done
+    talhelper gencommand reset \
+        --extra-flags="--system-labels-to-wipe EPHEMERAL,STATE --graceful=false --wait=false --reboot" \
+        | bash || exit 0
 
-[doc('Install Talos')]
-talos:
-    just log info "Running stage..." "stage" "$0"
-    just talos gen-config
-    for n in {{ nodes }}; do \
-        if ! op=$(just talos apply-node "$n" --insecure 2>&1); then \
-            if [[ "$op" == *"certificate required"* ]]; then \
-                just log info "Talos already configured, skipping apply of config" "stage" "$0" "node" "$n"; \
-                continue; \
-            fi; \
-            just log fatal "Failed to apply Talos configuration" "stage" "$0" "node" "$n" "output" "$op"; \
-        fi; \
-    done
+[doc('Bootstrap the Talos cluster')]
+[group('bootstrap')]
+talos: talos-secret talos-config talos-apply talos-bootstrap talos-kubeconfig
 
-[doc('Install Kubernetes')]
-k8s:
-    just log info "Running stage..." "stage" "$0"
-    until op=$(talosctl -n "{{ controller }}" bootstrap 2>&1 || true) && [[ "$op" == *"AlreadyExists"* ]]; do \
-        just log info "Kubernetes bootstrap in progress. Retrying in 5 seconds..." "stage" "$0"; \
-        sleep 5; \
-    done
+[doc('Bootstrap apps into the Talos cluster')]
+[group('bootstrap')]
+apps: apps-ready apps-namespaces apps-secrets apps-crds apps-helm
+    just log info "Cluster is bootstrapped — Flux will start syncing the Git repository"
 
-[doc('Fetch kubeconfig')]
-kubeconfig lb="cilium":
-    just log info "Running stage..." "stage" "$0"
-    if ! talosctl kubeconfig -n "{{ controller }}" -f --force-context-name main {{ justfile_dir() }}; then \
-        just log fatal "Failed to fetch kubeconfig" "stage" "$0"; \
-    fi
-    if [[ "{{ lb }}" != "cilium" ]]; then \
-        if ! kubectl config set-cluster main --server "https://{{ controller }}:6443"; then \
-            just log fatal "Failed to set kubectl cluster server address" "stage" "$0"; \
-        fi; \
+[private]
+[script]
+[working-directory('../talos')]
+talos-secret:
+    just log info "Generating talsecret"
+    if [ ! -f talsecret.sops.yaml ]; then
+        talhelper gensecret | sops --filename-override talsecret.sops.yaml --encrypt /dev/stdin > talsecret.sops.yaml
     fi
 
-[doc('Wait for nodes to be not-ready')]
-wait:
-    just log info "Running stage..." "stage" "$0"
-    if ! kubectl wait nodes --for=condition=Ready=True --all --timeout=10s &>/dev/null; then \
-        until kubectl wait nodes --for=condition=Ready=False --all --timeout=10s &>/dev/null; do \
-            just log info "Nodes not available, waiting for nodes to be available. Retrying in 5 seconds..." "stage" "$0"; \
-            sleep 5; \
-        done \
+[private]
+[working-directory('../talos')]
+talos-config:
+    just log info "Generating talos config"
+    talhelper genconfig
+
+[private]
+[working-directory('../talos')]
+talos-apply:
+    just log info "Applying talos config"
+    talhelper gencommand apply --extra-flags="--insecure" | bash
+
+[private]
+[working-directory('../talos')]
+talos-bootstrap:
+    just log info "Bootstrapping talos"
+    until talhelper gencommand bootstrap | bash; do sleep 10; done
+
+[private]
+[working-directory('../talos')]
+talos-kubeconfig:
+    just log info "Fetching kubeconfig"
+    until talhelper gencommand kubeconfig --extra-flags="{{ justfile_dir() }} --force" | bash; do sleep 10; done
+
+[private]
+[script]
+apps-namespaces:
+    just log info "Applying namespaces for apps"
+    for app in "{{ kubernetes_dir }}/apps"/*/; do
+        ns="$(basename "$app")"
+        if kubectl get namespace "$ns" &>/dev/null; then
+            just log info "Namespace already exists" namespace "$ns"
+        elif kubectl create namespace "$ns" --dry-run=client -o yaml \
+                | kubectl apply --server-side --filename - &>/dev/null; then
+            just log info "Namespace applied" namespace "$ns"
+        else
+            just log fatal "Failed to apply namespace" namespace "$ns"
+        fi
+    done
+
+[private]
+[script]
+apps-secrets:
+    just log info "Applying secrets for apps"
+    for secret in \
+        "{{ source_directory() }}/github-deploy-key.sops.yaml" \
+        "{{ source_directory() }}/sops-age.sops.yaml" \
+        "{{ kubernetes_dir }}/components/common/sops/cluster-secrets.sops.yaml"
+    do
+        name="$(basename "$secret" .sops.yaml)"
+        if sops exec-file "$secret" \
+                "kubectl --namespace flux-system apply --server-side --filename {}" &>/dev/null; then
+            just log info "Secret applied" resource "$name"
+        else
+            just log fatal "Failed to apply secret" resource "$name"
+        fi
+    done
+
+[private]
+[script]
+apps-crds:
+    just log info "Applying CRDs"
+    if ! helmfile --file "{{ source_directory() }}/helmfile/crds.yaml" template --quiet | yq eval-all --exit-status 'select(.kind == "CustomResourceDefinition")' | kubectl apply --server-side --force-conflicts --filename -; then
+        just log fatal "Failed to apply crds"
     fi
 
-[doc('Apply Kubernetes namespaces')]
-namespaces:
-    just log info "Running stage..." "stage" "$0"
-    find "{{ kubernetes_dir }}/apps" -mindepth 1 -maxdepth 1 -type d -printf "%f\n" | while IFS= read -r ns; do \
-        if ! kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply --server-side --field-manager flux-client-side-apply -f -; then \
-            just log fatal "Failed to apply namespace" "stage" "$0" "namespace" "$ns"; \
-        fi; \
-    done
+[private]
+[script]
+apps-helm:
+    just log info "Syncing helmfile"
+    if ! helmfile --file "{{ source_directory() }}/helmfile/apps.yaml" sync --hide-notes; then
+        just log fatal "Failed to sync helmfile"
+    fi
 
-[doc('Apply Kubernetes resources')]
-resources:
-    just log info "Running stage..." "stage" "$0"
-    secrets=( \
-        "{{ bootstrap_dir }}/github-deploy-key.sops.yaml" \
-        "{{ bootstrap_dir }}/sops-age.sops.yaml" \
-        "{{ kubernetes_dir }}/components/common/sops/cluster-secrets.sops.yaml" \
-    ); \
-    for secret in "${secrets[@]}"; do \
-        if ! sops exec-file "$secret" "kubectl --namespace flux-system apply --server-side --filename {}"; then \
-            just log fatal "Failed to apply secret resource" "stage" "$0" "file" "$secret"; \
-        fi; \
-    done
-
-[doc('Apply Helmfile CRDs')]
-crds:
-    just log info "Running stage..." "stage" "$0"
-    if ! helmfile -f "{{ bootstrap_dir }}/helmfile.d/00-crds.yaml" template -q | kubectl apply --server-side --field-manager flux-client-side-apply -f -; then \
-        just log fatal "Failed to apply crds" "stage" "$0"; \
-    fi;
-
-[doc('Apply Helmfile Apps')]
-apps:
-    just log info "Running stage..." "stage" "$0"
-    if ! helmfile -f "{{ bootstrap_dir }}/helmfile.d/01-apps.yaml" sync --hide-notes; then \
-        just log fatal "Failed to sync helmfile" "stage" "$0"; \
+# Wait until nodes register as Ready=False. They only become Ready=True once the CNI is healthy.
+[private]
+[script]
+apps-ready:
+    just log info "Waiting for nodes to register as Ready=False"
+    if ! kubectl wait nodes --for=condition=Ready=True --all --timeout=10s &>/dev/null; then
+        until kubectl wait nodes --for=condition=Ready=False --all --timeout=10s &>/dev/null; do
+            just log info "Nodes not available, waiting for nodes to be available. Retrying in 5 seconds..."
+            sleep 5
+        done
     fi
