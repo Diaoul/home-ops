@@ -9,12 +9,15 @@ spec:
     - ../../../../components/zeroscaler
     - ../../../../components/ext-auth
     - ../../../../components/persistence
+    - ../../../../components/kopiur
   path: ./kubernetes/apps/media/radarr/app
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
+    - name: kopiur-repository
+      namespace: kopiur-system
   sourceRef:
     kind: GitRepository
     name: flux-system

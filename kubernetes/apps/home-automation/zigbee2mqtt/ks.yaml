@@ -7,6 +7,7 @@ metadata:
 spec:
   components:
     - ../../../../components/persistence
+    - ../../../../components/kopiur
   path: ./kubernetes/apps/home-automation/zigbee2mqtt/app
   sourceRef:
     kind: GitRepository
@@ -19,6 +20,8 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
+    - name: kopiur-repository
+      namespace: kopiur-system
   prune: true
   wait: false
   interval: 1h

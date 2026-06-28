@@ -12,9 +12,12 @@ spec:
       namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
+    - name: kopiur-repository
+      namespace: kopiur-system
   components:
     - ../../../../components/zeroscaler
     - ../../../../components/persistence
+    - ../../../../components/kopiur
   path: ./kubernetes/apps/media/jellyfin/app
   sourceRef:
     kind: GitRepository
