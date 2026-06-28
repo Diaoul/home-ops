@@ -10,14 +10,11 @@ resources:
   - ./gatus/ks.yaml
   - ./grafana/ks.yaml
   - ./kromgo/ks.yaml
-  - ./kube-state-metrics/ks.yaml
+  - ./kube-prometheus-stack/ks.yaml
   - ./network-ups-tools/ks.yaml
-  - ./node-exporter/ks.yaml
   - ./nut-exporter/ks.yaml
   - ./prometheus-adapter/ks.yaml
-  - ./prometheus-operator-crds/ks.yaml
   - ./silence-operator/ks.yaml
   - ./smartctl-exporter/ks.yaml
   - ./unpoller/ks.yaml
   - ./victoria-logs/ks.yaml
-  - ./victoria-metrics/ks.yaml
