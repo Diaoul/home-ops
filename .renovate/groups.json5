@@ -25,7 +25,7 @@
       minimumGroupSize: 2,
     },
     {
-      description: ["Dragonfly Operator Group"],
+      description: "Dragonfly Operator Group",
       groupName: "dragonfly-operator",
       matchPackagePatterns: ["dragonfly(?:db)?.operator"],
       matchDatasources: ["docker", "github-releases"],
@@ -45,19 +45,6 @@
       minimumGroupSize: 3,
     },
     {
-      description: "Intel Device Plugins Group",
-      groupName: "intel-device-plugins",
-      matchDatasources: ["docker"],
-      matchPackageNames: [
-        "/intel-device-plugins-operator/",
-        "/intel-device-plugins-gpu/",
-      ],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
-      minimumGroupSize: 2,
-    },
-    {
       description: "Kubernetes Group",
       groupName: "kubernetes",
       matchDatasources: ["docker"],
@@ -71,7 +58,7 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 2,
+      minimumGroupSize: 5,
     },
     {
       description: "Rook-Ceph Group",
@@ -86,8 +73,8 @@
     {
       description: "Talos Group",
       groupName: "talos",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["/installer/", "/talosctl/"],
+      matchDatasources: ["custom.talos-factory", "github-releases"],
+      matchPackageNames: ["/siderolabs\\/talos/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },

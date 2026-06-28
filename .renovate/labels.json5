@@ -33,5 +33,9 @@
       matchDatasources: ["github-releases"],
       addLabels: ["renovate/github-release"],
     },
+    {
+      matchDatasources: ["custom.talos-factory"],
+      addLabels: ["renovate/talos"],
+    },
   ],
 }

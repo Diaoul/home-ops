@@ -52,6 +52,14 @@
       ignoreTests: true,
     },
     {
+      description: "Auto-merge Renovate Presets",
+      matchManagers: ["renovate-config"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch"],
+      ignoreTests: true,
+    },
+    {
       description: "Auto-merge Mise Tools",
       matchManagers: ["mise"],
       automerge: true,

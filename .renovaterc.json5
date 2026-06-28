@@ -7,8 +7,6 @@
     "github>Diaoul/home-ops//.renovate/groups.json5",
     "github>Diaoul/home-ops//.renovate/labels.json5",
     "github>Diaoul/home-ops//.renovate/overrides.json5",
-    ":automergeDigest",
-    ":semanticCommits",
     ":timezone(Europe/Paris)",
   ],
   suppressNotifications: ["prEditedNotification", "prIgnoreNotification"],
