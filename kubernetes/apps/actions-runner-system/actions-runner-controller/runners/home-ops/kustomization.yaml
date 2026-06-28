@@ -7,4 +7,3 @@ resources:
   - ./ocirepository.yaml
   - ./rbac.yaml
   - ./secret.sops.yaml
-  - ./talos-secret.sops.yaml
