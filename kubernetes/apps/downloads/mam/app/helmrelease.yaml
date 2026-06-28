@@ -31,7 +31,7 @@ spec:
               - -fsSL
               - --cookie
               - mam_id=$(MAM_SESSION_ID)
-              - https://www.myanonamouse.net/json/dynamicSeedbox.php
+              - https://t.myanonamouse.net/json/dynamicSeedbox.php
             envFrom:
               - secretRef:
                   name: mam
