@@ -12,6 +12,13 @@ spec:
   values:
     controllers:
       esphome:
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -29,6 +36,10 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 5
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
