@@ -26,6 +26,7 @@ spec:
               tag: 2026.6.2@sha256:334ac933391e94c8ee7961f423fa1d48cadc4da5864e82e32d6eee8dc68e2456
             env:
               ESPHOME_DASHBOARD_USE_PING: true
+              PLATFORMIO_CORE_DIR: /config/.esphome/platformio
             probes:
               liveness:
                 enabled: true
