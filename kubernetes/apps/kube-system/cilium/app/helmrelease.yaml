@@ -35,18 +35,12 @@ spec:
     endpointRoutes:
       enabled: true
     envoy:
-      rollOutPods: true
-      prometheus:
-        serviceMonitor:
-          enabled: true
-    gatewayAPI:
-      enabled: true
+      enabled: false
     hubble:
       enabled: false
     ipam:
       mode: kubernetes
-    ipv4BigTCP:
-      enabled: true
+    enableIPv4BIGTCP: true
     ipv4NativeRoutingCIDR: 10.42.0.0/16
     k8sServiceHost: 127.0.0.1
     k8sServicePort: 7445
@@ -98,4 +92,5 @@ spec:
           - SYS_ADMIN
           - SYS_RESOURCE
     socketLB:
+      enabled: true
       hostNamespaceOnly: true

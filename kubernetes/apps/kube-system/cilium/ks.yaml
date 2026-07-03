@@ -20,27 +20,3 @@ spec:
   timeout: 5m
   wait: false
   targetNamespace: kube-system
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cilium-gateway
-spec:
-  dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
-  interval: 1h
-  path: ./kubernetes/apps/kube-system/cilium/gateway
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  timeout: 15m
-  wait: true
-  targetNamespace: kube-system
