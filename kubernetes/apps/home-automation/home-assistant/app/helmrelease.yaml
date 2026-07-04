@@ -92,6 +92,10 @@ spec:
     persistence:
       config:
         existingClaim: home-assistant
+      # entrypoint.sh does `uv venv --allow-existing` against this cache, so it never
+      # reconciles against the image's own package versions. When a home-assistant bump
+      # changes a hard dependency pin (e.g. aiohttp), this PVC must be wiped by hand or
+      # the app crashes at runtime with a stale/mismatched dependency (seen on 2026.7.x).
       config-cache:
         existingClaim: home-assistant-cache
         globalMounts:
