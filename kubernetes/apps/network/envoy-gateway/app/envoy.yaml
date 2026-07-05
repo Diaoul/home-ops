@@ -168,7 +168,8 @@ spec:
   tls:
     minVersion: "1.2"
     alpnProtocols:
-      - h2
+      # h2 temporarily disabled: Kodi direct-play over HTTP/2 truncates long
+      # media streams (premature demuxer EOF). Forcing http/1.1 to test.
       - http/1.1
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
