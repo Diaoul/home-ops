@@ -14,6 +14,7 @@ spec:
           "type": "macvlan",
           "master": "bond0.90",
           "mode": "bridge",
+          "mtu": 1420,
           "ipam": {
             "type": "static",
             "routes": [
