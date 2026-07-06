@@ -7,9 +7,7 @@ metadata:
 spec:
   logging:
     level:
-      default: warn
-      connection: debug
-      http: debug
+      default: info
   provider:
     type: Kubernetes
     kubernetes:
