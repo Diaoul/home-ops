@@ -10,36 +10,33 @@ spec:
     name: kopiur
   interval: 1h
   values:
-    controller:
-      extraVolumes:
-        - name: repo
-          nfs:
-            server: singularity.milkyway
-            path: /volume2/backups/kopiur
-      extraVolumeMounts:
-        - name: repo
-          mountPath: /repo
-      resources:
-        requests:
-          cpu: 100m
-        limits:
-          memory: 2Gi
-      streamingLists: true
+    extraVolumes:
+      - name: repo
+        nfs:
+          server: singularity.milkyway
+          path: /volume2/backups/kopiur
+    extraVolumeMounts:
+      - name: repo
+        mountPath: /repo
+    resources:
+      requests:
+        cpu: 100m
+      limits:
+        memory: 2Gi
     features:
       credentialProjection:
         enabled: true
-    grafanaDashboard:
-      enabled: true
-      grafanaOperator:
-        enabled: true
-        matchLabels:
-          dashboards: grafana
-    installScope: cluster
-    metrics:
+    monitoring:
       serviceMonitor:
         enabled: true
       prometheusRule:
         enabled: true
+      dashboards:
+        enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            dashboards: grafana
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 568
