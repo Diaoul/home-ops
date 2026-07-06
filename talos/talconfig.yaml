@@ -80,13 +80,13 @@ nodes:
             dhcp: false
             addresses:
               - 10.0.30.24/24
-            mtu: 9000
+            mtu: 1500
           - # VPN
             vlanId: 90
             dhcp: false
             addresses:
               - 10.0.90.24/24
-            mtu: 9000
+            mtu: 1500
         vip:
           ip: 10.0.3.3
     certSANs: *sans
@@ -115,13 +115,13 @@ nodes:
             dhcp: false
             addresses:
               - 10.0.30.25/24
-            mtu: 9000
+            mtu: 1500
           - # VPN
             vlanId: 90
             dhcp: false
             addresses:
               - 10.0.90.25/24
-            mtu: 9000
+            mtu: 1500
         vip:
           ip: 10.0.3.3
     certSANs: *sans
@@ -150,13 +150,13 @@ nodes:
             dhcp: false
             addresses:
               - 10.0.30.26/24
-            mtu: 9000
+            mtu: 1500
           - # VPN
             vlanId: 90
             dhcp: false
             addresses:
               - 10.0.90.26/24
-            mtu: 9000
+            mtu: 1500
         vip:
           ip: 10.0.3.3
     certSANs: *sans
@@ -185,13 +185,13 @@ nodes:
             dhcp: false
             addresses:
               - 10.0.30.27/24
-            mtu: 9000
+            mtu: 1500
           - # VPN
             vlanId: 90
             dhcp: false
             addresses:
               - 10.0.90.27/24
-            mtu: 9000
+            mtu: 1500
     certSANs: *sans
   - hostname: k8s-node-5
     ipAddress: 10.0.3.28
@@ -218,13 +218,13 @@ nodes:
             dhcp: false
             addresses:
               - 10.0.30.28/24
-            mtu: 9000
+            mtu: 1500
           - # VPN
             vlanId: 90
             dhcp: false
             addresses:
               - 10.0.90.28/24
-            mtu: 9000
+            mtu: 1500
     certSANs: *sans
 
 # NOTE: don't use nameservers in machine-network and servers in machine-time patches from upstream
