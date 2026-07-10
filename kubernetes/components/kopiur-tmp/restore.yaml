@@ -7,6 +7,15 @@ metadata:
 spec:
   credentialProjection:
     enabled: true
+  mover:
+    # Restore mover must write files as the app's UID/GID (cluster default 568),
+    # otherwise restored files land as root:root and mode-0600 files (e.g. SQLite
+    # DBs) are unreadable by the app -> "disk I/O error". fsGroup ensures group
+    # ownership + setgid on dirs.
+    podSecurityContext:
+      runAsUser: ${KOPIUR_PUID:=568}
+      runAsGroup: ${KOPIUR_PGID:=568}
+      fsGroup: ${KOPIUR_PGID:=568}
   policy:
     onMissingSnapshot: Continue
   source:
