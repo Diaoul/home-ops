@@ -6,13 +6,10 @@ metadata:
   name: thelounge
 spec:
   components:
-    - ../../../../components/persistence
     - ../../../../components/kopiur
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
     - name: kopiur-repository
       namespace: kopiur-system
   path: ./kubernetes/apps/default/thelounge/app
