@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.7.1@sha256:77612bf97ff111c5517f708b7893e6d4400e0104db24cdd69e30105c95b7bfcc
+              tag: 2026.7.4@sha256:fc3c0b5f7c2ff61a81b3c84dfcc405d3ff28bfc73caf68fb5c31818515f3554e
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
