@@ -45,10 +45,18 @@ spec:
       enabled: true
       rules:
         - alert: BlackboxProbeFailed
-          expr: probe_success == 0
+          expr: 'probe_success{job!="devices_optional"} == 0'
           for: 15m
           labels:
             severity: critical
           annotations:
             summary: |-
               The host {{ $labels.target }} is currently unreachable
+        - alert: BlackboxProbeFailedOptional
+          expr: 'probe_success{job="devices_optional"} == 0'
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: |-
+              The host {{ $labels.target }} is currently unreachable (expected when powered off)
