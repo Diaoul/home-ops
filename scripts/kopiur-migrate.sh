@@ -192,6 +192,17 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
     log info "Pushed" commit="$(git -C "${REPO_DIR}" rev-parse --short HEAD)"
 
     # --- swap the PVC ----------------------------------------------------
+    # Flux MUST have the pushed revision cached before the PVC is deleted.
+    # With a stale source it recreates the PVC from the old manifests, volsync
+    # dataSourceRef and all; that spec is then immutable and nothing populates
+    # it, so the app is stuck Pending forever. This deadlocked autobrr.
+    flux reconcile source git flux-system -n flux-system --timeout=2m >/dev/null
+    local want got
+    want="refs/heads/main@sha1:$(git -C "${REPO_DIR}" rev-parse HEAD)"
+    got="$(kubectl get gitrepository flux-system -n flux-system -o jsonpath='{.status.artifact.revision}')"
+    [[ "${got}" == "${want}" ]] ||
+        log error "Flux source is stale; refusing to delete the PVC" want="${want}" got="${got}"
+
     # Expected to fail: the PVC's dataSourceRef is immutable, so Flux cannot
     # apply the new spec until the old PVC is gone.
     flux reconcile kustomization "${app}" -n "${ns}" --timeout=2m >/dev/null 2>&1 || true
@@ -203,6 +214,13 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
     kubectl delete "pvc/${app}" -n "${ns}" --timeout=2m >/dev/null
     log info "PVC deleted, reconciling so kopiur recreates and repopulates it"
     flux reconcile kustomization "${app}" -n "${ns}" --timeout=5m >/dev/null
+
+    # Catch the stale-source failure directly rather than waiting out a Restore
+    # that will never be created.
+    local dsr
+    dsr="$(kubectl get "pvc/${app}" -o jsonpath='{.spec.dataSourceRef.apiGroup}' -n "${ns}" 2>/dev/null || true)"
+    [[ "${dsr}" == "kopiur.home-operations.com" ]] ||
+        log error "PVC recreated with the wrong dataSourceRef -- delete it and reconcile again" got="${dsr:-none}"
 
     until [[ -n "$(kubectl get "restore.kopiur.home-operations.com/${app}" -o jsonpath='{.status.phase}' -n "${ns}" 2>/dev/null | grep -E 'Completed|Succeeded|Failed')" ]]; do sleep 5; done
     local rphase
