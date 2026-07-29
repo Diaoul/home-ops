@@ -29,12 +29,18 @@ REPO_DIR="$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel)"
 SCRATCH="${TMPDIR:-/tmp}/kopiur-migrate"
 ASSUME_YES="${ASSUME_YES:-false}"
 
-# Emits: file count, total bytes, then a sha256 per file (relative paths, so
-# the two fingerprints are comparable). The -wal/-shm/-lock/-pid patterns are
-# quoted so the container's shell cannot glob-expand them before find runs.
+# Emits a file count then a sha256 per file, with relative paths so that two
+# fingerprints compare directly. The -wal/-shm/-lock/-pid patterns are quoted
+# so the container's shell cannot glob-expand them before find runs.
+#
+# `du` output is prefixed with '#' and excluded from the comparison on purpose:
+# it counts the apparent size of directories too, and a restored volume is a
+# freshly formatted filesystem whose directory blocks are allocated
+# differently. cross-seed restored with all 680 file hashes identical but a
+# 12288-byte (3 x 4096) du difference. Content hashes are the real assertion.
 FINGERPRINT_CMD='cd /data \
-  && find . -type f | wc -l \
-  && du -sb . | cut -f1 \
+  && printf "files=%s\n" "$(find . -type f | wc -l | tr -d " ")" \
+  && printf "# apparent_bytes=%s\n" "$(du -sb . | cut -f1)" \
   && find . -type f ! \( -name "*-wal" -o -name "*-shm" -o -name "*.lock" -o -name "*.pid" \) \
      | sort | xargs -r sha256sum'
 
@@ -71,13 +77,32 @@ function fingerprint_pvc() {
     kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${pod}" --timeout=5m -n "${ns}" >/dev/null
     kubectl logs "pod/${pod}" -n "${ns}" >"${out}"
     kubectl delete "pod/${pod}" -n "${ns}" --wait=false >/dev/null
-    log info "Fingerprinted volume" pvc="${ns}/${pvc}" files="$(head -1 "${out}")" bytes="$(sed -n 2p "${out}")"
+    log info "Fingerprinted volume" pvc="${ns}/${pvc}" \
+        "$(grep -m1 '^files=' "${out}")" \
+        "hashed=$(grep -c '^[0-9a-f]\{64\}  ' "${out}")"
 }
 
 function confirm() {
     [[ "${ASSUME_YES}" == "true" ]] && return 0
     read -rp "$1 [y/N] " reply
     [[ "${reply}" =~ ^[Yy]$ ]]
+}
+
+# Commits and pushes are gated on a YubiKey touch, and gpg gives up after ~30s
+# with "signing failed: Timeout". Without this retry a missed touch aborts the
+# run with the app scaled to 0, so keep asking rather than bailing out.
+function git_retry() {
+    local desc="$1"
+    shift
+    local attempt
+    for attempt in 1 2 3 4 5; do
+        if "$@"; then
+            return 0
+        fi
+        log warn "${desc} failed -- TOUCH THE YUBIKEY; retrying" attempt="${attempt}/5"
+        sleep 5
+    done
+    log error "${desc} failed after 5 attempts" hint="app is scaled to 0; see the resume note above"
 }
 
 function migrate() {
@@ -97,7 +122,11 @@ function migrate() {
         jq -r '[.items[]|select(.status.conditions[]?|select(.type=="Ready" and .status!="True"))|"\(.metadata.namespace)/\(.metadata.name)"]|join(",")')"
     [[ -z "${unready}" ]] || log error "Flux is not clean; fix before migrating" unready="${unready}"
 
-    [[ -z "$(git -C "${REPO_DIR}" status --porcelain -- "${ks}")" ]] || log error "ks.yaml already has uncommitted changes" path="${ks}"
+    # A dirty ks.yaml usually means an earlier run died between the rewrite and
+    # the push. Re-running from the top would take a second snapshot, so commit
+    # or revert that file by hand first.
+    [[ -z "$(git -C "${REPO_DIR}" status --porcelain -- "${ks}")" ]] ||
+        log error "ks.yaml has uncommitted changes -- commit or revert it, then re-run" path="${ks}"
 
     # --- discover the workload ------------------------------------------
     local ctrl replicas
@@ -150,7 +179,7 @@ EOF
     bash "${REPO_DIR}/scripts/kubeconform.sh" "${REPO_DIR}/kubernetes" >"${SCRATCH}/${app}-kubeconform.log" 2>&1 ||
         log error "kubeconform failed" log="${SCRATCH}/${app}-kubeconform.log"
 
-    git -C "${REPO_DIR}" commit -q -m "feat(${app}): migrate persistence->kopiur
+    git_retry "commit" git -C "${REPO_DIR}" commit -q -m "feat(${app}): migrate persistence->kopiur
 
 Drop the volsync persistence component and the snapshot-only kopiur
 component in favour of kopiur-tmp, which owns both the PVC and the Restore.
@@ -159,7 +188,7 @@ Also drop the now-unneeded volsync dependsOn.
 Pre-migration quiesced snapshot: ${kopia}
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
-    git -C "${REPO_DIR}" push -q origin HEAD
+    git_retry "push" git -C "${REPO_DIR}" push -q origin HEAD
     log info "Pushed" commit="$(git -C "${REPO_DIR}" rev-parse --short HEAD)"
 
     # --- swap the PVC ----------------------------------------------------
@@ -186,7 +215,8 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
     # restore.yaml sets onMissingSnapshot=Continue, so a missed snapshot
     # yields an *empty* PVC rather than an error. Never trust phases alone.
     fingerprint_pvc "${ns}" "${app}" "${SCRATCH}/${app}-post.txt"
-    if diff "${SCRATCH}/${app}-pre.txt" "${SCRATCH}/${app}-post.txt" >"${SCRATCH}/${app}-diff.txt"; then
+    if diff <(grep -v '^#' "${SCRATCH}/${app}-pre.txt") \
+            <(grep -v '^#' "${SCRATCH}/${app}-post.txt") >"${SCRATCH}/${app}-diff.txt"; then
         log info "Volume is byte-identical to the pre-migration fingerprint"
     else
         log warn "FINGERPRINT MISMATCH -- inspect before trusting this app" diff="${SCRATCH}/${app}-diff.txt"
