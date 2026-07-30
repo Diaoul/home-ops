@@ -41,6 +41,55 @@ ASSUME_YES="${ASSUME_YES:-false}"
 # daily and verification.deep monthly).
 
 
+# Stop the workload from touching the PVC. Deployments/StatefulSets scale to
+# zero; CronJobs get suspended and any in-flight Job is waited out (killing a
+# running Job mid-write is exactly what quiescing is meant to avoid).
+function quiesce_workload() {
+    local ns="$1" app="$2" ctrl="$3"
+
+    if [[ "${ctrl}" == cronjob.batch/* ]]; then
+        kubectl patch "${ctrl}" -n "${ns}" -p '{"spec":{"suspend":true}}' >/dev/null
+        log info "Suspended CronJob, waiting for any running Job"
+    else
+        kubectl scale "${ctrl}" --replicas 0 -n "${ns}" >/dev/null
+        log info "Scaled to 0, waiting for pods to go away"
+    fi
+
+    until [[ "$(kubectl get pods -l "app.kubernetes.io/name=${app}" --no-headers -n "${ns}" 2>/dev/null | grep -cvE '\s(Completed|Succeeded)\s')" == "0" ]]; do sleep 3; done
+
+    # Terminal-phase pods still *reference* the PVC, so they keep the
+    # kubernetes.io/pvc-protection finalizer on it and the later delete hangs
+    # until it times out. Scaling a Deployment to 0 removes its pods, but a
+    # CronJob leaves completed Job pods behind -- recyclarr's 8h-old Succeeded
+    # pod wedged its PVC in Terminating. Their Jobs are already Complete, so
+    # nothing recreates them.
+    local stale
+    stale="$(kubectl get pods -n "${ns}" -o json |
+        jq -r --arg pvc "${app}" '.items[]
+            | select(.spec.volumes[]?.persistentVolumeClaim?.claimName == $pvc)
+            | select(.status.phase == "Succeeded" or .status.phase == "Failed")
+            | .metadata.name')"
+    if [[ -n "${stale}" ]]; then
+        # shellcheck disable=SC2086
+        kubectl delete pod -n "${ns}" ${stale} --wait=false >/dev/null
+        log info "Deleted completed pods still holding the PVC" pods="${stale//$'\n'/ }"
+    fi
+}
+
+# Put it back the way we found it.
+function resume_workload() {
+    local ns="$1" app="$2" ctrl="$3" replicas="$4"
+
+    if [[ "${ctrl}" == cronjob.batch/* ]]; then
+        kubectl patch "${ctrl}" -n "${ns}" -p '{"spec":{"suspend":false}}' >/dev/null
+        log info "Un-suspended CronJob" controller="${ctrl}"
+    else
+        kubectl scale "${ctrl}" --replicas "${replicas}" -n "${ns}" >/dev/null
+        kubectl rollout status "${ctrl}" --timeout=10m -n "${ns}" >/dev/null
+        log info "Rolled out" controller="${ctrl}"
+    fi
+}
+
 function confirm() {
     [[ "${ASSUME_YES}" == "true" ]] && return 0
     read -rp "$1 [y/N] " reply
@@ -172,26 +221,29 @@ function swap() {
     [[ "${got}" == "${want}" ]] || log error "Flux source is stale; run prepare or reconcile first" want="${want}" got="${got}"
 
     # --- discover the workload ------------------------------------------
-    local ctrl replicas
-    ctrl="$(kubectl get deploy,sts -l "app.kubernetes.io/name=${app}" -o name --no-headers -n "${ns}" | head -1)"
-    [[ -n "${ctrl}" ]] || log error "No deployment/statefulset found" app="${ns}/${app}"
-    replicas="$(kubectl get "${ctrl}" -o jsonpath='{.spec.replicas}' -n "${ns}")"
+    # CronJobs (recyclarr) have no replicas: they are quiesced by suspending
+    # them and waiting out any in-flight Job, not by scaling.
+    local ctrl replicas=""
+    ctrl="$(kubectl get deploy,sts,cronjob -l "app.kubernetes.io/name=${app}" -o name --no-headers -n "${ns}" | head -1)"
+    [[ -n "${ctrl}" ]] || log error "No deployment/statefulset/cronjob found" app="${ns}/${app}"
 
-    # Already at 0 almost always means an earlier run of this script died after
-    # quiescing. Restoring "the original 0" would then leave the app down for
-    # good -- which is exactly what happened to home-assistant. Refuse to guess.
-    if [[ "${replicas}" == "0" ]]; then
-        [[ -n "${REPLICAS:-}" ]] ||
-            log error "Already scaled to 0 -- a previous run probably died here. Re-run with REPLICAS=<n> to say what to scale back to" app="${ns}/${app}"
-        replicas="${REPLICAS}"
-        log warn "Was already at 0; will scale back to REPLICAS" replicas="${replicas}"
+    if [[ "${ctrl}" != cronjob.batch/* ]]; then
+        replicas="$(kubectl get "${ctrl}" -o jsonpath='{.spec.replicas}' -n "${ns}")"
+
+        # Already at 0 almost always means an earlier run of this script died
+        # after quiescing. Restoring "the original 0" would then leave the app
+        # down for good -- which is what happened to home-assistant.
+        if [[ "${replicas}" == "0" ]]; then
+            [[ -n "${REPLICAS:-}" ]] ||
+                log error "Already scaled to 0 -- a previous run probably died here. Re-run with REPLICAS=<n> to say what to scale back to" app="${ns}/${app}"
+            replicas="${REPLICAS}"
+            log warn "Was already at 0; will scale back to REPLICAS" replicas="${replicas}"
+        fi
     fi
-    log info "Migrating" app="${ns}/${app}" controller="${ctrl}" replicas="${replicas}"
+    log info "Migrating" app="${ns}/${app}" controller="${ctrl}" replicas="${replicas:-n/a}"
 
     # --- quiesce ---------------------------------------------------------
-    kubectl scale "${ctrl}" --replicas 0 -n "${ns}" >/dev/null
-    log info "Scaled to 0, waiting for pods to go away"
-    until [[ "$(kubectl get pods -l "app.kubernetes.io/name=${app}" --no-headers -n "${ns}" 2>/dev/null | wc -l)" == "0" ]]; do sleep 3; done
+    quiesce_workload "${ns}" "${app}" "${ctrl}"
 
     # --- snapshot the quiesced volume ------------------------------------
     # Retain so that deleting this CR later cannot destroy the safety net.
@@ -213,8 +265,8 @@ EOF
     phase="$(kubectl get "snapshot.kopiur.home-operations.com/${snap}" -o jsonpath='{.status.phase}' -n "${ns}")"
     kopia="$(kubectl get "snapshot.kopiur.home-operations.com/${snap}" -o jsonpath='{.status.snapshot.kopiaSnapshotID}' -n "${ns}")"
     if [[ "${phase}" != "Succeeded" ]]; then
-        kubectl scale "${ctrl}" --replicas "${replicas}" -n "${ns}" >/dev/null
-        log error "Snapshot failed; scaled back up, nothing destroyed" snapshot="${snap}" phase="${phase}"
+        resume_workload "${ns}" "${app}" "${ctrl}" "${replicas}"
+        log error "Snapshot failed; workload resumed, nothing destroyed" snapshot="${snap}" phase="${phase}"
     fi
     log info "Snapshot ready" snapshot="${snap}" kopia="${kopia}"
 
@@ -230,8 +282,8 @@ EOF
     flux reconcile kustomization "${app}" -n "${ns}" --timeout=2m >/dev/null 2>&1 || true
 
     if ! confirm "Delete PVC ${ns}/${app}? (snapshot ${kopia} holds the data)"; then
-        kubectl scale "${ctrl}" --replicas "${replicas}" -n "${ns}" >/dev/null
-        log error "Aborted by user; scaled back up, PVC untouched"
+        resume_workload "${ns}" "${app}" "${ctrl}" "${replicas}"
+        log error "Aborted by user; workload resumed, PVC untouched"
     fi
     kubectl delete "pvc/${app}" -n "${ns}" --timeout=2m >/dev/null
     log info "PVC deleted, reconciling so kopiur recreates and repopulates it"
@@ -274,9 +326,7 @@ EOF
     fi
 
     # --- back up ---------------------------------------------------------
-    kubectl scale "${ctrl}" --replicas "${replicas}" -n "${ns}" >/dev/null
-    kubectl rollout status "${ctrl}" --timeout=5m -n "${ns}" >/dev/null
-    log info "Rolled out" controller="${ctrl}"
+    resume_workload "${ns}" "${app}" "${ctrl}" "${replicas}"
 
     kubectl logs -l "app.kubernetes.io/name=${app}" --tail=200 -n "${ns}" 2>/dev/null |
         grep -iE 'corrupt|malformed|panic|fatal' && log warn "Suspicious lines in logs -- check them" || true
