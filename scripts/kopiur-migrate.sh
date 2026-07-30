@@ -5,17 +5,13 @@
 # The PVC's dataSourceRef is immutable, so migrating means deleting and
 # recreating the PVC. To make that safe this script:
 #   1. scales the app to 0 (quiesces SQLite -- WAL gets checkpointed)
-#   2. fingerprints the volume from a throwaway pod
-#   3. takes an on-demand kopiur snapshot of the quiesced volume
-#   4. rewrites ks.yaml, commits, pushes
-#   5. deletes the PVC so kopiur's Restore repopulates it
-#   6. fingerprints the *restored* volume from a throwaway pod, before the
-#      app runs again, and requires it to match step 2 byte for byte
-#   7. scales the app back up and checks it is healthy
+#   2. takes an on-demand kopiur snapshot of the quiesced volume
+#   3. deletes the PVC so kopiur's Restore repopulates it
+#   4. asserts the Restore consumed that exact snapshot
+#   5. scales the app back up and checks it is healthy
 #
-# Both fingerprints are taken with no app running, which is why they can be
-# compared exactly. Comparing a pre-shutdown fingerprint against a running
-# app is not meaningful: the clean shutdown itself rewrites SQLite files.
+# The git half (rewrite ks.yaml, commit, push) lives in `prepare` so a batch
+# of apps costs two YubiKey touches in total rather than two per app.
 #
 # Delete this script once the migration is finished (see the final fold-in in
 # ~/.claude/plans/kopiur-migration-resume.md).
@@ -29,58 +25,21 @@ REPO_DIR="$(git -C "$(dirname "${BASH_SOURCE[0]}")" rev-parse --show-toplevel)"
 SCRATCH="${TMPDIR:-/tmp}/kopiur-migrate"
 ASSUME_YES="${ASSUME_YES:-false}"
 
-# Emits a file count then a sha256 per file, with relative paths so that two
-# fingerprints compare directly. The -wal/-shm/-lock/-pid patterns are quoted
-# so the container's shell cannot glob-expand them before find runs.
+# NOTE: earlier versions fingerprinted the volume from a throwaway pod before
+# and after the swap and required the two to match. That was dropped once the
+# restore path was proven across 7 apps: it cost two extra pods and a full
+# read of every file per app, and produced three bugs of its own (du is not
+# comparable across a freshly formatted filesystem; xargs split paths
+# containing spaces; `kubectl wait --for=Succeeded` waited out its timeout on
+# an already-Failed pod).
 #
-# `du` output is prefixed with '#' and excluded from the comparison on purpose:
-# it counts the apparent size of directories too, and a restored volume is a
-# freshly formatted filesystem whose directory blocks are allocated
-# differently. cross-seed restored with all 680 file hashes identical but a
-# 12288-byte (3 x 4096) du difference. Content hashes are the real assertion.
-FINGERPRINT_CMD='cd /data \
-  && printf "files=%s\n" "$(find . -type f | wc -l | tr -d " ")" \
-  && printf "# apparent_bytes=%s\n" "$(du -sb . | cut -f1)" \
-  && find . -type f ! \( -name "*-wal" -o -name "*-shm" -o -name "*.lock" -o -name "*.pid" \) \
-     | sort | xargs -r sha256sum'
+# What is actually load-bearing is that the Restore consumed the snapshot we
+# took moments earlier. restore.yaml sets onMissingSnapshot=Continue, so a
+# missed snapshot yields an *empty* PVC rather than an error -- comparing the
+# restored snapshot ID against ours is exactly what catches that, and content
+# integrity is kopia's own job (the SnapshotPolicy runs verification.quick
+# daily and verification.deep monthly).
 
-# Read-only fingerprint of a PVC, taken from a throwaway pod so that no
-# application is running while we read. Runs as root because app data is
-# routinely mode 0600 owned by the app's uid.
-function fingerprint_pvc() {
-    local ns="$1" pvc="$2" out="$3"
-    local pod="fingerprint-${pvc}-$$"
-    local overrides
-
-    # Built with jq so that quoting in FINGERPRINT_CMD survives into the JSON.
-    overrides="$(jq -n --arg pvc "${pvc}" --arg cmd "${FINGERPRINT_CMD}" '{
-      spec: {
-        securityContext: {runAsUser: 0, runAsGroup: 0},
-        restartPolicy: "Never",
-        containers: [{
-          name: "fingerprint",
-          image: "docker.io/library/busybox:stable",
-          command: ["sh", "-c", $cmd],
-          volumeMounts: [{name: "data", mountPath: "/data", readOnly: true}]
-        }],
-        volumes: [{name: "data", persistentVolumeClaim: {claimName: $pvc}}]
-      }
-    }')"
-
-    kubectl run "${pod}" \
-        --image=docker.io/library/busybox:stable \
-        --restart=Never \
-        --quiet \
-        --overrides="${overrides}" \
-        -n "${ns}" >/dev/null
-
-    kubectl wait --for=jsonpath='{.status.phase}'=Succeeded "pod/${pod}" --timeout=5m -n "${ns}" >/dev/null
-    kubectl logs "pod/${pod}" -n "${ns}" >"${out}"
-    kubectl delete "pod/${pod}" -n "${ns}" --wait=false >/dev/null
-    log info "Fingerprinted volume" pvc="${ns}/${pvc}" \
-        "$(grep -m1 '^files=' "${out}")" \
-        "hashed=$(grep -c '^[0-9a-f]\{64\}  ' "${out}")"
-}
 
 function confirm() {
     [[ "${ASSUME_YES}" == "true" ]] && return 0
@@ -105,42 +64,134 @@ function git_retry() {
     log error "${desc} failed after 5 attempts" hint="app is scaled to 0; see the resume note above"
 }
 
-function migrate() {
+# Rewrite one app's ks.yaml: drop the volsync persistence + snapshot-only
+# kopiur components and the volsync dependsOn, add kopiur-tmp. Any other
+# component (zeroscaler, ext-auth, ...) is preserved.
+function rewrite_ks() {
+    local ns="$1" app="$2"
+    local ks="${REPO_DIR}/kubernetes/apps/${ns}/${app}/ks.yaml"
+
+    [[ -f "${ks}" ]] || log error "No ks.yaml" path="${ks}"
+    grep -q 'components/persistence' "${ks}" ||
+        log error "Not on the persistence component (already migrated?)" app="${ns}/${app}"
+    [[ -z "$(git -C "${REPO_DIR}" status --porcelain -- "${ks}")" ]] ||
+        log error "ks.yaml has uncommitted changes -- commit or revert it first" path="${ks}"
+
+    yq -i '
+      .spec.components = ((.spec.components // []) | map(select(test("components/(persistence|kopiur)$") | not)))
+      | .spec.dependsOn = ((.spec.dependsOn // []) | map(select(.name != "volsync")))
+    ' "${ks}"
+    yq -e '.spec.components | any_c(. == "../../../../components/kopiur-tmp")' "${ks}" >/dev/null 2>&1 ||
+        yq -i '.spec.components += ["../../../../components/kopiur-tmp"]' "${ks}"
+    log info "Rewrote ks.yaml" app="${ns}/${app}"
+}
+
+# Rewrite every listed app, validate once, then a SINGLE commit and push.
+# This is what makes a batch unattended: two YubiKey touches for the whole
+# batch instead of two per app.
+#
+# After this lands, every prepared-but-not-yet-swapped app sits Ready=False
+# with "PersistentVolumeClaim ... is immutable". That is expected and benign:
+# a failed apply is atomic, so nothing changes and nothing is pruned -- the
+# volsync ReplicationSources and their backups stay live until each app is
+# actually swapped.
+function prepare() {
+    [[ $# -gt 0 ]] || log error "usage: $0 prepare <ns/app> [<ns/app>...]"
+    mkdir -p "${SCRATCH}"
+
+    [[ -n "$(kubectl get pods -n volsync-system --no-headers 2>/dev/null)" ]] ||
+        log error "volsync is gone -- rollback would be impossible"
+
+    local pair ns app files=() names=()
+    for pair in "$@"; do
+        ns="${pair%%/*}"
+        app="${pair##*/}"
+        [[ "${ns}" != "${pair}" ]] || log error "Expected <ns>/<app>" got="${pair}"
+        rewrite_ks "${ns}" "${app}"
+        files+=("${REPO_DIR}/kubernetes/apps/${ns}/${app}/ks.yaml")
+        names+=("${pair}")
+    done
+
+    log info "Validating manifests (once for the whole batch)"
+    bash "${REPO_DIR}/scripts/kubeconform.sh" "${REPO_DIR}/kubernetes" >"${SCRATCH}/prepare-kubeconform.log" 2>&1 ||
+        log error "kubeconform failed" log="${SCRATCH}/prepare-kubeconform.log"
+
+    git_retry "commit" git -C "${REPO_DIR}" commit -q -m "feat(kopiur): migrate persistence->kopiur for $# app(s)
+
+$(printf -- '- %s\n' "${names[@]}")
+
+Drop the volsync persistence component and the snapshot-only kopiur
+component in favour of kopiur-tmp, which owns both the PVC and the Restore.
+Also drop the now-unneeded volsync dependsOn.
+
+The PVC swap happens separately per app (see: kopiur-migrate.sh swap), so
+until each app is swapped its Kustomization fails on the immutable PVC.
+That apply is atomic, so volsync backups keep running in the meantime.
+
+Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${files[@]}"
+    git_retry "push" git -C "${REPO_DIR}" push -q origin HEAD
+
+    flux reconcile source git flux-system -n flux-system --timeout=2m >/dev/null
+    local want got
+    want="refs/heads/main@sha1:$(git -C "${REPO_DIR}" rev-parse HEAD)"
+    got="$(kubectl get gitrepository flux-system -n flux-system -o jsonpath='{.status.artifact.revision}')"
+    [[ "${got}" == "${want}" ]] || log error "Flux source did not pick up the push" want="${want}" got="${got}"
+
+    log info "PREPARED -- now run swap for each" apps="${names[*]}" commit="$(git -C "${REPO_DIR}" rev-parse --short HEAD)"
+}
+
+# Cluster-side half: quiesce, snapshot, swap the PVC, verify, scale back up.
+# Does no git at all, so it needs no YubiKey touch.
+function swap() {
     local ns="$1" app="$2"
     local ks="${REPO_DIR}/kubernetes/apps/${ns}/${app}/ks.yaml"
     local snap="${app}-premigration-$(date -u +%Y%m%d%H%M%S)"
 
     mkdir -p "${SCRATCH}"
-    [[ -f "${ks}" ]] || log error "No ks.yaml" path="${ks}"
 
     # --- preflight -------------------------------------------------------
-    grep -q 'components/persistence' "${ks}" || log error "Not on the persistence component (already migrated?)" app="${ns}/${app}"
-    [[ -n "$(kubectl get pods -n volsync-system --no-headers 2>/dev/null)" ]] || log error "volsync is gone -- rollback would be impossible"
-
-    local unready
-    unready="$(kubectl get kustomizations -A -o json |
-        jq -r '[.items[]|select(.status.conditions[]?|select(.type=="Ready" and .status!="True"))|"\(.metadata.namespace)/\(.metadata.name)"]|join(",")')"
-    [[ -z "${unready}" ]] || log error "Flux is not clean; fix before migrating" unready="${unready}"
-
-    # A dirty ks.yaml usually means an earlier run died between the rewrite and
-    # the push. Re-running from the top would take a second snapshot, so commit
-    # or revert that file by hand first.
+    # Deliberately NOT requiring a globally clean Flux: in a batch the sibling
+    # apps are expected to be failing on their immutable PVCs. Check the real
+    # dependencies instead.
+    grep -q 'components/kopiur-tmp' "${ks}" || log error "Not prepared yet -- run prepare first" app="${ns}/${app}"
     [[ -z "$(git -C "${REPO_DIR}" status --porcelain -- "${ks}")" ]] ||
-        log error "ks.yaml has uncommitted changes -- commit or revert it, then re-run" path="${ks}"
+        log error "ks.yaml has uncommitted changes -- commit them first" path="${ks}"
+    [[ -n "$(kubectl get pods -n volsync-system --no-headers 2>/dev/null)" ]] ||
+        log error "volsync is gone -- rollback would be impossible"
+
+    local dep
+    for dep in rook-ceph/rook-ceph-cluster kopiur-system/kopiur-repository; do
+        [[ "$(kubectl get kustomization "${dep##*/}" -n "${dep%%/*}" \
+            -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}' 2>/dev/null)" == "True" ]] ||
+            log error "Dependency not ready" dependency="${dep}"
+    done
+
+    local want got
+    want="refs/heads/main@sha1:$(git -C "${REPO_DIR}" rev-parse HEAD)"
+    got="$(kubectl get gitrepository flux-system -n flux-system -o jsonpath='{.status.artifact.revision}')"
+    [[ "${got}" == "${want}" ]] || log error "Flux source is stale; run prepare or reconcile first" want="${want}" got="${got}"
 
     # --- discover the workload ------------------------------------------
     local ctrl replicas
     ctrl="$(kubectl get deploy,sts -l "app.kubernetes.io/name=${app}" -o name --no-headers -n "${ns}" | head -1)"
     [[ -n "${ctrl}" ]] || log error "No deployment/statefulset found" app="${ns}/${app}"
     replicas="$(kubectl get "${ctrl}" -o jsonpath='{.spec.replicas}' -n "${ns}")"
+
+    # Already at 0 almost always means an earlier run of this script died after
+    # quiescing. Restoring "the original 0" would then leave the app down for
+    # good -- which is exactly what happened to home-assistant. Refuse to guess.
+    if [[ "${replicas}" == "0" ]]; then
+        [[ -n "${REPLICAS:-}" ]] ||
+            log error "Already scaled to 0 -- a previous run probably died here. Re-run with REPLICAS=<n> to say what to scale back to" app="${ns}/${app}"
+        replicas="${REPLICAS}"
+        log warn "Was already at 0; will scale back to REPLICAS" replicas="${replicas}"
+    fi
     log info "Migrating" app="${ns}/${app}" controller="${ctrl}" replicas="${replicas}"
 
     # --- quiesce ---------------------------------------------------------
     kubectl scale "${ctrl}" --replicas 0 -n "${ns}" >/dev/null
     log info "Scaled to 0, waiting for pods to go away"
     until [[ "$(kubectl get pods -l "app.kubernetes.io/name=${app}" --no-headers -n "${ns}" 2>/dev/null | wc -l)" == "0" ]]; do sleep 3; done
-
-    fingerprint_pvc "${ns}" "${app}" "${SCRATCH}/${app}-pre.txt"
 
     # --- snapshot the quiesced volume ------------------------------------
     # Retain so that deleting this CR later cannot destroy the safety net.
@@ -167,42 +218,13 @@ EOF
     fi
     log info "Snapshot ready" snapshot="${snap}" kopia="${kopia}"
 
-    # --- rewrite ks.yaml -------------------------------------------------
-    yq -i '
-      .spec.components = ((.spec.components // []) | map(select(test("components/(persistence|kopiur)$") | not)))
-      | .spec.dependsOn = ((.spec.dependsOn // []) | map(select(.name != "volsync")))
-    ' "${ks}"
-    yq -e '.spec.components | any_c(. == "../../../../components/kopiur-tmp")' "${ks}" >/dev/null 2>&1 ||
-        yq -i '.spec.components += ["../../../../components/kopiur-tmp"]' "${ks}"
-
-    log info "Validating manifests"
-    bash "${REPO_DIR}/scripts/kubeconform.sh" "${REPO_DIR}/kubernetes" >"${SCRATCH}/${app}-kubeconform.log" 2>&1 ||
-        log error "kubeconform failed" log="${SCRATCH}/${app}-kubeconform.log"
-
-    git_retry "commit" git -C "${REPO_DIR}" commit -q -m "feat(${app}): migrate persistence->kopiur
-
-Drop the volsync persistence component and the snapshot-only kopiur
-component in favour of kopiur-tmp, which owns both the PVC and the Restore.
-Also drop the now-unneeded volsync dependsOn.
-
-Pre-migration quiesced snapshot: ${kopia}
-
-Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
-    git_retry "push" git -C "${REPO_DIR}" push -q origin HEAD
-    log info "Pushed" commit="$(git -C "${REPO_DIR}" rev-parse --short HEAD)"
-
     # --- swap the PVC ----------------------------------------------------
-    # Flux MUST have the pushed revision cached before the PVC is deleted.
-    # With a stale source it recreates the PVC from the old manifests, volsync
-    # dataSourceRef and all; that spec is then immutable and nothing populates
-    # it, so the app is stuck Pending forever. This deadlocked autobrr.
-    flux reconcile source git flux-system -n flux-system --timeout=2m >/dev/null
-    local want got
-    want="refs/heads/main@sha1:$(git -C "${REPO_DIR}" rev-parse HEAD)"
-    got="$(kubectl get gitrepository flux-system -n flux-system -o jsonpath='{.status.artifact.revision}')"
-    [[ "${got}" == "${want}" ]] ||
-        log error "Flux source is stale; refusing to delete the PVC" want="${want}" got="${got}"
-
+    # Source freshness was already asserted in the preflight above; prepare()
+    # is what pushes, so by here Flux is guaranteed to hold the new manifests.
+    # Getting this wrong deadlocked autobrr: with a stale source Flux recreates
+    # the PVC from the old manifests, volsync dataSourceRef and all, which is
+    # then immutable and unpopulatable.
+    #
     # Expected to fail: the PVC's dataSourceRef is immutable, so Flux cannot
     # apply the new spec until the old PVC is gone.
     flux reconcile kustomization "${app}" -n "${ns}" --timeout=2m >/dev/null 2>&1 || true
@@ -229,23 +251,26 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
     kubectl wait --for=jsonpath='{.status.phase}'=Bound "pvc/${app}" --timeout=10m -n "${ns}" >/dev/null
     log info "Restore done" phase="${rphase}"
 
-    # --- prove the data came back ----------------------------------------
-    # restore.yaml sets onMissingSnapshot=Continue, so a missed snapshot
-    # yields an *empty* PVC rather than an error. Never trust phases alone.
-    fingerprint_pvc "${ns}" "${app}" "${SCRATCH}/${app}-post.txt"
-    if diff <(grep -v '^#' "${SCRATCH}/${app}-pre.txt") \
-            <(grep -v '^#' "${SCRATCH}/${app}-post.txt") >"${SCRATCH}/${app}-diff.txt"; then
-        log info "Volume is byte-identical to the pre-migration fingerprint"
+    # --- prove we restored from OUR snapshot -----------------------------
+    # The one assertion that matters. onMissingSnapshot=Continue means a
+    # missed snapshot produces an empty PVC instead of an error, so a
+    # Completed phase alone proves nothing -- the snapshot ID does.
+    #
+    # Deliberately NOT gated on confirm(): ASSUME_YES exists to skip the
+    # PVC-delete prompt during a batch and must never wave through a restore
+    # that took the wrong data. On mismatch, stop with the app still down.
+    local restored
+    restored="$(kubectl get "restore.kopiur.home-operations.com/${app}" -n "${ns}" \
+        -o jsonpath='{.status.snapshot.kopiaSnapshotID}' 2>/dev/null)"
+    [[ -n "${restored}" ]] ||
+        restored="$(kubectl get "restore.kopiur.home-operations.com/${app}" -n "${ns}" \
+            -o jsonpath='{.status.logTail}' 2>/dev/null | grep -oE '[0-9a-f]{32}' | tail -1)"
+
+    if [[ "${restored}" == "${kopia}" ]]; then
+        log info "Restored from our pre-migration snapshot" kopia="${kopia}"
     else
-        # Deliberately NOT gated on confirm(): ASSUME_YES exists to skip the
-        # PVC-delete prompt during a batch, and must never auto-approve a
-        # failed integrity check. A mismatch means the restore did not produce
-        # the data we snapshotted -- stop, leave the app down, keep the
-        # evidence, and let a human look.
-        log warn "FINGERPRINT MISMATCH -- app left scaled to 0 for inspection" \
-            diff="${SCRATCH}/${app}-diff.txt" snapshot="${snap}"
-        cat "${SCRATCH}/${app}-diff.txt"
-        log error "Restored volume does not match the pre-migration fingerprint" app="${ns}/${app}"
+        log warn "App left scaled to 0 for inspection" snapshot="${snap}"
+        log error "Restore used the WRONG snapshot" expected="${kopia}" got="${restored:-none}"
     fi
 
     # --- back up ---------------------------------------------------------
@@ -302,10 +327,26 @@ function status() {
 function main() {
     check_cli kubectl flux yq jq git diff
     case "${1:-}" in
-        migrate) [[ $# -eq 3 ]] || log error "usage: $0 migrate <namespace> <app>"; migrate "$2" "$3" ;;
+        # Git half: rewrite + one commit + one push for the whole batch.
+        # Two YubiKey touches total, however many apps are listed.
+        prepare)
+            shift
+            prepare "$@"
+            ;;
+        # Cluster half: no git, so no YubiKey touch. Run once per app.
+        swap)
+            [[ $# -eq 3 ]] || log error "usage: $0 swap <namespace> <app>"
+            swap "$2" "$3"
+            ;;
+        # Single-app convenience: prepare one app, then swap it.
+        migrate)
+            [[ $# -eq 3 ]] || log error "usage: $0 migrate <namespace> <app>"
+            prepare "$2/$3"
+            swap "$2" "$3"
+            ;;
         cleanup) cleanup "${2:-}" "${3:-}" ;;
-        status)  status ;;
-        *)       log error "usage: $0 {migrate <ns> <app>|cleanup [<ns> <app>]|status}" ;;
+        status) status ;;
+        *) log error "usage: $0 {prepare <ns/app>...|swap <ns> <app>|migrate <ns> <app>|cleanup [<ns> <app>]|status}" ;;
     esac
 }
 
