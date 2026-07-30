@@ -7,6 +7,8 @@
 kubeconfig
 # Talos
 talosconfig
-/talos/images
+/talos/images/
+/talos/rendered/
+/talos/output/
 # Misc.
 .venv/

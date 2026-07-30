@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/postfinance/topf/main/docs/schema/topf.schema.json
+---
+clusterName: main
+clusterEndpoint: https://10.0.3.3:6443
+
+# Installer image only — rolling upgrades are driven in-cluster by tuppr, see
+# kubernetes/apps/system-upgrade/tuppr/upgrades/talosupgrade.yaml. Both are
+# annotated with the same datasource so Renovate bumps them in one PR.
+# renovate: datasource=custom.talos-factory depName=siderolabs/talos
+talosVersion: v1.13.7
+# renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+kubernetesVersion: v1.36.2
+
+schematicId: "@schematic.yaml"
+secureboot: true
+
+secretsPath: secrets.sops.yaml
+
+data:
+  # Consumed by all/10-cluster.yaml and control-plane/00-cluster.yaml
+  certSANs:
+    - 127.0.0.1 # KubePrism
+    - 10.0.3.2 # HAProxy LB
+    - 10.0.3.3 # Cluster LB
+    - k8s-apiserver
+    - k8s-apiserver.milkyway
+  podCIDR: 10.42.0.0/16
+  svcCIDR: 10.43.0.0/16
+  nodeCIDR: 10.0.3.0/24
+
+# NOTE: bond0 stays on DHCP (static reservations) and inherits DNS from it, so
+# there are deliberately no ResolverConfig/TimeSyncConfig documents.
+nodes:
+  - host: k8s-node-1
+    ip: 10.0.3.24
+    role: control-plane
+    data:
+      macAddr: 94:c6:91:a3:f7:a4
+  - host: k8s-node-2
+    ip: 10.0.3.25
+    role: control-plane
+    data:
+      macAddr: 1c:69:7a:60:5f:cf
+  - host: k8s-node-3
+    ip: 10.0.3.26
+    role: control-plane
+    data:
+      macAddr: 1c:69:7a:a3:1a:a1
+  - host: k8s-node-4
+    ip: 10.0.3.27
+    role: worker
+    data:
+      macAddr: 1c:69:7a:07:22:5d
+  - host: k8s-node-5
+    ip: 10.0.3.28
+    role: worker
+    data:
+      macAddr: 1c:69:7a:0e:da:8a

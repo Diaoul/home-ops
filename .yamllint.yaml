@@ -3,8 +3,7 @@ extends: default
 
 ignore: |
   *.sops.*
-  /talos/clusterconfig/
-  /talos/patches/
+  /talos/rendered/
 
 rules:
   braces:

@@ -3,9 +3,13 @@ cluster:
   allowSchedulingOnControlPlanes: true
   apiServer:
     admissionControl:
-      $$patch: delete
+      $patch: delete
     auditPolicy:
-      $$patch: delete
+      $patch: delete
+    certSANs:
+      {{- range .Data.certSANs }}
+      - "{{ . }}"
+      {{- end }}
     extraArgs:
       # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
       enable-aggregator-routing: true
@@ -17,6 +21,10 @@ cluster:
       feature-gates: HPAScaleToZero=true
   coreDNS:
     disabled: true
+  # Disable built-in CNI to use Cilium
+  network:
+    cni:
+      name: none
   etcd:
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
@@ -25,10 +33,7 @@ cluster:
       heartbeat-interval: "250"
       election-timeout: "2500"
     advertisedSubnets:
-      - 10.0.3.0/24
-  network:
-    cni:
-      name: none
+      - {{ .Data.nodeCIDR }}
   proxy:
     disabled: true
   scheduler:
