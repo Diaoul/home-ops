@@ -6,7 +6,7 @@ metadata:
   name: autobrr
 spec:
   components:
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/downloads/autobrr/app
   sourceRef:
     kind: GitRepository

@@ -8,8 +8,8 @@ spec:
   accessModes:
     - ${ACCESSMODES:=ReadWriteOnce}
   dataSourceRef:
-    kind: ReplicationDestination
-    apiGroup: volsync.backube
+    apiGroup: kopiur.home-operations.com
+    kind: Restore
     name: ${APP}
   resources:
     requests:

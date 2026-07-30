@@ -7,7 +7,7 @@ metadata:
 spec:
   components:
     - ../../../../components/ext-auth
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/media/prowlarr/app
   dependsOn:
     - name: rook-ceph-cluster

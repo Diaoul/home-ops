@@ -6,7 +6,7 @@ metadata:
   name: home-assistant
 spec:
   components:
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/home-automation/home-assistant/app
   sourceRef:
     kind: GitRepository

@@ -6,7 +6,7 @@ metadata:
   name: zigbee2mqtt
 spec:
   components:
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/home-automation/zigbee2mqtt/app
   sourceRef:
     kind: GitRepository

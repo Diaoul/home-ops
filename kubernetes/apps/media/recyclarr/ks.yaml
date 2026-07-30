@@ -6,7 +6,7 @@ metadata:
   name: recyclarr
 spec:
   components:
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/media/recyclarr/app
   dependsOn:
     - name: rook-ceph-cluster

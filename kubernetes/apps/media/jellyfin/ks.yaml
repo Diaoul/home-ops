@@ -14,7 +14,7 @@ spec:
       namespace: kopiur-system
   components:
     - ../../../../components/zeroscaler
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/media/jellyfin/app
   sourceRef:
     kind: GitRepository

@@ -6,7 +6,7 @@ metadata:
   name: esphome
 spec:
   components:
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/home-automation/esphome/app
   sourceRef:
     kind: GitRepository

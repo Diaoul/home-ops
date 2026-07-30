@@ -8,7 +8,7 @@ spec:
   components:
     - ../../../../components/zeroscaler
     - ../../../../components/ext-auth
-    - ../../../../components/kopiur-tmp
+    - ../../../../components/persistence
   path: ./kubernetes/apps/media/radarr/app
   dependsOn:
     - name: rook-ceph-cluster
