@@ -8,14 +8,11 @@ spec:
   components:
     - ../../../../components/zeroscaler
     - ../../../../components/ext-auth
-    - ../../../../components/persistence
-    - ../../../../components/kopiur
+    - ../../../../components/kopiur-tmp
   path: ./kubernetes/apps/media/bazarr/app
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
     - name: kopiur-repository
       namespace: kopiur-system
   sourceRef:
