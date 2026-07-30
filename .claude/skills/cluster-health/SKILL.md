@@ -53,13 +53,18 @@ kubectl get pods -n openebs-system --no-headers | grep -v Running
 
 Flag: any pod not Running.
 
-## 6. VolSync Backups
+## 6. Kopiur Backups
 
 ```sh
-kubectl get replicationsource -A
+kubectl get snapshotschedule.kopiur.home-operations.com -A
+kubectl get snapshots.kopiur.home-operations.com -A -o json \
+  | jq -r '[.items[] | select(.status.phase != "Succeeded")
+            | "\(.metadata.namespace)/\(.metadata.name) \(.status.phase)"] | .[]'
 ```
 
-Flag: any source where last sync is >24h ago or status shows error.
+Flag: any schedule whose `LAST-SNAPSHOT` is >24h ago or that is `SUSPENDED`, and any
+Snapshot not `Succeeded`. Schedules run `H 3 * * *` Europe/Paris, so a healthy app shows
+a last snapshot under 24h old. There should be 22 policies / 22 schedules / 22 restores.
 
 ## 7. Certificates
 
