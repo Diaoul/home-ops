@@ -7,7 +7,7 @@ machine:
       serializeImagePulls: false
     nodeIP:
       validSubnets:
-        - 10.0.3.0/24
+        - {{ .Data.nodeCIDR }}
     extraMounts:
       - destination: /var/mnt/local-hostpath
         type: bind

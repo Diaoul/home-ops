@@ -108,7 +108,8 @@
       "Bash(rtk kubectl get secrets *)",
       "Bash(sops *)",
       "Read(.venv/)",
-      "Read(talos/clusterconfig)"
+      "Read(talos/rendered)",
+      "Read(talos/talosconfig)"
     ]
   },
   "hooks": {
