@@ -57,9 +57,11 @@ function log() {
         output_stream="/dev/stderr"
     fi
 
-    # Print the log message
+    # Print the log message. Append rather than truncate: `>` on /dev/stdout
+    # truncates the file whenever stdout is redirected, so a whole run would
+    # leave only its last line.
     printf "%s %b%s%b %s %b\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-        "${color}" "${level^^}" "\033[0m" "${msg}" "${data}" >"${output_stream}"
+        "${color}" "${level^^}" "\033[0m" "${msg}" "${data}" >>"${output_stream}"
 
     # Exit if the log level is error
     if [[ "$level" == "error" ]]; then

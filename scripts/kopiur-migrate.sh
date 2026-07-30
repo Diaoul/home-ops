@@ -237,9 +237,15 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>" -- "${ks}"
             <(grep -v '^#' "${SCRATCH}/${app}-post.txt") >"${SCRATCH}/${app}-diff.txt"; then
         log info "Volume is byte-identical to the pre-migration fingerprint"
     else
-        log warn "FINGERPRINT MISMATCH -- inspect before trusting this app" diff="${SCRATCH}/${app}-diff.txt"
+        # Deliberately NOT gated on confirm(): ASSUME_YES exists to skip the
+        # PVC-delete prompt during a batch, and must never auto-approve a
+        # failed integrity check. A mismatch means the restore did not produce
+        # the data we snapshotted -- stop, leave the app down, keep the
+        # evidence, and let a human look.
+        log warn "FINGERPRINT MISMATCH -- app left scaled to 0 for inspection" \
+            diff="${SCRATCH}/${app}-diff.txt" snapshot="${snap}"
         cat "${SCRATCH}/${app}-diff.txt"
-        confirm "Scale ${app} back up anyway?" || log error "Left scaled to 0 for inspection"
+        log error "Restored volume does not match the pre-migration fingerprint" app="${ns}/${app}"
     fi
 
     # --- back up ---------------------------------------------------------
