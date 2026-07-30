@@ -15,7 +15,7 @@ Read this file before making any changes.
 | CNI | Cilium (BGP, native routing, kube-proxy replacement) |
 | Ingress | Envoy Gateway (Kubernetes Gateway API) |
 | Storage | Rook-Ceph (block) + OpenEBS (local hostpath) |
-| Backup | VolSync + Kopia → NFS (singularity.milkyway) |
+| Backup | kopiur (Kopia) → NFS (singularity.milkyway) |
 | Database | CloudNative-PG (PostgreSQL 18, HA) |
 | Secrets | SOPS + Age + PGP |
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
@@ -33,7 +33,7 @@ kubernetes/
 │   ├── common/                 # Namespace, OCI repos, SOPS secret, Flux alerts
 │   ├── ext-auth/               # Authelia external auth (Envoy SecurityPolicy)
 │   ├── nfs-scaler/             # KEDA autoscaler for NFS-dependent pods
-│   ├── persistence/            # PVC + VolSync backup/restore templates
+│   ├── persistence/            # PVC + kopiur snapshot/restore templates
 │   └── replacements/           # Shared variable substitution
 └── apps/<namespace>/<app>/
     ├── ks.yaml                 # Flux Kustomization
@@ -47,7 +47,7 @@ kubernetes/
 
 `cert-manager`, `database`, `default`, `downloads`, `flux-system`, `home-automation`,
 `kube-system`, `media`, `network`, `observability`, `openebs-system`, `rook-ceph`,
-`security`, `system-upgrade`, `volsync-system`
+`security`, `system-upgrade`
 
 ---
 
@@ -79,16 +79,16 @@ spec:
   wait: true
   # Include ONLY the components that this app actually needs:
   components:
-    - ../../../../components/persistence   # if app needs PVC + VolSync backup
+    - ../../../../components/persistence   # if app needs PVC + kopiur backup
     - ../../../../components/ext-auth      # if app needs Authelia auth
     - ../../../../components/nfs-scaler   # if app needs NFS (media/downloads)
   dependsOn:
     - name: rook-ceph-cluster              # if using ceph-block storage
       namespace: rook-ceph
+    - name: kopiur-repository              # if using persistence component
+      namespace: kopiur-system
     - name: cloudnative-pg                 # if using PostgreSQL
       namespace: database
-    - name: volsync                        # if using persistence component
-      namespace: volsync-system
   postBuild:
     substituteFrom:
       - kind: Secret
@@ -240,25 +240,28 @@ These are available via `postBuild.substituteFrom` and can be used as `${VAR}`:
 - `${DOMAIN}` — homelab domain
 - `${CLOUDFLARE_TUNNEL_ID}`
 - `${EMAIL_ADDRESS_1}`
-- `${VOLSYNC_RESTIC_PASSWORD}`
 
 ---
 
-## Persistence (VolSync + PVC)
+## Persistence (kopiur + PVC)
 
 For apps that need persistent storage with automatic backups, add the `persistence`
 component in `ks.yaml` and set:
 
 ```yaml
 substitute:
-  APP: <app>          # Used as PVC name and VolSync resource names
+  APP: <app>          # Used as PVC name and kopiur resource names
   CAPACITY: 5Gi       # PVC size (default if omitted)
 ```
 
 The component creates:
-- A `PersistentVolumeClaim` named `<app>` using `ceph-block` StorageClass
-- A `ReplicationSource` (backup every 12h to NFS via Kopia)
-- A `ReplicationDestination` (for restore)
+- A `PersistentVolumeClaim` named `<app>` using `ceph-block` StorageClass, populated
+  from a `Restore`
+- A `SnapshotPolicy` + `SnapshotSchedule` (daily snapshot to NFS via kopiur/Kopia)
+- A `Restore` (populates the PVC from the latest snapshot)
+
+Note the PVC's `dataSourceRef` is immutable: changing it requires deleting and
+recreating the PVC.
 
 For NFS-mounted media (downloads/media namespace), use `local-hostpath` StorageClass
 and add the `nfs-scaler` component.

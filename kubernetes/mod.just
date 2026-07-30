@@ -1,4 +1,4 @@
-set quiet := true
+set quiet
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 kubernetes_dir := justfile_dir() + '/kubernetes'
@@ -31,11 +31,23 @@ prune-pods:
         kubectl delete pods -A --field-selector status.phase="$phase" --ignore-not-found=true; \
     done
 
-[doc('Snapshot VolSync PVCs')]
+[doc('Take an on-demand kopiur snapshot of every app')]
 snapshot:
-    kubectl get replicationsources --no-headers -A | while read -r ns name _; do \
-        kubectl -n "$ns" patch replicationsources "$name" --type merge -p '{"spec":{"trigger":{"manual":"$(date +%s)"}}}'; \
-    done
+    stamp="manual-$(date -u +%Y%m%d%H%M%S)"; \
+    kubectl get snapshotpolicy.kopiur.home-operations.com --no-headers -A | while read -r ns name _; do \
+        printf 'apiVersion: kopiur.home-operations.com/v1alpha1\nkind: Snapshot\nmetadata:\n  name: %s-%s\n  namespace: %s\nspec:\n  deletionPolicy: Delete\n  policyRef:\n    name: %s\n' \
+            "$name" "$stamp" "$ns" "$name" | kubectl apply -f -; \
+    done; \
+    echo "Watch with: kubectl get snapshots.kopiur.home-operations.com -A | grep $stamp"
+
+[doc('Delete on-demand kopiur snapshots (origin=manual)')]
+snapshot-prune:
+    kubectl get snapshots.kopiur.home-operations.com -A -o json \
+        | jq -r '.items[]|select(.status.origin == "manual")|"\(.metadata.namespace) \(.metadata.name)"' \
+        | while read -r ns name; do \
+            kubectl -n "$ns" patch snapshot.kopiur.home-operations.com "$name" --type merge -p '{"spec":{"deletionPolicy":"Delete"}}'; \
+            kubectl -n "$ns" delete snapshot.kopiur.home-operations.com "$name"; \
+        done
 
 [doc('Sync ExternalSecrets')]
 sync-es:
