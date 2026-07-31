@@ -339,7 +339,21 @@ yamllint .
 flux-local test --path kubernetes/
 ```
 
-CI runs `kubeconform`, `yamllint`, `flux-local test`, and `flux-local diff` on all PRs.
+For changes under `talos/`, validate against the live cluster instead — see
+`talos/README.md`:
+
+```sh
+just talos diff                    # topf apply --dry-run, shows the live diff per node
+just talos render                  # render to talos/rendered/ (gitignored)
+talosctl validate -m metal -c talos/rendered/<node>.yaml
+```
+
+**Run these yourself — they are not enforced anywhere.** The only automation is a
+lefthook pre-commit hook that runs `yamlfmt` on staged YAML and `just --fmt` on staged
+justfiles. There are no manifest-validation workflows in `.github/workflows/` (only
+`image-pull`, `label-sync`, `renovate`, `tag`), so a PR gets no `kubeconform`,
+`yamllint`, or `flux-local` signal. Konflate posts a status check, but it reviews Flux
+changes under `kubernetes/` and says nothing about `talos/`.
 
 ---
 
