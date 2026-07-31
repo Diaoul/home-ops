@@ -18,8 +18,6 @@ talos: talos-secret talos-apply talos-talosconfig talos-kubeconfig
 apps: apps-ready apps-namespaces apps-secrets apps-crds apps-helm
     just log info "Cluster is bootstrapped — Flux will start syncing the Git repository"
 
-# No sops call or existence guard is needed: the bundle is stored already
-# encrypted with the repo's recipients, and an existing bundle is left untouched.
 [private]
 [working-directory('../talos')]
 talos-secret:
