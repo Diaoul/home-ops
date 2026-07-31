@@ -3,6 +3,7 @@ extends: default
 
 ignore: |
   *.sops.*
+  /.venv/
   /talos/rendered/
 
 rules:
