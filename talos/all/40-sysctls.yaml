@@ -8,14 +8,10 @@ machine:
     net.ipv4.neigh.default.gc_thresh1: "4096" # Prevent ARP cache overflows
     net.ipv4.neigh.default.gc_thresh2: "8192" # Prevent ARP cache overflows
     net.ipv4.neigh.default.gc_thresh3: "16384" # Prevent ARP cache overflows
-    # SERVER VLAN is a 9000-MTU island reached across 1500-MTU segments; probing
-    # lets TCP recover from a black-holed PMTU instead of stalling.
-    net.ipv4.tcp_mtu_probing: "1"
+    net.ipv4.tcp_mtu_probing: "1" # Recover from black-holed PMTU (9000-MTU island)
     net.ipv4.tcp_slow_start_after_idle: "0" # Preserve congestion window after idle
     net.ipv6.conf.all.disable_ipv6: "1" # IPv4-only cluster | AAAA dials return ENETUNREACH
     net.ipv6.conf.default.disable_ipv6: "1" # IPv4-only cluster | AAAA dials return ENETUNREACH
-    # Kernel default for tcp_slot_table_entries is 2, which caps NFS throughput
-    # well below what the NAS can serve.
-    sunrpc.tcp_max_slot_table_entries: "128" # NFS Performance
-    sunrpc.tcp_slot_table_entries: "128" # NFS Performance
+    sunrpc.tcp_max_slot_table_entries: "128" # NFS Performance (default 2 is a bottleneck)
+    sunrpc.tcp_slot_table_entries: "128" # NFS Performance (default 2 is a bottleneck)
     user.max_user_namespaces: "11255" # User Namespaces

@@ -1,12 +1,10 @@
-# Schema: https://postfinance.github.io/topf/main/configuration/
-# (topf does not publish a JSON schema, so there is no $schema comment here)
+# https://postfinance.github.io/topf/main/configuration/
 ---
 clusterName: main
 clusterEndpoint: https://10.0.3.3:6443
 
-# Installer image only — rolling upgrades are driven in-cluster by tuppr, see
-# kubernetes/apps/system-upgrade/tuppr/upgrades/talosupgrade.yaml. Both are
-# annotated with the same datasource so Renovate bumps them in one PR.
+# Installer image only; rolling upgrades are driven by tuppr, which shares this
+# datasource so Renovate bumps both in one PR.
 # renovate: datasource=custom.talos-factory depName=siderolabs/talos
 talosVersion: v1.13.7
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
@@ -18,7 +16,6 @@ secureboot: true
 secretsPath: secrets.sops.yaml
 
 data:
-  # Consumed by all/10-cluster.yaml and control-plane/00-cluster.yaml
   certSANs:
     - 127.0.0.1 # KubePrism
     - 10.0.3.2 # HAProxy LB
@@ -29,8 +26,8 @@ data:
   svcCIDR: 10.43.0.0/16
   nodeCIDR: 10.0.3.0/24
 
-# NOTE: bond0 stays on DHCP (static reservations) and inherits DNS from it, so
-# there are deliberately no ResolverConfig/TimeSyncConfig documents.
+# bond0 stays on DHCP and inherits DNS/NTP from it, hence no ResolverConfig or
+# TimeSyncConfig documents.
 nodes:
   - host: k8s-node-1
     ip: 10.0.3.24

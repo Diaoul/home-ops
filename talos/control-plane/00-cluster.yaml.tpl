@@ -28,8 +28,8 @@ cluster:
   etcd:
     extraArgs:
       listen-metrics-urls: http://0.0.0.0:2381
-      # Raised raft timers: slow WAL fsync on the current SATA SSD spikes past
-      # the default 100ms heartbeat, causing spurious leader elections.
+      # Raised: slow WAL fsync on the SATA SSDs spikes past the 100ms default,
+      # causing spurious leader elections.
       heartbeat-interval: "250"
       election-timeout: "2500"
     advertisedSubnets:
