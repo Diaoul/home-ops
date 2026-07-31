@@ -1,6 +1,0 @@
----
-machine:
-  kernel:
-    modules:
-      - name: lpc_ich # Hardware watchdog
-      - name: iTCO_wdt # Hardware watchdog

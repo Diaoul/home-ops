@@ -13,15 +13,15 @@ last octet always matches bond0's, so it is derived here.
 ---
 apiVersion: v1alpha1
 kind: LinkAliasConfig
-name: bond0-m0
+name: ethSel0
 selector:
-  match: glob("{{ .Node.Data.macAddr }}", mac(link.hardware_addr)) && glob("e1000e", link.driver)
+  match: glob("{{ .Node.Data.macAddr }}", mac(link.hardware_addr))
 ---
 apiVersion: v1alpha1
 kind: BondConfig
 name: bond0
 links:
-  - bond0-m0
+  - ethSel0
 bondMode: active-backup
 mtu: 9000
 ---
