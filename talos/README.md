@@ -15,6 +15,11 @@ patches taking precedence:
 - `worker/`: applied to worker nodes
 - `node/${hostname}/`: applied to the node with the specified name
 
+Filenames follow the numbering used by
+[onedr0p/cluster-template](https://github.com/onedr0p/cluster-template), so the
+`60-encryption` and `61-kernel-modules` slots are left free for those upstream
+patches; local additions start at `62-`.
+
 Files ending in `.yaml.tpl` are Go-templated per node; see the
 [topf configuration model](https://postfinance.github.io/topf/main/configuration-model/)
 for the available template variables. Cluster-wide values (cert SANs, CIDRs) live
