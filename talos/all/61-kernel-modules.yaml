@@ -1,0 +1,8 @@
+---
+machine:
+  kernel:
+    modules:
+      # Intel TCO watchdog, consumed by 63-watchdog.yaml. The board advertises an
+      # ACPI WDAT table and wdat_wdt loads, but it registers no device, so
+      # /sys/class/watchdog is empty; iTCO_wdt is the fallback driver for the PCH.
+      - name: iTCO_wdt

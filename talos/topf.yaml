@@ -1,4 +1,5 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/postfinance/topf/main/docs/schema/topf.schema.json
+# Schema: https://postfinance.github.io/topf/main/configuration/
+# (topf does not publish a JSON schema, so there is no $schema comment here)
 ---
 clusterName: main
 clusterEndpoint: https://10.0.3.3:6443

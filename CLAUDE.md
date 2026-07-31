@@ -346,10 +346,15 @@ CI runs `kubeconform`, `yamllint`, `flux-local test`, and `flux-local diff` on a
 ## Just Commands
 
 ```sh
-just talos apply-node <ip>      # Apply Talos config to a node
-just talos upgrade-node <ip>    # Upgrade Talos on a node
+just talos diff                 # Show pending Talos config changes (dry-run)
+just talos apply                # Apply Talos config to all nodes (diffs and asks first)
+just talos apply-node <name>    # Apply Talos config to a node
+just talos upgrade-node <name>  # Upgrade Talos on a node (normally tuppr's job)
 just bootstrap <step>           # Bootstrap steps (talos/k8s/namespaces/resources/apps)
 ```
+
+Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to topf's
+`--nodes-filter`. See `talos/README.md`.
 
 ---
 

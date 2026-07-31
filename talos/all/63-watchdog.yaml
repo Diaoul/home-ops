@@ -1,0 +1,12 @@
+---
+# Hardware watchdog: resets the board if Talos stops petting it. Guards against
+# the wedged-node case where the kernel is alive enough to hold locks but not to
+# reboot, which otherwise needs a physical power cycle.
+#
+# Requires a registered watchdog device (see 61-kernel-modules.yaml). Verify with
+#   talosctl -n <node> ls /sys/class/watchdog
+# before rolling this out past the first node.
+apiVersion: v1alpha1
+kind: WatchdogTimerConfig
+device: /dev/watchdog0
+timeout: 5m0s
