@@ -10,10 +10,6 @@ machine:
     net.ipv4.neigh.default.gc_thresh3: "16384" # Prevent ARP cache overflows
     net.ipv4.tcp_mtu_probing: "1" # Recover from black-holed PMTU (9000-MTU island)
     net.ipv4.tcp_slow_start_after_idle: "0" # Preserve congestion window after idle
-    # Do NOT disable IPv6: it removes ::1, and the control plane dials the
-    # apiserver at https://[::1]:6443, which breaks all pod creation.
-    net.ipv6.conf.all.disable_ipv6: "0"
-    net.ipv6.conf.default.disable_ipv6: "0"
     sunrpc.tcp_max_slot_table_entries: "128" # NFS Performance (default 2 is a bottleneck)
     sunrpc.tcp_slot_table_entries: "128" # NFS Performance (default 2 is a bottleneck)
     user.max_user_namespaces: "11255" # User Namespaces
