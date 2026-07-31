@@ -4,6 +4,7 @@ customization:
     - -init_on_alloc # Less security, faster puter
     - -init_on_free # Less security, faster puter
     - -selinux # Less security, faster puter
+    - acpi_no_watchdog # Ignore unusable ACPI WDAT so iTCO_wdt can claim the watchdog
     - apparmor=0 # Less security, faster puter
     - i915.enable_guc=3 # Meteor Lake CPU & Intel iGPU
     - init_on_alloc=0 # Less security, faster puter

@@ -2,16 +2,15 @@ set quiet
 set shell := ['bash', '-euo', 'pipefail', '-c']
 set script-interpreter := ['bash', '-euo', 'pipefail']
 
-# Module recipes already run with the working directory set to talos/, so paths
-# below are relative to it.
+# Module recipes run with the working directory set to talos/; paths are relative.
 
 [private]
 default:
     just -l talos
 
-# Day-2 apply/upgrade recipes rely on topf's built-in diff-and-confirm prompt;
-# only the destructive reset recipes disable it in favour of just's own
-# confirmation.
+# Day-2 apply/upgrade recipes rely on topf's built-in diff-and-confirm
+# prompt; only the destructive reset recipes disable it in favour of just's
+# own confirmation.
 
 [doc('Apply Talos config to all nodes (shows a diff and asks first)')]
 apply:
@@ -44,8 +43,7 @@ download-image node:
 kubeconfig:
     topf kubeconfig > "{{ justfile_dir() }}/kubeconfig"
 
-# Fails loudly when the name matches nothing, so a typo cannot silently target
-# no node (topf's --nodes-filter exits 0 in that case).
+# topf's --nodes-filter exits 0 when it matches nothing; this fails loudly instead.
 [private]
 node-ip node:
     yq -e '.nodes[] | select(.host == "{{ node }}") | .ip' topf.yaml
@@ -54,8 +52,7 @@ node-ip node:
 nodes:
     topf nodes
 
-# Recipes below take a node NAME (e.g. k8s-node-1), matching topf's
-# --nodes-filter. talosctl wants an address, so resolve it out of topf.yaml.
+# Recipes take a node NAME; talosctl wants an address, so resolve it.
 [doc('Reboot a node')]
 reboot-node node:
     gum confirm "Reboot node {{ node }}?" --default="No" && \
@@ -65,9 +62,7 @@ reboot-node node:
 render:
     topf render --output ./rendered
 
-# --full=false wipes only STATE and EPHEMERAL, matching what these recipes did
-# under talhelper. topf defaults to --full=true, which takes the whole disk
-# including the local-hostpath user volume.
+# --full=false wipes only STATE and EPHEMERAL; topf defaults to the whole disk.
 [confirm("This will destroy the cluster and wipe STATE + EPHEMERAL on ALL nodes — continue? [y/N]")]
 [doc('Reset all nodes back to maintenance mode (DESTRUCTIVE)')]
 reset:
@@ -94,13 +89,13 @@ upgrade-k8s:
     talosctl --nodes "$(yq -e '[.nodes[] | select(.role == "control-plane")][0].ip' topf.yaml)" \
         upgrade-k8s --to "$(yq -e '.kubernetesVersion' topf.yaml)"
 
-# Talos upgrades are normally driven in-cluster by tuppr; these are the manual
-# fallback.
+# Manual fallback; tuppr normally drives upgrades. powercycle because the
+# schematic sets kexec_load_disabled=1, so topf's default kexec cannot work.
 [doc('Upgrade Talos on all nodes, one at a time (asks first)')]
 upgrade:
-    topf upgrade
+    topf upgrade --reboot-mode=powercycle
 
 [doc('Upgrade Talos on a single node (asks first)')]
 upgrade-node node:
     just talos node-ip {{ node }} > /dev/null
-    topf upgrade --nodes-filter "^{{ node }}$"
+    topf upgrade --nodes-filter "^{{ node }}$" --reboot-mode=powercycle

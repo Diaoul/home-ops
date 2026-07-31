@@ -1,14 +1,13 @@
 {{- /*
-Node networking as Talos 1.13+ typed network documents. The MAC-matched link is
-enslaved to a single-link active-backup bond so every consumer (Cilium devices,
-VLANs, the VIP, metrics) sees a stable interface name, bond0, regardless of
-kernel NIC naming; a second NIC can join the bond later without renaming
-anything. The bond name is also referenced by `devices` in the cilium
-HelmRelease.
+Node networking as Talos 1.13+ typed network documents. The MAC-matched
+link is enslaved to a single-link active-backup bond so every consumer
+(Cilium devices, VLANs, the VIP, metrics) sees a stable interface name,
+bond0, regardless of kernel NIC naming; a second NIC can join the bond
+later without renaming anything. The bond name is also referenced by
+`devices` in the cilium HelmRelease.
 
-bond0 itself is DHCP (static reservations upstream); only the tagged VLANs carry
-static addresses. Their last octet always matches the node's bond0 address, so
-it is derived rather than repeated per node in topf.yaml.
+bond0 stays on DHCP; only the tagged VLANs carry static addresses, and their
+last octet always matches bond0's, so it is derived here.
 */ -}}
 {{- $octet := last (splitList "." (printf "%s" .Node.IP)) }}
 ---
