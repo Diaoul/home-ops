@@ -39,6 +39,14 @@ spec:
               fallthrough in-addr.arpa ip6.arpa
           - name: autopath
             parameters: "@kubernetes"
+          # Nodes have no IPv6 route, so AAAA answers only earn an ENETUNREACH and
+          # spurious Flux ArtifactFailed events. NODATA leaves clients only A.
+          # Ordering comes from CoreDNS' plugin.cfg, not this list.
+          - name: template
+            parameters: IN AAAA
+            configBlock: |-
+              rcode NOERROR
+              authority "{{ .Zone }} 60 IN SOA ns.dns{{ .Zone }} hostmaster.dns{{ .Zone }} (1 60 60 60 60)"
           - name: forward
             parameters: . /etc/resolv.conf
           - name: cache
