@@ -45,6 +45,29 @@ kubectl get pvc -A --no-headers | grep -v Bound
 
 Flag: anything other than `HEALTH_OK`. Any unbound PVCs.
 
+### 4b. Stuck CSI unpublish (silent stale RBD mappings)
+
+```sh
+for p in $(kubectl get pods -n rook-ceph -l app=rook-ceph.rbd.csi.ceph.com-nodeplugin -o name); do
+  n=$(kubectl get $p -n rook-ceph -o jsonpath='{.spec.nodeName}')
+  l=$(kubectl logs $p -c csi-rbdplugin -n rook-ceph --since=15m 2>/dev/null | grep 'directory not empty')
+  echo "$n ENOTEMPTY=$(echo -n "$l" | grep -c .) last=$(echo "$l" | tail -1 | awk '{print $2}')"
+done
+```
+
+Flag: any node with a non-zero count. The window is 15m and the loop retries every ~2 min, so a live loop always shows ≥3; `last=` is there to confirm recency (log timestamps are **UTC** — compare against `date -u`, not local time). Don't widen the window: with a 1h lookback this check keeps reporting a node as broken for an hour after it's actually fixed. Nothing else in this skill catches it — the volume keeps working for its current pod, so pods, PVCs and Ceph health all stay green while the RBD image is silently pinned to that node forever.
+
+**What it means:** `NodeUnpublishVolume` is failing with `remove /var/lib/kubelet/pods/<uid>/volumes/kubernetes.io~csi/<pv>/mount: directory not empty` and retrying every ~2 min. A leftover directory sits in the pod's `mount/` dir on local disk (app wrote at the volume root while unmounted). Unpublish never completes, so `NodeUnstageVolume` never runs, so the image stays krbd-mapped. The damage only surfaces later, when the pod reschedules to another node and hits `FailedMount ... rbd image ... is still being used`.
+
+**Fix** — pull the pod UID and PV from the error line, confirm nothing is mounted there, then remove the leftover dir; kubelet finishes cleanup and GCs the pod dir within ~2 min:
+
+```sh
+kubectl exec <nodeplugin-pod> -c csi-rbdplugin -n rook-ceph -- grep -c '<pod-uid>' /proc/mounts   # MUST be 0
+kubectl exec <nodeplugin-pod> -c csi-rbdplugin -n rook-ceph -- rmdir <mount-dir>/<leftover-dir>
+```
+
+If a pod is already stuck mounting elsewhere, also clear the stale mapping on the old node — see [[rwo-ceph-forcedelete-hazard]] for the umount/unmap sequence. Never `ceph osd blocklist add`.
+
 ## 5. OpenEBS
 
 ```sh
