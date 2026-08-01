@@ -31,10 +31,6 @@ spec:
           mon_data_avail_warn: "15"
         mon:
           mon_cluster_log_level: info
-        mgr:
-          # Unset, the module logs every k8s API response body; the in-memory
-          # log ring then OOMs the active mgr.
-          mgr/rook/log_level: info
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       csi:
