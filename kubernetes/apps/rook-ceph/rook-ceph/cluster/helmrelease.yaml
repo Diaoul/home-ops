@@ -28,8 +28,9 @@ spec:
           bdev_enable_discard: "true" # quote
           bdev_async_discard_threads: "1" # quote
           osd_class_update_on_start: "false" # quote
-          device_failure_prediction_mode: none # local auto-enables diskprediction_local
           mon_data_avail_warn: "15"
+        mon:
+          mon_cluster_log_level: info
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       csi:
@@ -57,13 +58,6 @@ spec:
         prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
       mgr:
         modules:
-          # Both leak into the active mgr and OOM it against the 1Gi limit.
-          # Keep the entries: Rook only acts on modules it is told about, so
-          # deleting them would leave them enabled in Ceph.
-          - name: diskprediction_local
-            enabled: false
-          - name: insights
-            enabled: false
           - name: pg_autoscaler
             enabled: true
       # NOTE: only overriding problematic resource constraints
