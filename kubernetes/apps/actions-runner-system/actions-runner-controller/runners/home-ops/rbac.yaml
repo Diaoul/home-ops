@@ -4,23 +4,76 @@ kind: ServiceAccount
 metadata:
   name: home-ops-runner
 ---
+# Mirrors the kube-mode Role the gha-runner-scale-set chart would create on its own.
+# The chart skips it because template.spec.serviceAccountName is set, so it is
+# declared here instead of falling back to cluster-admin.
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: Role
+metadata:
+  name: home-ops-runner
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - pods/exec
+    verbs:
+      - get
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - pods/log
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
 metadata:
   name: home-ops-runner
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
+  kind: Role
+  name: home-ops-runner
 subjects:
   - kind: ServiceAccount
     name: home-ops-runner
     namespace: actions-runner-system
 ---
+# os:operator is the least role that permits /machine.MachineService/ImagePull,
+# the only Talos API the runner calls (see .github/workflows/image-pull.yaml).
 apiVersion: talos.dev/v1alpha1
 kind: ServiceAccount
 metadata:
   name: home-ops-runner
 spec:
   roles:
-    - os:admin
+    - os:operator
