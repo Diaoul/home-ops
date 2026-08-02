@@ -7,6 +7,18 @@ metadata:
 # Mirrors the kube-mode Role the gha-runner-scale-set chart would create on its own.
 # The chart skips it because template.spec.serviceAccountName is set, so it is
 # declared here instead of falling back to cluster-admin.
+#
+# The chart's rules also include secrets get/list/create/delete. That is omitted
+# deliberately: this namespace holds home-ops-runner-secret (the GitHub App private
+# key ARC authenticates with) and home-ops-runner (the Talos credential), so a
+# namespace-wide secrets read would let PR-supplied code mint an installation token
+# and talk to the Talos API directly -- roughly the cluster-admin blast radius this
+# file exists to remove.
+#
+# Nothing exercises these rules today: the container hook only runs for jobs that
+# declare container: or services:, and none do. They are here so that adding such a
+# job does not silently fail. If the hook ever needs secrets, give it a separate
+# namespace rather than adding the rule back here.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -45,15 +57,6 @@ rules:
       - list
       - create
       - delete
-  - apiGroups:
-      - ""
-    resources:
-      - secrets
-    verbs:
-      - get
-      - list
-      - create
-      - delete
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -70,6 +73,9 @@ subjects:
 ---
 # os:operator is the least role that permits /machine.MachineService/ImagePull,
 # the only Talos API the runner calls (see .github/workflows/image-pull.yaml).
+# It is not narrow: os:operator also permits Reboot and Shutdown on every node.
+# Talos has no finer role, so this is a floor, not a safe grant -- the fence that
+# actually matters is that only trusted PRs reach this runner.
 apiVersion: talos.dev/v1alpha1
 kind: ServiceAccount
 metadata:

@@ -3,19 +3,31 @@
 # Sole CiliumNetworkPolicy in the cluster: the runner executes PR-supplied code,
 # so its egress is fenced off the LAN. Internet egress stays open (mise fetches
 # talosctl, images come from ghcr.io) because default deny is not enabled.
+#
+# endpointSelector is empty on purpose -- it selects every pod in the namespace,
+# not just the runner. The container hook labels the workload pods it creates with
+# only runner-pod-name (see runner-container-hooks packages/k8s/src/k8s/index.ts),
+# so a selector targeting the runner's own chart labels would leave hook pods
+# unfenced the moment a job declares container: or services:. Fencing the whole
+# namespace costs nothing: the controller and listener only need the kube-apiserver
+# (10.43.0.1) and GitHub, both of which stay reachable.
+#
+# Lives here rather than one level up because the namespace-level kustomization
+# holds only Flux Kustomization refs, and this runner is its sole reason to exist.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: home-ops-runner
+  name: actions-runner-lan-fence
 spec:
-  endpointSelector:
-    matchLabels:
-      app.kubernetes.io/instance: home-ops-runner
-      app.kubernetes.io/component: runner
+  endpointSelector: {}
   enableDefaultDeny:
     egress: false
   egressDeny:
     - toCIDRSet:
+        # Node range is deliberately tighter than the 10.0.3.0/24 SERVER VLAN: the
+        # NAS shares that VLAN and must stay out of reach. Adding a sixth node
+        # outside 10.0.3.24-31 breaks talosctl image pull with a timeout rather
+        # than a clear error -- see talos/README.md.
         - cidr: 10.0.0.0/8
           except:
             - 10.42.0.0/16 # pods
@@ -23,5 +35,4 @@ spec:
             - 10.0.3.24/29 # k8s-node-1..5, for talosctl image pull
     - toCIDR:
         - 172.16.0.0/12
-    - toCIDRSet:
-        - cidr: 192.168.0.0/16
+        - 192.168.0.0/16
