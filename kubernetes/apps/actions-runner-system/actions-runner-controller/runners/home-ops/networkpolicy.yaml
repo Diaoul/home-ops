@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Fences the GitHub Actions runner off the LAN. It is the only network policy in
+# the cluster; see the exception noted in CLAUDE.md.
+#
+# Structure follows onedr0p/home-ops, but every CIDR here is site-specific and
+# does not transfer: upstream's nodes are 192.168.42.0/24 and its policy denies
+# 10.0.0.0/8, which would break talosctl against this cluster's 10.0.3.x nodes.
+#
+# enableDefaultDeny.egress stays false so the endpoint is not flipped to
+# default-deny -- these are deny rules layered on otherwise-open egress. Internet
+# egress is deliberately preserved: mise fetches talosctl and images come from
+# ghcr.io.
+#
+# Known gap: the container hook labels the workload pods it creates with only
+# runner-pod-name, so a job declaring container: or services: would get an
+# unfenced pod. No job does today. Widen endpointSelector to {} (all pods in the
+# namespace) if that changes -- the controller and listener only need the
+# kube-apiserver and GitHub, so fencing them costs nothing.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: &name home-ops-runner
+spec:
+  endpointSelector:
+    matchLabels:
+      runner: *name
+  enableDefaultDeny:
+    egress: false
+  egressDeny:
+    - toCIDRSet:
+        # Tighter than the 10.0.3.0/24 SERVER VLAN on purpose: the NAS shares that
+        # VLAN and stays out of reach. A node outside 10.0.3.24-31 makes the Image
+        # Pull workflow hang rather than fail usefully -- see talos/README.md.
+        - cidr: 10.0.0.0/8
+          except:
+            - 10.42.0.0/16 # pods
+            - 10.43.0.0/16 # services
+            - 10.0.3.24/29 # k8s-node-1..5, for talosctl image pull
+    - toCIDR:
+        - 172.16.0.0/12
+        - 192.168.0.0/16

@@ -35,6 +35,19 @@ under `data:` in `topf.yaml` and are reachable as `.Data.<key>`.
 | `rendered/` | no | plaintext machine configs, `just talos render` |
 | `images/` | no | downloaded installer ISOs |
 
+## Adding or renumbering a node
+
+Node IPs are hardcoded in one place outside `talos/`: the GitHub Actions runner's
+CiliumNetworkPolicy at
+`kubernetes/apps/actions-runner-system/actions-runner-controller/runners/home-ops/networkpolicy.yaml`
+excepts `10.0.3.24/29` (`10.0.3.24`–`10.0.3.31`) so the runner can reach the Talos
+API for `talosctl image pull`. The range is tighter than the `10.0.3.0/24` SERVER
+VLAN on purpose — the NAS shares that VLAN and is intentionally out of reach.
+
+A node outside `.24`–`.31` makes the `Image Pull` workflow hang and time out
+against that node rather than fail with a useful error. Widen the `except` entry
+when you add one.
+
 ## Upgrades
 
 Talos version upgrades are driven **in-cluster by tuppr** (`TalosUpgrade` in
