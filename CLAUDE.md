@@ -411,5 +411,8 @@ Flux is configured with a GitHub webhook — reconciliation triggers immediately
 - Do not create a new `OCIRepository` for app-template — use the shared one in `components/common/`
 - Do not skip `# yaml-language-server: $schema=...` headers on YAML files
 - Do not use `latest` tags for any container image
-- Do not use `NetworkPolicy` or `CiliumNetworkPolicy` — cluster does not use them
+- Do not use `NetworkPolicy` or `CiliumNetworkPolicy` — the cluster does not use them.
+  One deliberate exception: `actions-runner-system/.../runners/home-ops/networkpolicy.yaml`
+  fences the GitHub Actions runner off the LAN, mirroring onedr0p/home-ops.
+  Do not delete it as drift, and do not read it as licence to add more.
 - Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)
