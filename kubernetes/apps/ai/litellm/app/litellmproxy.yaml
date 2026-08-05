@@ -1,0 +1,63 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmproxy_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMProxy
+metadata:
+  name: litellm
+spec:
+  # renovate: datasource=docker depName=ghcr.io/berriai/litellm
+  image: ghcr.io/berriai/litellm:v1.94.1@sha256:28b10a635296730007097390939b55f8696ece548530d4ddda3e31c708b4dc81
+  replicas: 1
+  generalSettings:
+    health_check_endpoint: /v1/health
+  routerSettings:
+    routing_strategy: simple-shuffle
+    redis_host: os.environ/REDIS_HOST
+    redis_port: os.environ/REDIS_PORT
+    num_retries: 3
+    timeout: 600
+    context_window_fallbacks:
+      - claude-haiku-4-5:
+          - claude-sonnet-5
+      - claude-sonnet-5:
+          - claude-opus-5
+  litellmSettings:
+    success_callback:
+      - prometheus
+    prometheus_adapter: true
+    cache: true
+    cache_params:
+      type: redis
+      host: os.environ/REDIS_HOST
+      port: os.environ/REDIS_PORT
+    drop_params: true
+    merge_reasoning_content_in_choices: true
+  env:
+    - name: LITELLM_LOG
+      value: INFO
+    - name: LITELLM_MODE
+      value: PRODUCTION
+    - name: REDIS_HOST
+      value: litellm-dragonfly.ai.svc.cluster.local
+    - name: REDIS_PORT
+      value: "6379"
+    - name: LITELLM_MASTER_KEY
+      valueFrom:
+        secretKeyRef:
+          name: litellm
+          key: LITELLM_MASTER_KEY
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
+  service:
+    type: ClusterIP
+    port: 4000
+  route:
+    hostnames:
+      - litellm.${DOMAIN}
+    parentRefs:
+      - name: envoy-internal
+        namespace: network

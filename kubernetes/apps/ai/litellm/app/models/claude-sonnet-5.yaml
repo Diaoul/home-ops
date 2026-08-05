@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmodel_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: claude-sonnet-5
+spec:
+  modelName: claude-sonnet-5
+  params:
+    model: anthropic/claude-sonnet-5
+    apiKeyRef:
+      name: litellm
+      key: ANTHROPIC_API_KEY
+  info:
+    maxTokens: 1000000
+    maxInputTokens: 1000000
+    maxOutputTokens: 128000
+    supportsFunctionCalling: true
+    supportsPromptCaching: true
+    supportsVision: true
+    extra:
+      supports_reasoning: true
