@@ -7,7 +7,7 @@ SOPS_AGE_KEY_FILE = "{{config_root}}/age.key"
 TALOSCONFIG = "{{config_root}}/talos/talosconfig"
 
 [tools]
-python = "3.14.6"
+python = "3.14.7"
 uv = "latest"
 "aqua:evilmartians/lefthook" = "latest"
 "aqua:FiloSottile/age" = "latest"
