@@ -45,6 +45,10 @@ spec:
               OAUTH_SCOPES: openid email profile groups
               # Authelia's client is configured require_pkce: true
               OAUTH_CODE_CHALLENGE_METHOD: S256
+              # Embeddings — RAG_OPENAI_* inherit OPENAI_API_BASE_URL/KEY, i.e. litellm
+              RAG_EMBEDDING_ENGINE: openai
+              RAG_EMBEDDING_MODEL: qwen3-embedding-0.6b
+              RAG_EMBEDDING_BATCH_SIZE: 16
               # Search
               ENABLE_RAG_WEB_SEARCH: true
               ENABLE_SEARCH_QUERY: true
