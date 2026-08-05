@@ -29,6 +29,9 @@ spec:
             env:
               TZ: Europe/Paris
               WEBUI_URL: https://chat.${DOMAIN}
+              # Without this the DB is seeded on first boot and every env var
+              # below is ignored from then on.
+              ENABLE_PERSISTENT_CONFIG: false
               # Backends
               ENABLE_OLLAMA_API: false
               ENABLE_OPENAI_API: true
@@ -50,9 +53,8 @@ spec:
               RAG_EMBEDDING_MODEL: qwen3-embedding-0.6b
               RAG_EMBEDDING_BATCH_SIZE: 16
               # Search
-              ENABLE_RAG_WEB_SEARCH: true
-              ENABLE_SEARCH_QUERY: true
-              RAG_WEB_SEARCH_ENGINE: searxng
+              ENABLE_WEB_SEARCH: true
+              WEB_SEARCH_ENGINE: searxng
               SEARXNG_QUERY_URL: http://searxng.default.svc.cluster.local:8080/search?q=<query>
               # Websockets
               ENABLE_WEBSOCKET_SUPPORT: true
