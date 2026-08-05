@@ -43,6 +43,8 @@ spec:
               OPENID_PROVIDER_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
               OPENID_REDIRECT_URI: https://chat.${DOMAIN}/oauth/oidc/callback
               OAUTH_SCOPES: openid email profile groups
+              # Authelia's client is configured require_pkce: true
+              OAUTH_CODE_CHALLENGE_METHOD: S256
               # Websockets
               ENABLE_WEBSOCKET_SUPPORT: true
               WEBSOCKET_MANAGER: redis
