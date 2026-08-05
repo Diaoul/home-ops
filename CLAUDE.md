@@ -9,8 +9,8 @@ Read this file before making any changes.
 
 | Layer | Technology |
 |---|---|
-| OS | Talos Linux v1.12.4 (immutable, API-driven) |
-| Kubernetes | v1.35.1 |
+| OS | Talos Linux (immutable, API-driven) |
+| Kubernetes | upgraded in-place by tuppr |
 | GitOps | Flux v2 (flux-operator + flux-instance) |
 | CNI | Cilium (BGP, native routing, kube-proxy replacement) |
 | Ingress | Envoy Gateway (Kubernetes Gateway API) |
@@ -21,6 +21,10 @@ Read this file before making any changes.
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
 | Updates | Renovate (hourly GitHub Actions) |
 | Auth | Authelia + LLDAP |
+
+Versions are deliberately absent: Renovate and tuppr move them, and a number written
+here goes stale silently. Read the live values instead — `kubectl version`,
+`talosctl version`, or the pinned tag in the relevant `helmrelease.yaml`.
 
 ---
 
