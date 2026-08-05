@@ -9,4 +9,5 @@ resources:
   - ./thelounge/ks.yaml
   - ./mealie/ks.yaml
   - ./miniflux/ks.yaml
+  - ./searxng/ks.yaml
   - ./vaultwarden/ks.yaml

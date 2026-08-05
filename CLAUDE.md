@@ -411,8 +411,27 @@ Flux is configured with a GitHub webhook — reconciliation triggers immediately
 - Do not create a new `OCIRepository` for app-template — use the shared one in `components/common/`
 - Do not skip `# yaml-language-server: $schema=...` headers on YAML files
 - Do not use `latest` tags for any container image
-- Do not use `NetworkPolicy` or `CiliumNetworkPolicy` — the cluster does not use them.
-  One deliberate exception: `actions-runner-system/.../runners/home-ops/networkpolicy.yaml`
-  fences the GitHub Actions runner off the LAN, mirroring onedr0p/home-ops.
-  Do not delete it as drift, and do not read it as licence to add more.
+- Do not add a `NetworkPolicy` or `CiliumNetworkPolicy` by default. Access control in
+  this cluster is the gateway plus Authelia; a policy that only restates that adds
+  drift risk and maintenance for no security gain.
+
+  Add one only when a workload holds a **network capability the rest of the cluster
+  should not be able to borrow**, and state which one in a comment on the policy:
+  - it fetches arbitrary URLs on request, so it doubles as an open proxy (SSRF,
+    egress laundering)
+  - it holds credentials or privileges that make it worth pivoting through
+
+  "Defence in depth" on its own is not a justification — name the capability or
+  don't write the policy.
+
+  Prefer `egressDeny` layered on open egress (`enableDefaultDeny.egress: false`)
+  over allow-listing: it fails open on the path you forgot rather than breaking the
+  app, and it keeps the diff readable. Every CIDR is site-specific — see
+  `network_mtu_topology` / the VLAN map before copying one from upstream.
+
+  Existing policies, both justified under that test — do not delete as drift:
+  - `actions-runner-system/.../runners/home-ops/networkpolicy.yaml` — the runner
+    keeps cluster-admin and `os:admin` and executes fork PRs; fenced off the LAN
+  - `default/searxng/app/ciliumnetworkpolicy.yaml` — unauthenticated and fetches
+    arbitrary URLs; restricts who may call it and fences it off the LAN
 - Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)

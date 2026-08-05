@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: llmkube
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: llmkube
+  path: ./kubernetes/apps/ai/llmkube/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: llmkube
+      namespace: ai
+  prune: true
+  wait: true
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  targetNamespace: ai
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: llmkube-models
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: llmkube-models
+  path: ./kubernetes/apps/ai/llmkube/models
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  dependsOn:
+    - name: llmkube
+      namespace: ai
+    - name: intel-gpu-resource-driver
+      namespace: kube-system
+  prune: true
+  wait: false
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  targetNamespace: ai

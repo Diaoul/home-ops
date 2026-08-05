@@ -16,9 +16,7 @@ spec:
     webhook:
       enabled: true
     llmkube:
-      # No llmkube in this cluster — the iGPUs are QuickSync-only and are
-      # already claimed by frigate and jellyfin.
-      autoRegister: false
+      autoRegister: true
     resources:
       requests:
         cpu: 10m

@@ -29,11 +29,11 @@ spec:
             env:
               TZ: Europe/Paris
               WEBUI_URL: https://chat.${DOMAIN}
-              # Backends — litellm is the only one
+              # Backends
               ENABLE_OLLAMA_API: false
               ENABLE_OPENAI_API: true
               OPENAI_API_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
-              # OIDC (Authelia)
+              # OAuth
               ENABLE_LOGIN_FORM: false
               ENABLE_SIGNUP: false
               ENABLE_OAUTH_SIGNUP: true
@@ -45,6 +45,11 @@ spec:
               OAUTH_SCOPES: openid email profile groups
               # Authelia's client is configured require_pkce: true
               OAUTH_CODE_CHALLENGE_METHOD: S256
+              # Search
+              ENABLE_RAG_WEB_SEARCH: true
+              ENABLE_SEARCH_QUERY: true
+              RAG_WEB_SEARCH_ENGINE: searxng
+              SEARXNG_QUERY_URL: http://searxng.default.svc.cluster.local:8080/search?q=<query>
               # Websockets
               ENABLE_WEBSOCKET_SUPPORT: true
               WEBSOCKET_MANAGER: redis

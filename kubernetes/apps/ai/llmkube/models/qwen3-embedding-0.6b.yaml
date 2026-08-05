@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/model_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3-embedding-0.6b
+spec:
+  source: hf://Qwen/Qwen3-Embedding-0.6B-GGUF
+  files:
+    - Qwen3-Embedding-0.6B-Q8_0.gguf
+  format: gguf
+  quantization: Q8_0
+  hardware:
+    accelerator: intel
+    gpu:
+      enabled: true
+      vendor: intel
+      layers: 99
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: llmkube-models
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/inference.llmkube.dev/inferenceservice_v1alpha1.json
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3-embedding-0.6b
+spec:
+  modelRef: qwen3-embedding-0.6b
+  runtime: llamacpp
+  image: ghcr.io/ggml-org/llama.cpp:server-vulkan@sha256:a26d04886e1a3903a7e7a87b5b4b0153e202f2402a463d2e9422dea70a4acdd6
+  replicas: 1
+  priority: normal
+  contextSize: 32768
+  parallelSlots: 2
+  batchSize: 16384
+  uBatchSize: 16384
+  env:
+    - name: ZES_ENABLE_SYSMAN
+      value: "1"
+    - name: ONEAPI_DEVICE_SELECTOR
+      value: level_zero:gpu
+    - name: UR_L0_ENABLE_RELAXED_ALLOCATION_LIMITS
+      value: "1"
+  extraArgs:
+    - --alias
+    - qwen3-embedding
+    - --embeddings
+    - --pooling
+    - last
+    - --cont-batching
+    # Coffee Lake-U: 4 physical cores, 8 threads
+    - --threads
+    - "4"
+    - --threads-batch
+    - "8"
+    - --mmap
+  endpoint:
+    port: 8080
+    type: ClusterIP
+  resources:
+    cpu: 100m
+    memory: 2Gi
+  probeOverrides:
+    startup:
+      httpGet:
+        path: /health
+        port: 8080
+      periodSeconds: 10
+      failureThreshold: 360
+    liveness:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 30
+      failureThreshold: 6
+    readiness:
+      httpGet:
+        path: /health
+        port: 8080
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      failureThreshold: 6
