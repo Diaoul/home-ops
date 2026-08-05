@@ -14,7 +14,11 @@ spec:
     - apiVersion: kopiur.home-operations.com/v1alpha1
       kind: Snapshot
       expr: |-
-        status.conditions.filter(c, c.type == "Reconciling").all(c, c.status == "False")
+        status.phase != 'Running'
+    - apiVersion: kopiur.home-operations.com/v1alpha1
+      kind: Restore
+      expr: |-
+        !(status.phase in ['Resolving', 'Restoring'])
     - apiVersion: ceph.rook.io/v1
       kind: CephCluster
       expr: |-
