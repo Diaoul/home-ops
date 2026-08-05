@@ -13,6 +13,10 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  dependsOn:
+    # autoRegister is checked at operator startup, so the CRD must exist first
+    - name: llmkube
+      namespace: ai
   prune: true
   wait: true
   interval: 1h

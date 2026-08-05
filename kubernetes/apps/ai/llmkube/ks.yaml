@@ -44,8 +44,13 @@ spec:
       namespace: ai
     - name: intel-gpu-resource-driver
       namespace: kube-system
+  healthCheckExprs:
+    - apiVersion: inference.llmkube.dev/v1alpha1
+      kind: InferenceService
+      failed: status.phase == 'Failed'
+      current: status.phase == 'Ready'
   prune: true
-  wait: false
+  wait: true
   interval: 1h
   retryInterval: 1m
   timeout: 5m
