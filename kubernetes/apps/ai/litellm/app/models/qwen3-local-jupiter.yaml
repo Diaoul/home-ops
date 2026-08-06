@@ -10,6 +10,11 @@ spec:
   params:
     model: ollama_chat/qwen3.5:9b
     apiBase: http://jupiter.milkyway:11434
+    additional:
+      # litellm maps reasoning_effort onto Ollama's `think`, and anything outside
+      # {low,medium,high} disables it. Omitting the field leaves Ollama's default,
+      # which is thinking ON -- ~1900 tokens per reply at 47 tok/s.
+      reasoning_effort: none
   info:
     maxTokens: 32768
     maxInputTokens: 32768

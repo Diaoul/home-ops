@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmodel_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: qwen3-local-think-jupiter
+spec:
+  # Same rig, reasoning left on. Expect ~40s replies; worth it only where a 9B
+  # needs the extra steps to get the answer right.
+  modelName: qwen3-local-think
+  params:
+    model: ollama_chat/qwen3.5:9b
+    apiBase: http://jupiter.milkyway:11434
+    additional:
+      reasoning_effort: medium
+  info:
+    maxTokens: 32768
+    maxInputTokens: 32768
+    maxOutputTokens: 16384
+    supportsFunctionCalling: true
+    extra:
+      supports_reasoning: true
+      disable_background_health_check: true
