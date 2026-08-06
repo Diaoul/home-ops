@@ -6,3 +6,4 @@ resources:
   - ./claude-opus-5.yaml
   - ./claude-sonnet-5.yaml
   - ./claude-haiku-4-5.yaml
+  - ./qwen3-local-jupiter.yaml

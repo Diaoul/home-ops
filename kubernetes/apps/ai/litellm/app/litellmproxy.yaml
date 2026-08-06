@@ -16,6 +16,13 @@ spec:
     redis_port: os.environ/REDIS_PORT
     num_retries: 3
     timeout: 600
+    # A rig that sleeps should drop out on the first failure and stay out, rather
+    # than being re-probed every 5s (the defaults are 3 fails / 5s).
+    allowed_fails: 1
+    cooldown_time: 300
+    fallbacks:
+      - qwen3-local:
+          - claude-haiku-4-5
     context_window_fallbacks:
       - claude-haiku-4-5:
           - claude-sonnet-5

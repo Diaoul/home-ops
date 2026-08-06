@@ -1,0 +1,21 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmodel_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: qwen3-local-jupiter
+spec:
+  # Shared across every rig so litellm pools them; add one CR per machine.
+  modelName: qwen3-local
+  params:
+    model: ollama_chat/qwen3.5:9b
+    apiBase: http://jupiter.milkyway:11434
+  info:
+    maxTokens: 32768
+    maxInputTokens: 32768
+    maxOutputTokens: 8192
+    supportsFunctionCalling: true
+    extra:
+      # A health check is a real inference request, which would reload the model
+      # and pin VRAM on a machine that is also used for gaming.
+      disable_background_health_check: true
