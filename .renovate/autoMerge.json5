@@ -44,6 +44,8 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch"],
+      // zer0ver: 0.x minors are breaking, hold them for review
+      matchCurrentVersion: "!/^v?0/",
       matchPackageNames: [
         "/external-dns/",
         "/gateway-api/",
@@ -65,6 +67,8 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch"],
+      // zer0ver: 0.x minors are breaking, hold them for review
+      matchCurrentVersion: "!/^v?0/",
       ignoreTests: true,
     },
     {
