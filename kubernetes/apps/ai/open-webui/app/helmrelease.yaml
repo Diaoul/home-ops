@@ -30,9 +30,6 @@ spec:
               TZ: Europe/Paris
               WEBUI_URL: https://chat.${DOMAIN}
               # Backends
-              # Title and tag generation fire on every chat; keep them off the
-              # main model. litellm falls back to haiku when no rig is awake.
-              TASK_MODEL_EXTERNAL: qwen3-local
               ENABLE_OLLAMA_API: false
               ENABLE_OPENAI_API: true
               OPENAI_API_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
