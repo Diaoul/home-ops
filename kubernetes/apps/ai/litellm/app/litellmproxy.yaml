@@ -20,9 +20,8 @@ spec:
     # than being re-probed every 5s (the defaults are 3 fails / 5s).
     allowed_fails: 1
     cooldown_time: 300
-    fallbacks:
-      - qwen3-local:
-          - claude-haiku-4-5
+    # No fallback for qwen3-local on purpose: a silent hop to haiku would mask a
+    # sleeping rig or a slow backend. Re-add once its behaviour is understood.
     context_window_fallbacks:
       - claude-haiku-4-5:
           - claude-sonnet-5
