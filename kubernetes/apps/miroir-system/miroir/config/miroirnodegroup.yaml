@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/miroir.home-operations.com/miroirnodegroup_v1alpha1.json
+apiVersion: miroir.home-operations.com/v1alpha1
+kind: MiroirNodeGroup
+metadata:
+  name: default
+spec:
+  # Scoped to the nodes whose u-local-hostpath partition has already been
+  # converted to r-miroir. Widen as node-1, node-4 and node-5 are migrated off
+  # OpenEBS; a node listed here without the partition has nowhere to put a pool.
+  nodeSelector:
+    matchExpressions:
+      - key: kubernetes.io/hostname
+        operator: In
+        values:
+          - k8s-node-2
+          - k8s-node-3
+  template:
+    pools:
+      - name: default
+        lvmthin:
+          device: /dev/disk/by-partlabel/r-miroir
