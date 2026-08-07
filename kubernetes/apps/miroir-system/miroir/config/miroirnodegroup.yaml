@@ -5,10 +5,6 @@ kind: MiroirNodeGroup
 metadata:
   name: default
 spec:
-  # Every node now carries an r-miroir partition, so match them all. An empty
-  # selector is the Kubernetes convention for "every node" and means a new node
-  # joins the pool automatically — but only once its partition exists, so a
-  # rebuilt node needs 62-volumes.yaml applied before it can serve storage.
   nodeSelector: {}
   template:
     pools:

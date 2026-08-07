@@ -7,11 +7,6 @@ provisioning:
     match: system_disk
   maxSize: 50GiB
 ---
-# Backing store for miroir's LVM thin pool. Talos derives the partition label
-# from the volume kind and name, and will not delete a partition whose config
-# disappears — so renaming this volume needs
-# `talosctl wipe disk <dev> --drop-partition` on each node before the new
-# partition can be created on an otherwise full disk.
 apiVersion: v1alpha1
 kind: RawVolumeConfig
 name: miroir
