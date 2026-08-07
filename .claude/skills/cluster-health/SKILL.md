@@ -68,13 +68,19 @@ kubectl exec <nodeplugin-pod> -c csi-rbdplugin -n rook-ceph -- rmdir <mount-dir>
 
 If a pod is already stuck mounting elsewhere, also clear the stale mapping on the old node — see [[rwo-ceph-forcedelete-hazard]] for the umount/unmap sequence. Never `ceph osd blocklist add`.
 
-## 5. OpenEBS
+## 5. miroir
 
 ```sh
-kubectl get pods -n openebs-system --no-headers | grep -v Running
+kubectl get pods -n miroir-system --no-headers | grep -v Running
+kubectl get miroirnodes
+kubectl get miroirvolumes -A --no-headers | grep -v Ready
 ```
 
-Flag: any pod not Running.
+Flag: any pod not Running. Any `MiroirNode` missing its `default` pool, showing no
+CAPACITY, or with a blank DRBD version — that node's `r-miroir` partition is missing or
+its agent has not claimed it, and it silently stops being a placement candidate. Any
+`MiroirVolume` not `Ready`, or reporting fewer replicas than its StorageClass asks for
+(`1/1` for `miroir-local`, `2/2` for `miroir-replicated`).
 
 ## 6. Kopiur Backups
 
@@ -174,7 +180,7 @@ curl -s 'https://victoria-logs.diaoul.io/select/logsql/query' \
   --data-urlencode 'start=1h'
 ```
 
-Flag: namespaces with unusually high error counts. Use judgment — kube-system and openebs-system have background noise; flag counts that look anomalous (e.g. >1000 errors/hour from an app namespace).
+Flag: namespaces with unusually high error counts. Use judgment — kube-system has background noise; flag counts that look anomalous (e.g. >1000 errors/hour from an app namespace).
 
 ## 17. Kubernetes Warning Events
 
