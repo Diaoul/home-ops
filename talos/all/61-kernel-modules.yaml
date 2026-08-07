@@ -1,0 +1,9 @@
+---
+machine:
+  kernel:
+    modules:
+      - name: dm_thin_pool # miroir LVM thin pools
+      - name: drbd # miroir replication (siderolabs/drbd extension)
+        parameters:
+          - usermode_helper=disabled
+      - name: drbd_transport_tcp # miroir replication

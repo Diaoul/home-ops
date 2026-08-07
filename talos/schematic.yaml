@@ -19,6 +19,7 @@ customization:
     - lockdown=integrity # Secureboot for bpf
   systemExtensions:
     officialExtensions:
+      - siderolabs/drbd # miroir DRBD9 replication
       - siderolabs/gasket-driver # Coral TPU
       - siderolabs/i915 # Intel iGPU
       - siderolabs/intel-ucode # Intel iGPU
