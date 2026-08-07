@@ -51,7 +51,8 @@ spec:
       algorithm: maglev
       mode: dsr
       serviceTopology: true
-    localRedirectPolicy: true
+    localRedirectPolicies:
+      enabled: true
     operator:
       dashboards:
         enabled: true
