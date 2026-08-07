@@ -12,7 +12,7 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4
   storage:
     size: 5Gi
-    storageClass: openebs-hostpath
+    storageClass: miroir-local
   enableSuperuserAccess: true
   superuserSecret:
     name: cloudnative-pg
