@@ -47,6 +47,9 @@ spec:
         enabled: false
     modelCache:
       enabled: true
+      # shared binds one node-local PVC wherever the operator lands and pins every
+      # InferenceService to that node, where the iGPU may already be taken.
+      mode: perService
       size: 5Gi
       storageClass: miroir-local
       accessMode: ReadWriteOnce
