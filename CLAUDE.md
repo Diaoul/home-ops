@@ -303,6 +303,28 @@ Reference: `kubernetes/apps/default/vaultwarden/app/` or `kubernetes/apps/defaul
 
 ---
 
+## Comments
+
+Comments explain a decision the YAML cannot. Nothing else.
+
+Write one only for a **non-obvious constraint that outlives the change**: an upstream
+bug being worked around, a value that looks wrong but is deliberate, a port that must
+avoid another service. Name the constraint, not the story.
+
+Never write:
+
+- **Restatements.** `# Backing store for miroir's LVM thin pool` above
+  `kind: RawVolumeConfig / name: miroir` says nothing the next two lines don't.
+- **Migration narration.** Steps, orderings, "now that X", "replacing Y", what a
+  previous value used to be. Procedures belong in the commit message, which is where
+  someone looks when asking *why did this change*. A comment describing a one-off
+  procedure ages into a lie.
+- **Session or reasoning leakage.** Notes to self, what was tried, what an agent
+  concluded. Git history holds this.
+
+Rule of thumb: delete the comment and read the YAML. If nothing is lost, it should not
+have been written.
+
 ## YAML Formatting
 
 All YAML is formatted with **yamlfmt** (config in `.yamlfmt.yaml`). The formatter runs
