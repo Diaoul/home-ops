@@ -418,7 +418,23 @@ Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to top
 Use [Conventional Commits](https://www.conventionalcommits.org/):
 - `feat:` for adding or removing apps/features
 - `fix:` for bug fixes
+- `docs:` for documentation, including this file
+- `refactor:` for changes that alter no behaviour
 - `chore:` for maintenance (dependency bumps, formatting) — **not** for adding/removing apps
+
+### One concern per commit
+
+A commit carries a single semantic change. If the subject line needs "and", or the
+body explains two unrelated things, it is two commits. A `fix(ai):` to a HelmRelease
+and an edit to this file are never the same commit, however close together they
+happened.
+
+Stage deliberately: `git add <specific paths>`, never `git add -A` or `git add .`.
+Only the files belonging to the change being committed, even when other edits are
+sitting in the tree — they may be someone else's work in progress.
+
+Split before committing rather than after. Once pushed, fixing it means rewriting
+published history, which needs the repo owner's say-so.
 
 Before implementing a new app or configuration pattern, check the
 [onedr0p/home-ops](https://github.com/onedr0p/home-ops) repo as a reference.
