@@ -30,7 +30,7 @@ diff:
 [script]
 download-image node:
     just talos node-ip {{ node }} > /dev/null
-    id="$(topf schematic-ids --nodes-filter "^{{ node }}$")"
+    id="$(topf schematic-ids --nodes-filter "^{{ node }}$" --submit-to-factory)"
     version="$(yq -e '.talosVersion' topf.yaml)"
     mkdir -p images
     gum spin --title "Downloading Talos ${version} ..." -- \
@@ -91,11 +91,18 @@ upgrade-k8s:
 
 # Manual fallback; tuppr normally drives upgrades. powercycle because the
 # schematic sets kexec_load_disabled=1, so topf's default kexec cannot work.
+#
+# --submit-to-factory registers the schematic with the Image Factory. topf
+# computes the ID locally by default, so a schematic.yaml change yields an ID
+# the factory has never built and the node fails the upgrade with
+# "failed to resolve reference ... not found". Submission is idempotent and the
+# ID is a deterministic hash, so this only ever creates what the config already
+# describes. `just talos schematic-ids` stays read-only for inspection.
 [doc('Upgrade Talos on all nodes, one at a time (asks first)')]
 upgrade:
-    topf upgrade --reboot-mode=powercycle
+    topf upgrade --reboot-mode=powercycle --submit-to-factory
 
 [doc('Upgrade Talos on a single node (asks first)')]
 upgrade-node node:
     just talos node-ip {{ node }} > /dev/null
-    topf upgrade --nodes-filter "^{{ node }}$" --reboot-mode=powercycle
+    topf upgrade --nodes-filter "^{{ node }}$" --reboot-mode=powercycle --submit-to-factory
