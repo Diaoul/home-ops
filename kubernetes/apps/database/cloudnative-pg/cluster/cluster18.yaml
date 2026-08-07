@@ -23,7 +23,7 @@ spec:
       memory: 2Gi
   affinity:
     enablePodAntiAffinity: true
-    podAntiAffinityType: preferred
+    podAntiAffinityType: required
     topologyKey: kubernetes.io/hostname
   monitoring:
     enablePodMonitor: true
