@@ -5,18 +5,11 @@ kind: MiroirNodeGroup
 metadata:
   name: default
 spec:
-  # Scoped to the nodes whose u-local-hostpath partition has already been
-  # converted to r-miroir. Widen as node-1, node-4 and node-5 are migrated off
-  # OpenEBS; a node listed here without the partition has nowhere to put a pool.
-  nodeSelector:
-    matchExpressions:
-      - key: kubernetes.io/hostname
-        operator: In
-        values:
-          - k8s-node-2
-          - k8s-node-3
-          - k8s-node-4
-          - k8s-node-5
+  # Every node now carries an r-miroir partition, so match them all. An empty
+  # selector is the Kubernetes convention for "every node" and means a new node
+  # joins the pool automatically — but only once its partition exists, so a
+  # rebuilt node needs 62-volumes.yaml applied before it can serve storage.
+  nodeSelector: {}
   template:
     pools:
       - name: default
