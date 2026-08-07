@@ -43,3 +43,14 @@ spec:
       inferencePodMonitor:
         enabled: false
         interval: 30s
+      prometheusRule:
+        enabled: false
+    modelCache:
+      enabled: true
+      # perService keeps the operator off the cache PVC entirely (it gets an
+      # emptyDir). shared + RWO on ceph-block deadlocks the controller-manager
+      # rollout: the surge pod lands on another node and Multi-Attach blocks.
+      mode: perService
+      size: 5Gi
+      accessMode: ReadWriteOnce
+      mountPath: /models
