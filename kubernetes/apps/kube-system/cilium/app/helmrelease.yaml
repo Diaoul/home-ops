@@ -21,16 +21,17 @@ spec:
     bpfClockProbe: true
     bgpControlPlane:
       enabled: true
-    cni:
-      # Required for pairing with Multus CNI
-      exclusive: false
     cgroup:
       automount:
         enabled: false
       hostRoot: /sys/fs/cgroup
+    cni:
+      # Required for pairing with Multus CNI
+      exclusive: false
     dashboards:
       enabled: true
     devices: bond+
+    enableIPv4BIGTCP: true
     endpointRoutes:
       enabled: true
     envoy:
@@ -39,7 +40,6 @@ spec:
       enabled: false
     ipam:
       mode: kubernetes
-    enableIPv4BIGTCP: true
     ipv4NativeRoutingCIDR: 10.42.0.0/16
     k8sServiceHost: 127.0.0.1
     k8sServicePort: 7445
@@ -62,14 +62,14 @@ spec:
           enabled: true
       replicas: 2
       rollOutPods: true
+    pmtuDiscovery:
+      enabled: true
     prometheus:
       enabled: true
       serviceMonitor:
         enabled: true
         trustCRDsExist: true
     rollOutCiliumPods: true
-    pmtuDiscovery:
-      enabled: true
     routingMode: native
     securityContext:
       capabilities:
