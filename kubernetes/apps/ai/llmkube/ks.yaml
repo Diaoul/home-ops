@@ -44,6 +44,8 @@ spec:
       namespace: ai
     - name: intel-gpu-resource-driver
       namespace: kube-system
+    - name: miroir-config
+      namespace: miroir-system
   healthCheckExprs:
     - apiVersion: inference.llmkube.dev/v1alpha1
       kind: InferenceService

@@ -30,6 +30,8 @@ metadata:
 spec:
   dependsOn:
     - name: kopiur
+    - name: miroir-config
+      namespace: miroir-system
   interval: 1h
   path: ./kubernetes/apps/kopiur-system/kopiur/repository
   prune: true
