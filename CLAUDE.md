@@ -14,7 +14,7 @@ Read this file before making any changes.
 | GitOps | Flux v2 (flux-operator + flux-instance) |
 | CNI | Cilium (BGP, native routing, kube-proxy replacement) |
 | Ingress | Envoy Gateway (Kubernetes Gateway API) |
-| Storage | Rook-Ceph (block) + OpenEBS (local hostpath) |
+| Storage | Rook-Ceph (block) + miroir (node-local / DRBD-replicated) |
 | Backup | kopiur (Kopia) → NFS (singularity.milkyway) |
 | Database | CloudNative-PG (PostgreSQL 18, HA) |
 | Secrets | SOPS + Age + PGP |
@@ -50,7 +50,7 @@ kubernetes/
 ### Namespaces
 
 `cert-manager`, `database`, `default`, `downloads`, `flux-system`, `home-automation`,
-`kube-system`, `media`, `network`, `observability`, `openebs-system`, `rook-ceph`,
+`kube-system`, `media`, `miroir-system`, `network`, `observability`, `rook-ceph`,
 `security`, `system-upgrade`
 
 ---
@@ -267,8 +267,12 @@ The component creates:
 Note the PVC's `dataSourceRef` is immutable: changing it requires deleting and
 recreating the PVC.
 
-For NFS-mounted media (downloads/media namespace), use `local-hostpath` StorageClass
+For NFS-mounted media (downloads/media namespace), use `miroir-local` StorageClass
 and add the `nfs-scaler` component.
+
+Storage classes: `ceph-block` (default, replicated RBD), `miroir-local` (node-local
+LVM thin, no DRBD traffic), `miroir-replicated` (2-way DRBD, keep it off control
+planes; their system disks are already the etcd fdatasync bottleneck).
 
 ---
 
