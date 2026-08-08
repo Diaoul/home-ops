@@ -10,14 +10,6 @@ spec:
     name: kopiur
   interval: 1h
   values:
-    extraVolumes:
-      - name: repo
-        nfs:
-          server: singularity.milkyway
-          path: /volume2/backups/kopiur
-    extraVolumeMounts:
-      - name: repo
-        mountPath: /repo
     resources:
       requests:
         cpu: 100m
