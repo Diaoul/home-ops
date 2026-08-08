@@ -28,7 +28,7 @@ metadata:
 spec:
   modelRef: qwen3-embedding-0.6b
   runtime: llamacpp
-  image: ghcr.io/ggml-org/llama.cpp:server-vulkan@sha256:e1913c98d60819b92873d0959f8221483d6961361892b8d36a0cb3440d92aea7
+  image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b10298@sha256:e1913c98d60819b92873d0959f8221483d6961361892b8d36a0cb3440d92aea7
   replicas: 1
   priority: normal
   contextSize: 8192
@@ -38,13 +38,6 @@ spec:
   # equal to the per-slot context (contextSize / parallelSlots).
   batchSize: 8192
   uBatchSize: 8192
-  env:
-    - name: ZES_ENABLE_SYSMAN
-      value: "1"
-    - name: ONEAPI_DEVICE_SELECTOR
-      value: level_zero:gpu
-    - name: UR_L0_ENABLE_RELAXED_ALLOCATION_LIMITS
-      value: "1"
   extraArgs:
     - --alias
     - qwen3-embedding
