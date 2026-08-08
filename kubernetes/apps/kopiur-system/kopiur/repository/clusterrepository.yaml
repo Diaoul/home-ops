@@ -14,10 +14,12 @@ spec:
           name: kopiur-nas
           namespace: kopiur-system
       bucket: kopiur
-      endpoint: singularity.milkyway:9000
+      endpoint: singularity.milkyway:9001
       region: us-east-1
       tls:
-        disableTls: true
+        caBundleRef:
+          configMapName: milkyway-ca
+          key: ca.crt
   create:
     enabled: true
   credentialProjection:
