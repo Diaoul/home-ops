@@ -31,13 +31,17 @@ spec:
   image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b10326@sha256:f5122475f77cf20719a514dc01c8d371cd874ceee2109c02ae7db0920562ec96
   replicas: 1
   priority: normal
-  contextSize: 8192
+  contextSize: 4096
   parallelSlots: 1
   # --pooling last is non-causal: every token of a request must fit in one
   # micro-batch, so uBatchSize bounds the largest embeddable input. Keep it
   # equal to the per-slot context (contextSize / parallelSlots).
-  batchSize: 8192
-  uBatchSize: 8192
+  #
+  # Non-causal attention materialises a uBatch² × 16-head score buffer, which at
+  # 8192 asks Vulkan for ~4GB in one allocation — past the iGPU's per-allocation
+  # limit, so it fell back to unpinned host memory on every load.
+  batchSize: 4096
+  uBatchSize: 4096
   extraArgs:
     - --alias
     - qwen3-embedding
