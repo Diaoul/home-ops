@@ -18,8 +18,6 @@ spec:
       region: us-east-1
       tls:
         disableTls: true
-  create:
-    enabled: true
   credentialProjection:
     allowed: true
   encryption:
