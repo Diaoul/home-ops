@@ -28,11 +28,7 @@ spec:
     deep:
       schedule:
         cron: H 5 1 * *
-        jitter: 1h
-        timezone: Europe/Paris
     quick:
       schedule:
         cron: H 3 * * *
-        jitter: 1h
-        timezone: Europe/Paris
   volumeSnapshotClassName: ceph-block
