@@ -26,15 +26,3 @@ spec:
   identityDefaults:
     hostnameExpr: namespace
     usernameExpr: namespace + '-' + policyName
-  moverDefaults:
-    cache:
-      capacity: 5Gi
-      mode: Ephemeral
-      storageClassName: miroir-local
-    podSecurityContext:
-      fsGroup: 568
-      fsGroupChangePolicy: OnRootMismatch
-    securityContext:
-      runAsUser: 568
-      runAsGroup: 568
-    ttlSecondsAfterFinished: 300

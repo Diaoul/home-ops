@@ -7,6 +7,10 @@ metadata:
 spec:
   credentialProjection:
     enabled: true
+  mover:
+    securityContext:
+      runAsUser: 568
+      runAsGroup: 568
   policy:
     onMissingSnapshot: Continue
   source:

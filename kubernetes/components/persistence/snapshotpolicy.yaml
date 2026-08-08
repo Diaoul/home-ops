@@ -5,12 +5,16 @@ kind: SnapshotPolicy
 metadata:
   name: ${APP}
 spec:
-  copyMethod: Snapshot
   credentialProjection:
     enabled: true
   mover:
     cache:
       capacity: ${CAPACITY:=5Gi}
+      mode: Ephemeral
+      storageClassName: miroir-local
+    securityContext:
+      runAsUser: 568
+      runAsGroup: 568
   repository:
     kind: ClusterRepository
     name: nas
@@ -31,4 +35,4 @@ spec:
         cron: H 3 * * *
         jitter: 1h
         timezone: Europe/Paris
-  volumeSnapshotClassName: ${SNAPSHOTCLASS:=ceph-block}
+  volumeSnapshotClassName: ceph-block
