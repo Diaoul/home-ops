@@ -8,6 +8,9 @@ spec:
   copyMethod: Snapshot
   credentialProjection:
     enabled: true
+  mover:
+    cache:
+      capacity: ${CAPACITY:=5Gi}
   repository:
     kind: ClusterRepository
     name: nas

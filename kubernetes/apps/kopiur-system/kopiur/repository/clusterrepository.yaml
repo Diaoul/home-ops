@@ -28,7 +28,7 @@ spec:
     usernameExpr: namespace + '-' + policyName
   moverDefaults:
     cache:
-      capacity: 1Mi
+      capacity: 5Gi
       mode: Ephemeral
       storageClassName: miroir-local
     podSecurityContext:
