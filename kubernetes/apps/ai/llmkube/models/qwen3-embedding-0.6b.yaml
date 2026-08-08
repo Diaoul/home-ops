@@ -58,7 +58,10 @@ spec:
     type: ClusterIP
   resources:
     cpu: 100m
-    memory: 3Gi
+    # Working set peaks at ~3.2GB once the compute buffers are faulted in, which
+    # only happens under traffic — an idle pod measures ~1GB lower and will
+    # under-reserve if you size from it.
+    memory: 3.5Gi
   probeOverrides:
     startup:
       httpGet:
