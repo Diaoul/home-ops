@@ -33,15 +33,13 @@ spec:
   priority: normal
   contextSize: 4096
   parallelSlots: 1
-  # --pooling last is non-causal: every token of a request must fit in one
-  # micro-batch, so uBatchSize bounds the largest embeddable input. Keep it
-  # equal to the per-slot context (contextSize / parallelSlots).
-  #
-  # Non-causal attention materialises a uBatch² × 16-head score buffer, which at
-  # 8192 asks Vulkan for ~4GB in one allocation — past the iGPU's per-allocation
-  # limit, so it fell back to unpinned host memory on every load.
+  # --pooling last is non-causal, so uBatchSize bounds the largest single input
+  # (a sequence may not straddle micro-batches) AND sizes a uBatch² × 16-head
+  # score buffer — 1GB at 4096, 4GB at 8192, past what the iGPU will allocate in
+  # one go. 2048 tokens is ~8x an Open WebUI RAG chunk. batchSize stays at the
+  # context so a multi-chunk request still queues in one pass.
   batchSize: 4096
-  uBatchSize: 4096
+  uBatchSize: 2048
   extraArgs:
     - --alias
     - qwen3-embedding
