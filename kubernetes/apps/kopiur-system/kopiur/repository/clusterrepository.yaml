@@ -26,3 +26,9 @@ spec:
   identityDefaults:
     hostnameExpr: namespace
     usernameExpr: policyName
+  moverDefaults:
+    # The NFS export only grants 568; a mover at the operator's default
+    # 65532 cannot write the repository.
+    securityContext:
+      runAsUser: 568
+      runAsGroup: 568
