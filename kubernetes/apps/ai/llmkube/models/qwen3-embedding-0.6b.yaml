@@ -31,10 +31,13 @@ spec:
   image: ghcr.io/ggml-org/llama.cpp:server-vulkan@sha256:e1913c98d60819b92873d0959f8221483d6961361892b8d36a0cb3440d92aea7
   replicas: 1
   priority: normal
-  contextSize: 32768
-  parallelSlots: 2
-  batchSize: 16384
-  uBatchSize: 16384
+  contextSize: 8192
+  parallelSlots: 1
+  # --pooling last is non-causal: every token of a request must fit in one
+  # micro-batch, so uBatchSize bounds the largest embeddable input. Keep it
+  # equal to the per-slot context (contextSize / parallelSlots).
+  batchSize: 8192
+  uBatchSize: 8192
   env:
     - name: ZES_ENABLE_SYSMAN
       value: "1"
@@ -60,7 +63,7 @@ spec:
     type: ClusterIP
   resources:
     cpu: 100m
-    memory: 2Gi
+    memory: 3Gi
   probeOverrides:
     startup:
       httpGet:
