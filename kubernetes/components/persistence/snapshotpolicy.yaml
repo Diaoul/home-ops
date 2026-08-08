@@ -26,6 +26,8 @@ spec:
         name: ${APP}
   verification:
     deep:
+      capacity: ${CAPACITY:=5Gi}
+      storageClassName: miroir-local
       schedule:
         cron: H 5 1 * *
     quick:
