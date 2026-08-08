@@ -8,12 +8,18 @@ spec:
   allowedNamespaces:
     all: true
   backend:
-    filesystem:
-      path: /repo
-      volume:
-        nfs:
-          server: singularity.milkyway
-          path: /volume2/backups/kopiur
+    s3:
+      auth:
+        secretRef:
+          name: kopiur-nas
+          namespace: kopiur-system
+      bucket: kopiur
+      endpoint: singularity.milkyway:9000
+      region: us-east-1
+      tls:
+        disableTls: true
+  create:
+    enabled: true
   credentialProjection:
     allowed: true
   encryption:
@@ -24,9 +30,3 @@ spec:
   identityDefaults:
     hostnameExpr: namespace
     usernameExpr: policyName
-  moverDefaults:
-    # The NFS export only grants 568; a mover at the operator's default
-    # 65532 cannot write the repository.
-    securityContext:
-      runAsUser: 568
-      runAsGroup: 568
