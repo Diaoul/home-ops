@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: node-exporter-rules
+spec:
+  groups:
+    - name: node-exporter.rules
+      rules:
+        # Thresholds are offsets from the chip's own TjMax rather than absolutes:
+        # coretemp reports 100°C on the cluster nodes and 98°C on the NAS.
+        - alert: NodeCPUOverheating
+          expr: |-
+            max by (instance) (node_hwmon_temp_celsius{chip="platform_coretemp_0"})
+              >= on (instance) (min by (instance) (node_hwmon_temp_crit_celsius{chip="platform_coretemp_0"}) - 15)
+          for: 30m
+          annotations:
+            summary: >-
+              CPU on {{ $labels.instance }} has held {{ $value | printf "%.0f" }}°C for 30 minutes, within 15°C of TjMax
+          labels:
+            severity: warning
+
+        - alert: NodeCPUCriticalTemperature
+          expr: |-
+            max by (instance) (node_hwmon_temp_celsius{chip="platform_coretemp_0"})
+              >= on (instance) (min by (instance) (node_hwmon_temp_crit_celsius{chip="platform_coretemp_0"}) - 5)
+          for: 5m
+          annotations:
+            summary: >-
+              CPU on {{ $labels.instance }} is at {{ $value | printf "%.0f" }}°C, within 5°C of TjMax
+          labels:
+            severity: critical
+
+        # A cooling fault throttles continuously; a hot workload does not. Healthy
+        # nodes accumulate a few hundred events per month, a faulted one a few per
+        # millisecond, so anything above this rate is a hardware problem.
+        - alert: NodeCPUThermalThrottling
+          expr: |-
+            rate(node_cpu_package_throttles_total[15m]) > 0.1
+          for: 15m
+          annotations:
+            summary: >-
+              CPU package on {{ $labels.instance }} is thermally throttling at {{ $value | printf "%.1f" }} events/s
+          labels:
+            severity: critical
