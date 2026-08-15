@@ -72,6 +72,9 @@ spec:
         cpu: 100m
         memory: 128Mi
       limits:
+        # Helm deep-merges against chart defaults, so the key has to be nulled
+        # rather than omitted to actually drop it.
+        cpu: null
         memory: 128Mi
     topologySpreadConstraints:
       - maxSkew: 1
