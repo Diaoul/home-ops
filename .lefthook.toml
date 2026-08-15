@@ -1,7 +1,23 @@
+# Sequential: sort-manifests rewrites key order, so yamlfmt has to run after it to
+# normalise the result. lefthook only honours `priority` when commands do not run
+# in parallel.
 [pre-commit]
-parallel = true
+parallel = false
+
+[pre-commit.commands.sort-manifests]
+priority = 1
+run = "python scripts/yamlsorter/yamlsorter.py {staged_files}"
+glob = ["**/helmrelease.yaml", "**/kustomization.yaml", "**/ks.yaml"]
+stage_fixed = true
+
+[pre-commit.commands.format-yaml]
+priority = 2
+run = "yamlfmt {staged_files}"
+glob = ["*.yaml", "!*.sops.yaml"]
+stage_fixed = true
 
 [pre-commit.commands.format-just]
+priority = 3
 run = """
 for file in {staged_files}; do
     just --justfile "$file" --fmt
@@ -9,9 +25,3 @@ done
 """
 glob = ["*.just", ".justfile"]
 stage_fixed = true
-
-[pre-commit.commands.format-yaml]
-run = "yamlfmt {staged_files}"
-glob = ["*.yaml", "!*.sops.yaml"]
-stage_fixed = true
-
