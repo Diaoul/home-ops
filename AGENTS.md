@@ -356,7 +356,6 @@ Legacy quoted strings are harmless; just don't add new ones.
 ```sh
 bash scripts/kubeconform.sh kubernetes   # manifests against schemas
 bash scripts/sops-mismatch.sh            # regenerate SOPS MAC where it mismatches
-yamllint .
 flux-local test --path kubernetes/       # requires flux-local
 ```
 
@@ -371,8 +370,8 @@ talosctl validate -m metal -c talos/rendered/<node>.yaml
 **Run these yourself.** The only automation is lefthook pre-commit: `oxfmt` on staged
 YAML/JSON/markdown, `just --fmt` on justfiles, `zizmor` on workflows, and the unencrypted-sops
 block. `.github/workflows/` holds only `image-pull`, `label-sync`, `renovate` and `tag`, so a PR
-gets no `kubeconform`, `yamllint` or `flux-local` signal. Konflate posts a status check, but it
-reviews Flux changes under `kubernetes/` and says nothing about `talos/`.
+gets no `kubeconform` or `flux-local` signal. Konflate posts a status check, but it reviews Flux
+changes under `kubernetes/` and says nothing about `talos/`.
 
 ---
 
