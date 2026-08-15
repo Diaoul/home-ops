@@ -1,26 +1,45 @@
 [pre-commit]
 parallel = true
+skip = ["merge", "rebase"]
 
 [pre-commit.commands.format-just]
-run = """
-for file in {staged_files}; do
-    just --justfile "$file" --fmt
-done
-"""
 glob = ["*.just", ".justfile"]
+run = 'for f in {staged_files}; do just --justfile "$f" --fmt; done'
+stage_fixed = true
+
+[pre-commit.commands.format-mise]
+glob = [".mise.toml", ".mise/config.toml"]
+run = "mise fmt"
+stage_fixed = true
+
+[pre-commit.commands.format-json]
+glob = ["*.json", "*.json5", "*.jsonc"]
+run = "oxfmt {staged_files}"
+stage_fixed = true
+
+[pre-commit.commands.format-markdown]
+glob = ["*.md", "*.markdown", "*.mdx"]
+run = "oxfmt {staged_files}"
 stage_fixed = true
 
 [pre-commit.commands.format-yaml]
-run = "yamlfmt {staged_files}"
-glob = ["*.yaml", "!*.sops.yaml"]
+glob = ["*.yaml", "*.yml"]
+run = "oxfmt {staged_files}"
 stage_fixed = true
+
+[pre-commit.commands.mise-lock]
+glob = [".mise.toml", ".mise/config.toml"]
+run = 'mise lock && { for f in {staged_files}; do l="$(dirname "$f")/mise.lock"; [ -f "$l" ] && git add "$l"; done; true; }'
+
+[pre-commit.commands.zizmor]
+glob = [".github/workflows/*.yaml", ".github/actions/**/action.yaml"]
+run = "zizmor --offline {staged_files}"
 
 # sops always writes a top-level `sops:` block; a file without one was never encrypted.
 [pre-commit.commands.check-sops-encrypted]
+glob = ["*.sops.yaml"]
 run = """
 for file in {staged_files}; do
     grep -q '^sops:' "$file" || { echo "unencrypted: $file"; exit 1; }
 done
 """
-glob = ["*.sops.yaml"]
-
