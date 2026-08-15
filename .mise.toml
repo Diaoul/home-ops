@@ -2,7 +2,6 @@
 _.python.venv = { path = "{{config_root}}/.venv", create = true }
 JUST_UNSTABLE = "1"
 KUBECONFIG = "{{config_root}}/kubeconfig"
-LEFTHOOK_OUTPUT = "false"
 SOPS_AGE_KEY_FILE = "{{config_root}}/age.key"
 TALOSCONFIG = "{{config_root}}/talos/talosconfig"
 
