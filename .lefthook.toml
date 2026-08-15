@@ -15,3 +15,12 @@ run = "yamlfmt {staged_files}"
 glob = ["*.yaml", "!*.sops.yaml"]
 stage_fixed = true
 
+# sops always writes a top-level `sops:` block; a file without one was never encrypted.
+[pre-commit.commands.check-sops-encrypted]
+run = """
+for file in {staged_files}; do
+    grep -q '^sops:' "$file" || { echo "unencrypted: $file"; exit 1; }
+done
+"""
+glob = ["*.sops.yaml"]
+
