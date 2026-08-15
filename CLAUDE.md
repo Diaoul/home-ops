@@ -357,9 +357,9 @@ Before committing, validate your YAML:
 
 ```sh
 # Validate Kubernetes manifests against schemas
-bash scripts/kubeconform.sh
+bash scripts/kubeconform.sh kubernetes
 
-# Check for SOPS files that should be encrypted but aren't
+# Regenerate the SOPS MAC on files that report a mismatch
 bash scripts/sops-mismatch.sh
 
 # Lint YAML
@@ -378,9 +378,10 @@ just talos render                  # render to talos/rendered/ (gitignored)
 talosctl validate -m metal -c talos/rendered/<node>.yaml
 ```
 
-**Run these yourself — they are not enforced anywhere.** The only automation is a
-lefthook pre-commit hook that runs `yamlfmt` on staged YAML and `just --fmt` on staged
-justfiles. There are no manifest-validation workflows in `.github/workflows/` (only
+**Run these yourself — they are not enforced anywhere.** The only automation is
+lefthook pre-commit, which runs `yamlfmt` on staged YAML, `just --fmt` on staged
+justfiles, and blocks any staged `*.sops.yaml` that is not encrypted. There are no
+manifest-validation workflows in `.github/workflows/` (only
 `image-pull`, `label-sync`, `renovate`, `tag`), so a PR gets no `kubeconform`,
 `yamllint`, or `flux-local` signal. Konflate posts a status check, but it reviews Flux
 changes under `kubernetes/` and says nothing about `talos/`.
