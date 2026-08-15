@@ -6,3 +6,4 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./probes.yaml
+  - ./prometheusrule.yaml

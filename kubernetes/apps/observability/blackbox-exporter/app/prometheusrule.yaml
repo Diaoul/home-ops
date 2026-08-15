@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: blackbox-exporter-rules
+spec:
+  groups:
+    - name: blackbox-exporter.rules
+      rules:
+        # Resolution normally takes ~4ms, so anything past a second is a stall
+        # rather than a slow answer. These land on exactly 5000ms because the
+        # query is dropped and the client waits out its full resolver timeout.
+        - alert: DNSLookupStalled
+          expr: |-
+            max_over_time(probe_dns_lookup_time_seconds[10m]) > 1
+          for: 1m
+          annotations:
+            summary: >-
+              DNS resolution for {{ $labels.instance }} took {{ $value | printf "%.1f" }}s, against a ~4ms median
+          labels:
+            severity: warning
