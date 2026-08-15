@@ -12,3 +12,5 @@ talosconfig
 /talos/output/
 # Misc.
 .venv/
+__pycache__/
+.pytest_cache/
