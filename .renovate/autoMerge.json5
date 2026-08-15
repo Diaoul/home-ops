@@ -46,11 +46,7 @@
       matchUpdateTypes: ["minor", "patch"],
       // zer0ver: 0.x minors are breaking, hold them for review
       matchCurrentVersion: "!/^v?0/",
-      matchPackageNames: [
-        "/external-dns/",
-        "/gateway-api/",
-        "/prometheus-operator/",
-      ],
+      matchPackageNames: ["/external-dns/", "/gateway-api/", "/prometheus-operator/"],
       ignoreTests: true,
     },
     {
