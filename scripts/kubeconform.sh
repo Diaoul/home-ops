@@ -12,13 +12,11 @@ kubeconform_args=(
     "-strict"
     "-ignore-missing-schemas"
     "-skip"
-    "Gateway,HTTPRoute,Secret,ReplicationDestination,ReplicationSource"
+    "Gateway,HTTPRoute,Secret"
     "-schema-location"
     "default"
     "-schema-location"
-    "https://kubernetes-schemas.pages.dev/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
-    "-schema-location"
-    "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+    "https://k8s-schemas.home-operations.com/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
     "-verbose"
 )
 
