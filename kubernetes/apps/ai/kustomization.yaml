@@ -11,4 +11,5 @@ resources:
   - ./litellm/ks.yaml
   - ./open-webui/ks.yaml
   - ./ha-mcp/ks.yaml
+  - ./context7-mcp/ks.yaml
   - ./memini/ks.yaml
