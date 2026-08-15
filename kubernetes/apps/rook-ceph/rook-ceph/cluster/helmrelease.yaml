@@ -31,6 +31,13 @@ spec:
           mon_data_avail_warn: "15"
         mon:
           mon_cluster_log_level: info
+        mgr:
+          # Ceph v20.2.2 logs every Kubernetes PodList response body (~600KiB
+          # here) into the in-memory log ring, which retains log_max_recent
+          # entries — 10000 by the daemon default, not the 500 the docs give —
+          # and OOMs the active mgr. Fixed in v20.2.3 by ceph#69609; drop this
+          # once the chart's cephImage.tag ships that.
+          log_max_recent: "100"
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       csi:
