@@ -1,0 +1,31 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: etcd-rules
+spec:
+  groups:
+    - name: etcd.rules
+      rules:
+        # boltdb never returns pages to the filesystem, so a write burst raises the
+        # db file permanently while the live data drains back within the hour. Only
+        # a defrag lowers it again, which makes any growth here monotonic and worth
+        # catching while the cause is still visible in apiserver_request_total.
+        # etcdDatabaseHighFragmentationRatio covers the same damage, but not until
+        # the ratio crosses 50% days later.
+        #
+        # Growth rather than write volume: bursts big enough to ratchet the file are
+        # not the ones with the highest write rate. Backtested over 14 days, a 3x
+        # write-rate threshold produced 23 episodes and still missed the second of
+        # the two that actually grew the file; this expression matched both and
+        # nothing else.
+        - alert: EtcdDatabaseSizeRatchet
+          expr: |-
+            max(etcd_mvcc_db_total_size_in_bytes - min_over_time(etcd_mvcc_db_total_size_in_bytes[1h])) > 20e6
+          for: 5m
+          annotations:
+            summary: >-
+              etcd db file grew {{ $value | humanize1024 }}B in the last hour and will not shrink without a defrag
+          labels:
+            severity: warning
