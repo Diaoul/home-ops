@@ -37,6 +37,7 @@ spec:
                 spec:
                   install:
                     crds: CreateReplace
+                  maxHistory: 3
                   rollback:
                     cleanupOnFail: true
                   upgrade:
