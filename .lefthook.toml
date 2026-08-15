@@ -14,17 +14,17 @@ stage_fixed = true
 
 [pre-commit.commands.format-json]
 glob = ["*.json", "*.json5", "*.jsonc"]
-run = "oxfmt {staged_files}"
+run = "mise exec -- oxfmt {staged_files}"
 stage_fixed = true
 
 [pre-commit.commands.format-markdown]
 glob = ["*.md", "*.markdown", "*.mdx"]
-run = "oxfmt {staged_files}"
+run = "mise exec -- oxfmt {staged_files}"
 stage_fixed = true
 
 [pre-commit.commands.format-yaml]
 glob = ["*.yaml", "*.yml"]
-run = "oxfmt {staged_files}"
+run = "mise exec -- oxfmt {staged_files}"
 stage_fixed = true
 
 [pre-commit.commands.mise-lock]
@@ -33,7 +33,7 @@ run = 'mise lock && { for f in {staged_files}; do l="$(dirname "$f")/mise.lock";
 
 [pre-commit.commands.zizmor]
 glob = [".github/workflows/*.yaml", ".github/actions/**/action.yaml"]
-run = "zizmor --offline {staged_files}"
+run = "mise exec -- zizmor --offline {staged_files}"
 
 # sops always writes a top-level `sops:` block; a file without one was never encrypted.
 [pre-commit.commands.check-sops-encrypted]
