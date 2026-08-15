@@ -107,6 +107,9 @@
       "Bash(rtk kubectl get secret *)",
       "Bash(rtk kubectl get secrets *)",
       "Bash(sops *)",
+      "Read(./age.key)",
+      "Bash(cat *age.key*)",
+      "Bash(rtk cat *age.key*)",
       "Read(.venv/)",
       "Read(talos/rendered)",
       "Read(talos/talosconfig)"
@@ -120,6 +123,10 @@
           {
             "type": "command",
             "command": "cmd=$(jq -r '.tool_input.command'); if echo \"$cmd\" | grep -qE '^(rtk )?kubectl[[:space:]]+-n[[:space:]]+'; then echo '{\"decision\":\"block\",\"reason\":\"kubectl -n flag must be placed at the end, not immediately after kubectl\"}'; fi"
+          },
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command'); if printf '%s' \"$cmd\" | grep -q 'age\\.key'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commands referencing age.key are blocked in this repo\"}}'; fi"
           }
         ]
       }
