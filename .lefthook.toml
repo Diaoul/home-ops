@@ -24,7 +24,9 @@ stage_fixed = true
 
 [pre-commit.commands.format-yaml]
 glob = ["*.yaml", "*.yml"]
-run = "oxfmt {staged_files}"
+# oxfmt excludes *.sops.yaml itself and errors when every input is excluded,
+# which a commit touching only secrets would otherwise trip.
+run = "oxfmt --no-error-on-unmatched-pattern {staged_files}"
 stage_fixed = true
 
 [pre-commit.commands.mise-lock]
