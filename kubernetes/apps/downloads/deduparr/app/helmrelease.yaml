@@ -12,16 +12,9 @@ spec:
   values:
     controllers:
       deduparr:
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
+        strategy: RollingUpdate
         containers:
           app:
             image:
@@ -61,8 +54,8 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  failureThreshold: 30
                   periodSeconds: 10
+                  failureThreshold: 30
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -72,6 +65,13 @@ spec:
                 cpu: 10m
               limits:
                 memory: 128Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:

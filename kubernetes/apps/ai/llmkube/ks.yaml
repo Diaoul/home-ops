@@ -5,25 +5,25 @@ kind: Kustomization
 metadata:
   name: llmkube
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: llmkube
-  path: ./kubernetes/apps/ai/llmkube/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/ai/llmkube/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
+  targetNamespace: ai
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: llmkube
+  prune: true
+  wait: true
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: llmkube
       namespace: ai
-  prune: true
-  wait: true
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: ai
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -31,14 +31,14 @@ kind: Kustomization
 metadata:
   name: llmkube-models
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: llmkube-models
-  path: ./kubernetes/apps/ai/llmkube/models
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/ai/llmkube/models
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: llmkube
       namespace: ai
@@ -46,14 +46,14 @@ spec:
       namespace: kube-system
     - name: miroir-config
       namespace: miroir-system
+  targetNamespace: ai
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: llmkube-models
+  prune: true
+  wait: true
   healthCheckExprs:
     - apiVersion: inference.llmkube.dev/v1alpha1
       kind: InferenceService
-      failed: status.phase == 'Failed'
       current: status.phase == 'Ready'
-  prune: true
-  wait: true
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: ai
+      failed: status.phase == 'Failed'

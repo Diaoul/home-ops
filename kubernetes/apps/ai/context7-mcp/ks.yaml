@@ -5,20 +5,20 @@ kind: Kustomization
 metadata:
   name: context7-mcp
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: context7-mcp
-  path: ./kubernetes/apps/ai/context7-mcp/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/ai/context7-mcp/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: litellm
       namespace: ai
+  targetNamespace: ai
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: context7-mcp
   prune: true
   wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: ai

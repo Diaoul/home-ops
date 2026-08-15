@@ -5,18 +5,18 @@ kind: Kustomization
 metadata:
   name: gatus
 spec:
-  path: ./kubernetes/apps/observability/gatus/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/observability/gatus/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
+  targetNamespace: observability
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: observability
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

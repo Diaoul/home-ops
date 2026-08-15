@@ -5,17 +5,17 @@ kind: Kustomization
 metadata:
   name: rook-ceph
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/rook-ceph/rook-ceph/app
-  prune: true
-  retryInterval: 2m
-  wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/rook-ceph/rook-ceph/app
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
   targetNamespace: rook-ceph
+  prune: true
+  wait: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -23,11 +23,27 @@ kind: Kustomization
 metadata:
   name: rook-ceph-cluster
 spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
+  interval: 1h
+  timeout: 15m
+  retryInterval: 2m
   dependsOn:
     - name: ceph-csi-drivers
       namespace: rook-ceph
     - name: rook-ceph
       namespace: rook-ceph
+  targetNamespace: rook-ceph
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+    substitute:
+      APP: rook-ceph-cluster
+  prune: true
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
@@ -40,21 +56,5 @@ spec:
   healthCheckExprs:
     - apiVersion: ceph.rook.io/v1
       kind: CephCluster
-      failed: status.ceph.health == 'HEALTH_ERR'
       current: status.ceph.health in ['HEALTH_OK', 'HEALTH_WARN']
-  interval: 1h
-  path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
-  postBuild:
-    substitute:
-      APP: rook-ceph-cluster
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
-  retryInterval: 2m
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  timeout: 15m
-  targetNamespace: rook-ceph
+      failed: status.ceph.health == 'HEALTH_ERR'

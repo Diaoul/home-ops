@@ -14,11 +14,6 @@ spec:
       unpoller:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
         containers:
           app:
             image:
@@ -53,6 +48,11 @@ spec:
                 memory: 64M
               limits:
                 memory: 128M
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
     service:
       app:
         ports:

@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: lldap
 spec:
-  path: ./kubernetes/apps/security/lldap/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/security/lldap/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: security
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: security
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

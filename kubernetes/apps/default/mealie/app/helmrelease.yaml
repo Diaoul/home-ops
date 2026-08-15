@@ -14,13 +14,6 @@ spec:
       mealie:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -55,6 +48,13 @@ spec:
                 memory: 400Mi
               limits:
                 memory: 600Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -62,11 +62,11 @@ spec:
             port: 9000
     route:
       app:
-        hostnames:
-          - mealie.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - mealie.${DOMAIN}
     persistence:
       config:
         existingClaim: mealie

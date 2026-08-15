@@ -14,12 +14,6 @@ spec:
       frigate:
         annotations:
           configmap.reloader.stakater.com/reload: frigate-config
-        pod:
-          nodeSelector:
-            feature.node.kubernetes.io/custom-google-coral: "true"
-          resourceClaims:
-            - name: gpu
-              resourceClaimTemplateName: frigate
         containers:
           app:
             image:
@@ -50,6 +44,12 @@ spec:
                 memory: 4Gi
               claims:
                 - name: gpu
+        pod:
+          nodeSelector:
+            feature.node.kubernetes.io/custom-google-coral: "true"
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: frigate
     service:
       app:
         ports:
@@ -58,11 +58,11 @@ spec:
     route:
       app:
         enabled: true
-        hostnames:
-          - frigate.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - frigate.${DOMAIN}
     persistence:
       data:
         existingClaim: frigate

@@ -46,10 +46,10 @@ spec:
         enabled: true
         serviceName: nut-exporter
         endpoints:
-          - interval: 30s
-            path: /ups_metrics
-            port: metrics
+          - port: metrics
             scheme: http
+            path: /ups_metrics
+            interval: 30s
             scrapeTimeout: 15s
             metricRelabelings:
               - action: replace

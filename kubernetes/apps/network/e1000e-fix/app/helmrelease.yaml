@@ -13,13 +13,6 @@ spec:
     controllers:
       e1000e-fix:
         type: daemonset
-        pod:
-          automountServiceAccountToken: false
-          enableServiceLinks: false
-          hostNetwork: true
-          hostPID: true
-          nodeSelector:
-            feature.node.kubernetes.io/custom-e1000e: "true"
         containers:
           app:
             image:
@@ -54,6 +47,13 @@ spec:
                 cpu: 10m
               limits:
                 memory: 10Mi
+        pod:
+          hostNetwork: true
+          nodeSelector:
+            feature.node.kubernetes.io/custom-e1000e: "true"
+          automountServiceAccountToken: false
+          enableServiceLinks: false
+          hostPID: true
     persistence:
       procfs:
         type: hostPath

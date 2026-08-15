@@ -14,13 +14,6 @@ spec:
       vaultwarden:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -48,6 +41,13 @@ spec:
                 memory: 200Mi
               limits:
                 memory: 500Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -55,11 +55,11 @@ spec:
             port: 80
     route:
       app:
-        hostnames:
-          - vaultwarden.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - vaultwarden.${DOMAIN}
     persistence:
       data:
         existingClaim: vaultwarden

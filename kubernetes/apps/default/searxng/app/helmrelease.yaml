@@ -14,13 +14,6 @@ spec:
       searxng:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 977
-            runAsGroup: 977
-            fsGroup: 977
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -64,6 +57,13 @@ spec:
                 memory: 215Mi
               limits:
                 memory: 4Gi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 977
+            runAsGroup: 977
+            fsGroup: 977
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -71,11 +71,11 @@ spec:
             port: *httpPort
     route:
       app:
-        hostnames:
-          - search.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - search.${DOMAIN}
     persistence:
       config:
         type: configMap

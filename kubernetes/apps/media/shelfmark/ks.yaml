@@ -5,29 +5,29 @@ kind: Kustomization
 metadata:
   name: shelfmark
 spec:
-  components:
-    - ../../../../components/zeroscaler
-    - ../../../../components/persistence
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
   path: ./kubernetes/apps/media/shelfmark/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: media
+  components:
+    - ../../../../components/zeroscaler
+    - ../../../../components/persistence
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: shelfmark
       CAPACITY: 1Gi
-  targetNamespace: media
+  prune: true
+  wait: false

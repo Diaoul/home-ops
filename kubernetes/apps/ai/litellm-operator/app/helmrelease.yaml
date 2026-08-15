@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: litellm-operator
 spec:
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: litellm-operator
-  interval: 30m
   values:
     controller:
       leaderElection:

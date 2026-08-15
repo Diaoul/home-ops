@@ -5,14 +5,14 @@ kind: Kustomization
 metadata:
   name: silence-operator
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/observability/silence-operator/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/observability/silence-operator/app
+  interval: 1h
   targetNamespace: observability
+  prune: true
   wait: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -21,14 +21,14 @@ kind: Kustomization
 metadata:
   name: silence-operator-silences
 spec:
-  dependsOn:
-    - name: silence-operator
-  interval: 1h
-  path: ./kubernetes/apps/observability/silence-operator/silences
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/observability/silence-operator/silences
+  interval: 1h
+  dependsOn:
+    - name: silence-operator
   targetNamespace: observability
+  prune: true
   wait: false

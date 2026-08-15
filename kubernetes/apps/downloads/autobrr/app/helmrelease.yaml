@@ -14,12 +14,6 @@ spec:
       autobrr:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
         initContainers:
           init-db:
             image:
@@ -68,6 +62,12 @@ spec:
                 cpu: 10m
               limits:
                 memory: 256Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
     service:
       app:
         ports:
@@ -76,17 +76,13 @@ spec:
             port: *port
           metrics:
             port: 9074
-    serviceMonitor:
-      app:
-        endpoints:
-          - port: metrics
     route:
       app:
-        hostnames:
-          - autobrr.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - autobrr.${DOMAIN}
     persistence:
       config:
         existingClaim: autobrr
@@ -99,3 +95,7 @@ spec:
                 subPath: log
               - path: /tmp
                 subPath: tmp
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics

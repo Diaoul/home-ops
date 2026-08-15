@@ -5,16 +5,16 @@ kind: Kustomization
 metadata:
   name: blackbox-exporter
 spec:
-  path: ./kubernetes/apps/observability/blackbox-exporter/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  wait: false
+  path: ./kubernetes/apps/observability/blackbox-exporter/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: kube-prometheus-stack
   targetNamespace: observability
+  prune: true
+  wait: false

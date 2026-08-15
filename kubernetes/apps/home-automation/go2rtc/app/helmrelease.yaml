@@ -14,11 +14,6 @@ spec:
       go2rtc:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
         containers:
           app:
             image:
@@ -46,6 +41,11 @@ spec:
                 cpu: 10m
               limits:
                 memory: 512Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
     service:
       app:
         type: LoadBalancer
@@ -67,11 +67,11 @@ spec:
     route:
       app:
         enabled: true
-        hostnames:
-          - go2rtc.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - go2rtc.${DOMAIN}
     persistence:
       config:
         type: configMap

@@ -5,28 +5,28 @@ kind: Kustomization
 metadata:
   name: thelounge
 spec:
-  components:
-    - ../../../../components/persistence
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/default/thelounge/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 2m
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  path: ./kubernetes/apps/default/thelounge/app
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 2m
-  timeout: 5m
+  targetNamespace: default
+  components:
+    - ../../../../components/persistence
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: thelounge
       CAPACITY: 5Gi
-  targetNamespace: default
+  prune: true
+  wait: false

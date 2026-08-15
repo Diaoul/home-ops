@@ -12,13 +12,6 @@ spec:
   values:
     controllers:
       audiobookshelf:
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -52,6 +45,13 @@ spec:
                 memory: 150Mi
               limits:
                 memory: 1Gi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -59,11 +59,11 @@ spec:
             port: *port
     route:
       app:
-        hostnames:
-          - audiobookshelf.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - audiobookshelf.${DOMAIN}
     persistence:
       config:
         existingClaim: audiobookshelf

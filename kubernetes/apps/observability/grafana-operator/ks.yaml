@@ -5,18 +5,18 @@ kind: Kustomization
 metadata:
   name: grafana-operator
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/observability/grafana-operator/app
-  prune: true
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/observability/grafana-operator/app
+  interval: 1h
   targetNamespace: observability
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
   wait: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -25,22 +25,22 @@ kind: Kustomization
 metadata:
   name: grafana-operator-instance
 spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/observability/grafana-operator/instance
+  interval: 1h
   dependsOn:
     - name: grafana-operator
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: authelia
       namespace: security
+  targetNamespace: observability
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  interval: 1h
-  path: ./kubernetes/apps/observability/grafana-operator/instance
+      - kind: Secret
+        name: cluster-secrets
   prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: observability
   wait: false

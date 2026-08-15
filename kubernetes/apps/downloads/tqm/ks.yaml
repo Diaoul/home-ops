@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: tqm
 spec:
-  path: ./kubernetes/apps/downloads/tqm/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/downloads/tqm/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: qbittorrent
       namespace: downloads
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: downloads
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: downloads
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

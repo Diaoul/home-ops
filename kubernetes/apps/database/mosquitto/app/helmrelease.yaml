@@ -5,11 +5,18 @@ kind: HelmRelease
 metadata:
   name: mosquitto
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  interval: 1h
   values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     controllers:
       mosquitto:
         containers:
@@ -26,13 +33,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 100Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         type: LoadBalancer
@@ -41,10 +41,10 @@ spec:
           gatus.home-operations.com/endpoint: |-
             group: services
           lbipam.cilium.io/ips: 10.44.0.16
-        externalTrafficPolicy: Local
         ports:
           mqtt:
             port: 1883
+        externalTrafficPolicy: Local
     configMaps:
       config:
         data:
@@ -61,7 +61,7 @@ spec:
         existingClaim: mosquitto
       config-file:
         type: configMap
-        identifier: config
         globalMounts:
           - path: /mosquitto/config/mosquitto.conf
             subPath: mosquitto.conf
+        identifier: config

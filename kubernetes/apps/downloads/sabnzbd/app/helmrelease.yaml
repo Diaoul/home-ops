@@ -12,13 +12,6 @@ spec:
   values:
     controllers:
       sabnzbd:
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -32,10 +25,6 @@ spec:
                 {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster,
                 {{ .Release.Name }}.{{ .Release.Namespace }}.svc.cluster.local,
                 sabnzbd.${DOMAIN}
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
             probes:
               liveness: &probes
                 enabled: true
@@ -49,12 +38,23 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 300m
                 memory: 1Gi
               limits:
                 memory: 6Gi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -65,11 +65,11 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             url: https://sabnzbd.${DOMAIN}/api?mode=version
-        hostnames:
-          - sabnzbd.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - sabnzbd.${DOMAIN}
     persistence:
       config:
         existingClaim: sabnzbd

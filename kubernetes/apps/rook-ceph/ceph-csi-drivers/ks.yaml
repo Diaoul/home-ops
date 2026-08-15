@@ -5,17 +5,17 @@ kind: Kustomization
 metadata:
   name: ceph-csi-drivers
 spec:
-  dependsOn:
-    - name: rook-ceph
-      namespace: rook-ceph
-  interval: 1h
-  path: ./kubernetes/apps/rook-ceph/ceph-csi-drivers/app
-  prune: true
-  retryInterval: 2m
-  wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: rook-ceph
+  path: ./kubernetes/apps/rook-ceph/ceph-csi-drivers/app
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
+  dependsOn:
+    - name: rook-ceph
+      namespace: rook-ceph
+  targetNamespace: rook-ceph
+  prune: true
+  wait: true

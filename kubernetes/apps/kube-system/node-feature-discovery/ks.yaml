@@ -5,17 +5,17 @@ kind: Kustomization
 metadata:
   name: node-feature-discovery
 spec:
-  path: ./kubernetes/apps/kube-system/node-feature-discovery/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/kube-system/node-feature-discovery/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
+  targetNamespace: kube-system
   prune: true
   wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: kube-system
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -23,17 +23,17 @@ kind: Kustomization
 metadata:
   name: node-feature-discovery-rules
 spec:
-  dependsOn:
-    - name: node-feature-discovery
-      namespace: kube-system
-  path: ./kubernetes/apps/kube-system/node-feature-discovery/rules
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/kube-system/node-feature-discovery/rules
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
+  dependsOn:
+    - name: node-feature-discovery
+      namespace: kube-system
+  targetNamespace: kube-system
   prune: true
   wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: kube-system

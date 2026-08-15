@@ -5,23 +5,23 @@ kind: Kustomization
 metadata:
   name: miniflux
 spec:
-  path: ./kubernetes/apps/default/miniflux/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/default/miniflux/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: default
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: miniflux
-  targetNamespace: default
+  prune: true
+  wait: false

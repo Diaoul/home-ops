@@ -5,16 +5,16 @@ kind: Kustomization
 metadata:
   name: echo
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/network/echo/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/network/echo/app
+  interval: 1h
   targetNamespace: network
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
   wait: false

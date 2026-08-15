@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: litellm-operator
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: litellm-operator
-  path: ./kubernetes/apps/ai/litellm-operator/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/ai/litellm-operator/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     # autoRegister is checked at operator startup, so the CRD must exist first
     - name: llmkube
       namespace: ai
+  targetNamespace: ai
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: litellm-operator
   prune: true
   wait: true
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: ai

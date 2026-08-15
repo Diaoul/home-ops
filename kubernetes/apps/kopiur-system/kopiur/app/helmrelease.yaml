@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: kopiur
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: kopiur
-  interval: 1h
   values:
     resources:
       requests:

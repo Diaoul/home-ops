@@ -5,20 +5,20 @@ kind: Kustomization
 metadata:
   name: kromgo
 spec:
-  path: ./kubernetes/apps/observability/kromgo/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/observability/kromgo/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
+  targetNamespace: observability
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: kromgo
-  targetNamespace: observability
+  prune: true
+  wait: false

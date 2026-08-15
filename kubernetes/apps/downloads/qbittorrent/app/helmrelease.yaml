@@ -12,6 +12,12 @@ spec:
   values:
     defaultPodOptions:
       terminationGracePeriodSeconds: 300
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
       annotations:
         k8s.v1.cni.cncf.io/networks: |-
           [{
@@ -20,12 +26,6 @@ spec:
             "ips": ["10.0.90.8/24"],
             "mac": "32:0b:d8:1f:b6:e9"
           }]
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
     controllers:
       qbittorrent:
         annotations:
@@ -51,8 +51,8 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  failureThreshold: 30
                   periodSeconds: 10
+                  failureThreshold: 30
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -102,21 +102,21 @@ spec:
             port: &qbopPort 4567
     route:
       app:
-        hostnames:
-          - qb.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - qb.${DOMAIN}
         rules:
           - backendRefs:
               - name: qbittorrent
                 port: *port
       qbop:
-        hostnames:
-          - qbop.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - qbop.${DOMAIN}
         rules:
           - backendRefs:
               - name: qbittorrent
@@ -136,12 +136,12 @@ spec:
               - path: /config
       config-file:
         type: configMap
-        identifier: config
         advancedMounts:
           qbittorrent:
             app:
               - path: /config/.qbt.toml
                 subPath: .qbt.toml
+        identifier: config
       media:
         type: nfs
         server: singularity.milkyway

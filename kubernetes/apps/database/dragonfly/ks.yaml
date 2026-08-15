@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: dragonfly-operator
 spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/database/dragonfly/app
+  interval: 1h
+  timeout: 5m
+  targetNamespace: database
   commonMetadata:
     labels:
       app.kubernetes.io/name: dragonfly-operator
+  prune: true
+  wait: false
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: dragonfly-operator
       namespace: database
-  interval: 1h
-  path: ./kubernetes/apps/database/dragonfly/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: database
-  timeout: 5m
-  wait: false
