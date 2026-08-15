@@ -415,8 +415,8 @@ Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to top
 
 - Use plain `kubectl` directly — do not use `just kube` wrapper
 - Put `-n <namespace>` at the **end** of kubectl commands, not immediately after `kubectl`
-    - Correct: `kubectl logs -l app=foo -n media`
-    - Wrong: `kubectl -n media logs -l app=foo`
+  - Correct: `kubectl logs -l app=foo -n media`
+  - Wrong: `kubectl -n media logs -l app=foo`
 - Do not exec into pods to retrieve cluster info — use `kubectl get`, `kubectl logs`, or the Prometheus HTTP API
 - A PreToolUse hook enforces the `-n` placement rule and will block `kubectl -n <ns> ...` commands
 
@@ -471,24 +471,24 @@ Flux is configured with a GitHub webhook — reconciliation triggers immediately
   this cluster is the gateway plus Authelia; a policy that only restates that adds
   drift risk and maintenance for no security gain.
 
-    Add one only when a workload holds a **network capability the rest of the cluster
-    should not be able to borrow**, and state which one in a comment on the policy:
-    - it fetches arbitrary URLs on request, so it doubles as an open proxy (SSRF,
-      egress laundering)
-    - it holds credentials or privileges that make it worth pivoting through
+  Add one only when a workload holds a **network capability the rest of the cluster
+  should not be able to borrow**, and state which one in a comment on the policy:
+  - it fetches arbitrary URLs on request, so it doubles as an open proxy (SSRF,
+    egress laundering)
+  - it holds credentials or privileges that make it worth pivoting through
 
-    "Defence in depth" on its own is not a justification — name the capability or
-    don't write the policy.
+  "Defence in depth" on its own is not a justification — name the capability or
+  don't write the policy.
 
-    Prefer `egressDeny` layered on open egress (`enableDefaultDeny.egress: false`)
-    over allow-listing: it fails open on the path you forgot rather than breaking the
-    app, and it keeps the diff readable. Every CIDR is site-specific — see
-    `network_mtu_topology` / the VLAN map before copying one from upstream.
+  Prefer `egressDeny` layered on open egress (`enableDefaultDeny.egress: false`)
+  over allow-listing: it fails open on the path you forgot rather than breaking the
+  app, and it keeps the diff readable. Every CIDR is site-specific — see
+  `network_mtu_topology` / the VLAN map before copying one from upstream.
 
-    Existing policies, both justified under that test — do not delete as drift:
-    - `actions-runner-system/.../runners/home-ops/networkpolicy.yaml` — the runner
-      keeps cluster-admin and `os:admin` and executes fork PRs; fenced off the LAN
-    - `default/searxng/app/ciliumnetworkpolicy.yaml` — unauthenticated and fetches
-      arbitrary URLs; restricts who may call it and fences it off the LAN
+  Existing policies, both justified under that test — do not delete as drift:
+  - `actions-runner-system/.../runners/home-ops/networkpolicy.yaml` — the runner
+    keeps cluster-admin and `os:admin` and executes fork PRs; fenced off the LAN
+  - `default/searxng/app/ciliumnetworkpolicy.yaml` — unauthenticated and fetches
+    arbitrary URLs; restricts who may call it and fences it off the LAN
 
 - Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)
