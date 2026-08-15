@@ -15,8 +15,8 @@ rules:
     max-spaces-inside: 1
   comments:
     min-spaces-from-content: 1
-  indentation:
-    spaces: 2
+  # oxfmt owns indentation; yamllint's rule disagrees with its block-sequence style
+  indentation: disable
   line-length: disable
   quoted-strings:
     required: false
