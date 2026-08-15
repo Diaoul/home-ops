@@ -7,20 +7,20 @@ Read this file before making any changes.
 
 ## Project Overview
 
-| Layer | Technology |
-|---|---|
-| OS | Talos Linux (immutable, API-driven) |
-| Kubernetes | upgraded in-place by tuppr |
-| GitOps | Flux v2 (flux-operator + flux-instance) |
-| CNI | Cilium (BGP, native routing, kube-proxy replacement) |
-| Ingress | Envoy Gateway (Kubernetes Gateway API) |
-| Storage | Rook-Ceph (block) + miroir (node-local / DRBD-replicated) |
-| Backup | kopiur (Kopia) → NFS (singularity.milkyway) |
-| Database | CloudNative-PG (PostgreSQL 18, HA) |
-| Secrets | SOPS + Age + PGP |
-| Helm charts | bjw-s/app-template (OCI) for nearly all apps |
-| Updates | Renovate (hourly GitHub Actions) |
-| Auth | Authelia + LLDAP |
+| Layer       | Technology                                                |
+| ----------- | --------------------------------------------------------- |
+| OS          | Talos Linux (immutable, API-driven)                       |
+| Kubernetes  | upgraded in-place by tuppr                                |
+| GitOps      | Flux v2 (flux-operator + flux-instance)                   |
+| CNI         | Cilium (BGP, native routing, kube-proxy replacement)      |
+| Ingress     | Envoy Gateway (Kubernetes Gateway API)                    |
+| Storage     | Rook-Ceph (block) + miroir (node-local / DRBD-replicated) |
+| Backup      | kopiur (Kopia) → NFS (singularity.milkyway)               |
+| Database    | CloudNative-PG (PostgreSQL 18, HA)                        |
+| Secrets     | SOPS + Age + PGP                                          |
+| Helm charts | bjw-s/app-template (OCI) for nearly all apps              |
+| Updates     | Renovate (hourly GitHub Actions)                          |
+| Auth        | Authelia + LLDAP                                          |
 
 Versions are deliberately absent: Renovate and tuppr move them, and a number written
 here goes stale silently. Read the live values instead — `kubectl version`,
@@ -83,15 +83,15 @@ spec:
   wait: true
   # Include ONLY the components that this app actually needs:
   components:
-    - ../../../../components/persistence   # if app needs PVC + kopiur backup
-    - ../../../../components/ext-auth      # if app needs Authelia auth
-    - ../../../../components/nfs-scaler   # if app needs NFS (media/downloads)
+    - ../../../../components/persistence # if app needs PVC + kopiur backup
+    - ../../../../components/ext-auth # if app needs Authelia auth
+    - ../../../../components/nfs-scaler # if app needs NFS (media/downloads)
   dependsOn:
-    - name: rook-ceph-cluster              # if using ceph-block storage
+    - name: rook-ceph-cluster # if using ceph-block storage
       namespace: rook-ceph
-    - name: kopiur-repository              # if using persistence component
+    - name: kopiur-repository # if using persistence component
       namespace: kopiur-system
-    - name: cloudnative-pg                 # if using PostgreSQL
+    - name: cloudnative-pg # if using PostgreSQL
       namespace: database
   postBuild:
     substituteFrom:
@@ -99,7 +99,7 @@ spec:
         name: cluster-secrets
     substitute:
       APP: <app>
-      CAPACITY: 5Gi                        # if using persistence component
+      CAPACITY: 5Gi # if using persistence component
 ```
 
 ### `app/helmrelease.yaml` — HelmRelease (app-template)
@@ -133,7 +133,7 @@ spec:
           app:
             image:
               repository: <registry>/<image>
-              tag: <version>@sha256:<digest>   # ALWAYS pin both tag AND digest
+              tag: <version>@sha256:<digest> # ALWAYS pin both tag AND digest
             env:
               TZ: Europe/Paris
             securityContext:
@@ -158,7 +158,7 @@ spec:
         ports:
           http:
             port: <port>
-    ingress: {}        # NOT used — use HTTPRoute instead (see Networking below)
+    ingress: {} # NOT used — use HTTPRoute instead (see Networking below)
 ```
 
 ### `app/kustomization.yaml`
@@ -169,7 +169,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - helmrelease.yaml
-  - secret.sops.yaml   # only if secrets exist
+  - secret.sops.yaml # only if secrets exist
 ```
 
 ---
@@ -180,10 +180,10 @@ resources:
 
 ### Gateways
 
-| Gateway | IP | Use for |
-|---|---|---|
+| Gateway          | IP          | Use for                                              |
+| ---------------- | ----------- | ---------------------------------------------------- |
 | `envoy-external` | `10.44.0.1` | Publicly accessible services (via Cloudflare Tunnel) |
-| `envoy-internal` | `10.44.0.2` | LAN-only services |
+| `envoy-internal` | `10.44.0.2` | LAN-only services                                    |
 
 Both gateways are in namespace `network`.
 
@@ -197,7 +197,7 @@ metadata:
   name: <app>
 spec:
   parentRefs:
-    - name: envoy-internal          # or envoy-external
+    - name: envoy-internal # or envoy-external
       namespace: network
       sectionName: https
   hostnames:
@@ -223,11 +223,13 @@ changes are needed — the component patches Envoy Gateway with the SecurityPoli
 `*.sops.yaml` and encrypted before committing.
 
 Encrypt a new secret:
+
 ```sh
 sops --encrypt --in-place kubernetes/apps/<namespace>/<app>/app/secret.sops.yaml
 ```
 
 Secret template before encryption:
+
 ```yaml
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
 apiVersion: v1
@@ -241,6 +243,7 @@ stringData:
 ### Global variables (injected into all Kustomizations via `cluster-secrets`)
 
 These are available via `postBuild.substituteFrom` and can be used as `${VAR}`:
+
 - `${DOMAIN}` — homelab domain
 - `${CLOUDFLARE_TUNNEL_ID}`
 - `${EMAIL_ADDRESS_1}`
@@ -254,11 +257,12 @@ component in `ks.yaml` and set:
 
 ```yaml
 substitute:
-  APP: <app>          # Used as PVC name and kopiur resource names
-  CAPACITY: 5Gi       # PVC size (default if omitted)
+  APP: <app> # Used as PVC name and kopiur resource names
+  CAPACITY: 5Gi # PVC size (default if omitted)
 ```
 
 The component creates:
+
 - A `PersistentVolumeClaim` named `<app>` using `ceph-block` StorageClass, populated
   from a `Restore`
 - A `SnapshotPolicy` + `SnapshotSchedule` (daily snapshot to NFS via kopiur/Kopia)
@@ -317,7 +321,7 @@ Never write:
   `kind: RawVolumeConfig / name: miroir` says nothing the next two lines don't.
 - **Migration narration.** Steps, orderings, "now that X", "replacing Y", what a
   previous value used to be. Procedures belong in the commit message, which is where
-  someone looks when asking *why did this change*. A comment describing a one-off
+  someone looks when asking _why did this change_. A comment describing a one-off
   procedure ages into a lie.
 - **Session or reasoning leakage.** Notes to self, what was tried, what an agent
   concluded. Git history holds this.
@@ -335,15 +339,15 @@ automatically via lefthook on staged files before every commit.
 Do **not** add unnecessary double quotes around plain string values. Only quote when
 YAML would misparse the value without them:
 
-| Value type | Example | Quoted? |
-|---|---|---|
-| Plain string | `sync`, `enabled`, `get` | No |
-| Boolean lookalike | `"true"`, `"false"`, `"off"` | Yes — unquoted becomes a boolean |
-| Integer lookalike | `"0"`, `"1"`, `"9090"` | Yes — unquoted becomes a number |
-| Empty string | `""` | Yes — unquoted becomes null |
-| `@`-prefixed | `"@daily"`, `"@hourly"` | Yes — `@` is a reserved YAML indicator |
-| `*`-prefixed | `"*.example.com"` | Yes — `*` is a reserved YAML indicator |
-| PromQL / LogQL | `'absent(up{job="foo"})'` | Yes — contains special characters |
+| Value type        | Example                      | Quoted?                                |
+| ----------------- | ---------------------------- | -------------------------------------- |
+| Plain string      | `sync`, `enabled`, `get`     | No                                     |
+| Boolean lookalike | `"true"`, `"false"`, `"off"` | Yes — unquoted becomes a boolean       |
+| Integer lookalike | `"0"`, `"1"`, `"9090"`       | Yes — unquoted becomes a number        |
+| Empty string      | `""`                         | Yes — unquoted becomes null            |
+| `@`-prefixed      | `"@daily"`, `"@hourly"`      | Yes — `@` is a reserved YAML indicator |
+| `*`-prefixed      | `"*.example.com"`            | Yes — `*` is a reserved YAML indicator |
+| PromQL / LogQL    | `'absent(up{job="foo"})'`    | Yes — contains special characters      |
 
 Note: yamlfmt cannot remove unnecessary quotes automatically. Existing files may have
 legacy quoted strings that are safe but not worth bulk-editing. Write new files
@@ -417,6 +421,7 @@ Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to top
 ## Git Conventions
 
 Use [Conventional Commits](https://www.conventionalcommits.org/):
+
 - `feat:` for adding or removing apps/features
 - `fix:` for bug fixes
 - `docs:` for documentation, including this file
@@ -481,4 +486,5 @@ Flux is configured with a GitHub webhook — reconciliation triggers immediately
     keeps cluster-admin and `os:admin` and executes fork PRs; fenced off the LAN
   - `default/searxng/app/ciliumnetworkpolicy.yaml` — unauthenticated and fetches
     arbitrary URLs; restricts who may call it and fences it off the LAN
+
 - Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)

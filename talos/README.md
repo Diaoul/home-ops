@@ -27,13 +27,13 @@ under `data:` in `topf.yaml` and are reachable as `.Data.<key>`.
 
 ## What is and is not committed
 
-| Path | Committed | Note |
-|---|---|---|
-| `topf.yaml`, `schematic.yaml`, `all/`, `control-plane/` | yes | no secrets |
-| `secrets.sops.yaml` | yes | SOPS-encrypted Talos secrets bundle (PGP + age) |
-| `talosconfig` | no | generated with `just talos talosconfig` |
-| `rendered/` | no | plaintext machine configs, `just talos render` |
-| `images/` | no | downloaded installer ISOs |
+| Path                                                    | Committed | Note                                            |
+| ------------------------------------------------------- | --------- | ----------------------------------------------- |
+| `topf.yaml`, `schematic.yaml`, `all/`, `control-plane/` | yes       | no secrets                                      |
+| `secrets.sops.yaml`                                     | yes       | SOPS-encrypted Talos secrets bundle (PGP + age) |
+| `talosconfig`                                           | no        | generated with `just talos talosconfig`         |
+| `rendered/`                                             | no        | plaintext machine configs, `just talos render`  |
+| `images/`                                               | no        | downloaded installer ISOs                       |
 
 ## Adding or renumbering a node
 

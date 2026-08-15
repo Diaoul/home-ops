@@ -25,27 +25,27 @@ sonarr:
         anime: default
     quality_profiles:
       # WEB-1080p
-      - trash_id: 72dae194fc92bf828f32cde7744e51a1  # WEB-1080p
+      - trash_id: 72dae194fc92bf828f32cde7744e51a1 # WEB-1080p
         name: WEB-1080p
         reset_unmatched_scores:
           enabled: true
       # WEB-2160p
-      - trash_id: d1498e7d189fbe6c7110ceaabb7473e6  # WEB-2160p
+      - trash_id: d1498e7d189fbe6c7110ceaabb7473e6 # WEB-2160p
         name: WEB-2160p
         reset_unmatched_scores:
           enabled: true
       # FR-MULTi-VO-WEB-1080p
-      - trash_id: 4c48f506c1116a3a57ae33f12346bd15  # [French MULTi.VO] HD Bluray + WEB (1080p)
+      - trash_id: 4c48f506c1116a3a57ae33f12346bd15 # [French MULTi.VO] HD Bluray + WEB (1080p)
         name: FR-MULTi-VO-WEB-1080p
         reset_unmatched_scores:
           enabled: true
       # FR-MULTi-VO-WEB-2160p
-      - trash_id: 6fa7364373e8f06206871d9c20a4fb3e  # [French MULTi.VO] UHD Bluray + WEB (2160p)
+      - trash_id: 6fa7364373e8f06206871d9c20a4fb3e # [French MULTi.VO] UHD Bluray + WEB (2160p)
         name: FR-MULTi-VO-WEB-2160p
         reset_unmatched_scores:
           enabled: true
       # Remux-1080p - Anime
-      - trash_id: 20e0fc959f1f1704bed501f23bdae76f  # [Anime] Remux-1080p
+      - trash_id: 20e0fc959f1f1704bed501f23bdae76f # [Anime] Remux-1080p
         name: Remux-1080p - Anime
         reset_unmatched_scores:
           enabled: true
@@ -143,22 +143,22 @@ radarr:
         standard: jellyfin-tmdb
     quality_profiles:
       # HD Bluray + WEB
-      - trash_id: d1d67249d3890e49bc12e275d989a7e9  # HD Bluray + WEB
+      - trash_id: d1d67249d3890e49bc12e275d989a7e9 # HD Bluray + WEB
         name: HD Bluray + WEB
         reset_unmatched_scores:
           enabled: true
       # UHD Bluray + WEB
-      - trash_id: 64fb5f9858489bdac2af690e27c8f42f  # UHD Bluray + WEB
+      - trash_id: 64fb5f9858489bdac2af690e27c8f42f # UHD Bluray + WEB
         name: UHD Bluray + WEB
         reset_unmatched_scores:
           enabled: true
       # FR-MULTi-VO-HD
-      - trash_id: 2572ce3ea4eef1c19d59e0e20ed1cea7  # [French MULTi.VO] HD Bluray + WEB
+      - trash_id: 2572ce3ea4eef1c19d59e0e20ed1cea7 # [French MULTi.VO] HD Bluray + WEB
         name: FR-MULTi-VO-HD
         reset_unmatched_scores:
           enabled: true
       # FR-MULTi-VO-UHD
-      - trash_id: 92ead7022d13a7858d54e328e6a2f8f9  # [French MULTi.VO] UHD Bluray + WEB
+      - trash_id: 92ead7022d13a7858d54e328e6a2f8f9 # [French MULTi.VO] UHD Bluray + WEB
         name: FR-MULTi-VO-UHD
         reset_unmatched_scores:
           enabled: true
