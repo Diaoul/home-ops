@@ -331,8 +331,10 @@ have been written.
 
 ## YAML Formatting
 
-All YAML is formatted with **yamlfmt** (config in `.yamlfmt.yaml`). The formatter runs
-automatically via lefthook on staged files before every commit.
+All YAML is formatted with **oxfmt** (config in `.oxfmtrc.json`). The formatter runs
+automatically via lefthook on staged files before every commit. It skips
+`*.sops.yaml` and, per `embeddedLanguageFormatting: "off"`, leaves fenced code
+blocks in markdown alone.
 
 ### Quote style
 
@@ -349,9 +351,10 @@ YAML would misparse the value without them:
 | `*`-prefixed      | `"*.example.com"`            | Yes — `*` is a reserved YAML indicator |
 | PromQL / LogQL    | `'absent(up{job="foo"})'`    | Yes — contains special characters      |
 
-Note: yamlfmt cannot remove unnecessary quotes automatically. Existing files may have
-legacy quoted strings that are safe but not worth bulk-editing. Write new files
-without unnecessary quotes from the start.
+Note: oxfmt cannot remove unnecessary quotes automatically — it only normalises
+`'single'` to `"double"` where that is safe. Existing files may have legacy quoted
+strings that are safe but not worth bulk-editing. Write new files without unnecessary
+quotes from the start.
 
 ---
 
@@ -383,8 +386,9 @@ talosctl validate -m metal -c talos/rendered/<node>.yaml
 ```
 
 **Run these yourself — they are not enforced anywhere.** The only automation is
-lefthook pre-commit, which runs `yamlfmt` on staged YAML, `just --fmt` on staged
-justfiles, and blocks any staged `*.sops.yaml` that is not encrypted. There are no
+lefthook pre-commit, which runs `oxfmt` on staged YAML/JSON/markdown, `just --fmt` on
+staged justfiles, `zizmor` on staged workflows, and blocks any staged `*.sops.yaml`
+that is not encrypted. There are no
 manifest-validation workflows in `.github/workflows/` (only
 `image-pull`, `label-sync`, `renovate`, `tag`), so a PR gets no `kubeconform`,
 `yamllint`, or `flux-local` signal. Konflate posts a status check, but it reviews Flux
