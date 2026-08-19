@@ -13,6 +13,8 @@ spec:
     fullnameOverride: k8s-gateway
     domain: "${DOMAIN}"
     ttl: 300
+    replicaCount: 2
+    priorityClassName: system-cluster-critical
     service:
       type: LoadBalancer
       port: 53
