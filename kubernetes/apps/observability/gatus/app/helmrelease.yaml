@@ -54,6 +54,8 @@ spec:
     # gatus.home-operations.com/endpoint annotation on the envoy-external Gateway.
     # Go applies the pod's search list to that resolver too, so kubelet's ndots:5
     # asks for three NXDOMAIN *.cluster.local variants before every real FQDN.
+    # Drop this once gatus resolves configured hostnames as absolute:
+    # https://github.com/TwiN/gatus/issues/1769
     dnsConfig:
       options:
         - name: ndots
