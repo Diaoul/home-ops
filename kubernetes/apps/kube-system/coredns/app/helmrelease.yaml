@@ -62,20 +62,6 @@ spec:
           - name: log
             configBlock: |-
               class error
-    # Chart default with the cpu limit removed: it pins cpu to 100m, which
-    # throttled one replica for 20604 periods in a week against a 5-18m peak.
-    # TODO: drop this block once DNSLookupStalled has run long enough to judge —
-    # if it reports no stalls, or stalls while throttling stays flat, the
-    # override buys nothing.
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        # Helm deep-merges against chart defaults, so the key has to be nulled
-        # rather than omitted to actually drop it.
-        cpu: null
-        memory: 128Mi
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
