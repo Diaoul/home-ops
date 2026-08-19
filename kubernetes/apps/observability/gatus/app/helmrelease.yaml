@@ -50,21 +50,11 @@ spec:
         cpu: 100m
       limits:
         memory: 512Mi
-  # Gatus resolves external endpoints through tcp://1.1.1.1:53, set by the
-  # gatus.home-operations.com/endpoint annotation on the envoy-external Gateway.
-  # Go still applies the pod's search list to that resolver, so kubelet's ndots:5
-  # asks for three NXDOMAIN *.cluster.local variants of every hostname before the
-  # real FQDN. The chart exposes no dnsConfig.
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: gatus-gatus-sidecar
-            patch: |-
-              - op: add
-                path: /spec/template/spec/dnsConfig
-                value:
-                  options:
-                    - name: ndots
-                      value: "1"
+    # Gatus resolves external endpoints through tcp://1.1.1.1:53, set by the
+    # gatus.home-operations.com/endpoint annotation on the envoy-external Gateway.
+    # Go applies the pod's search list to that resolver too, so kubelet's ndots:5
+    # asks for three NXDOMAIN *.cluster.local variants before every real FQDN.
+    dnsConfig:
+      options:
+        - name: ndots
+          value: "1"
