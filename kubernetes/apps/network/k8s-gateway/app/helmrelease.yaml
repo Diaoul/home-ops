@@ -12,7 +12,7 @@ spec:
   values:
     fullnameOverride: k8s-gateway
     domain: "${DOMAIN}"
-    ttl: 1
+    ttl: 300
     service:
       type: LoadBalancer
       port: 53
