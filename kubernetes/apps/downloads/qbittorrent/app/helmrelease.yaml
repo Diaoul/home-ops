@@ -72,6 +72,7 @@ spec:
               QBIT_ADDR: http://localhost:8080
               OPN_INTERFACE_ADDR: https://opnsense.milkyway
               OPN_PROTON_ALIAS_NAME: torrent_port
+              WEB_AUTH_ENABLED: "false"
             envFrom:
               - secretRef:
                   name: qbop
