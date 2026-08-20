@@ -1,6 +1,6 @@
 #!/usr/bin/env -S just --justfile
 
-set quiet := true
+set quiet
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 mod bootstrap
@@ -37,10 +37,11 @@ merge type="":
         label="type/${type}"
 
         prs=$(gh pr list \
+            --author app/korvigell \
             --label "${label}" \
             --state open \
             --json number,labels \
-            --jq '.[] | select(.labels | map(.name) | contains(["hold"]) | not) | .number')
+            --jq '.[] | select([.labels[].name] | index("hold") | not) | .number')
 
         if [[ -z "${prs}" ]]; then
             continue
