@@ -85,23 +85,54 @@ its agent has not claimed it, and it silently stops being a placement candidate.
 ## 6. Kopiur Backups
 
 ```sh
-kubectl get snapshotschedule.kopiur.home-operations.com -A
+kubectl get snapshotschedule.kopiur.home-operations.com -A -o json \
+  | jq -r '.items[]
+      | "\(.metadata.namespace)/\(.metadata.name) cron=\(.spec.schedule.cron) last=\((.status.lastSchedule.at // "never")[0:19]) next=\((.status.nextSchedule.at // "-")[0:19]) fails=\(.status.consecutiveFailures) suspended=\(.spec.suspend // false)"'
 kubectl get snapshots.kopiur.home-operations.com -A -o json \
   | jq -r '[.items[] | select(.status.phase != "Succeeded")
             | "\(.metadata.namespace)/\(.metadata.name) \(.status.phase)"] | .[]'
+for k in snapshotpolicy snapshotschedule restore; do
+  echo "$k: $(kubectl get $k.kopiur.home-operations.com -A --no-headers | wc -l)"
+done
+date -u +%Y-%m-%dT%H:%M:%SZ
 ```
 
-Flag: any schedule whose `LAST-SNAPSHOT` is >24h ago or that is `SUSPENDED`, and any
-Snapshot not `Succeeded`. Schedules run `H 3 * * *` Europe/Paris, so a healthy app shows
-a last snapshot under 24h old. There should be 22 policies / 22 schedules / 22 restores.
+Flag: any schedule that is `SUSPENDED`, has `consecutiveFailures > 0`, or whose `last=`
+is older than the interval its own `cron=` implies (read the cron off the object — do not
+assume a period). `next=` in the past by more than one interval means the scheduler has
+stopped firing. Also flag any Snapshot stuck in a non-`Succeeded` phase across two runs —
+a single `Running`/`Deleting` is just a run in flight.
+
+The three counts should match each other (one policy, schedule and restore per stateful
+app); the absolute number tracks how many apps use `components/persistence`, so compare
+them to each other rather than to a fixed number.
+
+Snapshots are retained on a GFS schedule, so a large total is expected — see
+[[kopiur-retention-design]] before diagnosing accumulation.
+
+**Transient churn is normal.** Each run creates a VolumeSnapshot, an ephemeral PVC and a
+mover pod, then tears them down, which produces `VolumeFailedDelete` (PV deleted before
+its VolumeAttachment detaches), `FailedScheduling` (mover waiting on the ephemeral PVC)
+and `MissingDependency` (waiting for the VolumeSnapshot to become `readyToUse`) in
+check 17. Expect roughly one of each per schedule per run. Only treat them as a fault if
+PVs are stuck `Released`/`Failed` or a schedule's `consecutiveFailures` is climbing.
 
 ## 7. Certificates
 
 ```sh
-kubectl get certificate -A
+kubectl get certificate -A -o json \
+  | jq -r '.items[] | "\(.metadata.namespace)/\(.metadata.name) ready=\([.status.conditions[] | select(.type=="Ready") | .status] | join("")) notAfter=\(.status.notAfter) renewal=\(.status.renewalTime)"'
+date -u +%Y-%m-%dT%H:%M:%SZ
 ```
 
-Flag: `READY != True`, or expiry within 7 days.
+Flag: `ready != True`, or a `renewal` time already in the past (cert-manager should have
+renewed and hasn't).
+
+Judge by `renewal`, not `notAfter`. cert-manager renews at ~2/3 of lifetime, so a healthy
+90-day cert spends weeks inside any fixed "expiring soon" window while being perfectly
+fine. A `CertManagerCertExpirySoon` alert on a cert that is `ready=True` with a future
+`renewal` is an alert-threshold problem, not a certificate problem — say so rather than
+flagging the cert.
 
 ## 8. CloudNative-PG
 
@@ -114,10 +145,19 @@ Flag: status not `Cluster in healthy state`, READY < INSTANCES.
 ## 9. Dragonfly
 
 ```sh
-kubectl get pods -n database -l app.kubernetes.io/name=dragonfly --no-headers
+kubectl get dragonfly -A
+kubectl get pods -A -l app.kubernetes.io/part-of=dragonfly -o json \
+  | jq -r '.items[] | select(.status.phase != "Running" or ([.status.containerStatuses[]?.restartCount] | add > 0))
+      | "\(.metadata.namespace)/\(.metadata.name) \(.status.phase) restarts=\([.status.containerStatuses[]?.restartCount] | add)"'
 ```
 
-Flag: not Running, any restarts.
+Flag: any `Dragonfly` not `Ready`, fewer running pods than its `REPLICAS`, or any restart
+count above zero.
+
+Only the operator lives in `database`; the instances are created per consuming app and
+follow that app's namespace, so always query all namespaces rather than a fixed list. If
+the label selector returns nothing, confirm with `kubectl get dragonfly -A` and find the
+current pod labels from one of those instances before concluding anything is down.
 
 ## 10. Networking
 
@@ -175,12 +215,19 @@ Flag: any service in the list (non-empty = failing probes).
 ## 16. Victoria Logs — Error/Warning Scan
 
 ```sh
-curl -s 'https://victoria-logs.diaoul.io/select/logsql/query' \
-  --data-urlencode 'query=(level:ERROR OR level:WARNING) | stats by (kubernetes.pod_namespace) count() as cnt' \
-  --data-urlencode 'start=1h'
+curl -s 'https://victoria-logs.diaoul.io/select/logsql/query?start=1h&query=%28level%3AERROR%20OR%20level%3AWARNING%29%20%7C%20stats%20by%20%28kubernetes.pod_namespace%29%20count%28%29%20as%20cnt'
 ```
 
-Flag: namespaces with unusually high error counts. Use judgment — kube-system has background noise; flag counts that look anomalous (e.g. >1000 errors/hour from an app namespace).
+The query must be URL-encoded into the query string as above: the sandbox rejects
+`curl --data-urlencode` (it reads as a POST), and an empty `query` arg returns
+``​`query` arg cannot be empty``.
+
+Flag: namespaces with unusually high error counts. Judge relatively, not against a fixed
+threshold — `kube-system` carries constant background noise, and `rook-ceph` spikes for
+an hour after any Ceph or node-level change. Compare namespaces against each other and
+against what the rest of this run already found: a spike in a namespace whose pods,
+PVCs and Flux resources are all green is usually the tail of something that already
+resolved. An app namespace that is normally silent appearing at all is the real signal.
 
 ## 17. Kubernetes Warning Events
 
