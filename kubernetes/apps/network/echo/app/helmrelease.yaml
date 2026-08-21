@@ -5,19 +5,14 @@ kind: HelmRelease
 metadata:
   name: echo
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  interval: 1h
   values:
     controllers:
       echo:
         strategy: RollingUpdate
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 1000
-            runAsGroup: 1000
         containers:
           app:
             image:
@@ -50,22 +45,27 @@ spec:
                 cpu: 10m
               limits:
                 memory: 64Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
     service:
       app:
         ports:
           http:
             port: *port
-    serviceMonitor:
-      app:
-        endpoints:
-          - port: http
     route:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
-        hostnames:
-          - echo.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - echo.${DOMAIN}
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http

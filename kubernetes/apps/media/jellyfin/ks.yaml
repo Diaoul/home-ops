@@ -5,6 +5,14 @@ kind: Kustomization
 metadata:
   name: jellyfin
 spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/media/jellyfin/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 2m
   dependsOn:
     - name: intel-gpu-resource-driver
       namespace: kube-system
@@ -12,24 +20,16 @@ spec:
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
+  targetNamespace: media
   components:
     - ../../../../components/zeroscaler
     - ../../../../components/persistence
-  path: ./kubernetes/apps/media/jellyfin/app
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 2m
-  timeout: 5m
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: jellyfin
       CAPACITY: 20Gi
-  targetNamespace: media
+  prune: true
+  wait: false

@@ -5,20 +5,20 @@ kind: Kustomization
 metadata:
   name: singularity
 spec:
-  path: ./kubernetes/apps/network/singularity/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/network/singularity/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
+  targetNamespace: network
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: singularity
-  targetNamespace: network
+  prune: true
+  wait: false

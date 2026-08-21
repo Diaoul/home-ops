@@ -6,20 +6,20 @@ metadata:
   name: kopiur
   namespace: flux-system
 spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/kopiur-system/kopiur/app
+  interval: 1h
+  targetNamespace: kopiur-system
+  prune: true
+  wait: false
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: kopiur
       namespace: kopiur-system
-  interval: 1h
-  path: ./kubernetes/apps/kopiur-system/kopiur/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: kopiur-system
-  wait: false
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -28,16 +28,16 @@ metadata:
   name: kopiur-repository
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: kopiur
-    - name: miroir-config
-      namespace: miroir-system
-  interval: 1h
-  path: ./kubernetes/apps/kopiur-system/kopiur/repository
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/kopiur-system/kopiur/repository
+  interval: 1h
+  dependsOn:
+    - name: kopiur
+    - name: miroir-config
+      namespace: miroir-system
   targetNamespace: kopiur-system
+  prune: true
   wait: false

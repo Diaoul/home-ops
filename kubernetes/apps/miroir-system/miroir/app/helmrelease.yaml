@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: miroir
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: miroir
-  interval: 1h
   values:
     autoEvictAfter: 1h
     drbd:

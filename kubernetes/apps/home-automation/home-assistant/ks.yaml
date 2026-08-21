@@ -5,13 +5,14 @@ kind: Kustomization
 metadata:
   name: home-assistant
 spec:
-  components:
-    - ../../../../components/persistence
-  path: ./kubernetes/apps/home-automation/home-assistant/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/home-automation/home-assistant/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: mosquitto
       namespace: database
@@ -19,16 +20,15 @@ spec:
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: home-automation
+  components:
+    - ../../../../components/persistence
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: home-assistant
       CAPACITY: 5Gi
-  targetNamespace: home-automation
+  prune: true
+  wait: false

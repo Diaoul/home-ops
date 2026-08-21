@@ -5,22 +5,15 @@ kind: HelmRelease
 metadata:
   name: mam
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  interval: 1h
   values:
     controllers:
       mam:
         type: cronjob
-        cronjob:
-          schedule: "@hourly"
-          backoffLimit: 0
-          concurrencyPolicy: Forbid
-          successfulJobsHistory: 1
-          failedJobsHistory: 1
-          ttlSecondsAfterFinished: 3600
         containers:
           app:
             image:
@@ -45,7 +38,6 @@ spec:
               limits:
                 memory: 64Mi
         pod:
-          restartPolicy: Never
           annotations:
             k8s.v1.cni.cncf.io/networks: |-
               [{
@@ -58,3 +50,11 @@ spec:
             runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
+          restartPolicy: Never
+        cronjob:
+          schedule: "@hourly"
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          ttlSecondsAfterFinished: 3600

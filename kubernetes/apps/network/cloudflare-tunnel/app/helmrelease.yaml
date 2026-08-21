@@ -12,19 +12,17 @@ spec:
   values:
     controllers:
       cloudflare-tunnel:
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
+        strategy: RollingUpdate
         containers:
           app:
             image:
               repository: docker.io/cloudflare/cloudflared
               tag: 2026.8.2
+            args:
+              - tunnel
+              - run
             env:
               NO_AUTOUPDATE: true
               TUNNEL_METRICS: 0.0.0.0:8080
@@ -34,9 +32,6 @@ spec:
             envFrom:
               - secretRef:
                   name: cloudflare-tunnel
-            args:
-              - tunnel
-              - run
             probes:
               liveness: &probes
                 enabled: true
@@ -59,15 +54,16 @@ spec:
                 cpu: 10m
               limits:
                 memory: 256Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
     service:
       app:
         ports:
           http:
             port: *port
-    serviceMonitor:
-      app:
-        endpoints:
-          - port: http
     persistence:
       config-file:
         type: configMap
@@ -76,3 +72,7 @@ spec:
           - path: /etc/cloudflared/config.yaml
             subPath: config.yaml
             readOnly: true
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http

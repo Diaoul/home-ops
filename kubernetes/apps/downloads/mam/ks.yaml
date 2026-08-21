@@ -5,18 +5,18 @@ kind: Kustomization
 metadata:
   name: mam
 spec:
-  path: ./kubernetes/apps/downloads/mam/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/downloads/mam/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
+  targetNamespace: downloads
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: downloads
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

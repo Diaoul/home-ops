@@ -5,61 +5,11 @@ kind: HelmRelease
 metadata:
   name: tqm
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  interval: 1h
   values:
-    controllers:
-      tqm:
-        type: cronjob
-        cronjob: &cronJobSpec
-          schedule: 0 * * * *
-          backoffLimit: 0
-          concurrencyPolicy: Forbid
-          successfulJobsHistory: 1
-          failedJobsHistory: 1
-          ttlSecondsAfterFinished: 3600
-        initContainers:
-          retag: &container
-            image:
-              repository: ghcr.io/home-operations/tqm
-              tag: 1.20.0@sha256:c5bdff16ca1107712fd61dc6c39a276488908c702e68e427db889419af042761
-            args:
-              - retag
-              - qb
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 64Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-        containers:
-          clean:
-            <<: *container
-            args:
-              - clean
-              - qb
-        pod:
-          restartPolicy: Never
-      orphaned:
-        type: cronjob
-        cronjob:
-          <<: *cronJobSpec
-          schedule: 0 0 * * 0
-          suspend: true
-        containers:
-          app:
-            <<: *container
-            args:
-              - orphan
-              - qb
-              - --dry-run
-        pod:
-          restartPolicy: Never
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -67,6 +17,62 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
+    controllers:
+      tqm:
+        type: cronjob
+        initContainers:
+          retag: &container
+            image: &id001
+              repository: ghcr.io/home-operations/tqm
+              tag: 1.20.0@sha256:c5bdff16ca1107712fd61dc6c39a276488908c702e68e427db889419af042761
+            args:
+              - retag
+              - qb
+            securityContext: &id002
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources: &id003
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+        containers:
+          clean:
+            <<: *container
+            image: *id001
+            args:
+              - clean
+              - qb
+            securityContext: *id002
+            resources: *id003
+        pod:
+          restartPolicy: Never
+        cronjob: &cronJobSpec
+          schedule: 0 * * * *
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          ttlSecondsAfterFinished: 3600
+      orphaned:
+        type: cronjob
+        containers:
+          app:
+            <<: *container
+            image: *id001
+            args:
+              - orphan
+              - qb
+              - --dry-run
+            securityContext: *id002
+            resources: *id003
+        pod:
+          restartPolicy: Never
+        cronjob:
+          <<: *cronJobSpec
+          schedule: 0 0 * * 0
+          suspend: true
     persistence:
       config:
         type: emptyDir

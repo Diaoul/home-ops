@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: llmkube
 spec:
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: llmkube
-  interval: 30m
   values:
     namespace: ai
     crds:

@@ -5,22 +5,15 @@ kind: HelmRelease
 metadata:
   name: cross-seed
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  interval: 1h
   values:
     controllers:
       cross-seed:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -50,6 +43,13 @@ spec:
                 cpu: 10m
               limits:
                 memory: 512Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:

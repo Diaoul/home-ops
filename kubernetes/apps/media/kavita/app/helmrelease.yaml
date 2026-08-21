@@ -12,13 +12,6 @@ spec:
   values:
     controllers:
       kavita:
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -34,6 +27,13 @@ spec:
                 memory: 800Mi
               limits:
                 memory: 2Gi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -41,11 +41,11 @@ spec:
             port: 5000
     route:
       app:
-        hostnames:
-          - kavita.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - kavita.${DOMAIN}
     persistence:
       config:
         existingClaim: kavita

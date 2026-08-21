@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: mosquitto
 spec:
-  path: ./kubernetes/apps/database/mosquitto/app
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/database/mosquitto/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  targetNamespace: database
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: database
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

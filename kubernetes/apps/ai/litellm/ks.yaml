@@ -5,35 +5,35 @@ kind: Kustomization
 metadata:
   name: litellm
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: litellm
-  path: ./kubernetes/apps/ai/litellm/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  components:
-    - ../../../../components/dragonfly
-  healthCheckExprs:
-    - apiVersion: dragonflydb.io/v1alpha1
-      kind: Dragonfly
-      failed: status.phase != 'ready'
-      current: status.phase == 'ready'
+  path: ./kubernetes/apps/ai/litellm/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: litellm-operator
       namespace: ai
     - name: dragonfly-operator
       namespace: database
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: ai
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: litellm
+  components:
+    - ../../../../components/dragonfly
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: litellm
-  targetNamespace: ai
+  prune: true
+  wait: false
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      current: status.phase == 'ready'
+      failed: status.phase != 'ready'

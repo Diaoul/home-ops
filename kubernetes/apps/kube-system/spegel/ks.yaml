@@ -5,18 +5,18 @@ kind: Kustomization
 metadata:
   name: spegel
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/kube-system/spegel/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/kube-system/spegel/app
+  interval: 1h
   timeout: 5m
-  wait: false
+  retryInterval: 2m
   targetNamespace: kube-system
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

@@ -12,19 +12,6 @@ spec:
   values:
     controllers:
       jellyfin:
-        pod:
-          resourceClaims:
-            - name: gpu
-              resourceClaimTemplateName: jellyfin
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups:
-              - 44 # video
-              - 109 # render
         containers:
           app:
             image:
@@ -32,10 +19,6 @@ spec:
               tag: 10.11.11@sha256:45f648c382a0c8b552582fcea40e95cb17c5d475473a891cba0eb7523fb92112
             env:
               JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
             probes:
               liveness: &probes
                 enabled: true
@@ -54,6 +37,10 @@ spec:
                 spec:
                   periodSeconds: 10
                   failureThreshold: 30
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
@@ -62,6 +49,19 @@ spec:
                 memory: 8Gi
               claims:
                 - name: gpu
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups:
+              - 44 # video
+              - 109 # render
+          resourceClaims:
+            - name: gpu
+              resourceClaimTemplateName: jellyfin
     service:
       app:
         ports:
@@ -69,11 +69,11 @@ spec:
             port: *port
     route:
       app:
-        hostnames:
-          - jellyfin.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - jellyfin.${DOMAIN}
     persistence:
       config:
         existingClaim: jellyfin

@@ -5,18 +5,14 @@ kind: Kustomization
 metadata:
   name: authelia
 spec:
-  path: ./kubernetes/apps/security/authelia/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  components:
-    - ../../../../components/dragonfly
-  healthCheckExprs:
-    - apiVersion: dragonflydb.io/v1alpha1
-      kind: Dragonfly
-      failed: status.phase != 'ready'
-      current: status.phase == 'ready'
+  path: ./kubernetes/apps/security/authelia/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
@@ -24,16 +20,20 @@ spec:
       namespace: database
     - name: lldap
       namespace: security
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: security
+  components:
+    - ../../../../components/dragonfly
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: authelia
       DRAGONFLY_REPLICAS: "3"
-  targetNamespace: security
+  prune: true
+  wait: false
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      current: status.phase == 'ready'
+      failed: status.phase != 'ready'

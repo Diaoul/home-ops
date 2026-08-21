@@ -5,20 +5,20 @@ kind: Kustomization
 metadata:
   name: envoy-gateway
 spec:
-  dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
-  interval: 1h
-  path: ./kubernetes/apps/network/envoy-gateway/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/network/envoy-gateway/app
+  interval: 1h
   timeout: 5m
-  wait: false
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   targetNamespace: network
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

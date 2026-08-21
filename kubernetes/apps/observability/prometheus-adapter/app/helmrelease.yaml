@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: prometheus-adapter
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: prometheus-adapter
-  interval: 1h
   values:
     prometheus:
       url: http://prometheus-operated.observability.svc.cluster.local

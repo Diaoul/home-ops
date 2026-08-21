@@ -5,22 +5,14 @@ kind: Kustomization
 metadata:
   name: open-webui
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: open-webui
-  path: ./kubernetes/apps/ai/open-webui/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  components:
-    - ../../../../components/persistence
-    - ../../../../components/dragonfly
-  healthCheckExprs:
-    - apiVersion: dragonflydb.io/v1alpha1
-      kind: Dragonfly
-      failed: status.phase != 'ready'
-      current: status.phase == 'ready'
+  path: ./kubernetes/apps/ai/open-webui/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: litellm
       namespace: ai
@@ -30,16 +22,24 @@ spec:
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: ai
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: open-webui
+  components:
+    - ../../../../components/persistence
+    - ../../../../components/dragonfly
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: open-webui
       CAPACITY: 5Gi
-  targetNamespace: ai
+  prune: true
+  wait: false
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      current: status.phase == 'ready'
+      failed: status.phase != 'ready'

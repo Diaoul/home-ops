@@ -13,28 +13,17 @@ spec:
     controllers:
       recyclarr:
         type: cronjob
-        cronjob:
-          schedule: "@daily"
-          successfulJobsHistory: 1
-          failedJobsHistory: 1
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
               repository: ghcr.io/recyclarr/recyclarr
               tag: 8.7.1@sha256:73303ba5ee647b6492fee917d3a781c6e59b6cab08f9dfce9482a950846f564f
-            env:
-              COMPlus_EnableDiagnostics: "0"
             args:
               - sync
+            env:
+              COMPlus_EnableDiagnostics: "0"
             envFrom:
               - secretRef:
                   name: sonarr
@@ -50,6 +39,17 @@ spec:
                 memory: 100M
               limits:
                 memory: 200M
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        cronjob:
+          schedule: "@daily"
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
     persistence:
       config:
         existingClaim: recyclarr

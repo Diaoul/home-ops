@@ -12,15 +12,10 @@ spec:
   values:
     controllers:
       authelia:
-        replicas: 2
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
+        strategy: RollingUpdate
+        replicas: 2
         initContainers:
           init-db:
             image:
@@ -65,6 +60,11 @@ spec:
                 memory: 32Mi
               limits:
                 memory: 128Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
     service:
       app:
         ports:
@@ -73,17 +73,13 @@ spec:
             port: *port
           metrics:
             port: 9959
-    serviceMonitor:
-      app:
-        endpoints:
-          - port: metrics
     route:
       app:
-        hostnames:
-          - auth.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
+        hostnames:
+          - auth.${DOMAIN}
     persistence:
       config:
         type: configMap
@@ -98,3 +94,7 @@ spec:
         globalMounts:
           - path: /config/secrets
             readOnly: true
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics

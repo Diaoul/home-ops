@@ -5,22 +5,15 @@ kind: HelmRelease
 metadata:
   name: thelounge
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  interval: 1h
   values:
     controllers:
       thelounge:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -28,20 +21,27 @@ spec:
               tag: 4.5.2@sha256:8aded5dfd825eb619d268292563c87f8ecd74c4e83a4f48cbcad82ffc6103466
             env:
               THELOUNGE_HOME: /config/thelounge
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
             probes:
               liveness:
                 enabled: true
               readiness:
                 enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 512Mi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -49,11 +49,11 @@ spec:
             port: 9000
     route:
       app:
-        hostnames:
-          - thelounge.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - thelounge.${DOMAIN}
     persistence:
       config:
         existingClaim: thelounge

@@ -5,26 +5,26 @@ kind: Kustomization
 metadata:
   name: qui
 spec:
-  components:
-    - ../../../../components/persistence
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/downloads/qui/app
+  interval: 1h
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  interval: 1h
-  path: ./kubernetes/apps/downloads/qui/app
+  targetNamespace: downloads
+  components:
+    - ../../../../components/persistence
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: qui
       CAPACITY: 2Gi
   prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
   wait: false
-  targetNamespace: downloads

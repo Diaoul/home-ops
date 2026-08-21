@@ -12,23 +12,11 @@ spec:
   values:
     controllers:
       network-ups-tools:
-        pod:
-          annotations:
-            configmap.reloader.stakater.com/reload: &config network-ups-tools-config
-          nodeSelector:
-            feature.node.kubernetes.io/custom-ups-apc: "true"
         containers:
           app:
             image:
               repository: ghcr.io/jr0dd/network-ups-tools
               tag: v2.8.3@sha256:9f8e14d155c6ef05940cee6f8861e259e951eb11750aeddd02539d986dac1ca0
-            resources:
-              requests:
-                cpu: 25m
-                memory: 64Mi
-              limits:
-                cpu: 50m
-                memory: 128Mi
             probes:
               liveness:
                 enabled: true
@@ -36,6 +24,18 @@ spec:
                 enabled: true
             securityContext:
               privileged: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 64Mi
+              limits:
+                cpu: 50m
+                memory: 128Mi
+        pod:
+          annotations:
+            configmap.reloader.stakater.com/reload: &config network-ups-tools-config
+          nodeSelector:
+            feature.node.kubernetes.io/custom-ups-apc: "true"
     service:
       app:
         type: LoadBalancer

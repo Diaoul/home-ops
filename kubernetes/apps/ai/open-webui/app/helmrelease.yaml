@@ -14,13 +14,6 @@ spec:
       open-webui:
         annotations:
           reloader.stakater.com/auto: "true"
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
         containers:
           app:
             image:
@@ -70,6 +63,13 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 2Gi
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -77,11 +77,11 @@ spec:
             port: 8080
     route:
       app:
-        hostnames:
-          - chat.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - chat.${DOMAIN}
     persistence:
       config:
         existingClaim: open-webui

@@ -6,12 +6,12 @@ metadata:
   name: prometheus-adapter
   namespace: flux-system
 spec:
-  interval: 1h
-  path: ./kubernetes/apps/observability/prometheus-adapter/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/observability/prometheus-adapter/app
+  interval: 1h
   targetNamespace: observability
+  prune: true
   wait: false

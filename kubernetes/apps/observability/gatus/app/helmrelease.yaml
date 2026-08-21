@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: gatus
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: gatus-sidecar
-  interval: 1h
   values:
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"

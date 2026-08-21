@@ -5,14 +5,14 @@ kind: Kustomization
 metadata:
   name: e1000e-fix
 spec:
-  path: ./kubernetes/apps/network/e1000e-fix/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/network/e1000e-fix/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
+  targetNamespace: network
   prune: true
   wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: network

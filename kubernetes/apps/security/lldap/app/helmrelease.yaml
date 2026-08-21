@@ -56,11 +56,11 @@ spec:
             port: 3890
     route:
       app:
-        hostnames:
-          - lldap.${DOMAIN}
         parentRefs:
           - name: envoy-internal
             namespace: network
+        hostnames:
+          - lldap.${DOMAIN}
     persistence:
       data:
         type: emptyDir

@@ -5,10 +5,10 @@ kind: HelmRelease
 metadata:
   name: memini
 spec:
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: memini
-  interval: 30m
   values:
     controllers:
       main:

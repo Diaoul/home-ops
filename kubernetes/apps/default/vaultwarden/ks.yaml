@@ -5,28 +5,28 @@ kind: Kustomization
 metadata:
   name: vaultwarden
 spec:
-  components:
-    - ../../../../components/persistence
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/default/vaultwarden/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 2m
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  path: ./kubernetes/apps/default/vaultwarden/app
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 2m
-  timeout: 5m
+  targetNamespace: default
+  components:
+    - ../../../../components/persistence
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: vaultwarden
       CAPACITY: 200Mi
-  targetNamespace: default
+  prune: true
+  wait: false

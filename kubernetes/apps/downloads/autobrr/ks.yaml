@@ -5,13 +5,14 @@ kind: Kustomization
 metadata:
   name: autobrr
 spec:
-  components:
-    - ../../../../components/persistence
-  path: ./kubernetes/apps/downloads/autobrr/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/downloads/autobrr/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
@@ -19,16 +20,15 @@ spec:
       namespace: rook-ceph
     - name: kopiur-repository
       namespace: kopiur-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: downloads
+  components:
+    - ../../../../components/persistence
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
+      - kind: Secret
+        name: cluster-secrets
     substitute:
       APP: autobrr
       CAPACITY: 100Mi
-  targetNamespace: downloads
+  prune: true
+  wait: false

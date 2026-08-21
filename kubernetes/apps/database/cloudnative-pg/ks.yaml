@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: cloudnative-pg
 spec:
-  path: ./kubernetes/apps/database/cloudnative-pg/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  prune: true
-  wait: false
+  path: ./kubernetes/apps/database/cloudnative-pg/app
   interval: 1h
-  retryInterval: 1m
   timeout: 5m
+  retryInterval: 1m
+  targetNamespace: database
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: database
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -27,26 +27,26 @@ kind: Kustomization
 metadata:
   name: cloudnative-pg-barman-cloud
 spec:
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  path: ./kubernetes/apps/database/cloudnative-pg/barman-cloud
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: cert-manager
       namespace: cert-manager
     - name: cloudnative-pg
       namespace: database
-  path: ./kubernetes/apps/database/cloudnative-pg/barman-cloud
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  prune: true
-  wait: true
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: database
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: database
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: true
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -54,11 +54,14 @@ kind: Kustomization
 metadata:
   name: cloudnative-pg-cluster
 spec:
-  path: ./kubernetes/apps/database/cloudnative-pg/cluster
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/database/cloudnative-pg/cluster
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
   dependsOn:
     - name: cloudnative-pg
       namespace: database
@@ -66,13 +69,10 @@ spec:
       namespace: database
     - name: miroir-config
       namespace: miroir-system
-  prune: true
-  wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
+  targetNamespace: database
   postBuild:
     substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-  targetNamespace: database
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
+  wait: false

@@ -5,21 +5,21 @@ kind: Kustomization
 metadata:
   name: victoria-logs
 spec:
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-  interval: 1h
-  path: ./kubernetes/apps/observability/victoria-logs/app
-  prune: true
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/observability/victoria-logs/app
+  interval: 1h
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   targetNamespace: observability
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
+  prune: true
   wait: false
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
@@ -29,14 +29,14 @@ metadata:
   name: victoria-logs-collector
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: victoria-logs
-  interval: 1h
-  path: ./kubernetes/apps/observability/victoria-logs/collector
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/observability/victoria-logs/collector
+  interval: 1h
+  dependsOn:
+    - name: victoria-logs
   targetNamespace: observability
+  prune: true
   wait: false

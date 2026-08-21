@@ -5,14 +5,14 @@ kind: Kustomization
 metadata:
   name: flaresolverr
 spec:
-  path: ./kubernetes/apps/media/flaresolverr/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  path: ./kubernetes/apps/media/flaresolverr/app
+  interval: 1h
+  timeout: 5m
+  retryInterval: 1m
+  targetNamespace: media
   prune: true
   wait: false
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  targetNamespace: media
