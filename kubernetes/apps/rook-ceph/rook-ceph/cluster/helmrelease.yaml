@@ -79,6 +79,13 @@ spec:
           requests:
             cpu: 200m # 1000m
             memory: 2Gi # 4Gi
+      security:
+        cephx:
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+          csi:
+            keyType: aes # aes256k requires kernel 7.0+
       storage:
         deviceFilter: nvme0n1
     route:
