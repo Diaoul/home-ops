@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: esphome/esphome
-              tag: 2026.8.0@sha256:e081a5e5e80203235245db62bd3003bec3db3ddd13e3834f0613ac4ad78d89b1
+              tag: 2026.8.1@sha256:3c332646e589aa36d71d8e250ab304edee2fb1a5e10759b927443505709f59a2
             env:
               ESPHOME_DASHBOARD_USE_PING: true
               PLATFORMIO_CORE_DIR: /config/.esphome/platformio
