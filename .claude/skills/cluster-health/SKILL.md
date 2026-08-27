@@ -220,7 +220,7 @@ curl -s 'https://victoria-logs.diaoul.io/select/logsql/query?start=1h&query=%28l
 
 The query must be URL-encoded into the query string as above: the sandbox rejects
 `curl --data-urlencode` (it reads as a POST), and an empty `query` arg returns
-``​`query` arg cannot be empty``.
+`` `query` arg cannot be empty``.
 
 Flag: namespaces with unusually high error counts. Judge relatively, not against a fixed
 threshold — `kube-system` carries constant background noise, and `rook-ceph` spikes for
