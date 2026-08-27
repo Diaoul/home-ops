@@ -445,6 +445,33 @@ Before implementing a new app or configuration pattern, check the
 
 Flux is configured with a GitHub webhook — reconciliation triggers immediately on push. Do not tell the user to "wait X minutes for Flux to reconcile."
 
+### Cluster-wide HelmRelease defaults
+
+`kubernetes/flux/cluster/ks.yaml` patches **every** HelmRelease in the cluster, so
+these are already set everywhere and must not be added per-app or reported as missing:
+
+```yaml
+install:
+  crds: CreateReplace
+maxHistory: 3
+rollback:
+  cleanupOnFail: true
+upgrade:
+  cleanupOnFail: true
+  crds: CreateReplace
+  strategy:
+    name: RemediateOnFailure
+  remediation:
+    remediateLastFailure: true
+    retries: 2
+```
+
+Before flagging any HelmRelease field as absent, grep that file — a chart whose upgrade
+notes demand `upgrade.crds: CreateReplace` (miroir, cert-manager, CNPG) already has it,
+and telling the user otherwise is wrong. The same goes for remediation and history
+limits: an app-level `install:`/`upgrade:` block only needs to appear when it *differs*
+from the defaults above.
+
 ---
 
 ## What NOT to Do
