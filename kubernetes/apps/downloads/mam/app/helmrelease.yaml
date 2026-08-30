@@ -28,7 +28,10 @@ spec:
               tag: master
             command:
               - curl
-              - -fsSL
+              - -sSL
+              - --fail-with-body
+              - -w
+              - "\nHTTP=%{http_code}\n"
               - --cookie
               - mam_id=$(MAM_SESSION_ID)
               - https://t.myanonamouse.net/json/dynamicSeedbox.php
