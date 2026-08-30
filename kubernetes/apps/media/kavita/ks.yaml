@@ -29,5 +29,5 @@ spec:
         kind: Secret
     substitute:
       APP: kavita
-      CAPACITY: 500Mi
+      CAPACITY: 1Gi
   targetNamespace: media
