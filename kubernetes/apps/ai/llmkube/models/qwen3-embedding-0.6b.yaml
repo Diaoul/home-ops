@@ -28,7 +28,7 @@ metadata:
 spec:
   modelRef: qwen3-embedding-0.6b
   runtime: llamacpp
-  image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b10689@sha256:eb03bd6428ce479209eb74b064f5503f85a65c438f2719e232d33f87b416f17d
+  image: ghcr.io/ggml-org/llama.cpp:server-vulkan-b10752@sha256:a07daf5557d88b5eacfa0b5f2f067bad5fb0e7ad1d68956c06e7c2c732249020
   replicas: 1
   priority: normal
   contextSize: 4096
