@@ -19,6 +19,9 @@ log lvl msg *args:
 template file *args:
     minijinja-cli "{{ file }}" {{ args }} | op inject
 
+hold pr:
+    gh pr edit "{{ pr }}" --add-label hold
+
 merge type="":
     #!/usr/bin/env bash
     set -euo pipefail
