@@ -5,7 +5,7 @@ clusterEndpoint: https://10.0.3.3:6443
 
 # Installer image only; rolling upgrades are driven by tuppr. Renovate reads this
 # via the talosFactory preset, which groups it with tuppr's TalosUpgrade.
-talosVersion: v1.13.9
+talosVersion: v1.14.0
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 kubernetesVersion: v1.36.4
 
