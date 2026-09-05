@@ -37,13 +37,17 @@ spec:
                                     echo '% - BEFORE' && \
                                     echo '==========' && \
                                     ethtool -k % && \
+                                    ethtool -g % && \
                                     echo '==========' && \
                                     echo 'Disabling offloads for %...' && \
                                     ethtool -K % tso off && \
+                                    echo 'Enlarging rings for %...' && \
+                                    ethtool -G % rx 4096 tx 4096 && \
                                     echo '==========' && \
                                     echo '% - AFTER' && \
                                     echo '==========' && \
                                     ethtool -k % && \
+                                    ethtool -g % && \
                                     echo '=========='
                                   " && \
                 sleep infinity
