@@ -61,7 +61,7 @@ spec:
             parameters: 0.0.0.0:9153
           - name: log
             configBlock: |-
-              class error
+              class all
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
