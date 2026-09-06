@@ -21,6 +21,19 @@ spec:
       name: kube-dns
       clusterIP: 10.43.0.10
     replicaCount: 2
+    # No CPU limit: DNS work arrives in microbursts, and the chart's 100m limit
+    # is 10ms of CPU per 100ms CFS period. A burst that overruns the quota
+    # freezes CoreDNS for the rest of the period, and queries arriving during
+    # the freeze are dropped in the socket buffer with no log and no counter.
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        # null, not omitted: Helm deep-merges values, so leaving cpu out lets
+        # the chart's 100m default merge straight back in.
+        cpu: null
+        memory: 128Mi
     servers:
       - zones:
           - zone: .
