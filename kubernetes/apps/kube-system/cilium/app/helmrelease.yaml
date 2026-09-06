@@ -37,7 +37,19 @@ spec:
     envoy:
       enabled: false
     hubble:
-      enabled: false
+      enabled: true
+      metrics:
+        dashboards:
+          enabled: true
+        enabled:
+          - dns:labelsContext=source_namespace,destination_namespace;query
+          - drop:labelsContext=source_namespace,destination_namespace;reason
+          - flow:sourceContext=workload-name|reserved-identity;destinationContext=workload-name|reserved-identity
+        serviceMonitor:
+          enabled: true
+      relay:
+        enabled: true
+        rollOutPods: true
     ipam:
       mode: kubernetes
     ipv4NativeRoutingCIDR: 10.42.0.0/16
