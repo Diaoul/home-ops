@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/authelia/authelia
-              tag: 4.39.22@sha256:936134132eaf01bfa2faf85055afbc1e0cc1cc5ca4547e9c06408fd0dd784646
+              tag: 4.39.25@sha256:a039d87fb842f0af4f83c03434f5fb6ec45d4b46e86b8b3ac571cc104bbe6e6d
             env:
               AUTHELIA_SERVER_ADDRESS: tcp://0.0.0.0:9191
               AUTHELIA_TELEMETRY_METRICS_ADDRESS: tcp://0.0.0.0:9959
