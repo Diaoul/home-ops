@@ -52,7 +52,6 @@ spec:
     - "4"
     - --threads-batch
     - "8"
-    - --mmap
   endpoint:
     port: 8080
     type: ClusterIP
