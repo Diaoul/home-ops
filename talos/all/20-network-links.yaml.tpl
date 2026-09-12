@@ -18,6 +18,17 @@ selector:
   match: glob("{{ .Node.Data.macAddr }}", mac(link.hardware_addr))
 ---
 apiVersion: v1alpha1
+kind: EthernetConfig
+name: eno1
+rings: # 256 starves descriptors under burst
+  rx: 4096
+  tx: 4096
+features: # the three keys behind `ethtool -K tso off`
+  tx-tcp-segmentation: false
+  tx-tcp6-segmentation: false
+  tx-tcp-mangleid-segmentation: false
+---
+apiVersion: v1alpha1
 kind: BondConfig
 name: bond0
 links:
