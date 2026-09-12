@@ -1,5 +1,6 @@
 ---
-machine:
-  install:
-    diskSelector:
-      model: PNY CS900 120GB
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.model == "PNY CS900 120GB"

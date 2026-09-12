@@ -1,4 +1,5 @@
 ---
-machine:
-  network:
-    disableSearchDomain: true
+apiVersion: v1alpha1
+kind: ResolverConfig
+searchDomains:
+  disableDefault: true
