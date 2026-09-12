@@ -15,7 +15,11 @@ spec:
       enabled: true
       bbr: true
     bpf:
-      datapathMode: netkit
+      # veth, not netkit: netkit redirects straight into the pod netns via
+      # bpf_redirect_peer, so a host-side capture sees no pod interface and
+      # cannot show where a dropped packet died. Under veth the lxc peer is
+      # observable, which is what the DNS-stall investigation needs.
+      datapathMode: veth
       masquerade: true
       preallocateMaps: true
     bpfClockProbe: true
