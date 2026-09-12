@@ -25,8 +25,8 @@ data:
   svcCIDR: 10.43.0.0/16
   nodeCIDR: 10.0.3.0/24
 
-# bond0 stays on DHCP and inherits DNS/NTP from it, hence no ResolverConfig or
-# TimeSyncConfig documents.
+# bond0 stays on DHCP and inherits DNS/NTP from it, hence no nameservers in
+# ResolverConfig and no TimeSyncConfig document at all.
 nodes:
   - host: k8s-node-1
     ip: 10.0.3.24

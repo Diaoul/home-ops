@@ -1,0 +1,7 @@
+---
+# Off deliberately: e1000e-fix (hostPID), node-exporter, the Intel GPU DRA
+# driver and miroir all reach across the host namespace boundary sandboxd
+# closes.
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+workloadIsolation: false
