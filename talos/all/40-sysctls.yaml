@@ -10,7 +10,7 @@ params:
   net.ipv4.neigh.default.gc_thresh2: "8192" # Prevent ARP cache overflows
   net.ipv4.neigh.default.gc_thresh3: "16384" # Prevent ARP cache overflows
   net.ipv4.tcp_mtu_probing: "1" # Recover from black-holed PMTU (9000-MTU island)
+  net.ipv4.tcp_rmem: 4096 131072 67108864 # TCP autotuning ceiling; rmem_max alone does not raise it
   net.ipv4.tcp_slow_start_after_idle: "0" # Preserve congestion window after idle
-  sunrpc.tcp_max_slot_table_entries: "128" # NFS Performance (default 2 is a bottleneck)
-  sunrpc.tcp_slot_table_entries: "128" # NFS Performance (default 2 is a bottleneck)
+  net.ipv4.tcp_wmem: 4096 65536 67108864 # TCP autotuning ceiling; wmem_max alone does not raise it
   user.max_user_namespaces: "11255" # User Namespaces
