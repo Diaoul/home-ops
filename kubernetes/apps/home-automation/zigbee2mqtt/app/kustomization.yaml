@@ -5,3 +5,9 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
+configMapGenerator:
+  - name: zigbee2mqtt
+    files:
+      - stack_config.json=./resources/stack_config.json
+generatorOptions:
+  disableNameSuffixHash: true

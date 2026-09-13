@@ -101,3 +101,12 @@ spec:
     persistence:
       data:
         existingClaim: zigbee2mqtt
+      # Legrand mains devices emit no route records, so a high-RAM concentrator
+      # never builds a source route to end devices parented to one: their APS
+      # acks fail and the remote retransmits the command four times.
+      stack-config:
+        type: configMap
+        name: zigbee2mqtt
+        globalMounts:
+          - path: /data/stack_config.json
+            subPath: stack_config.json
