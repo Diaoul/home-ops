@@ -50,7 +50,7 @@ spec:
       app:
         type: LoadBalancer
         annotations:
-          external-dns.kubernetes.io/hostname: go2rtc.${DOMAIN}
+          coredns.io/hostname: go2rtc.${DOMAIN}
           lbipam.cilium.io/ips: 10.44.0.24
         ports:
           http:

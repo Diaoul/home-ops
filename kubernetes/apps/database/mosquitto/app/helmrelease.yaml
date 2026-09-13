@@ -37,7 +37,7 @@ spec:
       app:
         type: LoadBalancer
         annotations:
-          external-dns.kubernetes.io/hostname: mqtt.${DOMAIN}
+          coredns.io/hostname: mqtt.${DOMAIN}
           gatus.home-operations.com/endpoint: |-
             group: services
           lbipam.cilium.io/ips: 10.44.0.16
