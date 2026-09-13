@@ -4,12 +4,12 @@ kind: SysctlConfig
 params:
   fs.inotify.max_user_watches: "1048576" # Watchdog
   fs.inotify.max_user_instances: "8192" # Watchdog
-  net.core.rmem_max: "67108864" # Cloudflared | QUIC, NFS over jumbo frames
-  net.core.wmem_max: "67108864" # Cloudflared | QUIC, NFS over jumbo frames
+  net.core.rmem_max: "67108864" # Cloudflared | QUIC, NFS
+  net.core.wmem_max: "67108864" # Cloudflared | QUIC, NFS
   net.ipv4.neigh.default.gc_thresh1: "4096" # Prevent ARP cache overflows
   net.ipv4.neigh.default.gc_thresh2: "8192" # Prevent ARP cache overflows
   net.ipv4.neigh.default.gc_thresh3: "16384" # Prevent ARP cache overflows
-  net.ipv4.tcp_mtu_probing: "1" # Recover from black-holed PMTU (9000-MTU island)
+  net.ipv4.tcp_mtu_probing: "1" # Recover from black-holed PMTU
   net.ipv4.tcp_rmem: 4096 131072 67108864 # TCP autotuning ceiling; rmem_max alone does not raise it
   net.ipv4.tcp_slow_start_after_idle: "0" # Preserve congestion window after idle
   net.ipv4.tcp_wmem: 4096 65536 67108864 # TCP autotuning ceiling; wmem_max alone does not raise it

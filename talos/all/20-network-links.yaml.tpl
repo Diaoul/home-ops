@@ -34,7 +34,7 @@ name: bond0
 links:
   - ethSel0
 bondMode: active-backup
-mtu: 9000
+mtu: 1500
 ---
 apiVersion: v1alpha1
 kind: DHCPv4Config
