@@ -11,3 +11,7 @@ configMapGenerator:
       - source-route-table-size.cjs=./resources/source-route-table-size.cjs
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+    # The preload is JavaScript. Its ${...} template literals are not Flux
+    # variables, and envsubst fails to parse them.
+    kustomize.toolkit.fluxcd.io/substitute: disabled
