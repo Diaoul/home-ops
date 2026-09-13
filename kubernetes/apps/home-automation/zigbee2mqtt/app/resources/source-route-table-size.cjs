@@ -21,18 +21,34 @@ const { Ezsp } = require(
     require.resolve("zigbee-herdsman/dist/adapter/ember/ezsp/ezsp.js", { paths: ["/app", process.cwd()] }),
 );
 
-if (typeof Ezsp?.prototype?.ezspSetConcentrator !== "function" || typeof Ezsp?.prototype?.ezspSetConfigurationValue !== "function") {
+if (typeof Ezsp?.prototype?.start !== "function" || typeof Ezsp?.prototype?.ezspSetConfigurationValue !== "function") {
     throw new Error("[source-route-patch] zigbee-herdsman Ezsp API changed, patch cannot apply");
 }
 
-// ezspSetConcentrator is the last call in initEzsp before the concentrator starts, so the
-// config value lands alongside the ones herdsman sets itself and before any MTORR goes out.
-const setConcentrator = Ezsp.prototype.ezspSetConcentrator;
+// Resizing a table is only accepted before the stack comes up, which in initEzsp means
+// before registerFixedEndpoints -- so this rides along with the first config value
+// herdsman writes rather than picking a call site of its own. Anywhere later returns
+// INVALID_STATE. The flag resets on start() so a reconnect reapplies it.
+let pending = true;
 
-Ezsp.prototype.ezspSetConcentrator = async function (...args) {
-    const status = await this.ezspSetConfigurationValue(CONFIG_ID_SOURCE_ROUTE_TABLE_SIZE, size);
+const start = Ezsp.prototype.start;
 
-    console.log(`[source-route-patch] SOURCE_ROUTE_TABLE_SIZE=${size} status=${status} (0 is OK)`);
+Ezsp.prototype.start = async function (...args) {
+    pending = true;
 
-    return await setConcentrator.apply(this, args);
+    return await start.apply(this, args);
+};
+
+const setConfigurationValue = Ezsp.prototype.ezspSetConfigurationValue;
+
+Ezsp.prototype.ezspSetConfigurationValue = async function (configId, value) {
+    if (pending && configId !== CONFIG_ID_SOURCE_ROUTE_TABLE_SIZE) {
+        pending = false;
+
+        const status = await setConfigurationValue.call(this, CONFIG_ID_SOURCE_ROUTE_TABLE_SIZE, size);
+
+        console.log(`[source-route-patch] SOURCE_ROUTE_TABLE_SIZE=${size} status=${status} (0 is OK)`);
+    }
+
+    return await setConfigurationValue.call(this, configId, value);
 };
