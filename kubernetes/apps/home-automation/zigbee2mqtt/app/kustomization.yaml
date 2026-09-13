@@ -8,6 +8,6 @@ resources:
 configMapGenerator:
   - name: zigbee2mqtt
     files:
-      - stack_config.json=./resources/stack_config.json
+      - source-route-table-size.cjs=./resources/source-route-table-size.cjs
 generatorOptions:
   disableNameSuffixHash: true
