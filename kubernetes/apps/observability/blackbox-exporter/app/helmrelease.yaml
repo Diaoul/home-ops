@@ -11,6 +11,10 @@ spec:
     name: blackbox-exporter
   values:
     fullnameOverride: blackbox-exporter
+    dnsConfig:
+      options:
+        - name: ndots
+          value: "1"
     securityContext:
       readOnlyRootFilesystem: true
       allowPrivilegeEscalation: false
