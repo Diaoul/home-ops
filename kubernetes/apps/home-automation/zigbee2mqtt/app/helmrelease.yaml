@@ -59,8 +59,6 @@ spec:
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: true
               # security
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: false
-              # routing
-              NODE_OPTIONS: --require /data/source-route-table-size.cjs
             envFrom:
               - secretRef:
                   name: zigbee2mqtt
@@ -103,9 +101,3 @@ spec:
     persistence:
       data:
         existingClaim: zigbee2mqtt
-      source-route-patch:
-        type: configMap
-        name: zigbee2mqtt
-        globalMounts:
-          - path: /data/source-route-table-size.cjs
-            subPath: source-route-table-size.cjs
