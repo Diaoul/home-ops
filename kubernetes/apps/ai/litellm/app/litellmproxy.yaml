@@ -59,6 +59,8 @@ spec:
           key: DATABASE_URL
     - name: PROXY_BASE_URL
       value: https://litellm.${DOMAIN}
+    - name: PROXY_ADMIN_ID
+      value: antoine
     - name: GENERIC_CLIENT_ID
       value: litellm
     - name: GENERIC_CLIENT_SECRET
