@@ -52,6 +52,11 @@ spec:
         secretKeyRef:
           name: litellm
           key: LITELLM_MASTER_KEY
+    - name: DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: litellm
+          key: DATABASE_URL
     - name: PROXY_BASE_URL
       value: https://litellm.${DOMAIN}
     - name: GENERIC_CLIENT_ID

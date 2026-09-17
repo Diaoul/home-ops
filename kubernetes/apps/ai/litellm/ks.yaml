@@ -25,6 +25,8 @@ spec:
       namespace: ai
     - name: dragonfly-operator
       namespace: database
+    - name: cloudnative-pg-databases
+      namespace: database
   prune: true
   wait: false
   interval: 1h
