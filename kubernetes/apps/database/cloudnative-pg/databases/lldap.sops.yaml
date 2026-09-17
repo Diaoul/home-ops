@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+    name: lldap-db
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:FsBWZ6U=,iv:HMz0mRjva0y4iHlkRnQhde0xsZp2AM7NtwBwQMNsfn4=,tag:/6ggdB+E0txkarEcx9Bnmw==,type:str]
+    password: ENC[AES256_GCM,data:mgcsTFIO+pnp91eMT3pyCNURTrA=,iv:AsMVdfZF/bO1byrVKk4E652dUW1m3bwJan6N/dnques=,tag:CrmeWT+lm47YKxK97Z81ow==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsZklxdTZNcnIvOVA4NUN6
+            QzV5bVE3S2ZNa2MydGV0SlpiUEMrQWpjTTI0CkJONTFDTUdWNFdjOUhoY1FYNmF3
+            VDFvZ1p0aGNBVW1nSGpNcWVLYzdqd2sKLS0tIHNhMnlvdFZTazQ5cGlOc1ZNaU92
+            OUlId0o5K1ZrVTNSV3czTzhKL1dJaGsKVVGufMEnziK4agN9LJO6YHpKxGDq00BW
+            6DIVvI77S5fwxVpAp481YG+qkAWEbFPmxFsNVEahyZwmSVcDKCG/cg==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-09-17T21:46:08Z"
+    mac: ENC[AES256_GCM,data:UzNAB4paiDqdqu0u3WwKpDRXAUa0CJJ5xTbemdAsiNne42JsNloXiuyHyKrqhZeHFwrq9bWlT1X0+AM6Xe7gGsw9dkBfgJTxM03FBj72/vM1iPL1pE7hHLtqXNrVvWfPpCgmeCCxUSQ4XOde+p4SH7FVm9YE9wLvdqUERCWQ9SA=,iv:wYsftblb1Ckim36yAmxxskmZKMbN5ee3sbFtOiJW/RQ=,tag:tgh2DzVPYTrRngWOCGvj4w==,type:str]
+    mac_only_encrypted: true
+    pgp:
+        - created_at: "2026-09-17T21:46:08Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAVUo1DKNO38qZ0zylOYIJIuxipyasXVNJ+Jv0Jjp/e18w
+            y0Ho/MmOfFId7RC/9pDDxAeUPcRu1d+x9sLqdrBtrKTpOF/SW6IUHg+9D4EhSkWQ
+            0l4BMuvN/iZ+emrhKc0UgsVPiXg0sOxzXf9faJkWdw7GAZ9WihqbwoeQZmVsI9RS
+            hGBLv2JUyj5+ISkirrhplNDBsDed0/RKqhrS4d+f3QOIS64yiG0WfNddHB5L2vml
+            =+IQI
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    version: 3.13.3
