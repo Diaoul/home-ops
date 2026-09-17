@@ -295,3 +295,24 @@ identity_providers:
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
+      - client_name: LiteLLM
+        client_id: litellm
+        client_secret: '{{ secret "/config/secrets/LITELLM_OAUTH_CLIENT_SECRET" }}'
+        public: false
+        authorization_policy: default
+        require_pkce: false
+        pkce_challenge_method: ""
+        redirect_uris:
+          - https://litellm.${DOMAIN}/sso/callback
+        scopes:
+          - openid
+          - profile
+          - groups
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
+        access_token_signed_response_alg: none
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
