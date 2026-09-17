@@ -278,13 +278,33 @@ planes; their system disks are already the etcd fdatasync bottleneck).
 
 ## PostgreSQL Pattern
 
-For apps needing a PostgreSQL database:
+Databases are declared with the CNPG `Database`/`DatabaseRole` CRDs, not with a
+`postgres-init` init container. All three resources must live in the cluster's
+namespace, so they sit together in `kubernetes/apps/database/cloudnative-pg/databases/`
+and the postgres superuser password never leaves the `database` namespace.
 
-1. Add a `postgres-init` init container using the `ghcr.io/home-operations/postgres-init` image.
-2. Create `init-db-secret.sops.yaml` with database credentials.
-3. Add `dependsOn: cloudnative-pg` in `ks.yaml`.
+For an app needing a database:
 
-Reference: `kubernetes/apps/default/vaultwarden/app/` or `kubernetes/apps/default/mealie/app/`.
+1. Add `<app>.yaml` to `databases/` with a `DatabaseRole` (`login: true`,
+   `passwordSecret: <app>-db`) and a `Database` (`owner: <app>`).
+2. Add `<app>.sops.yaml` there too: a `kubernetes.io/basic-auth` Secret named
+   `<app>-db`, labelled `cnpg.io/reload: "true"`, holding `username` and `password`.
+3. Reference both from `databases/kustomization.yaml`.
+4. Put the app's own connection string or password in its usual app secret — the same
+   password, since there are no cross-namespace secrets, so a rotation touches both
+   files.
+5. `dependsOn: cloudnative-pg-databases` (namespace `database`) in the app's `ks.yaml`.
+
+Reference: `kubernetes/apps/database/cloudnative-pg/databases/` plus any of its
+consumers (`ai/litellm`, `security/authelia`, `security/lldap`, `downloads/autobrr`,
+`default/miniflux`).
+
+Do not write a `failed:` health expression for these kinds. A new `passwordSecret`
+reaches the cluster's Role only on CNPG's next reconcile, so a fresh `DatabaseRole`
+sits at `applied: false` with an RBAC error for a few seconds; treating that as a
+failure makes Flux fail the Kustomization early and every dependent app alert.
+
+Reclaim policies default to `retain` — leave them out.
 
 ---
 
