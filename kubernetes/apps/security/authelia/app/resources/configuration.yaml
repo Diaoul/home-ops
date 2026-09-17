@@ -69,7 +69,7 @@ access_control:
     - domain:
         - sabnzbd.${DOMAIN}
       resources:
-        - "^/api(/.*)?$"
+        - "^/api(/.*)?(\\?.*)?$"
       policy: bypass
     - domain:
         - qb.${DOMAIN}
