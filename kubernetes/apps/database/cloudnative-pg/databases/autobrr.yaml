@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: autobrr
+spec:
+  cluster:
+    name: postgres18
+  name: autobrr
+  login: true
+  passwordSecret:
+    name: autobrr-db
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: autobrr
+spec:
+  cluster:
+    name: postgres18
+  name: autobrr
+  owner: autobrr
