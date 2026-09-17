@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+    name: authelia-db
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:KIQQK/IZqms=,iv:gY59g8T9LVC/67Kl+PVSFxTV6UZu6BEEOFKcEG1NG34=,tag:OiiX9sqodMWKqp6W42yL5g==,type:str]
+    password: ENC[AES256_GCM,data:3CzEJN5UezCSWTpOk8h4Y4iLLYk=,iv:5fp7EIwPGGvg540awqUUE2g5TOxunNq2yD3JKxnZEAk=,tag:jmDCErr6/71rYJFvn2JB3w==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBMdUJyakFPeGNLNzRmaUJB
+            S01NOG5pTld0WVV0bCtyZXg0eWt5bFVCdFIwCnVxcTJTWjYrekQ1ZjBUcUVCTDR3
+            Q2NXeG0rZGdmUU90blFpdWZ3eFlkNEEKLS0tIERiZ3M1aDFROHhPU1ZjZVJ2NlBM
+            ZDRLeVlOVUZYSjFrTnlDdHdoRkpFR2MK4KtJIoiRoyMxfXaq04e5BFJCraeEXgkO
+            78Vm9GsPkCe5/WWqkvnx0KaI9OaSI0ohIY2/EvOGvPnceawDGKtnDQ==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-09-17T22:01:44Z"
+    mac: ENC[AES256_GCM,data:eQAkntl/wqp3wJMxR7OvhwJau/kbmT/ThmUkClporgP1GaK1BblvFXQWvzaOFAZur5h3j2Sp+p9656eqC1eF8TSPu2lUGm4Bsnx+S7QfYdeZ91RmldBdzF3mqZE8Qgphkw7PpUoeq0INh/8DVPSNN84t+/Nu85Cn21UhpZSHebQ=,iv:GVLlRMlD1aq7p3dZosDpSo1bhPvGao4fh+oCT/v/jTA=,tag:o82f4Svb7QAWkDLqLig0SA==,type:str]
+    mac_only_encrypted: true
+    pgp:
+        - created_at: "2026-09-17T22:01:44Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAKEUYnE/iLseN9BbaKW1H3pa3SpB9yFBL6mxAGJ/Aekww
+            HUQWYg2wMquIyBiHBPALF/hlUdCQazhkxi84mqqvk+lQ+4tIS9SIelc26hpHiJTc
+            0l4BdIkAHnZv159P/IL6w7TGWO4hGmY+GUZOONb7s1pRacKzByES1tVvm5qQKDvg
+            Dmf3pGcbfcAp19XL9GyX7RAF5FmMHBWpVzTSS5u9Mkb9lOAdmOtP0TBmSwU7K9kg
+            =O8/R
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    version: 3.13.3

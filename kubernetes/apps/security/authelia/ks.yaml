@@ -18,7 +18,7 @@ spec:
       failed: status.phase != 'ready'
       current: status.phase == 'ready'
   dependsOn:
-    - name: cloudnative-pg-cluster
+    - name: cloudnative-pg-databases
       namespace: database
     - name: dragonfly-operator
       namespace: database
