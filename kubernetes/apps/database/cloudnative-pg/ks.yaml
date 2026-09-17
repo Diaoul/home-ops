@@ -76,3 +76,37 @@ spec:
       - name: cluster-secrets
         kind: Secret
   targetNamespace: database
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cloudnative-pg-databases
+spec:
+  path: ./kubernetes/apps/database/cloudnative-pg/databases
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  dependsOn:
+    - name: cloudnative-pg-cluster
+      namespace: database
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: DatabaseRole
+      failed: status.applied == false
+      current: status.applied == true && status.observedGeneration == metadata.generation
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Database
+      failed: status.applied == false
+      current: status.applied == true && status.observedGeneration == metadata.generation
+  prune: true
+  wait: true
+  interval: 1h
+  retryInterval: 1m
+  timeout: 15m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  targetNamespace: database
