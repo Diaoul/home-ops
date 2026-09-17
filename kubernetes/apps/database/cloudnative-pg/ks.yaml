@@ -94,11 +94,9 @@ spec:
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: DatabaseRole
-      failed: status.applied == false
       current: status.applied == true && status.observedGeneration == metadata.generation
     - apiVersion: postgresql.cnpg.io/v1
       kind: Database
-      failed: status.applied == false
       current: status.applied == true && status.observedGeneration == metadata.generation
   prune: true
   wait: true
