@@ -45,3 +45,17 @@ spec:
   matchers:
     - name: alertname
       value: KubeHpaMaxedOut
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/observability.giantswarm.io/silence_v1alpha2.json
+apiVersion: observability.giantswarm.io/v1alpha2
+kind: Silence
+metadata:
+  name: ceph-node-network-packet-drops-bond0
+spec:
+  matchers:
+    - name: alertname
+      value: CephNodeNetworkPacketDrops
+    # bond0 rx_dropped counts 802.3x PAUSE frames, not loss (equals
+    # rx_flow_control_xon+xoff exactly); real loss shows on eno1, still alerting
+    - name: device
+      value: bond0
