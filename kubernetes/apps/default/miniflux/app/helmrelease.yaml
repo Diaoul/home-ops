@@ -19,14 +19,6 @@ spec:
             runAsNonRoot: true
             runAsUser: 65534
             runAsGroup: 65534
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/home-operations/postgres-init
-              tag: 18.6@sha256:b6d3af974df781c673d37e49bdddfa14a6f5be28b18d2cb7713f0449bea4057b
-            envFrom:
-              - secretRef:
-                  name: miniflux-init-db
         containers:
           app:
             image:
