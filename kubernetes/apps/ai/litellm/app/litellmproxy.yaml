@@ -52,6 +52,23 @@ spec:
         secretKeyRef:
           name: litellm
           key: LITELLM_MASTER_KEY
+    - name: PROXY_BASE_URL
+      value: https://litellm.${DOMAIN}
+    - name: GENERIC_CLIENT_ID
+      value: litellm
+    - name: GENERIC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: litellm
+          key: LITELLM_OAUTH_CLIENT_SECRET
+    - name: GENERIC_AUTHORIZATION_ENDPOINT
+      value: https://auth.${DOMAIN}/api/oidc/authorization
+    - name: GENERIC_TOKEN_ENDPOINT
+      value: https://auth.${DOMAIN}/api/oidc/token
+    - name: GENERIC_USERINFO_ENDPOINT
+      value: https://auth.${DOMAIN}/api/oidc/userinfo
+    - name: GENERIC_SCOPE
+      value: openid email profile
   resources:
     requests:
       cpu: 100m
