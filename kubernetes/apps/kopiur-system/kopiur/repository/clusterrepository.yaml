@@ -30,3 +30,7 @@ spec:
   identityDefaults:
     hostnameExpr: namespace
     usernameExpr: policyName
+  parameters:
+    epoch:
+      # epochs must close faster than index blobs pile up, or maintenance compacts nothing
+      minDuration: 6h
