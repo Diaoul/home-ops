@@ -36,9 +36,9 @@ kubernetes/
 ├── components/                 # Reusable Kustomize components
 │   ├── common/                 # Namespace, OCI repos, SOPS secret, Flux alerts
 │   ├── ext-auth/               # Authelia external auth (Envoy SecurityPolicy)
-│   ├── nfs-scaler/             # KEDA autoscaler for NFS-dependent pods
 │   ├── persistence/            # PVC + kopiur snapshot/restore templates
-│   └── replacements/           # Shared variable substitution
+│   ├── replacements/           # Shared variable substitution
+│   └── zeroscaler/             # HPA: scale to 0 while the NAS NFS port is down
 └── apps/<namespace>/<app>/
     ├── ks.yaml                 # Flux Kustomization
     └── app/
@@ -85,7 +85,7 @@ spec:
   components:
     - ../../../../components/persistence   # if app needs PVC + kopiur backup
     - ../../../../components/ext-auth      # if app needs Authelia auth
-    - ../../../../components/nfs-scaler   # if app needs NFS (media/downloads)
+    - ../../../../components/zeroscaler    # if app mounts NFS (media/downloads)
   dependsOn:
     - name: rook-ceph-cluster              # if using ceph-block storage
       namespace: rook-ceph
@@ -268,7 +268,9 @@ Note the PVC's `dataSourceRef` is immutable: changing it requires deleting and
 recreating the PVC.
 
 For NFS-mounted media (downloads/media namespace), use `miroir-local` StorageClass
-and add the `nfs-scaler` component.
+and add the `zeroscaler` component. It is a native HPA (min 0, max 1) driven by the
+blackbox `nfs_probe` via prometheus-adapter; set `CONTROLLER: StatefulSet` when the
+workload is not a Deployment.
 
 Storage classes: `ceph-block` (default, replicated RBD), `miroir-local` (node-local
 LVM thin, no DRBD traffic), `miroir-replicated` (2-way DRBD, keep it off control
