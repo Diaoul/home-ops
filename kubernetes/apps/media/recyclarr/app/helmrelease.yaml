@@ -15,6 +15,7 @@ spec:
         type: cronjob
         cronjob:
           schedule: "@daily"
+          timeZone: Europe/Paris
           successfulJobsHistory: 1
           failedJobsHistory: 1
         annotations:

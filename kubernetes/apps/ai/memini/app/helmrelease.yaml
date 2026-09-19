@@ -67,6 +67,7 @@ spec:
         enabled: true
         cronjob:
           schedule: "0 5 * * *"
+          timeZone: Europe/Paris
         containers:
           fsck:
             env:
