@@ -31,6 +31,7 @@ spec:
               TUNNEL_ORIGIN_ENABLE_HTTP2: true
               TUNNEL_POST_QUANTUM: true
               TUNNEL_TRANSPORT_PROTOCOL: quic
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: cloudflare-tunnel

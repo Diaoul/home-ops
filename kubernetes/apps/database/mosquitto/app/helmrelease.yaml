@@ -26,6 +26,8 @@ spec:
                 cpu: 10m
               limits:
                 memory: 100Mi
+            env:
+              TZ: Europe/Paris
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true

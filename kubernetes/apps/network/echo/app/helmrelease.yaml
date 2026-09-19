@@ -28,6 +28,7 @@ spec:
               LOG_WITHOUT_NEWLINE: true
               LOG_IGNORE_PATH: /healthz
               PROMETHEUS_ENABLED: true
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true

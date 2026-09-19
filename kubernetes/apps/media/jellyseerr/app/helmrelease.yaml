@@ -26,6 +26,7 @@ spec:
               tag: 2.7.3@sha256:4538137bc5af902dece165f2bf73776d9cf4eafb6dd714670724af8f3eb77764
             env:
               LOG_LEVEL: info
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true

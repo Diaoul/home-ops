@@ -59,6 +59,7 @@ spec:
               ZIGBEE2MQTT_CONFIG_HOMEASSISTANT_ENABLED: true
               # security
               ZIGBEE2MQTT_CONFIG_PERMIT_JOIN: false
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: zigbee2mqtt

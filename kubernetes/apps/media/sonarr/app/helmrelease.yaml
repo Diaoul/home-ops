@@ -29,6 +29,7 @@ spec:
             env:
               SONARR__AUTH__METHOD: External
               SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: sonarr

@@ -47,6 +47,8 @@ spec:
                 cpu: 10m
               limits:
                 memory: 64Mi
+            env:
+              TZ: Europe/Paris
         pod:
           restartPolicy: Never
           annotations:

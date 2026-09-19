@@ -63,6 +63,8 @@ spec:
                 memory: 8Gi
               limits:
                 memory: 16Gi
+            env:
+              TZ: Europe/Paris
           qbop:
             image:
               repository: ghcr.io/clajiness/qbop
@@ -73,6 +75,7 @@ spec:
               OPN_INTERFACE_ADDR: https://opnsense.milkyway
               OPN_PROTON_ALIAS_NAME: torrent_port
               WEB_AUTH_ENABLED: "false"
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: qbop

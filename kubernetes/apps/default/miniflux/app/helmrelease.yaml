@@ -38,6 +38,7 @@ spec:
               OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.${DOMAIN}
               OAUTH2_PROVIDER: oidc
               OAUTH2_REDIRECT_URL: https://miniflux.${DOMAIN}/oauth2/oidc/callback
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: miniflux

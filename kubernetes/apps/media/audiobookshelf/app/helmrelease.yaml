@@ -29,6 +29,7 @@ spec:
               AUDIOBOOKSHELF_GID: 568
               CONFIG_PATH: /config
               METADATA_PATH: /config/metadata
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true

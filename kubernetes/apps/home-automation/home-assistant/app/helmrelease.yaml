@@ -36,6 +36,8 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 1Gi
+            env:
+              TZ: Europe/Paris
           code-server:
             image:
               repository: ghcr.io/coder/code-server
@@ -57,6 +59,8 @@ spec:
                 cpu: 10m
               limits:
                 memory: 512Mi
+            env:
+              TZ: Europe/Paris
     service:
       app:
         ports:

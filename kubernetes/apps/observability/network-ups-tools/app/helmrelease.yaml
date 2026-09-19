@@ -36,6 +36,8 @@ spec:
                 enabled: true
             securityContext:
               privileged: true
+            env:
+              TZ: Europe/Paris
     service:
       app:
         type: LoadBalancer

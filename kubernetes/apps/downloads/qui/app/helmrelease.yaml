@@ -32,6 +32,7 @@ spec:
               QUI__OIDC_CLIENT_ID: qui
               QUI__OIDC_REDIRECT_URL: https://qui.${DOMAIN}/api/auth/oidc/callback
               QUI__OIDC_DISABLE_BUILT_IN_LOGIN: true
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: qui

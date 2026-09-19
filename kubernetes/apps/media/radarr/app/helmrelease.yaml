@@ -29,6 +29,7 @@ spec:
             env:
               RADARR__AUTH__METHOD: External
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: radarr

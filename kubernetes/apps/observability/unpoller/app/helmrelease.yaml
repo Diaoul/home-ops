@@ -27,6 +27,7 @@ spec:
             env:
               UP_UNIFI_DEFAULT_URL: https://sun.milkyway/
               UP_INFLUXDB_DISABLE: true
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: unpoller

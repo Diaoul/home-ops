@@ -23,6 +23,8 @@ spec:
                 memory: 150Mi
               limits:
                 memory: 500Mi
+            env:
+              TZ: Europe/Paris
     service:
       app:
         ports:

@@ -43,6 +43,8 @@ spec:
             args:
               - clean
               - qb
+            env:
+              TZ: Europe/Paris
         pod:
           restartPolicy: Never
       orphaned:
@@ -58,6 +60,8 @@ spec:
               - orphan
               - qb
               - --dry-run
+            env:
+              TZ: Europe/Paris
         pod:
           restartPolicy: Never
     defaultPodOptions:

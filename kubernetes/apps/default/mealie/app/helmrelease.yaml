@@ -42,6 +42,7 @@ spec:
               OIDC_GROUPS_CLAIM: groups
               OIDC_ADMIN_GROUP: admins
               OIDC_USER_GROUP: family
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: mealie

@@ -29,6 +29,7 @@ spec:
             env:
               PROWLARR__AUTH__METHOD: External
               PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: prowlarr

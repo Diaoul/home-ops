@@ -50,6 +50,8 @@ spec:
                 cpu: 10m
               limits:
                 memory: 512Mi
+            env:
+              TZ: Europe/Paris
     service:
       app:
         ports:

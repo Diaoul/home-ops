@@ -26,6 +26,7 @@ spec:
               tag: v0.10.0@sha256:965ecc92d68dc1a4a969397855367bbc70da03227a941ea607b73bb7e0b78fd6
             env:
               PROMETHEUS_URL: http://prometheus-operated.observability.svc.cluster.local:9090
+              TZ: Europe/Paris
             probes:
               liveness: &probes
                 enabled: true

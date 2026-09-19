@@ -27,6 +27,7 @@ spec:
             env:
               TELEMETRY: "off"
               UI_PORT: &port 6246
+              TZ: Europe/Paris
             probes:
               liveness:
                 enabled: true

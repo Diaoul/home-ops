@@ -28,6 +28,7 @@ spec:
               ESPHOME_DASHBOARD_USE_PING: true
               PLATFORMIO_CORE_DIR: /config/.esphome/platformio
               UV_CACHE_DIR: /config/.esphome/uv-cache
+              TZ: Europe/Paris
             probes:
               liveness:
                 enabled: true
