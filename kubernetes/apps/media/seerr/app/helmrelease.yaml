@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: jellyseerr
+  name: seerr
 spec:
   interval: 1h
   chartRef:
@@ -11,7 +11,7 @@ spec:
     name: app-template
   values:
     controllers:
-      jellyseerr:
+      seerr:
         pod:
           securityContext:
             runAsNonRoot: true
@@ -22,8 +22,8 @@ spec:
         containers:
           app:
             image:
-              repository: fallenbagel/jellyseerr
-              tag: 2.7.3@sha256:4538137bc5af902dece165f2bf73776d9cf4eafb6dd714670724af8f3eb77764
+              repository: ghcr.io/seerr-team/seerr
+              tag: v3.4.1@sha256:f4768de5f616248d723e05891f3345a1402123775d03bf0890dbfedc0831bda1
             env:
               LOG_LEVEL: info
               TZ: Europe/Paris
@@ -61,23 +61,23 @@ spec:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
         hostnames:
-          - jellyseerr.${DOMAIN}
+          - seerr.${DOMAIN}
         parentRefs:
           - name: envoy-external
             namespace: network
     persistence:
       config:
-        existingClaim: jellyseerr
+        existingClaim: seerr
         globalMounts:
           - path: /app/config
       config-cache:
-        existingClaim: jellyseerr-cache
+        existingClaim: seerr-cache
         globalMounts:
           - path: /app/config/cache
       tmpfs:
         type: emptyDir
         advancedMounts:
-          jellyseerr:
+          seerr:
             app:
               - path: /app/config/logs
                 subPath: logs

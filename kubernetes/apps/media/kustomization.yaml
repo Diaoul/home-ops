@@ -9,7 +9,7 @@ resources:
   - ./audiobookshelf/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
-  - ./jellyseerr/ks.yaml
+  - ./seerr/ks.yaml
   - ./kavita/ks.yaml
   - ./maintainerr/ks.yaml
   - ./bazarr/ks.yaml
