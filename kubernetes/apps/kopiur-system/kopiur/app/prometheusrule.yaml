@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kopiur-repository-rules
+spec:
+  groups:
+    - name: kopiur-repository.rules
+      rules:
+        # kopia's 1000-blob warning is a performance heuristic that healthy compaction
+        # crosses between runs; a full day above it means compaction has stopped.
+        - alert: KopiurIndexBlobsNotCompacting
+          expr: |-
+            kube_kopiur_clusterrepository_index_blobs
+              and on (name) (kube_kopiur_clusterrepository_condition{type="IndexBlobHealth"} == 0)
+          for: 24h
+          annotations:
+            summary: >-
+              kopiur repository {{ $labels.name }} has held {{ $value }} index blobs above its warning threshold for a day; maintenance is not compacting them
+          labels:
+            severity: warning

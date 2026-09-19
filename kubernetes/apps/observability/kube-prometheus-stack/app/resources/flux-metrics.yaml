@@ -21,6 +21,13 @@ kube-state-metrics:
         verbs:
           - list
           - watch
+      - apiGroups:
+          - kopiur.home-operations.com
+        resources:
+          - clusterrepositories
+        verbs:
+          - list
+          - watch
   customResourceState:
     enabled: true
     config:
@@ -362,3 +369,37 @@ kube-state-metrics:
                   webhook_path:
                     - status
                     - webhookPath
+          - groupVersionKind:
+              group: kopiur.home-operations.com
+              version: v1alpha1
+              kind: ClusterRepository
+            metricNamePrefix: kube_kopiur_clusterrepository
+            labelsFromPath:
+              name:
+                - metadata
+                - name
+            metrics:
+              - name: condition
+                help: Status of each condition on a kopiur ClusterRepository.
+                each:
+                  type: Gauge
+                  gauge:
+                    path:
+                      - status
+                      - conditions
+                    labelsFromPath:
+                      type:
+                        - type
+                      reason:
+                        - reason
+                    valueFrom:
+                      - status
+              - name: index_blobs
+                help: Active kopia content-index blobs in the repository.
+                each:
+                  type: Gauge
+                  gauge:
+                    path:
+                      - status
+                      - storageStats
+                      - indexBlobCount
