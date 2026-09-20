@@ -82,6 +82,9 @@ spec:
         existingClaim: jellyfin-metadata
         globalMounts:
           - path: /config/metadata
+          # Jellyfin writes trickplay under /config/data, which kopiur backs up
+          - path: /config/data/trickplay
+            subPath: trickplay
       config-cache:
         existingClaim: jellyfin-cache
         globalMounts:
