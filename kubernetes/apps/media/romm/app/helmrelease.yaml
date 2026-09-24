@@ -28,6 +28,7 @@ spec:
               tag: 5.3.1@sha256:0d66b4ea152a237c7f24b95e87459f46d3c596a7c0b35a82f26bc971487278b3
             env:
               TZ: Europe/Paris
+              HOME: /home/romm
               ROMM_BASE_PATH: /romm
               ROMM_DB_DRIVER: postgresql
               DB_HOST: postgres18-rw.database.svc.cluster.local
@@ -135,3 +136,5 @@ spec:
             subPath: redis-data
           - path: /tmp
             subPath: tmp
+          - path: /home/romm
+            subPath: home
