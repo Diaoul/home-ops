@@ -42,6 +42,9 @@ spec:
               OIDC_REDIRECT_URI: https://romm.${DOMAIN}/api/oauth/openid
               OIDC_SERVER_APPLICATION_URL: https://auth.${DOMAIN}
               DISABLE_USERPASS_LOGIN: "false"
+              OIDC_CLAIM_ROLES: groups
+              OIDC_ROLE_ADMIN: admins
+              OIDC_ROLE_VIEWER: "*"
               ENABLE_RESCAN_ON_FILESYSTEM_CHANGE: "true"
               ENABLE_SCHEDULED_CONVERT_IMAGES_TO_WEBP: "true"
               ENABLE_SCHEDULED_RESCAN: "true"

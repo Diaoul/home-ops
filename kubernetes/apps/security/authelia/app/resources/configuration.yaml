@@ -113,6 +113,7 @@ identity_providers:
         id_token:
           - email
           - email_verified
+          - groups
           - name
           - preferred_username
     clients:
@@ -252,6 +253,7 @@ identity_providers:
         scopes:
           - openid
           - profile
+          - groups
           - email
         response_types:
           - code
