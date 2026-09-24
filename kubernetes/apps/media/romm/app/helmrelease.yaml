@@ -82,9 +82,9 @@ spec:
             resources:
               requests:
                 cpu: 25m
-                memory: 512Mi
+                memory: 1Gi
               limits:
-                memory: 2Gi
+                memory: 4Gi
     service:
       app:
         ports:
