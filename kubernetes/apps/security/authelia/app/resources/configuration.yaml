@@ -108,6 +108,13 @@ identity_providers:
         - "token"
         - "revocation"
         - "introspection"
+    claims_policies:
+      romm:
+        id_token:
+          - email
+          - email_verified
+          - name
+          - preferred_username
     clients:
       - client_name: Grafana
         client_id: grafana
@@ -237,6 +244,7 @@ identity_providers:
         client_secret: '{{ secret "/config/secrets/ROMM_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: default
+        claims_policy: romm
         require_pkce: false
         pkce_challenge_method: ""
         redirect_uris:
