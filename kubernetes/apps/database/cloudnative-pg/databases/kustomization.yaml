@@ -13,3 +13,5 @@ resources:
   - ./lldap.sops.yaml
   - ./miniflux.yaml
   - ./miniflux.sops.yaml
+  - ./romm.yaml
+  - ./romm.sops.yaml

@@ -1,0 +1,13 @@
+---
+exclude:
+  platforms:
+    - "@eaDir"
+  roms:
+    single_file:
+      extensions:
+        - dat
+        - txt
+        - xml
+      names:
+        - "._*"
+        - "@eaDir"

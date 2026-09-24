@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: romm
+spec:
+  cluster:
+    name: postgres18
+  name: romm
+  login: true
+  passwordSecret:
+    name: romm-db
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: romm
+spec:
+  cluster:
+    name: postgres18
+  name: romm
+  owner: romm

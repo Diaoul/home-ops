@@ -232,6 +232,26 @@ identity_providers:
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
+      - client_name: RomM
+        client_id: romm
+        client_secret: '{{ secret "/config/secrets/ROMM_OAUTH_CLIENT_SECRET" }}'
+        public: false
+        authorization_policy: default
+        require_pkce: false
+        pkce_challenge_method: ""
+        redirect_uris:
+          - https://romm.${DOMAIN}/api/oauth/openid
+        scopes:
+          - openid
+          - profile
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
+        access_token_signed_response_alg: none
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
       - client_name: Shelfmark
         client_id: shelfmark
         client_secret: '{{ secret "/config/secrets/SHELFMARK_OAUTH_CLIENT_SECRET" }}'

@@ -1,0 +1,134 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: romm
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      romm:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/rommapp/romm
+              tag: 5.3.1@sha256:0d66b4ea152a237c7f24b95e87459f46d3c596a7c0b35a82f26bc971487278b3
+            env:
+              TZ: Europe/Paris
+              ROMM_BASE_PATH: /romm
+              ROMM_DB_DRIVER: postgresql
+              DB_HOST: postgres18-rw.database.svc.cluster.local
+              DB_PORT: "5432"
+              DB_NAME: romm
+              DB_USER: romm
+              REDIS_HOST: romm-dragonfly.media.svc.cluster.local
+              REDIS_PORT: "6379"
+              OIDC_ENABLED: "true"
+              OIDC_PROVIDER: authelia
+              OIDC_CLIENT_ID: romm
+              OIDC_REDIRECT_URI: https://romm.${DOMAIN}/api/oauth/openid
+              OIDC_SERVER_APPLICATION_URL: https://auth.${DOMAIN}
+              DISABLE_USERPASS_LOGIN: "false"
+              ENABLE_RESCAN_ON_FILESYSTEM_CHANGE: "true"
+              ENABLE_SCHEDULED_CONVERT_IMAGES_TO_WEBP: "true"
+              ENABLE_SCHEDULED_RESCAN: "true"
+              SCHEDULED_RESCAN_CRON: 0 3 * * *
+              ENABLE_SCHEDULED_UPDATE_MAME_XML: "false"
+              ENABLE_SCHEDULED_UPDATE_SWITCH_TITLEDB: "false"
+              HASHEOUS_API_ENABLED: "true"
+              PLAYMATCH_API_ENABLED: "true"
+            envFrom:
+              - secretRef:
+                  name: romm
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/heartbeat
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 25m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: https://romm.${DOMAIN}/api/heartbeat
+        hostnames:
+          - romm.${DOMAIN}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+    persistence:
+      assets:
+        existingClaim: romm
+        globalMounts:
+          - path: /romm/assets
+      resources:
+        existingClaim: romm-resources
+        globalMounts:
+          - path: /romm/resources
+      config-file:
+        type: configMap
+        name: romm-config
+        globalMounts:
+          - path: /romm/config/config.yml
+            subPath: config.yml
+            readOnly: true
+      library:
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
+        globalMounts:
+          - path: /romm/library/roms
+            subPath: games/roms
+      nginx-conf:
+        type: emptyDir
+        globalMounts:
+          - path: /etc/nginx/conf.d
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /romm/config
+            subPath: config
+          - path: /redis-data
+            subPath: redis-data
+          - path: /tmp
+            subPath: tmp

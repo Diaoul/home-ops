@@ -16,5 +16,6 @@ resources:
   - ./prowlarr/ks.yaml
   - ./radarr/ks.yaml
   - ./recyclarr/ks.yaml
+  - ./romm/ks.yaml
   - ./shelfmark/ks.yaml
   - ./sonarr/ks.yaml
