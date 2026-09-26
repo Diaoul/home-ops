@@ -11,6 +11,8 @@ spec:
   generalSettings:
     health_check_endpoint: /v1/health
     disable_env_credential_login: true
+    # e.g. for x-opencode-session
+    forward_client_headers_to_llm_api: true
   routerSettings:
     routing_strategy: simple-shuffle
     redis_host: os.environ/REDIS_HOST
