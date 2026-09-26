@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmodel_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMModel
+metadata:
+  name: opencode-go-qwen3-8-max
+spec:
+  # Served only on Zen's Anthropic-protocol endpoint; litellm appends
+  # /v1/messages to apiBase, so it must stop at the plan root.
+  modelName: opencode-go/qwen3.8-max
+  params:
+    model: anthropic/qwen3.8-max
+    apiBase: https://opencode.ai/zen/go
+    apiKeyRef:
+      name: litellm
+      key: OPENCODE_GO_API_KEY
+    dropParams: true
+  info:
+    supportsFunctionCalling: true
+    supportsPromptCaching: true

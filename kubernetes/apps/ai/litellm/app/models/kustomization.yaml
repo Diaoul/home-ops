@@ -8,3 +8,13 @@ resources:
   - ./claude-haiku-4-5.yaml
   - ./qwen3-local-jupiter.yaml
   - ./qwen3-local-think-jupiter.yaml
+  - ./opencode-go-deepseek-v4-flash.yaml
+  - ./opencode-go-deepseek-v4-pro.yaml
+  - ./opencode-go-glm-5-2.yaml
+  - ./opencode-go-glm-5-3-flash.yaml
+  - ./opencode-go-glm-5-3.yaml
+  - ./opencode-go-kimi-k3.yaml
+  - ./opencode-go-minimax-m3.yaml
+  - ./opencode-go-qwen3-6-plus.yaml
+  - ./opencode-go-qwen3-7-max.yaml
+  - ./opencode-go-qwen3-8-max.yaml
