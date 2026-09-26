@@ -379,7 +379,7 @@ Before committing, validate your YAML:
 
 ```sh
 # Validate Kubernetes manifests against schemas
-bash scripts/kubeconform.sh
+bash scripts/kubeconform.sh kubernetes
 
 # Check for SOPS files that should be encrypted but aren't
 bash scripts/sops-mismatch.sh
