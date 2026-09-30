@@ -21,7 +21,7 @@ endpoints:
 
   - name: Quad9
     group: connectivity
-    url: icmp://149.112.112.112
+    url: icmp://9.9.9.9
     interval: 1m
     conditions:
       - "[CONNECTED] == true"
