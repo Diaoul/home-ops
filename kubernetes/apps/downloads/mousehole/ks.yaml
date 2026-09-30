@@ -3,9 +3,16 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: mam
+  name: mousehole
 spec:
-  path: ./kubernetes/apps/downloads/mam/app
+  components:
+    - ../../../../components/persistence
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: kopiur-repository
+      namespace: kopiur-system
+  path: ./kubernetes/apps/downloads/mousehole/app
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -19,4 +26,7 @@ spec:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
+    substitute:
+      APP: mousehole
+      CAPACITY: 100Mi
   targetNamespace: downloads
