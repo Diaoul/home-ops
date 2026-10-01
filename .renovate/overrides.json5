@@ -13,5 +13,11 @@
       matchPackageNames: ["ghcr.io/blakeblackshear/frigate"],
       allowedVersions: "/^[0-9]+\\.[0-9]+\\.[0-9]+$/",
     },
+    {
+      description: "Jellyfin dropped the patch component at 12.0; exclude per-build timestamped tags",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/jellyfin/jellyfin"],
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)(?:\\.(?<patch>\\d+))?$",
+    },
   ],
 }
