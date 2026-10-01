@@ -22,8 +22,7 @@ spec:
             image:
               repository: docker.io/instantlinux/nut-upsd
               tag: 2.8.5-r1@sha256:a4a68e3c56081e3187621ee2a4bf9bce2936eaf0b628c01f81881f25cee0e667
-            # The image entrypoint also starts upsmon as primary, which could raise FSD;
-            # this pod only serves the UPS to remote upsmon clients.
+            # skip the entrypoint's upsmon primary, which could raise FSD
             command:
               - "/bin/sh"
               - "-c"
