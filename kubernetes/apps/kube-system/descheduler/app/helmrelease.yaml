@@ -62,6 +62,12 @@ spec:
                 nodeAffinityType:
                   - requiredDuringSchedulingIgnoredDuringExecution
             - name: RemovePodsViolatingNodeTaints
+              args:
+                # kubelet handles pressure evictions; draining spreads the pressure
+                excludedTaints:
+                  - node.kubernetes.io/disk-pressure
+                  - node.kubernetes.io/memory-pressure
+                  - node.kubernetes.io/pid-pressure
             - name: RemovePodsViolatingTopologySpreadConstraint
           plugins:
             balance:
