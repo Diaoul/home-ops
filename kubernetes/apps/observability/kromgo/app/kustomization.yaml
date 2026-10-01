@@ -4,9 +4,4 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: kromgo
-    files:
-      - ./resources/config.yaml
-generatorOptions:
-  disableNameSuffixHash: true
+  - ./ocirepository.yaml
