@@ -68,7 +68,7 @@ spec:
           qbop:
             image:
               repository: ghcr.io/clajiness/qbop
-              tag: v3.4.0@sha256:bf0c1a3fa51cf8b4dc1a80d801a2cd289f006ff7ad4ec619604feab5317ec28e
+              tag: v3.4.1@sha256:3033681f4c154bf2a95214c13e26c10b1410abe98c76e04cffc7b16b7b5a62d4
             env:
               PROTON_GATEWAY: 10.2.0.1
               QBIT_ADDR: http://localhost:8080
