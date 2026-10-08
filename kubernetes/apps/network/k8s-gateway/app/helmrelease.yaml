@@ -20,6 +20,7 @@ spec:
     servers:
       - zones:
           - zone: .
+            use_tcp: true
         port: 53
         plugins:
           - name: k8s_gateway
