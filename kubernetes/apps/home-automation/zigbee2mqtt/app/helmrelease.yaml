@@ -28,6 +28,7 @@ spec:
               tag: 2.14.2@sha256:addbfb08fcef2e4477de1535636118241e10d13e898fbe4d9faba8a4d7396311
             env:
               ZIGBEE2MQTT_DATA: /data
+              Z2M_ONBOARD_NO_SERVER: "1"
               # adapter
               ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://slzb-06m.milkyway:6638
               ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: ember
