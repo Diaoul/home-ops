@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: zigbee2mqtt-secondary
+spec:
+  components:
+    - ../../../../components/persistence
+  path: ./kubernetes/apps/home-automation/zigbee2mqtt-secondary/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  dependsOn:
+    - name: mosquitto
+      namespace: database
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: kopiur-repository
+      namespace: kopiur-system
+  prune: true
+  wait: false
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+    substitute:
+      APP: zigbee2mqtt-secondary
+      CAPACITY: 500Mi
+  targetNamespace: home-automation
