@@ -28,6 +28,7 @@ spec:
               tag: 2.14.1@sha256:fef0de769dcd04c27b3a6d277b61046eb96284bdd4198dcb1687c3a01b3020f3
             env:
               ZIGBEE2MQTT_DATA: /data
+              Z2M_ONBOARD_NO_SERVER: "1"
               # adapter
               ZIGBEE2MQTT_CONFIG_SERIAL_PORT: tcp://tubeszb-cc2652.milkyway:6638
               ZIGBEE2MQTT_CONFIG_SERIAL_ADAPTER: zstack
