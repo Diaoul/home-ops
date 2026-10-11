@@ -431,6 +431,10 @@ Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to top
   - Correct: `kubectl logs -l app=foo -n media`
   - Wrong: `kubectl -n media logs -l app=foo`
 - Do not exec into pods to retrieve cluster info — use `kubectl get`, `kubectl logs`, or the Prometheus HTTP API
+- Reach an app's API through its HTTPRoute hostname (`https://<app>.${DOMAIN}`), not
+  `kubectl port-forward`. Only port-forward when the app has no route or its route is behind
+  Authelia. E.g. the zigbee2mqtt WebSocket API is `wss://zigbee2mqtt.${DOMAIN}/api` (and
+  `zigbee2mqtt-secondary`), on `envoy-internal` with no ext-auth
 - A PreToolUse hook enforces the `-n` placement rule and will block `kubectl -n <ns> ...` commands
 
 ---
