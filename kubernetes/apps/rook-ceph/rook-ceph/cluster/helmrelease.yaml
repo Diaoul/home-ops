@@ -31,6 +31,8 @@ spec:
           mon_data_avail_warn: "15"
         mon:
           mon_cluster_log_level: info
+          # Mon store shares the etcd system disk; per-trim compaction rewrites it every ~67s and stalls etcd fsync
+          mon_compact_on_trim: "false"
       cleanupPolicy:
         wipeDevicesFromOtherClusters: true
       csi:
