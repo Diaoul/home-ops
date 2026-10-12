@@ -25,6 +25,7 @@ spec:
               repository: esphome/esphome
               tag: 2026.9.1@sha256:4ad55931c0186d2910dc128526237acabb422a662697a4e8bb356d390a1332a1
             env:
+              CCACHE_DIR: /config/.esphome/ccache
               ESPHOME_DASHBOARD_USE_PING: true
               PLATFORMIO_CORE_DIR: /config/.esphome/platformio
               UV_CACHE_DIR: /config/.esphome/uv-cache
