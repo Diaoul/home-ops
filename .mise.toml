@@ -24,6 +24,7 @@ uv = "latest"
 "aqua:mikefarah/yq" = "latest"
 "aqua:siderolabs/talos" = "1.14.4"
 "aqua:yannh/kubeconform" = "0.8.0"
+"github:home-operations/flate" = "0.6.5"
 "github:postfinance/topf" = "0.6.1"
 # --managed-python keeps uv off Arch's /usr/bin/python, which pacman removes on
 # a minor upgrade. 3.14 is the newest controller Python ansible-core supports.
