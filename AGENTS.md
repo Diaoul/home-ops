@@ -67,20 +67,19 @@ Every app follows this exact two-file pattern. Study an existing app (e.g.,
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: <app>
-  namespace: flux-system
+  name: <app>                              # no namespace: apps/<namespace>/kustomization.yaml sets it
 spec:
   targetNamespace: <namespace>
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: <app>
-  interval: 10m
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
   path: ./kubernetes/apps/<namespace>/<app>/app
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-ops
-  wait: true
+    name: flux-system
+    namespace: flux-system
+  wait: false                              # true only if another Kustomization dependsOn this one being healthy
   # Include ONLY the components that this app actually needs:
   components:
     - ../../../../components/persistence   # if app needs PVC + kopiur backup
@@ -91,12 +90,12 @@ spec:
       namespace: rook-ceph
     - name: kopiur-repository              # if using persistence component
       namespace: kopiur-system
-    - name: cloudnative-pg                 # if using PostgreSQL
+    - name: cloudnative-pg-databases       # if using PostgreSQL
       namespace: database
   postBuild:
     substituteFrom:
-      - kind: Secret
-        name: cluster-secrets
+      - name: cluster-secrets
+        kind: Secret
     substitute:
       APP: <app>
       CAPACITY: 5Gi                        # if using persistence component
@@ -105,25 +104,16 @@ spec:
 ### `app/helmrelease.yaml` — HelmRelease (app-template)
 
 ```yaml
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: <app>
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
-    name: app-template
-    namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+    name: app-template                     # per-namespace copy from components/common
   values:
     controllers:
       <app>:
@@ -158,7 +148,13 @@ spec:
         ports:
           http:
             port: <port>
-    ingress: {}        # NOT used — use HTTPRoute instead (see Networking below)
+    route:
+      app:
+        hostnames:
+          - <app>.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal           # or envoy-external
+            namespace: network
 ```
 
 ### `app/kustomization.yaml`
@@ -168,8 +164,8 @@ spec:
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - helmrelease.yaml
-  - secret.sops.yaml   # only if secrets exist
+  - ./helmrelease.yaml
+  - ./secret.sops.yaml   # only if secrets exist
 ```
 
 ---
@@ -187,7 +183,14 @@ resources:
 
 Both gateways are in namespace `network`.
 
-### HTTPRoute example
+### Routes
+
+For an app-template app, declare the route in the HelmRelease's `route:` values (see
+the template above); the chart renders the HTTPRoute and points it at the app's Service.
+
+Write a standalone `app/httproute.yaml` only when the backend is not an app-template
+release (e.g. `flux-system/flux-instance`, `network/singularity`), and reference it in
+`app/kustomization.yaml`:
 
 ```yaml
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
@@ -199,16 +202,13 @@ spec:
   parentRefs:
     - name: envoy-internal          # or envoy-external
       namespace: network
-      sectionName: https
   hostnames:
     - <app>.${DOMAIN}
   rules:
     - backendRefs:
-        - name: <app>
+        - name: <service>
           port: <port>
 ```
-
-Add `httproute.yaml` to `app/` and reference it in `app/kustomization.yaml`.
 
 ### Authelia (external auth)
 
