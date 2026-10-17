@@ -1,5 +1,4 @@
 [env]
-_.python.venv = { path = "{{config_root}}/.venv", create = true }
 JUST_UNSTABLE = "1"
 KUBECONFIG = "{{config_root}}/kubeconfig"
 LEFTHOOK_OUTPUT = "false"
@@ -7,7 +6,6 @@ SOPS_AGE_KEY_FILE = "{{config_root}}/age.key"
 TALOSCONFIG = "{{config_root}}/talos/talosconfig"
 
 [tools]
-python = "3.15.0"
 uv = "latest"
 "aqua:evilmartians/lefthook" = "latest"
 "aqua:FiloSottile/age" = "latest"
@@ -27,3 +25,7 @@ uv = "latest"
 "aqua:siderolabs/talos" = "1.14.4"
 "aqua:yannh/kubeconform" = "0.8.0"
 "github:postfinance/topf" = "0.6.1"
+# --managed-python keeps uv off Arch's /usr/bin/python, which pacman removes on
+# a minor upgrade. 3.14 is the newest controller Python ansible-core supports.
+"pypi:ansible" = { version = "14.5.0", expose = ["ansible-core", "ansible-lint"], uvx_args = "--managed-python --python 3.14" }
+"pypi:yamllint" = { version = "1.38.0", uvx_args = "--managed-python --python 3.14" }
