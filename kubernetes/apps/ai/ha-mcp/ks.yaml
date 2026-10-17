@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: ha-mcp
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: ha-mcp
   path: ./kubernetes/apps/ai/ha-mcp/app
   sourceRef:
     kind: GitRepository

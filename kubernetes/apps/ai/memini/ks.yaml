@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: memini
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: memini
   path: ./kubernetes/apps/ai/memini/app
   sourceRef:
     kind: GitRepository

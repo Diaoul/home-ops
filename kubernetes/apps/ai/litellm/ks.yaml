@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: litellm
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: litellm
   path: ./kubernetes/apps/ai/litellm/app
   sourceRef:
     kind: GitRepository

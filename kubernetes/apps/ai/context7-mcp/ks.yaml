@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: context7-mcp
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: context7-mcp
   path: ./kubernetes/apps/ai/context7-mcp/app
   sourceRef:
     kind: GitRepository

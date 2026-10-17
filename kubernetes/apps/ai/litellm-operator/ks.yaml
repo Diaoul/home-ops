@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: litellm-operator
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: litellm-operator
   path: ./kubernetes/apps/ai/litellm-operator/app
   sourceRef:
     kind: GitRepository

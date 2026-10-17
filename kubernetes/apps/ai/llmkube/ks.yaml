@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: llmkube
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: llmkube
   path: ./kubernetes/apps/ai/llmkube/app
   sourceRef:
     kind: GitRepository
@@ -31,9 +28,6 @@ kind: Kustomization
 metadata:
   name: llmkube-models
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: llmkube-models
   path: ./kubernetes/apps/ai/llmkube/models
   sourceRef:
     kind: GitRepository

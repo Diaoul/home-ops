@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: open-webui
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: open-webui
   path: ./kubernetes/apps/ai/open-webui/app
   sourceRef:
     kind: GitRepository

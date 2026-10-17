@@ -5,9 +5,6 @@ kind: Kustomization
 metadata:
   name: searxng
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: searxng
   path: ./kubernetes/apps/default/searxng/app
   sourceRef:
     kind: GitRepository
