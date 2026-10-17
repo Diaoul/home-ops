@@ -26,18 +26,6 @@ spec:
             image:
               repository: ghcr.io/calibrain/shelfmark
               tag: v1.4.0@sha256:4ef757349c3c7a7d90ba95b1e2a46ce4dd460a4776efbcf2aa1b1c476e7d5de5
-            command:
-              - gunicorn
-            args:
-              - --access-logfile=-
-              - --error-logfile=-
-              - --worker-class=geventwebsocket.gunicorn.workers.GeventWebSocketWorker
-              - --workers=1
-              - -t
-              - "300"
-              - -b
-              - 0.0.0.0:8084
-              - shelfmark.main:app
             env:
               TZ: Europe/Paris
               AUTH_METHOD: oidc
