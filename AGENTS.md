@@ -387,9 +387,11 @@ bash scripts/sops-mismatch.sh
 # Lint YAML
 yamllint .
 
-# Full Flux validation (requires flux-local installed)
-flux-local test --path kubernetes/
+# Full Flux validation: renders every Kustomization and HelmRelease offline
+flate test all --path kubernetes
 ```
+
+All of these come from `.mise.toml`; Python CLIs are `pypi:` tools, not a project venv.
 
 For changes under `talos/`, validate against the live cluster instead — see
 `talos/README.md`:
@@ -404,7 +406,7 @@ talosctl validate -m metal -c talos/rendered/<node>.yaml
 lefthook pre-commit hook that runs `yamlfmt` on staged YAML and `just --fmt` on staged
 justfiles. There are no manifest-validation workflows in `.github/workflows/` (only
 `image-pull`, `label-sync`, `renovate`, `tag`), so a PR gets no `kubeconform`,
-`yamllint`, or `flux-local` signal. Konflate posts a status check, but it reviews Flux
+`yamllint`, or `flate` signal. Konflate posts a status check, but it reviews Flux
 changes under `kubernetes/` and says nothing about `talos/`.
 
 ---
