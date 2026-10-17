@@ -4,7 +4,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: kopiur
-  namespace: flux-system
 spec:
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
@@ -26,7 +25,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: kopiur-repository
-  namespace: flux-system
 spec:
   dependsOn:
     - name: kopiur
