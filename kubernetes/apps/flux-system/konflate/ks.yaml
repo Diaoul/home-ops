@@ -9,8 +9,8 @@ spec:
   path: ./kubernetes/apps/flux-system/konflate/app
   postBuild:
     substituteFrom:
-      - kind: Secret
-        name: cluster-secrets
+      - name: cluster-secrets
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
