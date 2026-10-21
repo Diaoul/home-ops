@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: esphome/esphome
-              tag: 2026.9.1@sha256:4ad55931c0186d2910dc128526237acabb422a662697a4e8bb356d390a1332a1
+              tag: 2026.10.0@sha256:3a32372dfbd6d3b7c65cf6f5a86b06282cc9b5799a25dcb1fcbca4843fb88b27
             env:
               CCACHE_DIR: /config/.esphome/ccache
               ESPHOME_DASHBOARD_USE_PING: true
