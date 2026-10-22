@@ -62,7 +62,7 @@
     {
       description: "Talos Group",
       groupName: "talos",
-      matchDatasources: ["custom.talos-factory", "github-releases"],
+      matchDatasources: ["custom.talos-factory", "github-releases", "github-tags"],
       matchPackageNames: ["/siderolabs\\/talos/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
