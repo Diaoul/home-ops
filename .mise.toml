@@ -25,7 +25,7 @@ yq = "latest"
 talos = "1.14.4"
 kubeconform = "0.8.0"
 "github:home-operations/flate" = "0.6.5"
-"github:postfinance/topf" = "0.6.1"
+"github:postfinance/topf" = "0.6.2"
 # --managed-python keeps uv off Arch's /usr/bin/python, which pacman removes on
 # a minor upgrade. 3.14 is the newest controller Python ansible-core supports.
 "pypi:ansible" = { version = "14.5.0", expose = ["ansible-core", "ansible-lint"], uvx_args = "--managed-python --python 3.14" }
