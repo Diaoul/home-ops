@@ -1,0 +1,66 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: victoria-metrics
+  interval: 1h
+  values:
+    fullnameOverride: victoria-metrics
+    rbac:
+      create: false
+    server:
+      retentionPeriod: 3y
+      persistentVolume:
+        existingClaim: victoria-metrics
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      resources:
+        requests:
+          cpu: 10m
+        limits:
+          memory: 512Mi
+      extraVolumes:
+        - name: secret
+          secret:
+            secretName: victoria-metrics
+      extraVolumeMounts:
+        - name: secret
+          mountPath: /etc/secret
+          readOnly: true
+      scrape:
+        enabled: true
+        config:
+          global:
+            scrape_interval: 1m
+          scrape_configs:
+            - job_name: home-assistant
+              metrics_path: /api/prometheus
+              authorization:
+                credentials_file: /etc/secret/HOME_ASSISTANT_TOKEN
+              static_configs:
+                - targets:
+                    - home-assistant.home-automation.svc.cluster.local:8123
+      route:
+        enabled: true
+        hostnames:
+          - victoria-metrics.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+      serviceMonitor:
+        enabled: true
