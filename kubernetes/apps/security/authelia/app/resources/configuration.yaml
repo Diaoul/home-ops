@@ -109,6 +109,9 @@ identity_providers:
         - "revocation"
         - "introspection"
     claims_policies:
+      bookboss:
+        id_token:
+          - email
       romm:
         id_token:
           - email
@@ -267,6 +270,7 @@ identity_providers:
         client_secret: '{{ secret "/config/secrets/BOOKBOSS_OAUTH_CLIENT_SECRET" }}'
         public: false
         authorization_policy: default
+        claims_policy: bookboss
         require_pkce: true
         pkce_challenge_method: S256
         redirect_uris:
