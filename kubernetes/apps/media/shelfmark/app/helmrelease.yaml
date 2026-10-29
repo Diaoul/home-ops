@@ -98,6 +98,8 @@ spec:
         path: /volume1/media
         globalMounts:
           - path: /media
+          - path: /books
+            subPath: downloads/books
       tmpfs:
         type: emptyDir
         sizeLimit: 1Gi
