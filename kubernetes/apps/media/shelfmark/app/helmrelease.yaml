@@ -35,6 +35,9 @@ spec:
               OIDC_AUTO_PROVISION: "true"
               OIDC_AUTO_REDIRECT: "true"
               HIDE_LOCAL_AUTH: "true"
+              PROWLARR_TORRENT_CLIENT: qbittorrent
+              QBITTORRENT_URL: http://qbittorrent.downloads.svc.cluster.local:8080
+              QBITTORRENT_CATEGORY: books
             envFrom:
               - secretRef:
                   name: shelfmark
