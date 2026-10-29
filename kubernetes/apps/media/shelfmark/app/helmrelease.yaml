@@ -99,7 +99,7 @@ spec:
         globalMounts:
           - path: /media
           - path: /books
-            subPath: downloads/books
+            subPath: bookboss/bookdrop
       tmpfs:
         type: emptyDir
         sizeLimit: 1Gi
