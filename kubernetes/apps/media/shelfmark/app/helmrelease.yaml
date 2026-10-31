@@ -38,6 +38,7 @@ spec:
               INGEST_DIR: /books # book destination
               DESTINATION_AUDIOBOOK: /media/audiobooks
               FILE_ORGANIZATION_AUDIOBOOK: organize
+              TEMPLATE_AUDIOBOOK_ORGANIZE: "{Author}/{Title}/{Title}"
               PROWLARR_TORRENT_CLIENT: qbittorrent
               QBITTORRENT_URL: http://qbittorrent.downloads.svc.cluster.local:8080
               QBITTORRENT_CATEGORY: books
