@@ -35,9 +35,13 @@ spec:
               OIDC_AUTO_PROVISION: "true"
               OIDC_AUTO_REDIRECT: "true"
               HIDE_LOCAL_AUTH: "true"
+              INGEST_DIR: /books # book destination
+              DESTINATION_AUDIOBOOK: /media/audiobooks
+              FILE_ORGANIZATION_AUDIOBOOK: organize
               PROWLARR_TORRENT_CLIENT: qbittorrent
               QBITTORRENT_URL: http://qbittorrent.downloads.svc.cluster.local:8080
               QBITTORRENT_CATEGORY: books
+              QBITTORRENT_CATEGORY_AUDIOBOOK: audiobook
             envFrom:
               - secretRef:
                   name: shelfmark
