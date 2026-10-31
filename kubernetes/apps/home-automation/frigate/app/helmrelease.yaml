@@ -46,7 +46,7 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 4Gi
-                squat.ai/coral: 1
+                devic.es/coral: 1
               claims:
                 - name: gpu
     service:
