@@ -150,6 +150,12 @@ spec:
     xForwardedFor:
       trustedCIDRs:
         - 10.42.0.0/16
+  headers:
+    # Cloudflare keeps the client's own X-Forwarded-For entries at the left, and Authelia trusts the leftmost one
+    earlyRequestHeaders:
+      set:
+        - name: X-Forwarded-For
+          value: "%REQ(CF-Connecting-IP)%"
   http2:
     onInvalidMessage: TerminateStream
   http3: {}
