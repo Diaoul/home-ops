@@ -61,6 +61,8 @@ spec:
           - name: envoy-external
             namespace: network
       admin:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
         hostnames:
           - vaultwarden.${DOMAIN}
         parentRefs:
