@@ -16,9 +16,9 @@ spec:
   dependsOn:
     - name: mosquitto
       namespace: database
-    - name: intel-gpu-resource-driver
+    - name: generic-device-plugin
       namespace: kube-system
-    - name: node-feature-discovery-rules
+    - name: intel-gpu-resource-driver
       namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph

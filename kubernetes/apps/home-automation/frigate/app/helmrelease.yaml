@@ -15,8 +15,6 @@ spec:
         annotations:
           configmap.reloader.stakater.com/reload: frigate-config
         pod:
-          nodeSelector:
-            feature.node.kubernetes.io/custom-google-coral: "true"
           resourceClaims:
             - name: gpu
               resourceClaimTemplateName: frigate
@@ -42,14 +40,13 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
-            securityContext:
-              privileged: true
             resources:
               requests:
                 cpu: 500m
                 memory: 1Gi
               limits:
                 memory: 4Gi
+                squat.ai/coral: 1
               claims:
                 - name: gpu
     service:
@@ -81,10 +78,6 @@ spec:
         sizeLimit: 4Gi
         globalMounts:
           - path: /dev/shm
-      pci:
-        type: hostPath
-        hostPath: /dev/apex_0
-        hostPathType: CharDevice
       media:
         type: nfs
         server: singularity.milkyway
