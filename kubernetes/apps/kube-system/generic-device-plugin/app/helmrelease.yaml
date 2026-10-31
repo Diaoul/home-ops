@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: generic-device-plugin
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      generic-device-plugin:
+        type: daemonset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          nodeSelector:
+            feature.node.kubernetes.io/custom-google-coral: "true"
+          priorityClassName: system-node-critical
+          securityContext:
+            seccompProfile: {type: RuntimeDefault}
+        containers:
+          app:
+            image:
+              repository: ghcr.io/squat/generic-device-plugin
+              tag: 0.2.0@sha256:66c8d5c270eb2b721f1064c549b9b7898152a6d2f0163380a5d37dc7636c20ff
+            args:
+              - --config=/config/config.yaml
+            env:
+              TZ: Europe/Paris
+            # root: kubelet's device-plugins directory, where the plugin creates its socket, is root-only
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi
+    persistence:
+      config:
+        type: configMap
+        name: generic-device-plugin-config
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      dev:
+        type: hostPath
+        hostPath: /dev
+        globalMounts:
+          - readOnly: true
+      device-plugins:
+        type: hostPath
+        hostPath: /var/lib/kubelet/device-plugins
