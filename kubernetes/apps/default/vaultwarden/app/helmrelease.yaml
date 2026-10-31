@@ -60,6 +60,20 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
+      admin:
+        hostnames:
+          - vaultwarden.${DOMAIN}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+        rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /admin
+            backendRefs:
+              - name: vaultwarden
+                port: 80
     persistence:
       data:
         existingClaim: vaultwarden
