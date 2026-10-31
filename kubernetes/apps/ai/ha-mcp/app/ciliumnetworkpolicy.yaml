@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Full control of Home Assistant with no auth of its own: only LiteLLM's MCP gateway may call it.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: ha-mcp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: ha-mcp
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "8086"
+              protocol: TCP
