@@ -1,28 +1,28 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
-# authelia-dragonfly holds every live Authelia session, keyed by the raw cookie
-# value: reading it means logging in as anyone. The operator hardcodes
-# --admin_nopass on 9999, which replication, the operator and metrics use, so a
-# password on 6379 alone would leave the store open to every pod.
+# Access to these stores is login-as-anyone (Authelia keys sessions by the raw
+# cookie) or code execution (RomM's RQ worker unpickles queued jobs). The
+# operator hardcodes --admin_nopass on 9999, which replication, the operator and
+# metrics use, so a password on 6379 alone would leave each store open to every pod.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: authelia-dragonfly
+  name: ${APP}-dragonfly
 spec:
   endpointSelector:
     matchLabels:
-      app: authelia-dragonfly
+      app: ${APP}-dragonfly
   ingress:
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: authelia
+            app.kubernetes.io/name: ${APP}
       toPorts:
         - ports:
             - port: "6379"
               protocol: TCP
     - fromEndpoints:
         - matchLabels:
-            app: authelia-dragonfly
+            app: ${APP}-dragonfly
     - fromEndpoints:
         - matchLabels:
             k8s:io.kubernetes.pod.namespace: database
