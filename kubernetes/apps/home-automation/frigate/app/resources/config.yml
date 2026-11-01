@@ -10,6 +10,7 @@ detectors:
     type: edgetpu
     device: pci
 ffmpeg:
+  hwaccel_args: preset-intel-qsv-h264
   output_args:
     record: preset-record-ubiquiti
 birdseye:
@@ -69,7 +70,6 @@ cameras:
             - record
   living_room:
     ffmpeg:
-      hwaccel_args: []
       inputs:
         - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/living_room_lq
           roles:
@@ -79,7 +79,6 @@ cameras:
             - record
   office:
     ffmpeg:
-      hwaccel_args: preset-intel-qsv-h264
       inputs:
         - path: rtsp://go2rtc.home-automation.svc.cluster.local:554/office_lq
           roles:
