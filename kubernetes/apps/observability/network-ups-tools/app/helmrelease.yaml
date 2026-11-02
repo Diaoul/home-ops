@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: docker.io/instantlinux/nut-upsd
-              tag: 2.8.5-r1@sha256:28eae8f3c097b409749ed4a50da57668cf8785a9bccf0db83e521bf343c0e97e
+              tag: 2.8.5-r1@sha256:a186d74a586ec4e10494270f6a52e26bb5e50663d2f8570865f5bd38273e096e
             # skip the entrypoint's upsmon primary, which could raise FSD
             command:
               - "/bin/sh"
