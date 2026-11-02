@@ -22,8 +22,8 @@ filters:
     remove:
       - IsUnregistered()
       - IsPublic && (Ratio > 3.0 || SeedingDays >= 7.0)
-      - ( HasAnyTag( "site:ANT", "site:AR", "site:FL", "site:FNP", "site:IPT", "site:ME", "site:MTV", "site:NBL", "site:TD", "site:UHD" ) && Ratio > 3.0 )
-      - ( HasAnyTag( "site:ANT", "site:AR", "site:BLU", "site:FL", "site:FNP", "site:HDT", "site:IPT", "site:LST", "site:ME", "site:MTV", "site:NBL", "site:OE", "site:PHD", "site:RFX", "site:SP", "site:ST", "site:TD", "site:TL", "site:UHD", "site:ULCX" ) && SeedingDays > 24 )
+      - ( HasAnyTag( "site:ANT", "site:AR", "site:FL", "site:FNP", "site:IPT", "site:ME", "site:NBL", "site:TD", "site:UHD" ) && Ratio > 3.0 )
+      - ( HasAnyTag( "site:ANT", "site:AR", "site:BLU", "site:FL", "site:FNP", "site:HDT", "site:IPT", "site:LST", "site:ME", "site:NBL", "site:OE", "site:PHD", "site:RFX", "site:SP", "site:ST", "site:TD", "site:TL", "site:UHD", "site:ULCX" ) && SeedingDays > 24 )
       - HasAnyTag("not-linked") && SeedingDays > 24
 
     pause:
@@ -55,7 +55,6 @@ filters:
       - {name: 'site:LST', update: ['TrackerName == "lst.gg"']}
       - {name: 'site:MAM', update: ['TrackerName == "myanonamouse.net"']}
       - {name: 'site:ME', update: ['TrackerName == "milkie.cc"']}
-      - {name: 'site:MTV', update: ['TrackerName == "morethantv.me"']}
       - {name: 'site:NBL', update: ['TrackerName == "nebulance.io"']}
       - {name: 'site:OE', update: ['TrackerName == "onlyencodes.cc"']}
       - {name: 'site:PHD', update: ['TrackerName == "privatehd.to"']}
