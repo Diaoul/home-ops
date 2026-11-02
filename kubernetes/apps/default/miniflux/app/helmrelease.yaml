@@ -23,7 +23,7 @@ spec:
           app:
             image:
               repository: ghcr.io/miniflux/miniflux
-              tag: 2.3.4-distroless@sha256:4a457e73b6c298bd44f42b38d744afb8a08d3b94318f0c636162d0b35ce0f217
+              tag: 2.3.5-distroless@sha256:c826edc9c2284a8181e297d22a5ade1482bd9a8a4beabb2b6356bd22ce731310
             env:
               BASE_URL: https://miniflux.${DOMAIN}
               CREATE_ADMIN: "1"
