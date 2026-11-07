@@ -19,6 +19,10 @@ log lvl msg *args:
 template file *args:
     minijinja-cli "{{ file }}" {{ args }} | op inject
 
+[doc('Point-in-time cluster health; exits 1 on any FAIL')]
+health:
+    bash "{{ justfile_dir() }}/scripts/health.sh"
+
 hold pr:
     gh pr edit "{{ pr }}" --add-label hold
 
