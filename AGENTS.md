@@ -15,7 +15,7 @@ Read this file before making any changes.
 | CNI | Cilium (BGP, native routing, kube-proxy replacement) |
 | Ingress | Envoy Gateway (Kubernetes Gateway API) |
 | Storage | Rook-Ceph (block) + miroir (node-local / DRBD-replicated) |
-| Backup | kopiur (Kopia) → NFS (singularity.milkyway) |
+| Backup | kopiur (Kopia) → Garage S3 on the NAS (singularity.milkyway) |
 | Database | CloudNative-PG (PostgreSQL 18, HA) |
 | Secrets | SOPS + Age + PGP |
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
@@ -261,7 +261,7 @@ substitute:
 The component creates:
 - A `PersistentVolumeClaim` named `<app>` using `ceph-block` StorageClass, populated
   from a `Restore`
-- A `SnapshotPolicy` + `SnapshotSchedule` (daily snapshot to NFS via kopiur/Kopia)
+- A `SnapshotPolicy` + `SnapshotSchedule` (snapshot every 3 hours to the NAS via kopiur/Kopia)
 - A `Restore` (populates the PVC from the latest snapshot)
 
 Note the PVC's `dataSourceRef` is immutable: changing it requires deleting and
