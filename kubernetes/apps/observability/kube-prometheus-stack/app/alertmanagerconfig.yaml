@@ -14,7 +14,10 @@ spec:
           - name: alertname
             value: InfoInhibitor
             matchType: =
-      - receiver: blackhole
+      - receiver: healthchecks
+        groupWait: 0s
+        groupInterval: 1m
+        repeatInterval: 5m
         matchers:
           - name: alertname
             value: Watchdog
@@ -46,6 +49,12 @@ spec:
 
   receivers:
     - name: blackhole
+    - name: healthchecks
+      webhookConfigs:
+        - urlSecret:
+            name: alertmanager
+            key: HEALTHCHECKS_PING_URL
+          sendResolved: false
     - name: pushover
       pushoverConfigs:
         - html: true
