@@ -3,10 +3,13 @@
 apiVersion: barmancloud.cnpg.io/v1
 kind: ObjectStore
 metadata:
-  name: minio
+  name: nas
 spec:
   configuration:
-    endpointURL: http://singularity.milkyway:9000
+    endpointURL: https://singularity.milkyway:3901
+    endpointCA:
+      name: cloudnative-pg
+      key: ca.crt
     destinationPath: s3://cloudnative-pg/
     s3Credentials:
       accessKeyId:
@@ -15,6 +18,9 @@ spec:
       secretAccessKey:
         name: cloudnative-pg
         key: aws-secret-access-key
+      region:
+        name: cloudnative-pg
+        key: aws-region
     data:
       compression: bzip2
     wal:
