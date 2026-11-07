@@ -14,8 +14,8 @@ spec:
           name: kopiur-nas
           namespace: kopiur-system
       bucket: kopiur
-      endpoint: singularity.milkyway:9001
-      region: us-east-1
+      endpoint: singularity.milkyway:3901
+      region: garage
       tls:
         caBundleRef:
           configMapName: milkyway-ca
