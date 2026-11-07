@@ -5,6 +5,7 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 mod bootstrap
 mod kubernetes
+mod nas
 mod talos
 
 [private]
