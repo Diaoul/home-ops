@@ -9,3 +9,10 @@ spec:
   chartRef:
     kind: OCIRepository
     name: kaniop
+  values:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      prometheusRules:
+        enabled: true
