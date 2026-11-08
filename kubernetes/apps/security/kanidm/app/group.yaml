@@ -10,4 +10,4 @@ spec:
   members:
     - antoine
   accountPolicy:
-    credentialTypeMinimum: mfa
+    credentialTypeMinimum: passkey
