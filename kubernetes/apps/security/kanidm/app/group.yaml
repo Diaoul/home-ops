@@ -7,7 +7,23 @@ metadata:
 spec:
   kanidmRef:
     name: kanidm
-  members:
-    - antoine
   accountPolicy:
     credentialTypeMinimum: passkey
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmgroup_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmGroup
+metadata:
+  name: admins
+spec:
+  kanidmRef:
+    name: kanidm
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmgroup_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmGroup
+metadata:
+  name: family
+spec:
+  kanidmRef:
+    name: kanidm
