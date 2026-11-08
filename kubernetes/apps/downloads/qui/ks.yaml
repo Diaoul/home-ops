@@ -6,6 +6,7 @@ metadata:
   name: qui
 spec:
   components:
+    - ../../../../components/zeroscaler
     - ../../../../components/persistence
   dependsOn:
     - name: rook-ceph-cluster

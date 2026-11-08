@@ -75,3 +75,9 @@ spec:
     persistence:
       config:
         existingClaim: qui
+      media:
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
+        globalMounts:
+          - path: /media
