@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: kubectl-mcp
+spec:
+  alias: kubectl
+  proxyRef: litellm
+  transport: http
+  workload:
+    image: docker.io/rohitghumare64/kubectl-mcp-server:2.0.0@sha256:f1f57aa5d4952f3c49e4d9bb8071a143d0812bdc8253922d51eeca8a2615ea29
+    args:
+      - --transport
+      - streamable-http
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8000"
+      - --read-only
+    port: 8000
+    path: /mcp
+    serviceAccountName: cluster-mcp
+    automountServiceAccountToken: true
+    env:
+      - name: MCP_ALLOWED_HOSTS
+        value: kubectl-mcp.ai.svc.cluster.local:8000
+      - name: MCP_ALLOW_UNAUTHENTICATED
+        value: "true" # only LiteLLM gets past the CiliumNetworkPolicy
+      - name: MCP_K8S_PROVIDER
+        value: in-cluster
+      - name: PYTHONUNBUFFERED
+        value: "1"
+      - name: TZ
+        value: Europe/Paris
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 10001
+      runAsGroup: 10001
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp

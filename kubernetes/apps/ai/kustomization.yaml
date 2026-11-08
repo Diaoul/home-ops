@@ -9,5 +9,6 @@ resources:
   - ./litellm-operator/ks.yaml
   - ./litellm/ks.yaml
   - ./ha-mcp/ks.yaml
+  - ./cluster-mcp/ks.yaml
   - ./context7-mcp/ks.yaml
   - ./hermes/ks.yaml
