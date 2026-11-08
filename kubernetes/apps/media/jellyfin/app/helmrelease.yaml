@@ -12,6 +12,8 @@ spec:
   values:
     controllers:
       jellyfin:
+        annotations:
+          reloader.stakater.com/auto: "true"
         pod:
           resourceClaims:
             - name: gpu
@@ -32,6 +34,11 @@ spec:
               tag: 12.4@sha256:fea863d0cd9ec445985d9c75fc6ed64e38a1d2766cf0c250a33d553f4fc1b771
             env:
               JELLYFIN_PublishedServerUrl: https://jellyfin.${DOMAIN}
+              SSO_KANIDM_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: jellyfin-kanidm-oauth2-credentials
+                    key: CLIENT_SECRET
               TZ: Europe/Paris
             securityContext:
               allowPrivilegeEscalation: false
