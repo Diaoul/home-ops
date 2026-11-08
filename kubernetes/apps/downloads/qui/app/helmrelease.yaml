@@ -28,14 +28,16 @@ spec:
               tag: v1.35.0@sha256:a5b2f5faf6388cce257137c88e4b189458fd799cf9119ed476c980e5a69341b2
             env:
               QUI__OIDC_ENABLED: true
-              QUI__OIDC_ISSUER: https://auth.${DOMAIN}
-              QUI__OIDC_CLIENT_ID: qui
+              QUI__OIDC_ISSUER: https://idm.${DOMAIN}/oauth2/openid/qui
+              QUI__OIDC_ALLOWED_EMAIL: ${EMAIL_ADDRESS_1}
               QUI__OIDC_REDIRECT_URL: https://qui.${DOMAIN}/api/auth/oidc/callback
               QUI__OIDC_DISABLE_BUILT_IN_LOGIN: true
               TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: qui
+              - secretRef:
+                  name: qui-kanidm-oauth2-credentials
             probes:
               liveness: &probes
                 enabled: true

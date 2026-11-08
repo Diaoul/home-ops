@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: qui
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: qui
+  origin: https://qui.${DOMAIN}/
+  redirectUrl:
+    - https://qui.${DOMAIN}/api/auth/oidc/callback
+  scopeMap:
+    - group: admins
+      scopes:
+        - openid
+        - profile
+        - email
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true
+  secretKeyAliases:
+    clientId:
+      - QUI__OIDC_CLIENT_ID
+    clientSecret:
+      - QUI__OIDC_CLIENT_SECRET
