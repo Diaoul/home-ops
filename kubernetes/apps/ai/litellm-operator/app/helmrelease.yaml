@@ -15,8 +15,6 @@ spec:
         enabled: true
     webhook:
       enabled: true
-    llmkube:
-      autoRegister: true
     resources:
       requests:
         cpu: 10m
