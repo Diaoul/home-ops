@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: romm
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: RomM
+  origin: https://romm.${DOMAIN}/
+  redirectUrl:
+    - https://romm.${DOMAIN}/api/oauth/openid
+  scopeMap:
+    - group: family
+      scopes:
+        - openid
+        - profile
+        - email
+        - groups
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true
+  secretKeyAliases:
+    clientId:
+      - OIDC_CLIENT_ID
+    clientSecret:
+      - OIDC_CLIENT_SECRET

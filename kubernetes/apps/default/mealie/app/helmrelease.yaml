@@ -35,8 +35,8 @@ spec:
               SMTP_FROM_EMAIL: admin@${DOMAIN}
               OIDC_AUTH_ENABLED: true
               OIDC_SIGNUP_ENABLED: true
-              OIDC_CONFIGURATION_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
-              OIDC_CLIENT_ID: mealie
+              OIDC_CONFIGURATION_URL: https://idm.${DOMAIN}/oauth2/openid/mealie/.well-known/openid-configuration
+              OIDC_SCOPES_OVERRIDE: openid email profile groups_name
               OIDC_USER_CLAIM: preferred_username
               OIDC_AUTO_REDIRECT: false
               OIDC_GROUPS_CLAIM: groups
@@ -46,6 +46,8 @@ spec:
             envFrom:
               - secretRef:
                   name: mealie
+              - secretRef:
+                  name: mealie-kanidm-oauth2-credentials
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
