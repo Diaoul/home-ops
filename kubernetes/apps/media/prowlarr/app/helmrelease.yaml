@@ -71,6 +71,14 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
+      sso:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
+        hostnames:
+          - prowlarr-sso.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
     persistence:
       config:
         existingClaim: prowlarr

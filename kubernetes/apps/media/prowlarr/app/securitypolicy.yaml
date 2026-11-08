@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prowlarr-sso
+spec:
+  extAuth:
+    failOpen: false
+    headersToExtAuth:
+      - X-Forwarded-For
+      - X-Forwarded-Proto
+      - accept
+      - authorization
+      - cookie
+    # No path: oauth2-proxy must see the request's own path to serve /oauth2/* and skip /api/.
+    http:
+      backendRefs:
+        - group: ""
+          kind: Service
+          name: oauth2-proxy
+          namespace: security
+          port: 4180
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: prowlarr-sso
