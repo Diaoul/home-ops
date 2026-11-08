@@ -7,6 +7,10 @@ metadata:
 spec:
   image: ghcr.io/berriai/litellm:v1.108.3@sha256:f14d0a035d84d1a8bc98538faf5999e456641fd4cfa191822fd4be1934c1f4f6
   replicas: 1
+  apiAccess:
+    masterKeyRef:
+      name: litellm
+      key: LITELLM_MASTER_KEY
   generalSettings:
     health_check_endpoint: /v1/health
     disable_env_credential_login: true
