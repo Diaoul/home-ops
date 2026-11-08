@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: shelfmark
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: Shelfmark
+  origin: https://shelfmark.${DOMAIN}/
+  redirectUrl:
+    - https://shelfmark.${DOMAIN}/api/auth/oidc/callback
+  scopeMap:
+    - group: family
+      scopes:
+        - openid
+        - profile
+        - email
+        - groups
+        - groups_name
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true
+  secretKeyAliases:
+    clientId:
+      - OIDC_CLIENT_ID
+    clientSecret:
+      - OIDC_CLIENT_SECRET

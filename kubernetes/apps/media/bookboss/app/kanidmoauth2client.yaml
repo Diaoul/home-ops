@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: bookboss
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: BookBoss
+  origin: https://bookboss.${DOMAIN}/
+  redirectUrl:
+    - https://bookboss.${DOMAIN}/auth/oidc/callback
+  scopeMap:
+    - group: family
+      scopes:
+        - openid
+        - email
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true
+  secretKeyAliases:
+    clientId:
+      - BOOKBOSS__OIDC__CLIENT_ID
+    clientSecret:
+      - BOOKBOSS__OIDC__CLIENT_SECRET

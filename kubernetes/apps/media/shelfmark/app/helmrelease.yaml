@@ -29,8 +29,8 @@ spec:
             env:
               TZ: Europe/Paris
               AUTH_METHOD: oidc
-              OIDC_DISCOVERY_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
-              OIDC_CLIENT_ID: shelfmark
+              OIDC_DISCOVERY_URL: https://idm.${DOMAIN}/oauth2/openid/shelfmark/.well-known/openid-configuration
+              OIDC_SCOPES: openid,email,profile,groups_name
               OIDC_ADMIN_GROUP: admins
               OIDC_AUTO_PROVISION: "true"
               OIDC_AUTO_REDIRECT: "true"
@@ -46,6 +46,8 @@ spec:
             envFrom:
               - secretRef:
                   name: shelfmark
+              - secretRef:
+                  name: shelfmark-kanidm-oauth2-credentials
             probes:
               liveness:
                 enabled: true

@@ -33,12 +33,13 @@ spec:
               BOOKBOSS__FRONTEND__LISTEN_PORT: &port 8080
               BOOKBOSS__LIBRARY__LIBRARY_PATH: /library/books
               BOOKBOSS__IMPORT__BOOKDROP_PATH: /library/bookdrop
-              BOOKBOSS__OIDC__DISCOVERY_URL: https://auth.${DOMAIN}/.well-known/openid-configuration
-              BOOKBOSS__OIDC__CLIENT_ID: bookboss
-              BOOKBOSS__OIDC__BUTTON_LABEL: Sign in with Authelia
+              BOOKBOSS__OIDC__DISCOVERY_URL: https://idm.${DOMAIN}/oauth2/openid/bookboss/.well-known/openid-configuration
+              BOOKBOSS__OIDC__BUTTON_LABEL: Sign in with Kanidm
             envFrom:
               - secretRef:
                   name: bookboss
+              - secretRef:
+                  name: bookboss-kanidm-oauth2-credentials
             probes:
               liveness:
                 enabled: true
