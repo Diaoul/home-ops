@@ -16,7 +16,7 @@ spec:
     - https://sabnzbd.${DOMAIN}/oauth2/callback
     - https://sonarr.${DOMAIN}/oauth2/callback
   scopeMap:
-    - group: users
+    - group: family
       scopes:
         - openid
         - profile
