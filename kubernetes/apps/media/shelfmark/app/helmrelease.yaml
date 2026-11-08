@@ -41,7 +41,7 @@ spec:
               TEMPLATE_AUDIOBOOK_ORGANIZE: "{Author}/{Title}/{Title}"
               PROWLARR_TORRENT_CLIENT: qbittorrent
               QBITTORRENT_URL: http://qbittorrent.downloads.svc.cluster.local:8080
-              QBITTORRENT_CATEGORY: books
+              QBITTORRENT_CATEGORY: book
               QBITTORRENT_CATEGORY_AUDIOBOOK: audiobook
             envFrom:
               - secretRef:
