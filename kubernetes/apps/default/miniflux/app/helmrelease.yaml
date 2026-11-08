@@ -33,15 +33,17 @@ spec:
               POLLING_SCHEDULER: entry_frequency
               POLLING_FREQUENCY: "15"
               RUN_MIGRATIONS: "1"
-              OAUTH2_CLIENT_ID: miniflux
               OAUTH2_USER_CREATION: "1"
-              OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://auth.${DOMAIN}
+              OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://idm.${DOMAIN}/oauth2/openid/miniflux
+              OAUTH2_OIDC_PROVIDER_NAME: Kanidm
               OAUTH2_PROVIDER: oidc
               OAUTH2_REDIRECT_URL: https://miniflux.${DOMAIN}/oauth2/oidc/callback
               TZ: Europe/Paris
             envFrom:
               - secretRef:
                   name: miniflux
+              - secretRef:
+                  name: miniflux-kanidm-oauth2-credentials
             probes:
               liveness: &probes
                 enabled: true
