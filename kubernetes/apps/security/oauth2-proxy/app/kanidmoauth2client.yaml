@@ -8,10 +8,14 @@ spec:
   kanidmRef:
     name: kanidm
   displayname: oauth2-proxy
-  origin: https://prowlarr-sso.${DOMAIN}/
-  # One callback per protected host: oauth2-proxy completes the login on the host the user asked for.
+  origin: https://prowlarr.${DOMAIN}/
+  # One callback per ext-auth host: oauth2-proxy completes the login on the host the user asked for.
   redirectUrl:
-    - https://prowlarr-sso.${DOMAIN}/oauth2/callback
+    - https://bazarr.${DOMAIN}/oauth2/callback
+    - https://prowlarr.${DOMAIN}/oauth2/callback
+    - https://radarr.${DOMAIN}/oauth2/callback
+    - https://sabnzbd.${DOMAIN}/oauth2/callback
+    - https://sonarr.${DOMAIN}/oauth2/callback
   scopeMap:
     - group: users
       scopes:
