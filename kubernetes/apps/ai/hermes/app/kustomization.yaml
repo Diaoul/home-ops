@@ -4,6 +4,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./ciliumnetworkpolicy.yaml
+  - ./clusterrolebinding.yaml
   - ./helmrelease.yaml
   - ./kanidmoauth2client.yaml
   - ./litellmteam.yaml

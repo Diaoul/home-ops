@@ -15,7 +15,10 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         strategy: Recreate
+        serviceAccount:
+          identifier: hermes
         pod:
+          automountServiceAccountToken: true
           securityContext:
             runAsNonRoot: true
             runAsUser: 10000
@@ -70,6 +73,8 @@ spec:
               HERMES_HOME: /opt/data
               HERMES_WRITE_SAFE_ROOT: /opt/data
               HOME: /opt/data
+              # Image default plus the kubectl and flux mounts below.
+              PATH: /opt/hermes/bin:/opt/hermes/.venv/bin:/opt/data/.local/bin:/opt/kubectl:/opt/flux:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
               LITELLM_API_KEY:
                 valueFrom:
                   secretKeyRef:
@@ -152,6 +157,8 @@ spec:
           - backendRefs:
               - identifier: app
                 port: dashboard
+    serviceAccount:
+      hermes: {}
     persistence:
       data:
         existingClaim: hermes
@@ -173,6 +180,24 @@ spec:
           hermes:
             app:
               - path: /mnt/secrets/litellm
+                readOnly: true
+      kubectl:
+        type: image
+        image: registry.k8s.io/kubectl:v1.37.2@sha256:fe049faa65ae483ac200009a949a68fa4c9985daea12c9cb1195c9c7965301fc
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/kubectl
+                subPath: bin
+                readOnly: true
+      flux:
+        type: image
+        image: ghcr.io/fluxcd/flux-cli:v2.10.0@sha256:1a5178b1770052d6e88ab1c7c8434c5ac9bca8a8ab984dcaf6b9df31814ce9f2
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/flux
+                subPath: usr/local/bin
                 readOnly: true
       run:
         type: emptyDir
