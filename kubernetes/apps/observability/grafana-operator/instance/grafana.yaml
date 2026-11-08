@@ -16,21 +16,19 @@ spec:
     auth:
       oauth_auto_login: "false"
       oauth_allow_insecure_email_lookup: "true"
-      signout_redirect_url: https://auth.${DOMAIN}/logout
     auth.anonymous:
       enabled: "false"
     auth.basic:
       enabled: "true"
     auth.generic_oauth:
       enabled: "true"
-      name: Authelia
+      name: Kanidm
       icon: signin
-      client_id: grafana
-      scopes: openid profile email groups
+      scopes: openid profile email groups_name
       empty_scopes: "false"
-      auth_url: https://auth.${DOMAIN}/api/oidc/authorization
-      token_url: https://auth.${DOMAIN}/api/oidc/token
-      api_url: https://auth.${DOMAIN}/api/oidc/userinfo
+      auth_url: https://idm.${DOMAIN}/ui/oauth2
+      token_url: https://idm.${DOMAIN}/oauth2/token
+      api_url: https://idm.${DOMAIN}/oauth2/openid/grafana/userinfo
       login_attribute_path: preferred_username
       groups_attribute_path: groups
       name_attribute_path: name
@@ -38,7 +36,7 @@ spec:
     auth.generic_oauth.group_mapping:
       org_id: "1"
       role_attribute_path: |
-        contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'people') && 'Viewer'
+        contains(groups[*], 'admins') && 'Admin' || contains(groups[*], 'family') && 'Viewer'
     log:
       mode: console
     metrics:
@@ -66,11 +64,16 @@ spec:
                     secretKeyRef:
                       name: grafana
                       key: GF_SECURITY_ADMIN_PASSWORD
+                - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-kanidm-oauth2-credentials
+                      key: CLIENT_ID
                 - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
                   valueFrom:
                     secretKeyRef:
-                      name: grafana
-                      key: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+                      name: grafana-kanidm-oauth2-credentials
+                      key: CLIENT_SECRET
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true

@@ -58,18 +58,23 @@ spec:
     - name: PROXY_ADMIN_ID
       value: antoine
     - name: GENERIC_CLIENT_ID
-      value: litellm
+      valueFrom:
+        secretKeyRef:
+          name: litellm-kanidm-oauth2-credentials
+          key: CLIENT_ID
     - name: GENERIC_CLIENT_SECRET
       valueFrom:
         secretKeyRef:
-          name: litellm
-          key: LITELLM_OAUTH_CLIENT_SECRET
+          name: litellm-kanidm-oauth2-credentials
+          key: CLIENT_SECRET
+    - name: GENERIC_CLIENT_USE_PKCE
+      value: "true"
     - name: GENERIC_AUTHORIZATION_ENDPOINT
-      value: https://auth.${DOMAIN}/api/oidc/authorization
+      value: https://idm.${DOMAIN}/ui/oauth2
     - name: GENERIC_TOKEN_ENDPOINT
-      value: https://auth.${DOMAIN}/api/oidc/token
+      value: https://idm.${DOMAIN}/oauth2/token
     - name: GENERIC_USERINFO_ENDPOINT
-      value: https://auth.${DOMAIN}/api/oidc/userinfo
+      value: https://idm.${DOMAIN}/oauth2/openid/litellm/userinfo
     - name: GENERIC_SCOPE
       value: openid email profile
   resources:

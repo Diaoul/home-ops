@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: litellm
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: LiteLLM
+  origin: https://litellm.${DOMAIN}/
+  redirectUrl:
+    - https://litellm.${DOMAIN}/sso/callback
+  scopeMap:
+    - group: admins
+      scopes:
+        - openid
+        - profile
+        - email
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true

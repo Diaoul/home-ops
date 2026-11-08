@@ -5,5 +5,6 @@ kind: Kustomization
 resources:
   - ./grafanadatasource.yaml
   - ./grafana.yaml
+  - ./kanidmoauth2client.yaml
   - ./httproute.yaml
   - ./servicemonitor.yaml
