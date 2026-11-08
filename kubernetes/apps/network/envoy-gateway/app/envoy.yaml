@@ -161,6 +161,12 @@ spec:
               name: X-Forwarded-For
               value: "%REQ(CF-Connecting-IP)%"
             action: Set
+        # oauth2-proxy gets the app's own Host from ext-authz, so it needs the full URL to return to after logging in.
+        - write:
+            header:
+              name: X-Auth-Request-Redirect
+              value: https://%REQ(:authority)%%REQ(:path)%
+            action: Set
   http2:
     onInvalidMessage: TerminateStream
   http3: {}

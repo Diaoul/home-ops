@@ -8,10 +8,22 @@ spec:
   from:
     - group: gateway.envoyproxy.io
       kind: SecurityPolicy
-      namespace: media
+      namespace: ai
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: default
     - group: gateway.envoyproxy.io
       kind: SecurityPolicy
       namespace: downloads
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: home-automation
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: media
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: observability
   to:
     - group: ""
       kind: Service

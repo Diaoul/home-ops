@@ -41,6 +41,7 @@ spec:
                     name: oauth2-proxy-kanidm-oauth2-credentials
                     key: CLIENT_SECRET
               OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
+              OAUTH2_PROXY_REDIRECT_URL: https://auth.${DOMAIN}/oauth2/callback
               OAUTH2_PROXY_SCOPE: openid profile email groups
               OAUTH2_PROXY_EMAIL_DOMAINS: "*"
               # Envoy ext-authz allows only a 200; anything else (the login redirect) goes back to the client.
@@ -54,6 +55,8 @@ spec:
               OAUTH2_PROXY_WHITELIST_DOMAINS: .${DOMAIN}
               OAUTH2_PROXY_COOKIE_SECURE: true
               OAUTH2_PROXY_COOKIE_SAMESITE: lax
+              OAUTH2_PROXY_COOKIE_CSRF_PER_REQUEST: true
+              OAUTH2_PROXY_COOKIE_CSRF_EXPIRE: 5m
               OAUTH2_PROXY_SILENCE_PING_LOGGING: true
             envFrom:
               - secretRef:
@@ -93,3 +96,13 @@ spec:
         ports:
           http:
             port: *port
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: https://auth.${DOMAIN}/ping
+        hostnames:
+          - auth.${DOMAIN}
+        parentRefs:
+          - name: envoy-external
+            namespace: network
