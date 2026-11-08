@@ -6,7 +6,5 @@ namespace: security
 components:
   - ../../components/common
 resources:
-  - ./authelia/ks.yaml
   - ./kanidm/ks.yaml
-  - ./lldap/ks.yaml
   - ./oauth2-proxy/ks.yaml

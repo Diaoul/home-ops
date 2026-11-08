@@ -1,9 +1,9 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
-# Access to these stores is login-as-anyone (Authelia keys sessions by the raw
-# cookie) or code execution (RomM's RQ worker unpickles queued jobs). The
-# operator hardcodes --admin_nopass on 9999, which replication, the operator and
-# metrics use, so a password on 6379 alone would leave each store open to every pod.
+# Access to these stores can mean code execution (RomM's RQ worker unpickles
+# queued jobs). The operator hardcodes --admin_nopass on 9999, which replication,
+# the operator and metrics use, so a password on 6379 alone would leave each store
+# open to every pod.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
