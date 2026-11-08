@@ -47,6 +47,7 @@ spec:
               OAUTH2_PROXY_UPSTREAMS: static://200
               OAUTH2_PROXY_REVERSE_PROXY: true
               OAUTH2_PROXY_TRUSTED_PROXY_IPS: 10.42.0.0/16
+              OAUTH2_PROXY_REAL_CLIENT_IP_HEADER: X-Forwarded-For
               OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: true
               OAUTH2_PROXY_SKIP_AUTH_ROUTES: ^/api/
               OAUTH2_PROXY_COOKIE_DOMAINS: .${DOMAIN}
