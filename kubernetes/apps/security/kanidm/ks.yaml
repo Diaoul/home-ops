@@ -34,6 +34,16 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: false
+  healthChecks:
+    - apiVersion: kaniop.rs/v1beta1
+      kind: Kanidm
+      name: kanidm
+      namespace: security
+  healthCheckExprs:
+    - apiVersion: kaniop.rs/v1beta1
+      kind: Kanidm
+      current: status.conditions.exists(c, c.type == 'Available' && c.status == 'True')
+      failed: status.conditions.exists(c, c.type == 'Available' && c.status == 'False')
   dependsOn:
     - name: kaniop
     - name: rook-ceph-cluster

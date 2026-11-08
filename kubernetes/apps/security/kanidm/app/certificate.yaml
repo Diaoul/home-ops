@@ -15,3 +15,5 @@ spec:
     size: 256
     rotationPolicy: Always
   secretName: kanidm-tls
+  usages:
+    - digital signature

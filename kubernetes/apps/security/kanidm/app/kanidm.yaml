@@ -18,7 +18,9 @@ spec:
           cpu: 10m
         limits:
           memory: 512Mi
+  groupNamespaceSelector: {}
   oauth2ClientNamespaceSelector: {}
+  serviceAccountNamespaceSelector: {}
   env:
     - name: TZ
       value: Europe/Paris
