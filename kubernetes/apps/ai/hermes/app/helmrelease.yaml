@@ -165,6 +165,15 @@ spec:
             app:
               - path: /etc/hermes
                 readOnly: true
+      # Read by each profile's secrets.command: multiplexed profiles don't see the pod env.
+      litellm-key:
+        type: secret
+        name: hermes-litellm
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/litellm
+                readOnly: true
       run:
         type: emptyDir
         globalMounts:
