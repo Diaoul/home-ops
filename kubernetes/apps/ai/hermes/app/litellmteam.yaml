@@ -13,4 +13,5 @@ spec:
     - flux
   models:
     - minimax-m3-openrouter
+    - claude-haiku-4-5
   proxyRef: litellm
