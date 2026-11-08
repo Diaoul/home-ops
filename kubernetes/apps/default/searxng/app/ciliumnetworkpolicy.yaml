@@ -1,15 +1,7 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
-# SearXNG is unauthenticated and fetches arbitrary URLs on request, making it an
-# open outbound proxy inside the cluster -- the capability this policy contains.
-# See the network policy test in CLAUDE.md.
-#
-# ingress restricts who can borrow it (upstream bjw-s-labs stops here); egressDeny
-# additionally fences it off the LAN so a crafted query cannot probe the NAS or
-# OPNsense. Deny rules layered on open egress, as in the runner policy, so
-# internet access survives and a forgotten path fails open.
-#
-# CIDRs are site-specific; see the VLAN map before copying these anywhere.
+# SearXNG is unauthenticated and fetches arbitrary URLs on request: an open proxy.
+# Ingress limits who can use it; egressDeny keeps a crafted query off the LAN.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:

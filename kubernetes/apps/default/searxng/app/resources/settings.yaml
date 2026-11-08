@@ -16,7 +16,6 @@ search:
     - en-US
     - fr
     - fr-FR
-  # json is required by open-webui's searxng RAG backend and is off by default
   formats:
     - html
     - json
