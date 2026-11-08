@@ -6,8 +6,6 @@ resources:
   - ./claude-opus-5.yaml
   - ./claude-sonnet-5.yaml
   - ./claude-haiku-4-5.yaml
-  - ./qwen3-local-jupiter.yaml
-  - ./qwen3-local-think-jupiter.yaml
   - ./opencode-go-deepseek-v4-flash.yaml
   - ./opencode-go-deepseek-v4-pro.yaml
   - ./opencode-go-glm-5-2.yaml
