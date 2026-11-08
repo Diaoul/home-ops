@@ -25,11 +25,6 @@ terminal:
   env_passthrough:
     - SEARXNG_URL
 
-telemetry:
-  shared_metrics:
-    enabled: false
-    send: false
-
 webapp:
   enabled: true
   host: 0.0.0.0
