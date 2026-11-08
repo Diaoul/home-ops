@@ -44,9 +44,10 @@ in `observability` first.
 Read the rule before acting: `curl -s https://prometheus.diaoul.io/api/v1/rules | jq` and
 find it by name, then go to the resource the labels point at. Rules with known judgement calls:
 
-- **Kopiur\*** — snapshots are GFS-retained, so a large Snapshot count is expected; see
-  [[kopiur-retention-design]]. `KopiurIndexBlobsNotCompacting` pending is usually the 6h epoch
-  gate; see [[kopiur-index-blob-compaction]].
+- **Kopiur\*** — snapshots are GFS-retained, so a large Snapshot count is expected.
+  `KopiurIndexBlobsNotCompacting` pending is usually the 6h epoch gate (`minDuration: 6h`):
+  an epoch compacts once the next one has started. Ignore
+  `Maintenance.status.full.lastContentReclaimedBytes: 0`, a kopiur reporting bug.
 - **CephNodeNetworkPacketDrops** — `bond0` drops are PAUSE frames and silenced; real loss shows
   on `eno1` `rx_missed_errors`.
 
@@ -95,8 +96,12 @@ kubectl exec <nodeplugin-pod> -c csi-rbdplugin -n rook-ceph -- grep -c '<pod-uid
 kubectl exec <nodeplugin-pod> -c csi-rbdplugin -n rook-ceph -- rmdir <mount-dir>/<leftover-dir>
 ```
 
-If a pod is already stuck mounting elsewhere, also clear the stale mapping on the old node — see
-[[rwo-ceph-forcedelete-hazard]]. Never `ceph osd blocklist add`.
+If a pod is already stuck mounting elsewhere, the image is still mapped on the old node. From
+that node's nodeplugin pod, `rbd device list` for its id, then `grep "rbd<id> " /proc/mounts`:
+exactly one line (the `globalmount`) means no pod uses it, so `umount` that path and
+`rbd unmap /dev/rbd<id>`; two lines means a pod still holds it, so move the pod instead. Never
+`ceph osd blocklist add`: krbd shares one client per node, so it fences every RBD volume there.
+Never force-delete the pod either: it skips detach and leaves a stale VolumeAttachment.
 
 ### miroir
 
@@ -107,8 +112,8 @@ that node, then its logs.
 ### bgp
 
 A node without an established session to the router stops advertising LoadBalancer IPs from
-that node, so services can still answer from other nodes while it is broken. The peer side is
-OPNsense (see [[opnsense-router]]). For the local side, find that node's agent with
+that node, so services can still answer from other nodes while it is broken. The peer is the
+OPNsense router at `10.0.3.1` (ASN 64512, nodes 64513). For the local side, find that node's agent with
 `kubectl get pods -l k8s-app=cilium -o wide -n kube-system` and grep its logs for `bgp`.
 
 ### cilium
@@ -125,8 +130,8 @@ usually points at a renamed or missing Service; `Accepted=False` usually a wrong
 
 - An old open PR is waiting on the user (non-automerged minor/major). Report it with what the
   changelog says; don't merge.
-- A stale last successful run: GitHub skips hourly crons, so gaps of a few hours are normal;
-  see [[home-operations-image-lag]]. Check `gh run list --workflow renovate.yaml` for failures.
+- A stale last successful run: GitHub skips hourly crons, so gaps of a few hours are normal.
+  Check `gh run list --workflow renovate.yaml` for failures.
 - Dashboard `Errored` / `Repository problems` lines name the dependency or config to fix.
 
 ### kubernetes
@@ -154,7 +159,7 @@ Recent warning events: `kubectl get events -A --field-selector=type=Warning --so
 
 Report these as unknown rather than green if the question touches them:
 
-- zigbee2mqtt device availability (no metrics) — use the z2m WebSocket API, see [[z2m-ws-api-dump]]
-- NAS `/volume1` capacity and Hyper Backup status (only `/volume2` is scraped) — see
-  [[nas-ssh-admin]]
-- Router (Unbound, DNSBL age, SSD SMART) — see [[opnsense-router]]
+- zigbee2mqtt device availability (no metrics) — read `wss://zigbee2mqtt.diaoul.io/api` and
+  `zigbee2mqtt-secondary`; never port-forward
+- NAS Hyper Backup status — `ssh singularity.milkyway`
+- Router (Unbound, DNSBL age, SSD SMART) — `ssh` to `10.0.10.1`
