@@ -20,7 +20,7 @@ Read this file before making any changes.
 | Secrets | SOPS + Age + PGP |
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
 | Updates | Renovate (hourly GitHub Actions) |
-| Auth | Authelia + LLDAP |
+| Auth | Kanidm (kaniop) + oauth2-proxy for ext-auth; Authelia + LLDAP for OIDC clients |
 
 Versions are deliberately absent: Renovate and tuppr move them, and a number written
 here goes stale silently. Read the live values instead — `kubectl version`,
@@ -35,7 +35,7 @@ kubernetes/
 ├── flux/cluster/ks.yaml        # Flux entrypoint → kubernetes/apps/
 ├── components/                 # Reusable Kustomize components
 │   ├── common/                 # Namespace, OCI repos, SOPS secret, Flux alerts
-│   ├── ext-auth/               # Authelia external auth (Envoy SecurityPolicy)
+│   ├── ext-auth/               # Kanidm login via oauth2-proxy (Envoy SecurityPolicy)
 │   ├── persistence/            # PVC + kopiur snapshot/restore templates
 │   ├── replacements/           # Shared variable substitution
 │   └── zeroscaler/             # HPA: scale to 0 while the NAS NFS port is down
@@ -83,7 +83,7 @@ spec:
   # Include ONLY the components that this app actually needs:
   components:
     - ../../../../components/persistence   # if app needs PVC + kopiur backup
-    - ../../../../components/ext-auth      # if app needs Authelia auth
+    - ../../../../components/ext-auth      # if app needs a Kanidm login
     - ../../../../components/zeroscaler    # if app mounts NFS (media/downloads)
   dependsOn:
     - name: rook-ceph-cluster              # if using ceph-block storage
@@ -210,10 +210,15 @@ spec:
           port: <port>
 ```
 
-### Authelia (external auth)
+### ext-auth (Kanidm via oauth2-proxy)
 
-To protect an app with Authelia, add the `ext-auth` component in `ks.yaml`. No other
-changes are needed — the component patches Envoy Gateway with the SecurityPolicy.
+To put an app behind a Kanidm login, add the `ext-auth` component in `ks.yaml`. It attaches
+a SecurityPolicy to the `${APP}` HTTPRoute that sends each request to oauth2-proxy, which
+bypasses `/api` and `/ping`. Two more edits in `kubernetes/apps/security/oauth2-proxy/app/`:
+
+- `kanidmoauth2client.yaml`: add `https://<app>.${DOMAIN}/oauth2/callback` to
+  `redirectUrl` (strict matching, so a missing entry fails the login)
+- `referencegrant.yaml`: add the app's namespace if it is not listed yet
 
 ---
 
@@ -435,7 +440,7 @@ Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to top
 - Do not exec into pods to retrieve cluster info — use `kubectl get`, `kubectl logs`, or the Prometheus HTTP API
 - Reach an app's API through its HTTPRoute hostname (`https://<app>.${DOMAIN}`), not
   `kubectl port-forward`. Only port-forward when the app has no route or its route is behind
-  Authelia. E.g. the zigbee2mqtt WebSocket API is `wss://zigbee2mqtt.${DOMAIN}/api` (and
+  ext-auth. E.g. the zigbee2mqtt WebSocket API is `wss://zigbee2mqtt.${DOMAIN}/api` (and
   `zigbee2mqtt-secondary`), on `envoy-internal` with no ext-auth
 - A PreToolUse hook enforces the `-n` placement rule and will block `kubectl -n <ns> ...` commands
 
@@ -513,7 +518,7 @@ from the defaults above.
 - Do not skip `# yaml-language-server: $schema=...` headers on YAML files
 - Do not use `latest` tags for any container image
 - Do not add a `NetworkPolicy` or `CiliumNetworkPolicy` by default. Access control in
-  this cluster is the gateway plus Authelia; a policy that only restates that adds
+  this cluster is the gateway plus ext-auth; a policy that only restates that adds
   drift risk and maintenance for no security gain.
 
   Add one only when a workload holds a **network capability the rest of the cluster
@@ -530,9 +535,11 @@ from the defaults above.
   app, and it keeps the diff readable. Every CIDR is site-specific — see
   `network_mtu_topology` / the VLAN map before copying one from upstream.
 
-  Existing policies, both justified under that test — do not delete as drift:
+  Existing policies, all justified under that test — do not delete as drift:
   - `actions-runner-system/.../runners/home-ops/networkpolicy.yaml` — the runner
     keeps cluster-admin and `os:admin` and executes fork PRs; fenced off the LAN
   - `default/searxng/app/ciliumnetworkpolicy.yaml` — unauthenticated and fetches
     arbitrary URLs; restricts who may call it and fences it off the LAN
+  - `security/kanidm/app/ciliumnetworkpolicy.yaml` — the IdP, trusting
+    X-Forwarded-For from any source; only envoy-external and kaniop may reach it
 - Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)
