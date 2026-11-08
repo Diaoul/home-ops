@@ -1,0 +1,56 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidm_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: Kanidm
+metadata:
+  name: kanidm
+spec:
+  # Immutable once created: WebAuthn credentials are bound to it.
+  domain: idm.${DOMAIN}
+  image: kanidm/server:1.12.0@sha256:71b6ff5a9c9c32b632894d8acef5a2afc77941b35a0aa95dcee959fe688d5ce9
+  disableUpgradeChecks: true
+  replicaGroups:
+    - name: default
+      replicas: 1
+      primaryNode: true
+      resources:
+        requests:
+          cpu: 10m
+        limits:
+          memory: 512Mi
+  oauth2ClientNamespaceSelector: {}
+  env:
+    - name: TZ
+      value: Europe/Paris
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 568
+    runAsGroup: 568
+    fsGroup: 568
+    fsGroupChangePolicy: OnRootMismatch
+  containers:
+    - name: kanidm
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: {drop: ["ALL"]}
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: ceph-block
+  tlsSecretName: kanidm-tls
+  gateway:
+    annotations:
+      gatus.home-operations.com/endpoint: |-
+        url: https://idm.${DOMAIN}/status
+    parentRefs:
+      - name: envoy-internal
+        namespace: network
+    backendTlsPolicy:
+      validation:
+        wellKnownCaCertificates: System

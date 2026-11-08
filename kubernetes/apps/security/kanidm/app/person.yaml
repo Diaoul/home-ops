@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmpersonaccount_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmPersonAccount
+metadata:
+  name: antoine
+spec:
+  kanidmRef:
+    name: kanidm
+  personAttributes:
+    displayname: Antoine
+    mail:
+      - ${EMAIL_ADDRESS_1}
