@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: oauth2-proxy
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      oauth2-proxy:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+        containers:
+          app:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.15.6@sha256:c3415e8660af553f5e18f5d90db050614c02493c0ac6260ac59442f6d9b12048
+            env:
+              TZ: Europe/Paris
+              OAUTH2_PROXY_HTTP_ADDRESS: 0.0.0.0:4180
+              OAUTH2_PROXY_PROVIDER: oidc
+              OAUTH2_PROXY_PROVIDER_DISPLAY_NAME: Kanidm
+              OAUTH2_PROXY_OIDC_ISSUER_URL: https://idm.${DOMAIN}/oauth2/openid/oauth2-proxy
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: oauth2-proxy-kanidm-oauth2-credentials
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: oauth2-proxy-kanidm-oauth2-credentials
+                    key: CLIENT_SECRET
+              OAUTH2_PROXY_CODE_CHALLENGE_METHOD: S256
+              OAUTH2_PROXY_SCOPE: openid profile email groups
+              OAUTH2_PROXY_EMAIL_DOMAINS: "*"
+              # Envoy ext-authz allows only a 200; anything else (the login redirect) goes back to the client.
+              OAUTH2_PROXY_UPSTREAMS: static://200
+              OAUTH2_PROXY_REVERSE_PROXY: true
+              OAUTH2_PROXY_SKIP_PROVIDER_BUTTON: true
+              OAUTH2_PROXY_SKIP_AUTH_ROUTES: ^/api/
+              OAUTH2_PROXY_COOKIE_DOMAINS: .${DOMAIN}
+              OAUTH2_PROXY_WHITELIST_DOMAINS: .${DOMAIN}
+              OAUTH2_PROXY_COOKIE_SECURE: true
+              OAUTH2_PROXY_COOKIE_SAMESITE: lax
+              OAUTH2_PROXY_SILENCE_PING_LOGGING: true
+            envFrom:
+              - secretRef:
+                  name: oauth2-proxy
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &port 4180
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+    service:
+      app:
+        ports:
+          http:
+            port: *port

@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: oauth2-proxy
+spec:
+  kanidmRef:
+    name: kanidm
+  displayname: oauth2-proxy
+  origin: https://prowlarr-sso.${DOMAIN}/
+  # One callback per protected host: oauth2-proxy completes the login on the host the user asked for.
+  redirectUrl:
+    - https://prowlarr-sso.${DOMAIN}/oauth2/callback
+  scopeMap:
+    - group: users
+      scopes:
+        - openid
+        - profile
+        - email
+        - groups
+  strictRedirectUrl: true
+  preferShortUsername: true
+  disableConsentPrompt: true

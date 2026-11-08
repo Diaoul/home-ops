@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: oauth2-proxy
+spec:
+  targetNamespace: security
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  path: ./kubernetes/apps/security/oauth2-proxy/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  dependsOn:
+    - name: kanidm
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
