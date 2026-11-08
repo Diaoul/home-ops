@@ -9,7 +9,6 @@ spec:
     name: kanidm
   displayname: oauth2-proxy
   origin: https://prowlarr.${DOMAIN}/
-  # One callback per ext-auth host: oauth2-proxy completes the login on the host the user asked for.
   redirectUrl:
     - https://bazarr.${DOMAIN}/oauth2/callback
     - https://prowlarr.${DOMAIN}/oauth2/callback

@@ -5,7 +5,6 @@ kind: Kanidm
 metadata:
   name: kanidm
 spec:
-  # Immutable once created: WebAuthn credentials are bound to it.
   domain: idm.${DOMAIN}
   image: kanidm/server:1.12.0@sha256:71b6ff5a9c9c32b632894d8acef5a2afc77941b35a0aa95dcee959fe688d5ce9
   disableUpgradeChecks: true
@@ -24,7 +23,6 @@ spec:
   env:
     - name: TZ
       value: Europe/Paris
-    # Trusts X-Forwarded-For from any source: kaniop exposes no http_client_address_info to scope it to the pod network.
     - name: KANIDM_TRUST_X_FORWARDED_FOR
       value: "true"
   securityContext:
