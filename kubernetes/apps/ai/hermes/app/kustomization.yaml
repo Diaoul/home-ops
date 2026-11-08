@@ -6,6 +6,7 @@ resources:
   - ./ciliumnetworkpolicy.yaml
   - ./helmrelease.yaml
   - ./kanidmoauth2client.yaml
+  - ./litellmteam.yaml
   - ./litellmvirtualkey.yaml
 configMapGenerator:
   - name: hermes-config

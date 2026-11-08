@@ -1,0 +1,14 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmteam_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMTeam
+metadata:
+  name: hermes
+spec:
+  alias: hermes
+  # Virtual keys get no MCP servers unless their team grants them.
+  mcpServers:
+    - ha_mcp
+  models:
+    - minimax-m3-openrouter
+  proxyRef: litellm

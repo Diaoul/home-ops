@@ -10,3 +10,4 @@ spec:
     - minimax-m3-openrouter
   proxyRef: litellm
   secretName: hermes-litellm
+  teamID: hermes
