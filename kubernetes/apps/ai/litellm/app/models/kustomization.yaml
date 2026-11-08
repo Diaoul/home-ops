@@ -13,6 +13,7 @@ resources:
   - ./opencode-go-glm-5-3.yaml
   - ./opencode-go-kimi-k3.yaml
   - ./opencode-go-minimax-m3.yaml
+  - ./minimax-m3-openrouter.yaml
   - ./opencode-go-qwen3-6-plus.yaml
   - ./opencode-go-qwen3-7-max.yaml
   - ./opencode-go-qwen3-8-max.yaml
