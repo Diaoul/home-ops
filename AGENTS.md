@@ -20,7 +20,7 @@ Read this file before making any changes.
 | Secrets | SOPS + Age + PGP |
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
 | Updates | Renovate (hourly GitHub Actions) |
-| Auth | Kanidm (kaniop) + oauth2-proxy for ext-auth; Authelia + LLDAP for OIDC clients |
+| Auth | Kanidm (kaniop); oauth2-proxy for ext-auth |
 
 Versions are deliberately absent: Renovate and tuppr move them, and a number written
 here goes stale silently. Read the live values instead — `kubectl version`,
@@ -303,8 +303,7 @@ For an app needing a database:
 5. `dependsOn: cloudnative-pg-databases` (namespace `database`) in the app's `ks.yaml`.
 
 Reference: `kubernetes/apps/database/cloudnative-pg/databases/` plus any of its
-consumers (`ai/litellm`, `security/authelia`, `security/lldap`, `downloads/autobrr`,
-`default/miniflux`).
+consumers (`ai/litellm`, `downloads/autobrr`, `default/miniflux`, `media/romm`).
 
 Do not write a `failed:` health expression for these kinds. A new `passwordSecret`
 reaches the cluster's Role only on CNPG's next reconcile, so a fresh `DatabaseRole`
