@@ -54,7 +54,7 @@ spec:
       gatus.home-operations.com/endpoint: |-
         url: https://idm.${DOMAIN}/status
     parentRefs:
-      - name: envoy-internal
+      - name: envoy-external
         namespace: network
     backendTlsPolicy:
       validation:
