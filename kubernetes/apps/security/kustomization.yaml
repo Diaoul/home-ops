@@ -8,3 +8,4 @@ components:
 resources:
   - ./authelia/ks.yaml
   - ./lldap/ks.yaml
+  - ./pocket-id/ks.yaml
