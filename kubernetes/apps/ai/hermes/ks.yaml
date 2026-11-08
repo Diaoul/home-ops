@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: hermes
+spec:
+  components:
+    - ../../../../components/persistence
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: kopiur-repository
+      namespace: kopiur-system
+    - name: kanidm
+      namespace: security
+    - name: litellm
+  path: ./kubernetes/apps/ai/hermes/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  prune: true
+  wait: false
+  interval: 1h
+  retryInterval: 2m
+  timeout: 5m
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+    substitute:
+      APP: hermes
+      CAPACITY: 10Gi
+  targetNamespace: ai

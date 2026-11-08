@@ -10,3 +10,4 @@ resources:
   - ./litellm/ks.yaml
   - ./ha-mcp/ks.yaml
   - ./context7-mcp/ks.yaml
+  - ./hermes/ks.yaml

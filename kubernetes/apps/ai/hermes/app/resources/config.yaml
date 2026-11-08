@@ -1,0 +1,37 @@
+---
+dashboard:
+  oauth:
+    provider: self-hosted
+    self_hosted:
+      client_id: hermes
+      issuer: https://idm.${DOMAIN}/oauth2/openid/hermes
+      scopes: openid profile email
+  public_url: https://hermes-dash.${DOMAIN}
+
+providers:
+  litellm:
+    api: http://litellm.ai.svc.cluster.local:4000/v1
+    discover_models: true
+    key_env: LITELLM_API_KEY
+    name: LiteLLM
+    transport: chat_completions
+
+security:
+  redact_secrets: true
+
+terminal:
+  backend: local
+  cwd: /opt/data/workspace
+  env_passthrough:
+    - SEARXNG_URL
+
+telemetry:
+  shared_metrics:
+    enabled: false
+    send: false
+
+webapp:
+  enabled: true
+  host: 0.0.0.0
+  port: 9120
+  public_url: https://hermes.${DOMAIN}

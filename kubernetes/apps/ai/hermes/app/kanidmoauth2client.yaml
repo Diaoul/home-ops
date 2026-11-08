@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: hermes
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: Hermes
+  origin: https://hermes.${DOMAIN}/
+  redirectUrl:
+    - https://hermes.${DOMAIN}/api/auth/oidc/callback
+    - https://hermes.${DOMAIN}/auth/callback
+    - https://hermes-dash.${DOMAIN}/auth/callback
+  # Every account admitted gets a shell in the pod.
+  scopeMap:
+    - group: admins
+      scopes:
+        - openid
+        - profile
+        - email
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true
