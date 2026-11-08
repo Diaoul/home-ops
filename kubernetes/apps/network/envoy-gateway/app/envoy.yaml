@@ -151,11 +151,16 @@ spec:
       trustedCIDRs:
         - 10.42.0.0/16
   headers:
-    # Cloudflare keeps the client's own X-Forwarded-For entries at the left, and Authelia trusts the leftmost one
+    # Backends trust the leftmost X-Forwarded-For entry, which a client can forge (Cloudflare keeps it).
+    # An empty CF-Connecting-IP skips the write, so Envoy appends only the peer address.
     earlyRequestHeaders:
-      set:
-        - name: X-Forwarded-For
-          value: "%REQ(CF-Connecting-IP)%"
+      mutations:
+        - remove: X-Forwarded-For
+        - write:
+            header:
+              name: X-Forwarded-For
+              value: "%REQ(CF-Connecting-IP)%"
+            action: Set
   http2:
     onInvalidMessage: TerminateStream
   http3: {}
