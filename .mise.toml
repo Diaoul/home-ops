@@ -25,6 +25,7 @@ yq = "latest"
 talos = "1.14.5"
 kubeconform = "0.8.0"
 "github:home-operations/flate" = "0.6.5"
+crane = "0.22.1"
 "github:postfinance/topf" = "0.6.2"
 # python makes uv use mise's interpreter, not Arch's /usr/bin/python, which pacman
 # removes on a minor upgrade. 3.14 is the newest controller Python ansible-core supports.
