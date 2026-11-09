@@ -14,6 +14,10 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  # renovate: datasource=github-releases depName=home-operations/flate
+  FLATE_VERSION: 0.7.1
+
 jobs:
   filter:
     name: Image Pull - Filter
@@ -46,7 +50,7 @@ jobs:
         with:
           cache: false
           tool_versions: |
-            github:home-operations/flate 0.4.9
+            github:home-operations/flate ${{ env.FLATE_VERSION }}
 
       - name: Extract Images
         id: extract
