@@ -16,7 +16,7 @@ permissions:
 
 env:
   # renovate: datasource=github-releases depName=home-operations/flate
-  FLATE_VERSION: 0.7.1
+  FLATE_VERSION: 0.7.3
 
 jobs:
   filter:
