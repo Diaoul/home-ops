@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: victoriametrics-mcp
+spec:
+  alias: victoriametrics
+  proxyRef: litellm
+  transport: http
+  workload:
+    image: ghcr.io/victoriametrics/mcp-victoriametrics:v1.20.2@sha256:bcbf84f945d6efb03fb8b2d2ccc3294420dccdc0b445752dce96f02619416dfe
+    port: 8080
+    path: /mcp
+    env:
+      - name: VM_INSTANCE_ENTRYPOINT
+        value: http://victoria-metrics-server.observability.svc.cluster.local:8428
+      - name: VM_INSTANCE_TYPE
+        value: single
+      - name: MCP_SERVER_MODE
+        value: http
+      - name: MCP_LISTEN_ADDR
+        value: :8080
+      - name: TZ
+        value: Europe/Paris
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 256Mi

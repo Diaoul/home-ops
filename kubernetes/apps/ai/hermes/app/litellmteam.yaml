@@ -11,6 +11,8 @@ spec:
     - ha_mcp
     - kubernetes
     - flux
+    - victorialogs
+    - victoriametrics
   models:
     - minimax-m3-openrouter
     - claude-haiku-4-5

@@ -12,3 +12,4 @@ resources:
   - ./cluster-mcp/ks.yaml
   - ./context7-mcp/ks.yaml
   - ./hermes/ks.yaml
+  - ./observability-mcp/ks.yaml
