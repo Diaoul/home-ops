@@ -27,3 +27,19 @@ spec:
   egress:
     - toEntities:
         - kube-apiserver
+    # kubernetes-mcp-server dials the API server by this name, not its IP. Any other
+    # lookup is refused, as a query name can carry data out.
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchName: kubernetes.default.svc
+              - matchName: kubernetes.default.svc.cluster.local
+              - matchName: kubernetes.default.svc.svc.cluster.local
+              - matchName: kubernetes.default.svc.ai.svc.cluster.local
