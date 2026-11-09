@@ -15,7 +15,6 @@ resources:
   - ./opencode-go-minimax-m3.yaml
   - ./minimax-m3-openrouter.yaml
   - ./glm-5-3-flash-openrouter.yaml
-  - ./deepseek-v4-flash-openrouter.yaml
   - ./deepseek-v4-1-flash-openrouter.yaml
   - ./deepseek-v4-1-flash-1017-openrouter.yaml
   - ./gpt-6-luna-openrouter.yaml
