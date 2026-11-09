@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: github-mcp
+spec:
+  alias: github
+  proxyRef: litellm
+  transport: http
+  # The server holds no token: it uses the one LiteLLM sends on each request.
+  authType: bearer_token
+  authTokenRef:
+    name: github-mcp
+    key: GITHUB_TOKEN
+  workload:
+    image: ghcr.io/github/github-mcp-server:v2.1.0@sha256:f6056fc10bfffcc8c81a6417a2e9ca12808647e8dd6049642a4feaadee0e0f8a
+    command:
+      - /server/github-mcp-server
+    args:
+      - http
+      - --port=8082
+      - --read-only
+      - --lockdown-mode
+      - --toolsets=repos,issues,pull_requests,actions
+    port: 8082
+    path: /mcp
+    env:
+      - name: TZ
+        value: Europe/Paris
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 256Mi
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp

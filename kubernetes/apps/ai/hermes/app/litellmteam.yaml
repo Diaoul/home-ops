@@ -11,6 +11,7 @@ spec:
     - ha_mcp
     - kubernetes
     - flux
+    - github
     - victorialogs
     - victoriametrics
   models:

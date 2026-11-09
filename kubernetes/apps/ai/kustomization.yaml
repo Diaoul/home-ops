@@ -10,6 +10,7 @@ resources:
   - ./litellm/ks.yaml
   - ./ha-mcp/ks.yaml
   - ./cluster-mcp/ks.yaml
+  - ./github-mcp/ks.yaml
   - ./context7-mcp/ks.yaml
   - ./hermes/ks.yaml
   - ./observability-mcp/ks.yaml
