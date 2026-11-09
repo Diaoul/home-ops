@@ -43,5 +43,9 @@ Kustomization are not (the HelmRelease defaults in
 Kubernetes capabilities see flate's bundled version, not the cluster's.
 Within that, take the label values, resource names and ports the search
 for dependents needs from the render rather than from a reading of the
-template, and narrow it with `--show-only <template path>` when the whole
+template, and narrow it with `--only-kinds <Kind,...>` when the whole
 output is too long.
+
+flate cannot read SOPS values, so `${DOMAIN}` and the other `cluster-secrets`
+variables render empty. When a review needs them, pass
+`--supply <file>` with a dummy `cluster-secrets` Secret in the app's namespace.
