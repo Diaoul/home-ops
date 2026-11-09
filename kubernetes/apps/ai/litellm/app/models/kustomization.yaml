@@ -3,9 +3,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./claude-opus-5.yaml
-  - ./claude-sonnet-5.yaml
-  - ./claude-haiku-4-5.yaml
+  - ./claude-opus-5-5.yaml
+  - ./claude-sonnet-5-5.yaml
+  - ./claude-haiku-5-5.yaml
   - ./opencode-go-deepseek-v4-flash.yaml
   - ./opencode-go-deepseek-v4-pro.yaml
   - ./opencode-go-glm-5-2.yaml

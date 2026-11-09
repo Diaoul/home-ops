@@ -8,9 +8,9 @@ spec:
   keyAlias: hermes
   models:
     - minimax-m3-openrouter
-    - claude-haiku-4-5
-    - claude-sonnet-5
-    - claude-opus-5
+    - claude-haiku-5-5
+    - claude-sonnet-5-5
+    - claude-opus-5-5
   proxyRef: litellm
   secretName: hermes-litellm
   teamID: hermes

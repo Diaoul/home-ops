@@ -23,10 +23,10 @@ spec:
     num_retries: 3
     timeout: 600
     context_window_fallbacks:
-      - claude-haiku-4-5:
-          - claude-sonnet-5
-      - claude-sonnet-5:
-          - claude-opus-5
+      - claude-haiku-5-5:
+          - claude-sonnet-5-5
+      - claude-sonnet-5-5:
+          - claude-opus-5-5
   litellmSettings:
     success_callback:
       - prometheus

@@ -3,11 +3,11 @@
 apiVersion: litellm.home-operations.com/v1alpha1
 kind: LiteLLMModel
 metadata:
-  name: claude-opus-5
+  name: claude-haiku-5-5
 spec:
-  modelName: claude-opus-5
+  modelName: claude-haiku-5-5
   params:
-    model: anthropic/claude-opus-5
+    model: anthropic/claude-haiku-5-5
     apiKeyRef:
       name: litellm
       key: ANTHROPIC_API_KEY
