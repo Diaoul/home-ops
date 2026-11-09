@@ -1,0 +1,58 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: unifi-mcp
+spec:
+  alias: unifi
+  proxyRef: litellm
+  transport: http
+  workload:
+    image: ghcr.io/sirkirby/unifi-network-mcp:0.45.0@sha256:5c14d804e23b714850b58c4b45b722aeed9159d0acf47b182a3bfa92d2d17e7c
+    port: 3000
+    path: /mcp
+    env:
+      - name: UNIFI_HOST
+        value: sun.milkyway
+      - name: UNIFI_VERIFY_SSL
+        value: "false"
+      - name: UNIFI_MCP_HTTP_ENABLED
+        value: "true"
+      - name: UNIFI_MCP_HOST
+        value: 0.0.0.0
+      - name: UNIFI_MCP_ALLOWED_HOSTS
+        value: unifi-mcp.ai.svc.cluster.local:3000
+      - name: UNIFI_POLICY_CREATE
+        value: "false"
+      - name: UNIFI_POLICY_UPDATE
+        value: "false"
+      - name: UNIFI_POLICY_DELETE
+        value: "false"
+      - name: TZ
+        value: Europe/Paris
+    envFrom:
+      - secretRef:
+          name: unifi-mcp
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp

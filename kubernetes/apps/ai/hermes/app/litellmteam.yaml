@@ -12,6 +12,7 @@ spec:
     - kubernetes
     - flux
     - github
+    - unifi
     - victorialogs
     - victoriametrics
   models:

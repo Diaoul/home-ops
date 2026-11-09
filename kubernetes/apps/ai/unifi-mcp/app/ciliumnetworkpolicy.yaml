@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Unauthenticated server holding UniFi controller credentials: only LiteLLM may call it,
+# and it may only reach the controller.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: unifi-mcp
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: unifi-mcp
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: litellm
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+  egress:
+    - toCIDR:
+        - 10.0.1.2/32 # sun.milkyway
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchName: sun.milkyway
+              - matchName: sun.milkyway.cluster.local
+              - matchName: sun.milkyway.svc.cluster.local
+              - matchName: sun.milkyway.ai.svc.cluster.local

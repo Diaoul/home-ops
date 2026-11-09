@@ -14,3 +14,4 @@ resources:
   - ./context7-mcp/ks.yaml
   - ./hermes/ks.yaml
   - ./observability-mcp/ks.yaml
+  - ./unifi-mcp/ks.yaml
