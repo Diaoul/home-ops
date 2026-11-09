@@ -17,6 +17,8 @@ resources:
   - ./deepseek-v4-1-flash-openrouter.yaml
   - ./deepseek-v4-1-flash-1017-openrouter.yaml
   - ./gpt-6-luna-openrouter.yaml
+  - ./minimax-m3-1-flash-openrouter.yaml
+  - ./kimi-k3-1-pro-openrouter.yaml
   - ./opencode-go-qwen3-6-plus.yaml
   - ./opencode-go-qwen3-7-max.yaml
   - ./opencode-go-qwen3-8-max.yaml
