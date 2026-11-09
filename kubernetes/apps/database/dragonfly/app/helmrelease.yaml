@@ -10,73 +10,11 @@ spec:
     name: dragonfly-operator
   interval: 30m
   values:
-    controllers:
-      dragonfly-operator:
-        strategy: RollingUpdate
-        pod:
-          automountServiceAccountToken: true
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
-        containers:
-          app:
-            image:
-              repository: ghcr.io/dragonflydb/operator
-              tag: v1.7.1@sha256:bc0067369a456810d00715d7292da32b82f6df491fd51d6c57f2b2b3193ab490
-            command:
-              - "/manager"
-            args:
-              - --health-probe-bind-address=:8081
-              - --metrics-bind-address=:8080
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /healthz
-                    port: &port 8081
-                  initialDelaySeconds: 15
-                  periodSeconds: 20
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /readyz
-                    port: *port
-                  initialDelaySeconds: 5
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-    service:
-      app:
-        ports:
-          http:
-            primary: true
-            port: *port
-          metrics:
-            port: 8080
-    serviceMonitor:
-      app:
-        serviceName: dragonfly-operator
-        endpoints:
-          - port: metrics
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
-    serviceAccount:
-      dragonfly-operator: {}
+    manager:
+      image:
+        repository: ghcr.io/dragonflydb/operator
+        tag: v1.7.1@sha256:bc0067369a456810d00715d7292da32b82f6df491fd51d6c57f2b2b3193ab490
+    grafanaDashboard:
+      enabled: true
+      grafanaOperator:
+        enabled: true
