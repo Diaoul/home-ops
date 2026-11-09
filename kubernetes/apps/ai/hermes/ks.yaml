@@ -32,4 +32,6 @@ spec:
     substitute:
       APP: hermes
       CAPACITY: 10Gi
+      MOVER_GID: "10000"
+      MOVER_UID: "10000"
   targetNamespace: ai

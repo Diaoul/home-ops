@@ -13,8 +13,8 @@ spec:
       mode: Ephemeral
       storageClassName: miroir-local
     securityContext:
-      runAsUser: 568
-      runAsGroup: 568
+      runAsUser: ${MOVER_UID:=568}
+      runAsGroup: ${MOVER_GID:=568}
   repository:
     kind: ClusterRepository
     name: nas

@@ -9,8 +9,8 @@ spec:
     enabled: true
   mover:
     securityContext:
-      runAsUser: 568
-      runAsGroup: 568
+      runAsUser: ${MOVER_UID:=568}
+      runAsGroup: ${MOVER_GID:=568}
   policy:
     onMissingSnapshot: Continue
   source:
