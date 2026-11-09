@@ -13,7 +13,6 @@ resources:
   - ./opencode-go-glm-5-3.yaml
   - ./opencode-go-kimi-k3.yaml
   - ./opencode-go-minimax-m3.yaml
-  - ./minimax-m3-openrouter.yaml
   - ./glm-5-3-flash-openrouter.yaml
   - ./deepseek-v4-1-flash-openrouter.yaml
   - ./deepseek-v4-1-flash-1017-openrouter.yaml
