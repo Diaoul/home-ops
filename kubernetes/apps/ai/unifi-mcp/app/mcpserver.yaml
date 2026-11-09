@@ -21,6 +21,9 @@ spec:
         value: "true"
       - name: UNIFI_MCP_HOST
         value: 0.0.0.0
+      # Overrides the service link Kubernetes injects for the unifi-mcp Service.
+      - name: UNIFI_MCP_PORT
+        value: "3000"
       - name: UNIFI_MCP_ALLOWED_HOSTS
         value: unifi-mcp.ai.svc.cluster.local:3000
       - name: UNIFI_POLICY_CREATE
