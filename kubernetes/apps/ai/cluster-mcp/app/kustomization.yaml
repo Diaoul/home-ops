@@ -6,4 +6,10 @@ resources:
   - ./ciliumnetworkpolicy.yaml
   - ./rbac.yaml
   - ./mcpserver-flux.yaml
-  - ./mcpserver-kubectl.yaml
+  - ./mcpserver-kubernetes.yaml
+configMapGenerator:
+  - name: kubernetes-mcp-config
+    files:
+      - ./resources/config.toml
+configurations:
+  - ./kustomizeconfig.yaml

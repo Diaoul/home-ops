@@ -13,7 +13,7 @@ spec:
         operator: In
         values:
           - flux-mcp
-          - kubectl-mcp
+          - kubernetes-mcp
   ingress:
     - fromEndpoints:
         - matchLabels:
@@ -21,6 +21,8 @@ spec:
       toPorts:
         - ports:
             - port: "8000"
+              protocol: TCP
+            - port: "8080"
               protocol: TCP
   egress:
     - toEntities:

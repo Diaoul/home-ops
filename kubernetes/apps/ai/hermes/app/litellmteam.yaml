@@ -9,7 +9,7 @@ spec:
   # Virtual keys get no MCP servers unless their team grants them.
   mcpServers:
     - ha_mcp
-    - kubectl
+    - kubernetes
     - flux
   models:
     - minimax-m3-openrouter

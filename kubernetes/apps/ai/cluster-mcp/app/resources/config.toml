@@ -1,0 +1,5 @@
+port = "8080"
+read_only = true
+stateless = true
+# helm reads release Secrets, which the ServiceAccount cannot.
+toolsets = ["core"]

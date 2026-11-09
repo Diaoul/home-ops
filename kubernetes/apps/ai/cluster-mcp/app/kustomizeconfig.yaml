@@ -1,0 +1,7 @@
+---
+# Rolls the server on a config change: the operator's Deployment can't carry Reloader's annotation.
+nameReference:
+  - kind: ConfigMap
+    fieldSpecs:
+      - kind: LiteLLMMCPServer
+        path: spec/workload/volumes/configMap/name
