@@ -29,9 +29,6 @@ spec:
           except:
             - 10.42.0.0/16 # pods
             - 10.43.0.0/16 # services
-            - 10.0.3.24/32 # kube-apiserver
-            - 10.0.3.25/32 # kube-apiserver
-            - 10.0.3.26/32 # kube-apiserver
     - toCIDR:
         - 172.16.0.0/12
         - 192.168.0.0/16
