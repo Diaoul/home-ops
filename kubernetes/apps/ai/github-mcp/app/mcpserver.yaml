@@ -21,7 +21,6 @@ spec:
       - http
       - --port=8082
       - --read-only
-      - --lockdown-mode
       - --toolsets=repos,issues,pull_requests,actions
     port: 8082
     path: /mcp
