@@ -9,7 +9,7 @@ spec:
     enabled: true
   mover:
     cache:
-      capacity: ${CAPACITY:=5Gi}
+      capacity: ${CACHE_CAPACITY:=1Gi}
       mode: Ephemeral
       storageClassName: miroir-local
     securityContext:
