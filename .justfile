@@ -45,7 +45,7 @@ merge type="":
         label="type/${type}"
 
         prs=$(gh pr list \
-            --author app/korvigell \
+            --author app/kornandon \
             --label "${label}" \
             --state open \
             --json number,labels \

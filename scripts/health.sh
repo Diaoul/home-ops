@@ -161,11 +161,11 @@ check_renovate() {
         report WARN renovate "last successful run ${last_ok}"
     fi
     cutoff=$(date -u -d '-7 days' +%FT%TZ)
-    prs=$(gh pr list -R "$REPO" --author app/korvigell --state open --limit 200 --json number,title,createdAt \
+    prs=$(gh pr list -R "$REPO" --author app/kornandon --state open --limit 200 --json number,title,createdAt \
         --jq ".[] | select(.createdAt < \"${cutoff}\") | \"#\(.number) open since \(.createdAt[0:10]): \(.title)\"") \
         || { report WARN renovate "gh pr list failed"; return 0; }
     each WARN renovate <<<"$prs"
-    dashboard=$(gh issue list -R "$REPO" --author app/korvigell --search 'Renovate Dashboard in:title' \
+    dashboard=$(gh issue list -R "$REPO" --author app/kornandon --search 'Renovate Dashboard in:title' \
         --json body --jq '.[0].body // ""') || { report WARN renovate "gh issue list failed"; return 0; }
     each WARN renovate < <(awk '/^## /{s=$0} s ~ /^## (Errored|Repository problems)/ && /^ *- /' <<<"$dashboard" \
         | sed -E 's/<!--[^>]*-->//g; s/^ *- (\[ \] )?//')
