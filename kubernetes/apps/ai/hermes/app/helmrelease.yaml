@@ -50,14 +50,12 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
           mise-install:
-            image:
-              repository: ghcr.io/jdx/mise
-              tag: 2026.11.6@sha256:d4de1845114f6d73e90e15f7642885f74f3ca93074491038a2b9c43e4b897f21
+            image: *image
             command:
               - /bin/sh
               - -c
               # An unreachable GitHub must not keep Hermes from starting.
-              - mise install || true
+              - /opt/mise/mise install || true
             env: &mise
               HOME: /opt/data
               MISE_CACHE_DIR: /opt/data/.cache/mise
@@ -200,12 +198,10 @@ spec:
       mise:
         type: image
         image: ghcr.io/jdx/mise:2026.11.6@sha256:d4de1845114f6d73e90e15f7642885f74f3ca93074491038a2b9c43e4b897f21
-        advancedMounts:
-          hermes:
-            app:
-              - path: /opt/mise
-                subPath: usr/local/bin
-                readOnly: true
+        globalMounts:
+          - path: /opt/mise
+            subPath: usr/local/bin
+            readOnly: true
       mise-config:
         type: configMap
         name: hermes-mise
