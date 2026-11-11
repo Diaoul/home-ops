@@ -2,13 +2,14 @@
 name: writing-a-pull-request
 description: >
   The repo-specific rules a pull request description needs that the template cannot hold:
-  counting peer practice, when to stack pull requests, and which changes are one-way doors.
+  counting peer practice, when to stack pull requests, keeping a pull request's history, and
+  which changes are one-way doors.
 ---
 
 # Writing a pull request
 
 `.github/PULL_REQUEST_TEMPLATE.md` carries the shape and the rules an author needs while
-writing. Three rules do not fit in a comment and live here.
+writing. Four rules do not fit in a comment and live here.
 
 ## Counting peer practice
 
@@ -37,6 +38,22 @@ The counterpart matters more here: do not stack because the changes are merely r
 resources in this repository are declarative and Flux orders them with `dependsOn`, so a
 database cluster, its `Database` and the app consuming it merge as one pull request. One pull
 request is the default; a stack is the exception it has to earn.
+
+## History, not rewrites
+
+A pull request keeps its commits: intermediate ones record the decisions, and a squash-merge
+discards them at the end if they are noise, so there is nothing to gain by rewriting them
+first. A follow-up commit answering review is normal — it shows what was asked and what
+changed.
+
+That is not `AGENTS.md`'s one-concern-per-commit rule read backwards: that one keeps two
+concerns out of one commit, this one keeps commits from being erased to make a branch look
+tidy. Legible history, not the most commits — a three-line remark that belongs in the same
+edit does not earn a commit of its own.
+
+Never close a pull request as superseded. When history genuinely must change — a leaked
+secret, a wrong sign-off — rewrite the branch in place and force-push; if the push is
+blocked, report the block instead of opening a replacement.
 
 ## One-way doors
 
