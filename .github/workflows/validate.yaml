@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Validate
+
+on:
+  pull_request:
+    branches:
+      - main
+    # talos/** is deliberately absent: validating or rendering it needs topf and
+    # live cluster nodes (`just talos diff`), which a pull request job has not got.
+    paths:
+      - "kubernetes/**"
+      - "scripts/**"
+      - ".github/workflows/validate.yaml"
+      - ".mise.toml"
+      - ".yamllint.yaml"
+      - ".yamlfmt.yaml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  manifests:
+    name: Validate - Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        with:
+          cache: false
+          install: false
+
+      - name: Install Validation Tools
+        # Versions come from .mise.toml, where Renovate tracks them; only the
+        # tools this job runs are installed.
+        run: mise install --yes kubeconform kustomize sops yamlfmt pypi:yamllint github:home-operations/flate
+
+      - name: Validate Manifests
+        run: bash scripts/kubeconform.sh kubernetes
+
+      - name: Check SOPS MACs
+        run: bash scripts/sops-mismatch.sh
+
+      - name: Lint YAML
+        run: yamllint .
+
+      - name: Check YAML Formatting
+        run: yamlfmt -lint "**/*.yaml"
+
+      - name: Render Flux Resources
+        run: flate test all --path kubernetes
