@@ -8,13 +8,18 @@ KUBERNETES_DIR=$1
 
 kustomize_args=("--load-restrictor=LoadRestrictionsNone")
 kustomize_config="kustomization.yaml"
+# DNSEndpoint is skipped alongside the other kinds whose fields carry Flux
+# ${VAR} substitutions: the schema checks dnsName against a DNS-1123 pattern,
+# which the unsubstituted literal cannot match.
 kubeconform_args=(
     "-strict"
     "-ignore-missing-schemas"
     "-skip"
-    "Gateway,HTTPRoute,Secret,ReplicationDestination,ReplicationSource"
+    "Gateway,HTTPRoute,Secret,ReplicationDestination,ReplicationSource,DNSEndpoint"
     "-schema-location"
     "default"
+    "-schema-location"
+    "https://k8s-schemas.home-operations.com/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
     "-schema-location"
     "https://kubernetes-schemas.pages.dev/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
     "-schema-location"
