@@ -92,7 +92,7 @@ a stack is the exception it has to earn.
 ## Irreversibility
 
 Four changes here do not roll back by reverting the commit. They belong under
-"Before merging" in the change's own words, including what to do instead:
+"Beware" in the change's own words, including what to do instead:
 
 - **A PVC's `dataSourceRef` is immutable.** It is set when the volume is
   created, so cloning from a snapshot or another volume means a new PVC and a
@@ -106,6 +106,10 @@ Four changes here do not roll back by reverting the commit. They belong under
 - **Secret rotation is one way.** Once the old credential is revoked, nothing
   rolls back to it; every consumer restarts on the new value, and the old one
   survives only in the git history of the encrypted file.
+
+The point is to warn, not to reassure. A change with no irreversible behaviour
+deletes the section instead of noting that it is reversible, because "this is
+reversible" invites the reader to stop reading the warnings that do exist.
 
 ## Rules that live elsewhere
 
