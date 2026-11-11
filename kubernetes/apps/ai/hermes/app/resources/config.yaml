@@ -23,6 +23,10 @@ terminal:
   backend: local
   cwd: /opt/data/workspace
   env_passthrough:
+    - MISE_CACHE_DIR
+    - MISE_DATA_DIR
+    - MISE_GLOBAL_CONFIG_FILE
+    - MISE_STATE_DIR
     - SEARXNG_URL
 
 webapp:

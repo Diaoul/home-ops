@@ -49,6 +49,27 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
+          mise-install:
+            image:
+              repository: ghcr.io/jdx/mise
+              tag: 2026.11.6@sha256:d4de1845114f6d73e90e15f7642885f74f3ca93074491038a2b9c43e4b897f21
+            command:
+              - /bin/sh
+              - -c
+              # An unreachable GitHub must not keep Hermes from starting.
+              - mise install || true
+            env: &mise
+              HOME: /opt/data
+              MISE_CACHE_DIR: /opt/data/.cache/mise
+              MISE_DATA_DIR: /opt/data/.local/share/mise
+              MISE_GLOBAL_CONFIG_FILE: /etc/mise/mise.toml
+              MISE_STATE_DIR: /opt/data/.local/state/mise
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext: *securityContext
         containers:
           app:
             image: *image
@@ -57,6 +78,8 @@ spec:
               - gateway
               - run
             env:
+              <<: *mise
+              PATH: /command:/opt/hermes/bin:/opt/hermes/.venv/bin:/opt/data/.local/bin:/opt/data/.local/share/mise/shims:/opt/mise:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
               S6_YES_I_WANT_A_WORLD_WRITABLE_RUN_BECAUSE_KUBERNETES: "1"
               HERMES_DASHBOARD: "true"
               HERMES_DASHBOARD_HOST: 0.0.0.0
@@ -174,6 +197,21 @@ spec:
             app:
               - path: /mnt/secrets/litellm
                 readOnly: true
+      mise:
+        type: image
+        image: ghcr.io/jdx/mise:2026.11.6@sha256:d4de1845114f6d73e90e15f7642885f74f3ca93074491038a2b9c43e4b897f21
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/mise
+                subPath: usr/local/bin
+                readOnly: true
+      mise-config:
+        type: configMap
+        name: hermes-mise
+        globalMounts:
+          - path: /etc/mise
+            readOnly: true
       run:
         type: emptyDir
         globalMounts:

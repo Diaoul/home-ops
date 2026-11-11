@@ -12,5 +12,8 @@ configMapGenerator:
   - name: hermes-config
     files:
       - ./resources/config.yaml
+  - name: hermes-mise
+    files:
+      - ./resources/mise.toml
 generatorOptions:
   disableNameSuffixHash: true
