@@ -1,6 +1,5 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  // The main ruleset allows only rebase and squash merges.
   automergeStrategy: "rebase",
   packageRules: [
     {
