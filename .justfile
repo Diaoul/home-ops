@@ -41,21 +41,34 @@ merge type="":
         types=("digest" "patch" "minor" "major")
     fi
 
+    merged=0 hold=0 failing=0 pending=0 errors=0
     for type in "${types[@]}"; do
-        label="type/${type}"
-
-        prs=$(gh pr list \
+        while IFS=$'\t' read -r pr state; do
+            case "${state}" in
+                hold) hold=$((hold + 1)) ;;
+                failing) failing=$((failing + 1)) ;;
+                pending) pending=$((pending + 1)) ;;
+                green)
+                    if gh pr merge "${pr}" --rebase; then
+                        merged=$((merged + 1))
+                    else
+                        errors=$((errors + 1))
+                    fi
+                    ;;
+            esac
+        done < <(gh pr list \
             --author app/kornandon \
-            --label "${label}" \
+            --label "type/${type}" \
             --state open \
-            --json number,labels \
-            --jq '.[] | select([.labels[].name] | index("hold") | not) | .number')
-
-        if [[ -z "${prs}" ]]; then
-            continue
-        fi
-
-        for pr in ${prs}; do
-            gh pr merge "${pr}" --rebase
-        done
+            --json number,labels,statusCheckRollup \
+            --jq '.[] | [.number, (
+                if ([.labels[].name] | index("hold")) then "hold"
+                else [.statusCheckRollup[] | (.conclusion // .state // "")] as $r
+                    | [.statusCheckRollup[] | (.status // "COMPLETED")] as $s
+                    | if any($r[]; IN("FAILURE", "ERROR", "CANCELLED", "TIMED_OUT", "ACTION_REQUIRED", "STARTUP_FAILURE")) then "failing"
+                      elif any($s[]; . != "COMPLETED") or any($r[]; IN("PENDING", "EXPECTED", "")) then "pending"
+                      else "green" end
+                end)] | @tsv')
     done
+
+    echo "Merged ${merged}. Not merged: ${hold} on hold, ${failing} failing CI, ${pending} CI still running, ${errors} merge errors."
