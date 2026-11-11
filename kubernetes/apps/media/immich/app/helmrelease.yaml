@@ -1,0 +1,166 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: immich
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    controllers:
+      server:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v3.4.0@sha256:7b7b575029168bfb9eb901d868ce7dbfda0d7818e78aaace29b7b8a08cd4e7d5
+            env:
+              TZ: Europe/Paris
+              IMMICH_PORT: &port 2283
+              IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+              IMMICH_TRUSTED_PROXIES: 10.42.0.0/16
+              DB_HOSTNAME: postgres18-immich-rw.database.svc.cluster.local
+              DB_PORT: "5432"
+              DB_USERNAME: immich
+              DB_DATABASE_NAME: immich
+              DB_VECTOR_EXTENSION: vectorchord
+              REDIS_HOSTNAME: immich-dragonfly.media.svc.cluster.local
+              REDIS_PORT: "6379"
+            envFrom:
+              - secretRef:
+                  name: immich
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server/ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+
+      machine-learning:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/immich-app/immich-machine-learning
+              tag: v3.4.0@sha256:f4e7275c9fbd956ed7bccc738ac57890bcbd9f9c17844d2ea0b137e38a083454
+            env:
+              TZ: Europe/Paris
+              IMMICH_PORT: &mlPort 3003
+              TRANSFORMERS_CACHE: /cache
+              HF_XET_CACHE: /cache/huggingface-xet
+              MPLCONFIGDIR: /cache/matplotlib-config
+            probes:
+              liveness: &mlProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *mlPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *mlProbes
+              startup:
+                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+
+    service:
+      server:
+        controller: server
+        ports:
+          http:
+            port: *port
+      machine-learning:
+        controller: machine-learning
+        ports:
+          http:
+            port: *mlPort
+
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: https://immich.${DOMAIN}/api/server/ping
+        hostnames:
+          - immich.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: server
+                port: http
+
+    persistence:
+      library:
+        type: nfs
+        server: singularity.milkyway
+        path: /volume1/media
+        advancedMounts:
+          server:
+            app:
+              - path: /data
+                subPath: photos/immich
+      model-cache:
+        existingClaim: immich-ml-cache
+        advancedMounts:
+          machine-learning:
+            app:
+              - path: /cache
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

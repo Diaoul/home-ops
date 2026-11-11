@@ -8,6 +8,7 @@ components:
 resources:
   - ./audiobookshelf/ks.yaml
   - ./bookboss/ks.yaml
+  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./seerr/ks.yaml
   - ./kavita/ks.yaml
