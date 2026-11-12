@@ -87,10 +87,14 @@ concerns out of one commit, this one keeps commits from being erased to make a b
 tidy. Legible history, not the most commits — a three-line remark that belongs in the same
 edit does not earn a commit of its own.
 
-Never close a pull request as superseded. When history genuinely must change — a leaked
-secret, a wrong sign-off — rewrite the branch in place and force-push; if the environment
-refuses the force-push, say so on the pull request and leave it open rather than starting a
-replacement.
+Never close a pull request as superseded. When history genuinely must change — a wrong
+sign-off — rewrite the branch in place and force-push; any force-push needs the repository
+owner's say-so, as `AGENTS.md` already requires. If the environment refuses the force-push, say
+so on the pull request and leave it open rather than starting a replacement.
+
+A leaked secret is not one of those cases. Once it has been pushed, forks, caches and this pull
+request's own view of the old commits keep it, so rewriting the branch fixes nothing: rotate the
+credential, then push the new encrypted value as an ordinary commit.
 
 ## One-way doors
 
