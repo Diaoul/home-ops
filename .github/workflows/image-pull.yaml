@@ -14,10 +14,6 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  # renovate: datasource=github-releases depName=home-operations/flate
-  FLATE_VERSION: 0.7.3
-
 jobs:
   filter:
     name: Image Pull - Filter
@@ -49,8 +45,7 @@ jobs:
         uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
         with:
           cache: false
-          tool_versions: |
-            github:home-operations/flate ${{ env.FLATE_VERSION }}
+          install_args: github:home-operations/flate
 
       - name: Extract Images
         id: extract
