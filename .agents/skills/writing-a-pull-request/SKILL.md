@@ -1,15 +1,50 @@
 ---
 name: writing-a-pull-request
 description: >
-  The repo-specific rules a pull request description needs that the template cannot hold:
-  counting peer practice, when to stack pull requests, keeping a pull request's history, and
-  which changes are one-way doors.
+  The repo-specific rules a pull request description needs: its shape, counting peer practice,
+  when to stack pull requests, keeping a pull request's history, and which changes are one-way
+  doors.
 ---
 
 # Writing a pull request
 
-`.github/PULL_REQUEST_TEMPLATE.md` carries the shape and the rules an author needs while
-writing. Four rules do not fit in a comment and live here.
+There is no template: this file carries both the shape and the rules behind it. Five sections,
+three of them optional, and each one has a rule for when it earns its place.
+
+## The shape
+
+```markdown
+## 🎯 Summary
+
+## 🔎 What to review
+
+## 🔑 Key decisions
+
+### <the decision, as a statement>
+
+**Why:** <the constraint that forces it>
+**Usage:** <what others do, or "first here">
+
+## ⚠️ Beware
+
+## 🔗 Related
+```
+
+- **`🎯 Summary`** — one or two sentences. Technical terms are fine: this is the abstract, not
+  marketing copy. What it adds or changes, the route or boundary it lives behind, and any piece
+  you had to add to make it work. No version numbers and no image digests, they rot in prose.
+- **`🔎 What to review`** — two to four bullets: where a mistake would matter, and what correct
+  looks like. Not a file list, the diff has that. Drop the section only when the change is
+  trivial.
+- **`🔑 Key decisions`** — one `###` per decision, titled with the decision itself, so a reviewer
+  can skim the headings and stop at the one they disagree with. `Why:` is the constraint in two
+  or three sentences, not the story. `Usage:` is the evidence — how many repositories do it, repo
+  precedent, an upstream default, or "first here". Rejections and deferrals are decisions too,
+  same shape. Drop the section when nothing in it is arguable.
+- **`⚠️ Beware`** — anything to know before this lands: a manual step Flux cannot do, or
+  behaviour that is irreversible or destructive. Drop the section when there is nothing; never
+  write a line saying there is nothing to beware of.
+- **`🔗 Related`** — only when applicable: `Closes #123`, depends on #456, or the stack order.
 
 ## Counting peer practice
 
@@ -52,8 +87,9 @@ tidy. Legible history, not the most commits — a three-line remark that belongs
 edit does not earn a commit of its own.
 
 Never close a pull request as superseded. When history genuinely must change — a leaked
-secret, a wrong sign-off — rewrite the branch in place and force-push; if the push is
-blocked, report the block instead of opening a replacement.
+secret, a wrong sign-off — rewrite the branch in place and force-push; if the environment
+refuses the force-push, say so on the pull request and leave it open rather than starting a
+replacement.
 
 ## One-way doors
 
