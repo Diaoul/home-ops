@@ -69,6 +69,8 @@ earlier one:
 - a CRD bump before the manifests that need the new field.
 
 `gh stack` administers it: `gh extension install github/gh-stack`, not installed by default.
+`gh stack submit` opens one pull request per branch, each based on the branch below it, so a
+reviewer sees only that layer's diff.
 
 The counterpart matters more here: do not stack because the changes are merely related. The
 resources in this repository are declarative and Flux orders them with `dependsOn`, so a
