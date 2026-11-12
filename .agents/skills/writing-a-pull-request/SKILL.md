@@ -109,5 +109,5 @@ change's own words, including what to do instead:
   `crds: CreateReplace` (`kubernetes/flux/cluster/ks.yaml`), so a downgrade does put the old
   schema back. What it cannot undo is the objects already stored under the new version
   (`status.storedVersions`), which the old schema may be unable to serve or may reject.
-- **Secret rotation is one way** — once the old credential is revoked nothing rolls back; it
-  survives only in the git history of the encrypted file.
+- **Secret rotation is one way** — once the old credential is revoked nothing rolls back; the
+  new value's only record is the encrypted file's git history.
