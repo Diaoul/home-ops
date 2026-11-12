@@ -68,10 +68,6 @@ spec:
             port: *port
     route:
       app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            url: https://mousehole.${DOMAIN}/health
-            conditions: ["[STATUS] == 200", "[BODY].lastMamContactResult == any(ok, throttled)"]
         hostnames:
           - mousehole.${DOMAIN}
         parentRefs:
