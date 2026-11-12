@@ -81,8 +81,7 @@ request is the default; a stack is the exception it has to earn.
 
 A pull request keeps its commits: intermediate ones record the decisions, and contributor pull
 requests are squash-merged by hand, so that history is discarded at the end if it is noise —
-there is nothing to gain by rewriting it first. (`just merge` does not keep it either: it only
-merges Renovate's pull requests, and rebases them.) A follow-up commit answering review is
+there is nothing to gain by rewriting it first. A follow-up commit answering review is
 normal — it shows what was asked and what changed.
 
 That is not `AGENTS.md`'s one-concern-per-commit rule read backwards: that one keeps two
