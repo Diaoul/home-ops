@@ -26,6 +26,17 @@ endpoints:
     conditions:
       - "[CONNECTED] == true"
 
+  - name: MAM
+    group: services
+    url: https://mousehole.diaoul.io/health
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].lastMamContactResult == any(ok, throttled)"
+    ui:
+      hide-hostname: true
+      hide-url: true
+
 metrics: true
 
 storage:
