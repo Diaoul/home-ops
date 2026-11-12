@@ -469,6 +469,12 @@ published history, which needs the repo owner's say-so.
 Before implementing a new app or configuration pattern, check the
 [onedr0p/home-ops](https://github.com/onedr0p/home-ops) repo as a reference.
 
+### Writing the pull request description
+
+`.agents/skills/writing-a-pull-request` holds the description's five sections and the rules
+behind them — when to stack pull requests, keeping their history, and which changes are one-way
+doors. Load it before opening one.
+
 ---
 
 ## Flux Reconciliation
