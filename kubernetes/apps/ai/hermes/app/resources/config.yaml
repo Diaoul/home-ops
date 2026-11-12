@@ -23,7 +23,6 @@ terminal:
   backend: local
   cwd: /opt/data/workspace
   env_passthrough:
-    - GH_TOKEN
     - MISE_CACHE_DIR
     - MISE_DATA_DIR
     - MISE_GLOBAL_CONFIG_FILE
