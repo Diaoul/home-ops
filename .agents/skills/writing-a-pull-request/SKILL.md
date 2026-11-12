@@ -23,7 +23,7 @@ three of them optional, and each one has a rule for when it earns its place.
 ### <the decision, as a statement>
 
 **Why:** <the constraint that forces it>
-**Usage:** <what others do, or "first here">
+**Precedent:** <what others do, or "first here">
 
 ## ⚠️ Beware
 
@@ -38,9 +38,9 @@ three of them optional, and each one has a rule for when it earns its place.
   trivial.
 - **`🔑 Key decisions`** — one `###` per decision, titled with the decision itself, so a reviewer
   can skim the headings and stop at the one they disagree with. `Why:` is the constraint in two
-  or three sentences, not the story. `Usage:` is the evidence — how many repositories do it, repo
-  precedent, an upstream default, or "first here". Rejections and deferrals are decisions too,
-  same shape. Drop the section when nothing in it is arguable.
+  or three sentences, not the story. `Precedent:` is the evidence — how many repositories do it,
+  repo precedent, an upstream default, or "first here". Rejections and deferrals are decisions
+  too, same shape. Drop the section when nothing in it is arguable.
 - **`⚠️ Beware`** — anything to know before this lands: a manual step Flux cannot do, or
   behaviour that is irreversible or destructive. Drop the section when there is nothing; never
   write a line saying there is nothing to beware of.
@@ -48,7 +48,7 @@ three of them optional, and each one has a rule for when it earns its place.
 
 ## Counting peer practice
 
-A `**Usage:**` figure is evidence, not decoration.
+A `**Precedent:**` figure is evidence, not decoration.
 
 - The denominator is the repositories that **contain the app**, never the candidates that were
   merely scanned. Twenty popular repos scanned, ten of them installing the app, is 10/… —
