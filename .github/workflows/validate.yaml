@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: Validate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  manifests:
+    name: Validate - Manifests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@b44d12e7d0d8ee7461bb893e1b1993500433185b # v5.2.7
+        with:
+          cache: false
+          # uv: the pypi backend builds yamllint with it.
+          install_args: uv kubeconform kustomize sops yamlfmt yq pypi:yamllint github:home-operations/flate
+
+      - name: Validate Manifests
+        run: bash scripts/kubeconform.sh kubernetes
+
+      - name: Check SOPS Encryption
+        run: bash scripts/sops-encrypted.sh
+
+      - name: Lint YAML
+        run: yamllint .
+
+      - name: Check YAML Formatting
+        run: yamlfmt -lint "**/*.yaml"
+
+      - name: Render Flux Resources
+        run: flate test all --path kubernetes
