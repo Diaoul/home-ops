@@ -35,4 +35,5 @@ spec:
         kind: Secret
     substitute:
       APP: immich
+      DRAGONFLY_LUA_FLAGS: allow-undeclared-keys
   targetNamespace: media
