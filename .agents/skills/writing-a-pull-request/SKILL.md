@@ -105,7 +105,9 @@ change's own words, including what to do instead:
   new PVC and a copy of the data.
 - **A PVC cannot move between storage classes** — the move is a copy into a new volume, or
   starting over.
-- **A CRD upgrade is not reversible** — HelmReleases here upgrade CRDs with `crds: CreateReplace`
-  (`kubernetes/flux/cluster/ks.yaml`), and a downgrade does not restore the old schema.
+- **A CRD upgrade is not really reversible** — HelmReleases here upgrade CRDs with
+  `crds: CreateReplace` (`kubernetes/flux/cluster/ks.yaml`), so a downgrade does put the old
+  schema back. What it cannot undo is the objects already stored under the new version
+  (`status.storedVersions`), which the old schema may be unable to serve or may reject.
 - **Secret rotation is one way** — once the old credential is revoked nothing rolls back; it
   survives only in the git history of the encrypted file.
