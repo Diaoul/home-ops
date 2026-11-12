@@ -56,7 +56,8 @@ A `**Usage:**` figure is evidence, not decoration.
 - Say which repositories were left out and why — no manifest, an unreadable secret, no
   declared value — so the denominator can be rebuilt from the description alone.
 - A bare "most common" is a defect: nobody can check it.
-- Attach the survey output to the pull request rather than narrating the tooling in the body.
+- Attach the survey output as a collapsed `<details><summary>Peer survey</summary>` block in
+  the body, rather than narrating the tooling.
 
 ## When to stack pull requests
 
