@@ -76,10 +76,11 @@ request is the default; a stack is the exception it has to earn.
 
 ## History, not rewrites
 
-A pull request keeps its commits: intermediate ones record the decisions, and a squash-merge
-discards them at the end if they are noise, so there is nothing to gain by rewriting them
-first. A follow-up commit answering review is normal — it shows what was asked and what
-changed.
+A pull request keeps its commits: intermediate ones record the decisions, and contributor pull
+requests are squash-merged by hand, so that history is discarded at the end if it is noise —
+there is nothing to gain by rewriting it first. (`just merge` does not keep it either: it only
+merges Renovate's pull requests, and rebases them.) A follow-up commit answering review is
+normal — it shows what was asked and what changed.
 
 That is not `AGENTS.md`'s one-concern-per-commit rule read backwards: that one keeps two
 concerns out of one commit, this one keeps commits from being erased to make a branch look
