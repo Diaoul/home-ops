@@ -1,9 +1,9 @@
 ---
 name: writing-a-pull-request
 description: >
-  The repo-specific rules a pull request description needs: its shape, counting peer practice,
-  when to stack pull requests, keeping a pull request's history, and which changes are one-way
-  doors.
+  Use when opening a pull request in home-ops or writing its description. Covers the five
+  sections and the rules behind them: counting peer practice, when to stack pull requests,
+  keeping a pull request's history, and which changes are one-way doors.
 ---
 
 # Writing a pull request
