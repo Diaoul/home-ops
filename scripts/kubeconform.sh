@@ -8,13 +8,16 @@ KUBERNETES_DIR=$1
 
 kustomize_args=("--load-restrictor=LoadRestrictionsNone")
 kustomize_config="kustomization.yaml"
+# DNSEndpoint: the schema checks dnsName against DNS-1123, which an unsubstituted ${DOMAIN} fails.
 kubeconform_args=(
     "-strict"
     "-ignore-missing-schemas"
     "-skip"
-    "Gateway,HTTPRoute,Secret,ReplicationDestination,ReplicationSource"
+    "Gateway,HTTPRoute,Secret,DNSEndpoint"
     "-schema-location"
     "default"
+    "-schema-location"
+    "https://k8s-schemas.home-operations.com/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
     "-schema-location"
     "https://kubernetes-schemas.pages.dev/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
     "-schema-location"
