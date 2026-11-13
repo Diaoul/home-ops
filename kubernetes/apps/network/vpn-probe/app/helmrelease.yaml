@@ -41,8 +41,7 @@ spec:
               repository: docker.io/alpine/curl
               tag: 8.23.0@sha256:423fe846edd6e4d3181e3092f2c322c85861871d0dc1e774346e1d02684e5e4c
             command:
-              - "/bin/sh"
-              - "/scripts/probe.sh"
+              - /scripts/probe.sh
             env:
               TZ: Europe/Paris
             envFrom:
@@ -61,6 +60,6 @@ spec:
       scripts:
         type: configMap
         name: vpn-probe
+        defaultMode: 0775
         globalMounts:
-          - path: /scripts
-            readOnly: true
+          - readOnly: true
