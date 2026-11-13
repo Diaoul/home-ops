@@ -16,6 +16,9 @@ spec:
       delayStartSeconds: "5"
       env:
         TZ: Europe/Paris
+      envFrom:
+        - secretRef:
+            name: gatus
     sidecar:
       kinds:
         httproute:

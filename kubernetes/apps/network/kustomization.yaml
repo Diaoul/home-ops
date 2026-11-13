@@ -13,3 +13,4 @@ resources:
   - ./k8s-gateway/ks.yaml
   - ./multus/ks.yaml
   - ./singularity/ks.yaml
+  - ./vpn-probe/ks.yaml
