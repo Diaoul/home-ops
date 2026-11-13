@@ -1,0 +1,75 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vpn-probe
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  interval: 1h
+  values:
+    controllers:
+      vpn-probe:
+        type: cronjob
+        cronjob:
+          schedule: "*/5 * * * *"
+          timeZone: Europe/Paris
+          backoffLimit: 0
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          ttlSecondsAfterFinished: 3600
+        pod:
+          restartPolicy: Never
+          annotations:
+            k8s.v1.cni.cncf.io/networks: |-
+              [{
+                "name": "vpn",
+                "namespace": "network",
+                "ips": ["10.0.90.10/24"],
+                "mac": "32:0b:d8:1f:b6:f1"
+              }]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 568
+            runAsGroup: 568
+        containers:
+          app:
+            image:
+              repository: docker.io/alpine/curl
+              tag: 8.23.0@sha256:423fe846edd6e4d3181e3092f2c322c85861871d0dc1e774346e1d02684e5e4c
+            command:
+              - /bin/sh
+              - -c
+              - |
+                trace() { curl -fsS -m 10 "$@" https://1.1.1.1/cdn-cgi/trace | sed -n 's/^ip=//p'; }
+                vpn=$(trace)
+                wan=$(trace --interface eth0)
+                if [ -z "$vpn" ]; then
+                  query="success=false&error=no%20egress%20through%20the%20VPN"
+                elif [ -z "$wan" ]; then
+                  query="success=false&error=no%20WAN%20egress%20to%20compare%20against"
+                elif [ "$vpn" = "$wan" ]; then
+                  query="success=false&error=VPN%20traffic%20leaves%20through%20the%20WAN"
+                else
+                  query="success=true"
+                fi
+                curl -fsS -m 10 -o /dev/null -X POST -H "Authorization: Bearer ${GATUS_VPN_TOKEN}" \
+                  "http://gatus-gatus-sidecar.observability.svc.cluster.local:8080/api/v1/endpoints/services_vpn/external?${query}"
+                exit 0
+            env:
+              TZ: Europe/Paris
+            envFrom:
+              - secretRef:
+                  name: vpn-probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 64Mi

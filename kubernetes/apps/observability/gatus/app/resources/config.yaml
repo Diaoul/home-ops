@@ -37,6 +37,13 @@ endpoints:
       hide-hostname: true
       hide-url: true
 
+external-endpoints:
+  - name: VPN
+    group: services
+    token: ${GATUS_VPN_TOKEN}
+    heartbeat:
+      interval: 10m
+
 metrics: true
 
 storage:
