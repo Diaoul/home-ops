@@ -55,9 +55,15 @@ A `**Precedent:**` figure is evidence, not decoration.
   not 20/….
 - Say which repositories were left out and why — no manifest, an unreadable secret, no
   declared value — so the denominator can be rebuilt from the description alone.
-- A bare "most common" is a defect: nobody can check it.
-- Attach the survey output as a collapsed `<details><summary>Peer survey</summary>` block in
-  the body, rather than narrating the tooling.
+- Write the figure as a count, `7/12`, on the `Precedent:` line itself. A word in its place
+  ("most", "about half", "a minority") is a defect, even when a reviewer asks for less detail:
+  the count is how a reader weighs a decision without opening the survey.
+- Name a weak result as one. When few repositories do it, or they split, say so on the line and
+  let `Why:` carry the decision; a choice only 3/20 make needs its constraint stated outright.
+- Attach the survey as a collapsed `<details><summary>Peer survey</summary>` block at the end of
+  the body, rather than narrating the tooling. In it, one table per decision listing every
+  counted repository and what it does, then the left-out repositories with the reason for each,
+  so each count can be recomputed from the block alone.
 
 ## When to stack pull requests
 
