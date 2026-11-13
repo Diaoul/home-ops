@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: immich
+spec:
+  cluster:
+    name: postgres18-immich
+  name: immich
+  login: true
+  passwordSecret:
+    name: immich-db
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: immich
+spec:
+  cluster:
+    name: postgres18-immich
+  name: immich
+  owner: immich
+  # Immich connects as a non-superuser, so it cannot create these itself.
+  extensions:
+    - name: vector
+      ensure: present
+      version: 0.8.7
+    - name: vchord
+      ensure: present
+      version: 1.1.1
+    - name: uuid-ossp
+      ensure: present
+    - name: unaccent
+      ensure: present
+    - name: cube
+      ensure: present
+    - name: earthdistance
+      ensure: present
+    - name: pg_trgm
+      ensure: present
