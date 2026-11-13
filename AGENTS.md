@@ -322,7 +322,8 @@ Reclaim policies default to `retain` — leave them out.
    that use ConfigMaps or Secrets
 5. **OCI charts**: Use `chartRef` (OCIRepository) not inline `chart:` in HelmReleases
 6. **No Ingress**: Use HTTPRoute + Envoy Gateway (Gateway API)
-7. **Timezone**: Always set `TZ: Europe/Paris` in container env
+7. **Timezone**: Always set `TZ: Europe/Paris` in container env, except in a container that
+   never reads local time
 8. **UID/GID**: Default is `568` for all app containers unless image requires otherwise
 
 ---
