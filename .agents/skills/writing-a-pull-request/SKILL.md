@@ -58,6 +58,9 @@ A `**Precedent:**` figure is evidence, not decoration.
 - Write the figure as a count, `7/12`, on the `Precedent:` line itself. A word in its place
   ("most", "about half", "a minority") is a defect, even when a reviewer asks for less detail:
   the count is how a reader weighs a decision without opening the survey.
+- Count the property the decision turns on, not the mechanism that delivers it. A library
+  decision is about where the data lives: an `existingClaim` backed by an NFS storage class is on
+  the NAS, the same as an `nfs:` mount. Splitting by mechanism can turn a majority into a split.
 - Name a weak result as one. When few repositories do it, or they split, say so on the line and
   let `Why:` carry the decision; a choice only 3/20 make needs its constraint stated outright.
 - Attach the survey as a collapsed `<details><summary>Peer survey</summary>` block at the end of
