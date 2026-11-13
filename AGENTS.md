@@ -545,4 +545,5 @@ from the defaults above.
     arbitrary URLs; restricts who may call it and fences it off the LAN
   - `security/kanidm/app/ciliumnetworkpolicy.yaml` — the IdP, trusting
     X-Forwarded-For from any source; only envoy-external and kaniop may reach it
-- Do not suffix Secret names with `-secret` — use the app name directly (e.g. `name: myapp` not `name: myapp-secret`)
+- Do not put the kind in an object's name (`-secret`, `-configmap`, `-pvc`…) — name it after
+  the app (`name: myapp`, not `myapp-configmap`); `kind:` already says what it is
