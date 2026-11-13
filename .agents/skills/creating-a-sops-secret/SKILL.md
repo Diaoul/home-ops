@@ -2,8 +2,7 @@
 name: creating-a-sops-secret
 description: >
   Create a new SOPS-encrypted Secret in home-ops without ever seeing its values. Use when an
-  app needs a new `secret.sops.yaml` or a CNPG `<app>.sops.yaml`, on a machine that holds only
-  the public keys.
+  app needs a new `secret.sops.yaml` or a CNPG `<app>.sops.yaml`.
 ---
 
 # Creating a SOPS secret
@@ -11,6 +10,10 @@ description: >
 Encrypting needs only the public keys: the age recipient in `.sops.yaml`, and the PGP key it
 names by fingerprint, which `https://github.com/Diaoul.gpg` serves. Nothing here decrypts, so
 a file cannot be read back to check it: get it right in the command that writes it.
+
+`sops` itself is denied in `.claude/settings.json`; encrypt through `scripts/sops-encrypt.sh`,
+which takes the target path, reads the plaintext Secret on stdin, and refuses to overwrite an
+existing file. Each call asks the user first.
 
 ## Generated values
 
@@ -21,7 +24,7 @@ have, so `.sops.yaml` picks the right rule:
 ```sh
 path=kubernetes/apps/<namespace>/<app>/app/secret.sops.yaml
 pw=$(openssl rand -base64 32 | tr -d '\n=+/')
-cat <<EOF | sops --encrypt --filename-override "$path" --input-type yaml --output-type yaml /dev/stdin > "$path"
+cat <<EOF | bash scripts/sops-encrypt.sh "$path"
 # yaml-language-server: \$schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
 apiVersion: v1
 kind: Secret

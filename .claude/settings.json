@@ -60,6 +60,7 @@
       "WebSearch"
     ],
     "ask": [
+      "Bash(bash scripts/sops-encrypt.sh *)",
       "Bash(flux resume *)",
       "Bash(flux suspend *)",
       "Bash(kubectl annotate *)",
