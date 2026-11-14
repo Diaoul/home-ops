@@ -317,7 +317,23 @@ def test_pick_library_hint_wins():
                    "thumbs": _entry(mounts=["/usr/src/app/upload/thumbs"])}
     assert survey.pick_library(persistence, "thumbs") == "thumbs"
     assert survey.pick_library(persistence, "/usr/src/app/upload") == "library"
-    assert survey.pick_library(persistence, "missing") == ""
+    assert survey.pick_library(persistence, "missing") == "library"
+
+
+def test_pick_library_reads_the_mount_path_not_the_controller():
+    persistence = {"library": _entry("existingClaim", ["backup/restic:/data", "/usr/src/app/upload"])}
+    assert survey.pick_library(persistence) == "library"
+
+
+def test_pick_library_skips_the_database_volume():
+    persistence = {"database": _entry(mounts=["postgres/app:/var/lib/postgresql/data"]),
+                   "library": _entry(mounts=["/usr/src/app/upload"])}
+    assert survey.pick_library(persistence) == "library"
+
+
+@pytest.mark.parametrize("name", ["runner-data", "devices-media", "logos-media", "templates-library"])
+def test_pick_library_does_not_veto_on_a_prefix(name):
+    assert survey.pick_library({name: _entry(mounts=["/srv"])}) == name
 
 
 def test_namespace_ks_keeps_only_the_apps_kustomizations():

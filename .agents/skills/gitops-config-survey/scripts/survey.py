@@ -956,30 +956,46 @@ def library_store(mat: Material, library: dict, app_root: str, component_dirs: l
     return {"store": "unknown", "via": f"claim {claim} not declared in git"}
 
 
-# Matched as word prefixes, so `media2` and `logs` count.
-DATA_HINTS = ("library", "media", "photos", "upload", "data", "books", "music", "movies",
-              "downloads", "pictures", "images", "storage", "nas", "files", "documents")
-NOT_DATA_HINTS = ("config", "cache", "tmp", "temp", "log", "transcode", "metadata", "backup",
-                  "secret", "run", "dev", "shm")
+DATA_WORDS = {"library", "libraries", "media", "photo", "upload", "data", "book", "music",
+              "movie", "download", "picture", "image", "storage", "nas", "file", "document"}
+NOT_DATA_WORDS = {"config", "configuration", "cache", "tmp", "tmpfs", "temp", "temporary", "log",
+                  "transcode", "metadata", "backup", "secret", "run", "dev", "shm",
+                  "postgres", "postgresql", "pgdata", "database", "db", "redis", "valkey"}
+
+
+def _entry_words(name: str, mounts: list[str]) -> set[str]:
+    """Words of an entry's name and mount paths, a trailing digit or plural `s` dropped.
+
+    advancedMounts read `controller/container:/path`; only the path names the data.
+    """
+    paths = [m.split(":", 1)[1] if ":" in m and not m.startswith("/") else m for m in mounts]
+    words = set()
+    for raw in re.split(r"[^a-z0-9]+", " ".join([name, *paths]).lower()):
+        w = raw.rstrip("0123456789")
+        if w:
+            words.update({w, w[:-1]} if w.endswith("s") else {w})
+    return words
 
 
 def pick_library(persistence: dict[str, dict], hint: str | None = None) -> str:
     """The entry holding the app's bulk data, as opposed to its config, cache or scratch.
 
-    `hint` names the entry or a mount path substring and wins outright.
+    `hint`, an entry name or mount path substring, wins where it matches.
     """
     if hint:
         low = hint.lower()
-        return next((n for n, e in persistence.items()
-                     if n.lower() == low or any(low in m.lower() for m in e["mounts"])), "")
+        hit = next((n for n, e in persistence.items()
+                    if n.lower() == low or any(low in m.lower() for m in e["mounts"])), "")
+        if hit:
+            return hit
     best, best_score = "", 0
     for name, entry in persistence.items():
         if entry["type"] in ("emptyDir", "configMap", "secret"):
             continue
-        words = re.split(r"[^a-z0-9]+", " ".join([name, *entry["mounts"]]).lower())
-        if any(w.startswith(NOT_DATA_HINTS) for w in words if w):
+        words = _entry_words(name, entry["mounts"])
+        if words & NOT_DATA_WORDS:
             continue
-        score = 2 * any(w.startswith(DATA_HINTS) for w in words if w)
+        score = 2 * bool(words & DATA_WORDS)
         score += entry["type"] == "nfs" or store_kind(entry["storage_class"]) == "nas"
         if score > best_score:
             best, best_score = name, score
@@ -1592,8 +1608,8 @@ def main() -> int:
     ap.add_argument("--top", type=int, default=8, help="values shown per key (default 8)")
     ap.add_argument("--min-repos", type=int, default=2, help="drop keys seen in fewer repos")
     ap.add_argument("--library", default=None,
-                    help="persistence entry name or mount path that holds the app's data "
-                         "(default: guessed from names, mounts and type)")
+                    help="persistence entry name or mount path that holds the app's data, "
+                         "in every repo it matches (default: guessed from names, mounts and type)")
     ap.add_argument("--json", default=None, help="write the full result here")
     ap.add_argument("--markdown", default=None,
                     help="write the PR's <details> peer-survey block here (needs --facts)")

@@ -43,7 +43,8 @@ fails with an explanation rather than an empty list without one. A cold run take
   pull request: the run line with its totals, one table per fact with its `n/N` counts, then the
   left-out repositories by reason. Paste it; never retype the rows. Add a table by hand only for a
   fact the tool does not derive (a Dragonfly flag), and keep its rows to the same repositories.
-- `--library NAME_OR_MOUNT` — the persistence entry holding the app's data, when the guess is wrong.
+- `--library NAME_OR_MOUNT` — the persistence entry holding the app's data, when the guess is
+  wrong. It applies to every repository it matches; the others keep the guess.
 - `--candidates FILE` — `owner/name` lines instead of the topic search. Each still goes through
   the app-existence test, so the denominator stays the repositories that run the app.
 - `--filter`, `--top`, `--min-repos`, `--chart` — key substrings to keep, values shown per key,
