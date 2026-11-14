@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import http.client
 import json
 import os
 import posixpath
@@ -85,6 +86,37 @@ class RateLimited(GitHubError):
     pass
 
 
+RETRIES = 3
+
+
+def _git(args: list[str], what: str, timeout: int) -> str:
+    try:
+        proc = subprocess.run(["git", *args], capture_output=True, text=True, timeout=timeout,
+                              # a missing or private repo would otherwise prompt for credentials
+                              env={**os.environ, "GIT_TERMINAL_PROMPT": "0"})
+    except subprocess.TimeoutExpired as exc:
+        raise GitHubError(f"{what}: timed out after {timeout}s") from exc
+    if proc.returncode != 0:
+        raise GitHubError(f"{what}: {proc.stderr.strip()[:200]}")
+    return proc.stdout
+
+
+def _open(req: urllib.request.Request, what: str) -> tuple[bytes, object]:
+    """urlopen, retrying dropped connections and 5xx; a 4xx goes back to the caller."""
+    for attempt in range(RETRIES):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return resp.read(), resp.headers
+        except urllib.error.HTTPError as exc:
+            if exc.code < 500 or attempt == RETRIES - 1:
+                raise
+        except (urllib.error.URLError, http.client.HTTPException, OSError) as exc:
+            if attempt == RETRIES - 1:
+                raise GitHubError(f"{what}: {exc}") from exc
+        time.sleep(2 ** attempt)
+    raise AssertionError("unreachable")
+
+
 def github_token() -> str | None:
     for var in ("GITHUB_TOKEN", "GH_TOKEN", "GITHUB_PAT"):
         tok = os.environ.get(var)
@@ -133,13 +165,15 @@ class GitHub:
             headers["Authorization"] = f"Bearer {self.token}"
         req = urllib.request.Request(url, headers=headers)
         try:
-            with urllib.request.urlopen(req, timeout=60) as resp:
-                body = resp.read()
-                self.api_calls += 1
-                hdrs = dict(resp.headers)
-                self.core_left = int(hdrs.get("x-ratelimit-remaining", -1))
-                self.core_reset = int(hdrs.get("x-ratelimit-reset", 0) or 0)
-                return resp.status, json.loads(body or b"null"), hdrs
+            body, resp_headers = _open(req, what)
+            self.api_calls += 1
+            hdrs = dict(resp_headers)
+            self.core_left = int(hdrs.get("x-ratelimit-remaining", -1))
+            self.core_reset = int(hdrs.get("x-ratelimit-reset", 0) or 0)
+            try:
+                return 200, json.loads(body or b"null"), hdrs
+            except ValueError as exc:
+                raise GitHubError(f"{what}: response is not JSON") from exc
         except urllib.error.HTTPError as exc:
             body = exc.read().decode("utf-8", "replace")[:300]
             self.api_calls += 1
@@ -220,26 +254,19 @@ class GitHub:
             if self.offline:
                 raise GitHubError(f"git list {slug}: no cached clone and --offline is set")
             dest.parent.mkdir(parents=True, exist_ok=True)
-            url = f"{CLONE_BASE}/{slug}.git"
             # no --branch: HEAD is the default branch, whatever it is called
-            proc = subprocess.run(
-                ["git", "clone", "--filter=blob:none", "--no-checkout", "--depth", "1",
-                 "--quiet", "--no-tags", url, str(dest)],
-                capture_output=True, text=True, timeout=300,
-            )
-            if proc.returncode != 0:
-                raise GitHubError(f"git list {slug}: {proc.stderr.strip()[:200]}")
+            try:
+                _git(["clone", "--filter=blob:none", "--no-checkout", "--depth", "1", "--quiet",
+                      "--no-tags", f"{CLONE_BASE}/{slug}.git", str(dest)], f"git clone {slug}", 300)
+            except GitHubError:
+                shutil.rmtree(dest, ignore_errors=True)
+                raise
         self.git_calls += 1
-        proc = subprocess.run(["git", "-C", str(dest), "rev-parse", "HEAD"],
-                              capture_output=True, text=True, timeout=60)
-        self.last_rev = proc.stdout.strip() if proc.returncode == 0 else branch
-        proc = subprocess.run(["git", "-C", str(dest), "ls-tree", "-r", "HEAD"],
-                              capture_output=True, text=True, timeout=120)
-        if proc.returncode != 0:
-            raise GitHubError(f"git ls-tree {slug}: {proc.stderr.strip()[:200]}")
+        self.last_rev = _git(["-C", str(dest), "rev-parse", "HEAD"], f"git {slug}", 60).strip()
+        listing = _git(["-C", str(dest), "ls-tree", "-r", "-z", "HEAD"], f"git ls-tree {slug}", 120)
         entries = []
-        for line in proc.stdout.splitlines():
-            # "<mode> <type> <sha>\t<path>"
+        for line in listing.split("\0"):
+            # "<mode> <type> <sha>\t<path>", the path unquoted thanks to -z
             meta, _, path = line.partition("\t")
             parts = meta.split()
             if len(parts) < 3:
@@ -299,10 +326,10 @@ class GitHub:
             url = f"{RAW_BASE}/{slug}/{ref}/{urllib.parse.quote(path)}"
             req = urllib.request.Request(url, headers={"User-Agent": "home-ops-survey"})
             try:
-                with urllib.request.urlopen(req, timeout=60) as resp:
-                    text = resp.read().decode("utf-8", "replace")
+                body, _ = _open(req, f"blob {slug}:{path}")
+                text = body.decode("utf-8", "replace")
                 break
-            except (urllib.error.URLError, urllib.error.HTTPError) as exc:
+            except (urllib.error.HTTPError, GitHubError) as exc:
                 last_exc = exc
                 continue
         else:
