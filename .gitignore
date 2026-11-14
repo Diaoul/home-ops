@@ -12,3 +12,6 @@ talosconfig
 /talos/output/
 # Misc.
 .venv/
+
+# Python bytecode from running repo scripts and their tests
+__pycache__/
