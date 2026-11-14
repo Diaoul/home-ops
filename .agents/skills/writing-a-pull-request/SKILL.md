@@ -48,7 +48,8 @@ three of them optional, and each one has a rule for when it earns its place.
 
 ## Counting peer practice
 
-A `**Precedent:**` figure is evidence, not decoration.
+A `**Precedent:**` figure is evidence, not decoration. `.agents/skills/gitops-config-survey`
+produces it: its `--markdown` output is the survey block described below.
 
 - The denominator is the repositories that **contain the app**, never the candidates that were
   merely scanned. Twenty popular repos scanned, ten of them installing the app, is 10/… —
