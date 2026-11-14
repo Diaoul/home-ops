@@ -1353,6 +1353,20 @@ def facts_for(mat: Material, app: str, release_paths: list[str],
     }
 
 
+def unknown_facts(slug: str, release_paths: list[str], why: str) -> dict:
+    """A row for a repo whose facts could not be derived: it still runs the app, so it
+    stays in every table's denominator."""
+    return {
+        "repo": slug, "app_root": "", "release_paths": release_paths, "ks_paths": [],
+        "components": [], "components_extra": [], "depends_on": [], "persistence": {},
+        "library": {"store": "unknown", "via": why},
+        "db": {"service": "", "source": "none", "cluster": "", "match": "none",
+               "other_operator": "", "class": "unresolved"},
+        "hpa": None, "hpa_paths": [], "zeroscaler": None, "ext_auth": None,
+        "postgres_controller": None,
+    }
+
+
 # --------------------------------------------------------------------------- #
 # reporting
 # --------------------------------------------------------------------------- #
@@ -1400,6 +1414,10 @@ def _db_label(db: dict) -> str:
     return "-"
 
 
+def _flag(value, yes: str, no: str) -> str:
+    return "unknown" if value is None else yes if value else no
+
+
 def report_facts(rows: list[dict], app: str):
     n = len(rows)
     print(f"\nfacts: app={app!r}  N={n} repos (denominator = repos that run the app)\n")
@@ -1422,10 +1440,10 @@ def report_facts(rows: list[dict], app: str):
             db.get("image_short") or "-",
             ",".join(db.get("extensions") or []) or "-",
             f"{db.get('storage_class') or '-'} {db.get('storage_size') or ''}".strip(),
-            "y" if r["hpa"] else "-",
-            "y" if r["zeroscaler"] else "-",
-            "y" if r["ext_auth"] else "-",
-            "y" if r["postgres_controller"] else "-",
+            _flag(r["hpa"], "y", "-"),
+            _flag(r["zeroscaler"], "y", "-"),
+            _flag(r["ext_auth"], "y", "-"),
+            _flag(r["postgres_controller"], "y", "-"),
         ])
     widths = [max(len(_clip(row[i], 40)) for row in [header] + table) for i in range(len(header))]
     fmt = " | ".join("{:<%d}" % w for w in widths)
@@ -1447,10 +1465,10 @@ def report_facts(rows: list[dict], app: str):
     tally("db storage class", [(r["db"].get("storage_class") or "none") for r in rows])
     tally("library mount", [(r["library"].get("type") or "none") for r in rows])
     tally("library store", [(r["library"].get("store") or "none") for r in rows])
-    tally("zeroscaler", ["present" if r["zeroscaler"] else "absent" for r in rows])
-    tally("HPA", ["present" if r["hpa"] else "absent" for r in rows])
-    tally("ext-auth", ["present" if r["ext_auth"] else "absent" for r in rows])
-    tally("own postgres controller", ["yes" if r["postgres_controller"] else "no" for r in rows])
+    tally("zeroscaler", [_flag(r["zeroscaler"], "present", "absent") for r in rows])
+    tally("HPA", [_flag(r["hpa"], "present", "absent") for r in rows])
+    tally("ext-auth", [_flag(r["ext_auth"], "present", "absent") for r in rows])
+    tally("own postgres controller", [_flag(r["postgres_controller"], "yes", "no") for r in rows])
     tally("db extensions", [",".join(r["db"].get("extensions") or []) or "none" for r in rows])
     tally("db preload", [",".join(r["db"].get("preload") or []) or "none" for r in rows])
     vec = [r for r in rows if r["db"].get("vector_capable")]
@@ -1560,8 +1578,8 @@ def write_markdown(path: str, rows: list[dict], skipped: list[dict], discovery: 
           [(r["repo"], [_md_code(",".join(r["components"]) or "-")]) for r in rows])
     for title, key in (("HPA", "hpa"), ("`zeroscaler`", "zeroscaler"), ("ext-auth", "ext_auth")):
         table(title, ["Present"],
-              [(r["repo"], ["yes" if r[key] else "no"]) for r in rows],
-              ["yes" if r[key] else "no" for r in rows])
+              [(r["repo"], [_flag(r[key], "yes", "no")]) for r in rows],
+              [_flag(r[key], "yes", "no") for r in rows])
 
     if skipped:
         out.append("### Left out")
@@ -1654,6 +1672,7 @@ def main() -> int:
                 facts.append(facts_for(mat, app, hit_paths, args.library))
             except Exception as exc:  # one odd repo must not sink the survey
                 print(f"  ! facts failed for {slug}: {exc!r}", file=sys.stderr)
+                facts.append(unknown_facts(slug, hit_paths, f"facts failed: {exc!r}"))
 
     out_repos = Path(args.out_repos or (workdir / f"{app}-repos.txt"))
     out_repos.write_text("\n".join(sorted({c["full_name"] for c in matched_c})) + "\n")

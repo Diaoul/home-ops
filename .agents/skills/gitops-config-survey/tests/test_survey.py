@@ -383,3 +383,14 @@ def test_a_templated_db_host_matches_its_cluster():
     db = survey.resolve_db(values, mat, "photos", "k/media/photos", {"APP": "immich"})
     assert db["cluster"] == "postgres-immich"
     assert db["match"] == "host-match"
+
+
+def test_a_failed_facts_row_still_renders(tmp_path, capsys):
+    rows = [survey.unknown_facts("a/one", ["k/immich/app/helmrelease.yaml"], "facts failed: x")]
+    survey.report_facts(rows, "immich")
+    out = tmp_path / "survey.md"
+    survey.write_markdown(str(out), rows, [], {}, "immich", ["--app", "immich", "--facts"])
+    text = out.read_text()
+    assert "unresolved 1/1" in text
+    assert "unknown 1/1" in text and "no 1/1" not in text
+    assert "N=1 repos" in capsys.readouterr().out
