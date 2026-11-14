@@ -217,6 +217,8 @@ class GitHub:
         if (dest / ".git").exists() and not self._fresh(dest / ".git"):
             shutil.rmtree(dest)
         if not (dest / ".git").exists():
+            if self.offline:
+                raise GitHubError(f"git list {slug}: no cached clone and --offline is set")
             dest.parent.mkdir(parents=True, exist_ok=True)
             url = f"{CLONE_BASE}/{slug}.git"
             # no --branch: HEAD is the default branch, whatever it is called
@@ -244,6 +246,21 @@ class GitHub:
                 continue
             entries.append({"path": path, "sha": parts[2], "type": parts[1]})
         return entries, False
+
+    def list_tree(self, slug: str, branch: str, listing: str,
+                  refresh: bool = False) -> tuple[list[dict], bool]:
+        if listing == "git":
+            return self.list_tree_git(slug, branch)
+        try:
+            return self.list_tree_api(slug, branch, refresh=refresh)
+        except GitHubError as exc:
+            if listing == "api":
+                raise
+            # Quota, a 404 on a guessed branch or an outage: the git listing needs no
+            # quota and follows the real default branch.
+            print(f"  ~ api tree failed for {slug} ({str(exc)[:80]}); using git listing",
+                  file=sys.stderr)
+            return self.list_tree_git(slug, branch)
 
     def list_tree_walk(self, slug: str, branch: str) -> list[dict]:
         """Fallback for `truncated: true`: BFS the contents API (one call per dir)."""
@@ -273,6 +290,7 @@ class GitHub:
         if cache and cache.exists():
             return cache.read_text(encoding="utf-8", errors="replace")
         if self.offline:
+            print(f"  ! {slug}:{path} not cached and --offline is set", file=sys.stderr)
             return None
         refs = [rev] if rev else []
         refs += [r for r in ("HEAD",) if r not in refs]
@@ -533,21 +551,11 @@ def discover(args, gh: GitHub) -> tuple[list[dict], list[dict], list[dict], int]
         examined += 1
 
         branch = cand["default_branch"] or "main"
-        entries: list[dict] = []
-        truncated = False
         try:
-            entries, truncated = gh.list_tree_api(slug, branch, refresh=args.refresh)
+            entries, truncated = gh.list_tree(slug, branch, args.listing, refresh=args.refresh)
         except GitHubError as exc:
-            # Any API failure (quota, 404 on a guessed branch, outage) falls back to
-            # the quota-free blob-less git listing, which uses the real default branch.
-            if args.listing == "api":
-                print(f"  ~ api tree failed for {slug} ({str(exc)[:80]}); "
-                      f"using git listing", file=sys.stderr)
-            try:
-                entries, truncated = gh.list_tree_git(slug, branch)
-            except GitHubError as exc2:
-                skipped.append({"repo": slug, "reason": "error", "detail": str(exc2)[:120]})
-                continue
+            skipped.append({"repo": slug, "reason": "error", "detail": str(exc)[:120]})
+            continue
 
         if truncated:
             try:
@@ -1585,7 +1593,7 @@ def main() -> int:
     ap.add_argument("--candidates", default=None,
                     help="file of owner/name candidates instead of the topic search")
     ap.add_argument("--listing", choices=["auto", "api", "git"], default="auto",
-                    help="how to list a repo's tree (default auto: API, git when the API quota is spent)")
+                    help="how to list a repo's tree (default auto: API, git when the API refuses)")
     ap.add_argument("--max-candidates", type=int, default=400)
     ap.add_argument("--search-pages", type=int, default=5)
     ap.add_argument("--offline", action="store_true", help="use only cached API/blob responses")
