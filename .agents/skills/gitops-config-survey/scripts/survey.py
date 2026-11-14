@@ -216,12 +216,7 @@ class GitHub:
         return entries, bool(data.get("truncated"))
 
     def list_tree_git(self, slug: str, branch: str) -> tuple[list[dict], bool]:
-        """Quota-free equivalent of the trees API: blob-less shallow clone.
-
-        `--filter=blob:none --no-checkout` fetches commits+trees only (a few
-        hundred KB) and `git ls-tree -r` prints exactly the same (path, blob
-        sha) pairs the trees API returns. Used when the API quota is spent.
-        """
+        """The trees API's (path, blob sha) pairs without its quota: a few hundred KB of trees."""
         dest = self.workdir / "git" / slug.replace("/", "__")
         if (dest / ".git").exists() and not self._fresh(dest / ".git"):
             shutil.rmtree(dest)
@@ -316,7 +311,7 @@ class GitHub:
 
 
 # --------------------------------------------------------------------------- #
-# repo material: one interface over "clone on disk" and "tree + blob cache"
+# repo material
 # --------------------------------------------------------------------------- #
 def _dedupe_anchors(text: str) -> str:
     """Rename repeated YAML anchors so PyYAML can parse files Kubernetes accepts.
@@ -383,7 +378,7 @@ class Material:
 
 
 # --------------------------------------------------------------------------- #
-# flattening (unchanged behaviour — radarr/sonarr runs must reproduce)
+# flattening
 # --------------------------------------------------------------------------- #
 def is_named_list(value) -> bool:
     """True for k8s-shaped lists of {name: ..., value/path/...: ...}."""
@@ -504,7 +499,6 @@ def discover(args, gh: GitHub) -> tuple[list[dict], list[dict], list[dict], int]
                 "source": "topic-search",
             })
 
-    # de-dupe, keep star order
     seen: set[str] = set()
     uniq: list[dict] = []
     for c in candidates:
@@ -742,12 +736,8 @@ def with_app_vars(subs: dict, app: str) -> dict:
 
 
 def find_persistence(values: dict) -> dict:
-    """Locate the persistence map: top-level (app-template) or nested (upstream charts).
-
-    Charts carry it as `values.persistence` (app-template) or deeper, e.g. the
-    immich chart's `values.immich.persistence`. Take the shallowest map whose
-    values look like persistence entries.
-    """
+    """The shallowest `persistence` map: app-template's top level, or a chart's nested one
+    (the immich chart's `values.immich.persistence`)."""
     def looks_like(entries) -> bool:
         if not isinstance(entries, dict) or not entries:
             return False
@@ -1036,7 +1026,6 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
     def name_of(c):
         return render(str((c["doc"].get("metadata") or {}).get("name", "")), subs)
 
-    # 1. a host/service name, literal or recovered from a secret name
     tokens = []
     if service and source in ("literal", "template"):
         bare = service
@@ -1072,7 +1061,6 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
             db_match = "host-match" if source == "literal" else "secret-name"
             break
 
-    # 2. a Cluster CR living in the app's own directory, then one named after it
     if chosen is None:
         chosen = pick([c for c in clusters
                        if app in name_of(c).lower() and c["path"].startswith(app_root + "/")])
@@ -1165,7 +1153,6 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
             db["class"] = "general-shared"
         return db
 
-    # No CNPG Cluster: is it a different Postgres operator (crunchy, zalando, …)?
     for path in mat.paths:
         if not path.lower().endswith(YAML_SUFFIXES) or not path.startswith(app_root + "/"):
             continue
@@ -1261,7 +1248,6 @@ def facts_for(mat: Material, app: str, release_paths: list[str],
             for c in spec.get("components") or []:
                 if isinstance(c, str):
                     component_dirs.append(posixpath.normpath(posixpath.join(base, c)))
-    # kustomize `components:` declared in the app dir's own kustomization.yaml
     kust_comps: list[str] = []
     for kust in (f"{app_root}/kustomization.yaml", f"{app_root}/kustomization.yml"):
         if not mat.has(kust):
@@ -1274,7 +1260,6 @@ def facts_for(mat: Material, app: str, release_paths: list[str],
                     kust_comps.append(posixpath.basename(c.rstrip("/")))
     if kust_comps:
         comp["components"] = sorted(set(comp["components"] + kust_comps))
-    # keep only component dirs that actually exist in the tree
     known = set(mat.paths)
     component_dirs = [d for d in dict.fromkeys(component_dirs)
                       if d and any(p == d or p.startswith(d + "/") for p in known)]
