@@ -588,36 +588,62 @@ def app_root_of(path: str, app: str) -> str:
     return "/".join(segments[: idx + 1])
 
 
-def collect_components(mat: Material, ks_paths: list[str], app_root: str) -> dict:
-    """spec.components (basenames) + dependsOn + sub-dirs of the app root."""
+def _repo_path(path: str) -> str:
+    """A Flux `spec.path`, which is relative to the repository root, normalised."""
+    norm = posixpath.normpath(path.strip()).lstrip("/")
+    return "" if norm == "." else norm
+
+
+def app_kustomizations(mat: Material, ks_paths: list[str], app: str, app_root: str) -> list[dict]:
+    """The Flux Kustomizations that deploy the app.
+
+    A ks.yaml in the app's directory is the app's; a namespace-level one also declares the
+    sibling apps, whose components and substitutes must not leak into this one.
+    """
+    out = []
+    for ks in ks_paths:
+        own = ks.startswith(app_root + "/")
+        for doc in mat.yaml_docs(ks):
+            if doc.get("kind") != "Kustomization" or \
+                    str(doc.get("apiVersion") or "").startswith("kustomize.config.k8s.io"):
+                continue
+            name = str(_get(doc, "metadata", "name") or "").lower()
+            path = _repo_path(str(_get(doc, "spec", "path") or ""))
+            if own or name == app or name.startswith(app + "-") \
+                    or path == app_root or path.startswith(app_root + "/"):
+                out.append(doc)
+    return out
+
+
+def collect_components(kustomizations: list[dict], app_root: str) -> dict:
+    """spec.components, dependsOn, postBuild substitutes, and the app sub-dirs deployed."""
     components: list[str] = []
+    component_dirs: list[str] = []
     depends: list[str] = []
     dirs: list[str] = []
     substitutes: dict[str, str] = {}
-    for ks in ks_paths:
-        for doc in mat.yaml_docs(ks):
-            if doc.get("kind") != "Kustomization":
-                continue
-            spec = doc.get("spec") or {}
-            for comp in spec.get("components") or []:
-                if isinstance(comp, str):
-                    components.append(posixpath.basename(comp.rstrip("/")))
-            for dep in spec.get("dependsOn") or []:
-                if isinstance(dep, dict) and dep.get("name"):
-                    depends.append(str(dep["name"]))
-                elif isinstance(dep, str):
-                    depends.append(dep)
-            path = str(spec.get("path") or "")
-            if path:
-                norm = posixpath.normpath(posixpath.join(posixpath.dirname(ks), path))
-                if norm.startswith(app_root + "/"):
-                    dirs.append(posixpath.basename(norm))
-            subs = _get(spec, "postBuild", "substitute") or {}
-            if isinstance(subs, dict):
-                for k, v in subs.items():
-                    substitutes[str(k)] = "" if v is None else str(v)
+    for doc in kustomizations:
+        spec = doc.get("spec") or {}
+        path = _repo_path(str(spec.get("path") or ""))
+        for comp in spec.get("components") or []:
+            if isinstance(comp, str):
+                components.append(posixpath.basename(comp.rstrip("/")))
+                # relative to spec.path, not to the ks.yaml's own directory
+                component_dirs.append(posixpath.normpath(posixpath.join(path, comp)))
+        for dep in spec.get("dependsOn") or []:
+            if isinstance(dep, dict) and dep.get("name"):
+                depends.append(str(dep["name"]))
+            elif isinstance(dep, str):
+                depends.append(dep)
+        if path.startswith(app_root + "/"):
+            dirs.append(posixpath.basename(path))
+        subs = _get(spec, "postBuild", "substitute") or {}
+        if isinstance(subs, dict):
+            for k, v in subs.items():
+                substitutes[str(k)] = "" if v is None else str(v)
     return {
         "components": sorted(set(components)),
+        "component_dirs": component_dirs,
         "depends_on": sorted(set(depends)),
         "dirs": sorted(set(dirs)),
         "substitutes": substitutes,
@@ -1229,24 +1255,11 @@ def facts_for(mat: Material, app: str, release_paths: list[str],
                             f"{app_root}/kustomization.yaml", f"{app_root}/kustomization.yml",
                             f"{app_root}/flux-kustomization.yml", f"{app_root}/flux-kustomization.yaml",
                             posixpath.dirname(app_root) + "/ks.yaml") if mat.has(p)]
-    ks_paths = [p for p in ks_paths
-                if any(d.get("kind") == "Kustomization" for d in mat.yaml_docs(p))]
-    comp = collect_components(mat, ks_paths, app_root)
+    kustomizations = app_kustomizations(mat, ks_paths, app, app_root)
+    ks_paths = [p for p in ks_paths if any(d in kustomizations for d in mat.yaml_docs(p))]
+    comp = collect_components(kustomizations, app_root)
     subs = with_app_vars(comp["substitutes"], app)
-    component_dirs = []
-    for ks in ks_paths:
-        for d in mat.yaml_docs(ks):
-            spec = d.get("spec") or {}
-            # flux resolves spec.components relative to spec.path (repo-root relative),
-            # not to the ks.yaml's own directory.
-            base = app_root
-            sp = str(spec.get("path") or "")
-            if sp:
-                norm = posixpath.normpath(sp)
-                base = "" if norm == "." else norm
-            for c in spec.get("components") or []:
-                if isinstance(c, str):
-                    component_dirs.append(posixpath.normpath(posixpath.join(base, c)))
+    component_dirs = comp["component_dirs"]
     kust_comps: list[str] = []
     for kust in (f"{app_root}/kustomization.yaml", f"{app_root}/kustomization.yml"):
         if not mat.has(kust):

@@ -306,3 +306,40 @@ def test_pick_library_hint_wins():
     assert survey.pick_library(persistence, "thumbs") == "thumbs"
     assert survey.pick_library(persistence, "/usr/src/app/upload") == "library"
     assert survey.pick_library(persistence, "missing") == ""
+
+
+def test_namespace_ks_keeps_only_the_apps_kustomizations():
+    mat = FakeMaterial({"k/media/ks.yaml": (
+        "kind: Kustomization\nmetadata: {name: immich}\n"
+        "spec: {path: ./k/media/immich/app, postBuild: {substitute: {APP: immich}}}\n"
+        "---\n"
+        "kind: Kustomization\nmetadata: {name: radarr}\n"
+        "spec: {path: ./k/media/radarr/app, components: [../../components/ext-auth],\n"
+        "       postBuild: {substitute: {APP: radarr}}}\n")})
+    docs = survey.app_kustomizations(mat, ["k/media/ks.yaml"], "immich", "k/media/immich")
+    comp = survey.collect_components(docs, "k/media/immich")
+    assert comp["substitutes"] == {"APP": "immich"}
+    assert comp["components"] == []
+    assert comp["dirs"] == ["app"]
+
+
+def test_components_resolve_against_the_repo_root_path():
+    docs = [{"kind": "Kustomization", "spec": {
+        "path": "./k/media/immich/app", "components": ["../../../components/zeroscaler"]}},
+        {"kind": "Kustomization", "spec": {"path": "./k/database/cnpg"}}]
+    comp = survey.collect_components(docs, "k/media/immich")
+    assert comp["component_dirs"] == ["k/components/zeroscaler"]
+    assert comp["dirs"] == ["app"]
+
+
+def test_components_of_a_root_path_resolve_from_the_root():
+    docs = [{"kind": "Kustomization", "spec": {"path": "./", "components": ["k/components/x"]}}]
+    assert survey.collect_components(docs, "k/media/immich")["component_dirs"] == ["k/components/x"]
+
+
+def test_a_kustomize_kustomization_is_not_a_flux_one():
+    mat = FakeMaterial({"k/media/immich/kustomization.yaml": (
+        "apiVersion: kustomize.config.k8s.io/v1beta1\nkind: Kustomization\n"
+        "resources: [./ks.yaml]\n")})
+    assert survey.app_kustomizations(
+        mat, ["k/media/immich/kustomization.yaml"], "immich", "k/media/immich") == []
