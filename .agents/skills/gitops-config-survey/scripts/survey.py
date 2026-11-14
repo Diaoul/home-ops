@@ -640,8 +640,10 @@ def render(value, substitutes: dict[str, str]) -> str:
     """
     text = str(value)
     for k, v in substitutes.items():
-        text = re.sub(r"\$\{" + re.escape(k) + r":?[=-][^}]*\}", str(v), text)
-        text = text.replace("${" + k + "}", str(v)).replace("$" + k, str(v))
+        name = re.escape(k)
+        # `$APP` must not match the start of `$APP_NAME`
+        pattern = r"\$\{" + name + r"(?::?[=-][^}]*)?\}|\$" + name + r"(?![A-Za-z0-9_])"
+        text = re.sub(pattern, lambda _m, v=str(v): v, text)
 
     def defaulted(m):
         var, val = m.group(1), m.group(3)

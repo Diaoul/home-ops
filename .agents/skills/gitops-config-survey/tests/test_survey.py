@@ -94,6 +94,8 @@ def test_service_of(raw, expected):
     ("${SIZE:=5Gi}", {}, "5Gi"),
     ("${SIZE:=5Gi}", {"SIZE": "10Gi"}, "10Gi"),
     ("${SC:-ceph-block}", {}, "ceph-block"),
+    ("$APP_NAME-$APP", {"APP": "immich", "APP_NAME": "photos"}, "photos-immich"),
+    ("${APP:=x}", {"APP": "a\\1"}, "a\\1"),
 ])
 def test_render(text, subs, expected):
     assert survey.render(text, subs) == expected
