@@ -107,6 +107,18 @@ def test_render(text, subs, expected):
     assert survey.render(text, subs) == expected
 
 
+@pytest.mark.parametrize(("argv", "expected"), [
+    (["--app", "immich", "--facts", "--markdown", "survey.md", "--json", "out.json"],
+     ["--app", "immich", "--facts"]),
+    (["--app=immich", "--workdir=/tmp/x", "--offline", "--want", "20"],
+     ["--app=immich", "--want", "20"]),
+    (["--app", "immich", "--candidates", "/home/me/cands.txt"],
+     ["--app", "immich", "--candidates", "cands.txt"]),
+])
+def test_recorded_args_keep_a_runnable_command(argv, expected):
+    assert survey.recorded_args(argv) == expected
+
+
 @pytest.mark.parametrize(("value", "expected"), [
     ("plain", "`plain`"),
     ("a|b", "`a\\|b`"),

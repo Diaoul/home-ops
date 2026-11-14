@@ -1459,13 +1459,40 @@ def _md_tally(values: list[str], n: int) -> str:
     return ", ".join(f"{k} {v}/{n}" for k, v in sorted(cnt.items(), key=lambda kv: (-kv[1], kv[0])))
 
 
+LOCAL_FLAGS = ("--offline", "--refresh")
+LOCAL_VALUE_FLAGS = ("--workdir", "--json", "--markdown", "--out-repos", "--out-skipped",
+                     "--max-age")
+
+
+def recorded_args(argv: list[str]) -> list[str]:
+    """The arguments that decide the result, minus where this run kept its files."""
+    out: list[str] = []
+    skip = False
+    for arg in argv:
+        if skip:
+            skip = False
+            continue
+        flag = arg.split("=", 1)[0]
+        if flag in LOCAL_FLAGS:
+            continue
+        if flag in LOCAL_VALUE_FLAGS:
+            skip = "=" not in arg
+            continue
+        if flag == "--candidates" and "=" in arg:
+            out.append(f"--candidates={posixpath.basename(arg.split('=', 1)[1])}")
+        elif out and out[-1] == "--candidates":
+            out.append(posixpath.basename(arg))
+        else:
+            out.append(arg)
+    return out
+
+
 def write_markdown(path: str, rows: list[dict], skipped: list[dict], discovery: dict,
                    app: str, argv: list[str]):
     """The peer-survey `<details>` block a pull request attaches, ready to paste."""
     n = len(rows)
     out = ["<details><summary>Peer survey</summary>", ""]
-    cmd = "survey.py " + " ".join(a for a in argv if a != "--offline" and not a.startswith(
-        ("--workdir", "--json", "--markdown", "/")))
+    cmd = " ".join(["survey.py", *recorded_args(argv)])
     if discovery:
         out.append(
             f"`{cmd}`, run {datetime.date.today().isoformat()}: "
