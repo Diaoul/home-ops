@@ -1360,7 +1360,8 @@ def iter_helmreleases(mat: Material):
 # reporting
 # --------------------------------------------------------------------------- #
 def report_keys(agg, matched, app, chart, args):
-    print(f"survey: app={app!r} chart={chart or '*'} repos_that_run_app={len(matched)}")
+    n = len({repo for repo, _ in matched})
+    print(f"survey: app={app!r} chart={chart or '*'} repos_that_run_app={n}")
     for repo, relpath in matched:
         print(f"  - {repo}  {relpath}")
     print()
@@ -1377,7 +1378,7 @@ def report_keys(agg, matched, app, chart, args):
     for key in keys:
         vals = agg[key]
         total = len({r for s in vals.values() for r in s})
-        print(f"## {key}  ({total}/{len(matched)} repos)")
+        print(f"## {key}  ({total}/{n} repos)")
         for val, repo_set in sorted(vals.items(), key=lambda kv: (-len(kv[1]), kv[0]))[: args.top]:
             shown = val if len(val) <= 100 else val[:97] + "..."
             who = ",".join(sorted(r.split("/")[0] for r in repo_set))
@@ -1704,7 +1705,7 @@ def main() -> int:
             "app": app,
             "chart": args.chart,
             "mode": "discover" if not (args.repos and not args.discover) else "clone",
-            "n": len(matched),
+            "n": len({repo for repo, _ in matched}),
             "candidates": [c["full_name"] for c in candidates],
             "matched": [{"repo": r, "path": p} for r, p in matched],
             "keys": {k: {v: sorted(s) for v, s in vals.items()} for k, vals in agg.items()},
