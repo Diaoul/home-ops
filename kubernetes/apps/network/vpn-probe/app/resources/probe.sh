@@ -2,10 +2,17 @@
 
 : "${GATUS_VPN_TOKEN:?}"
 
-trace() { curl -fsS -m 10 --retry 2 --retry-all-errors --retry-delay 5 "$@" https://1.1.1.1/cdn-cgi/trace | sed -n 's/^ip=//p'; }
+get() { curl -4 -fsS -m 10 --retry 2 --retry-all-errors --retry-delay 5 "$@"; }
 
-vpn=$(trace)
-wan=$(trace --interface eth0)
+# The fallback must not sit behind Cloudflare, or one Cloudflare outage fails both.
+egress() {
+  ip=$(get "$@" https://1.1.1.1/cdn-cgi/trace | sed -n 's/^ip=//p')
+  [ -n "$ip" ] || ip=$(get "$@" https://checkip.amazonaws.com)
+  echo "$ip"
+}
+
+vpn=$(egress)
+wan=$(egress --interface eth0)
 
 if [ -z "$vpn" ]; then
   query="success=false&error=no%20egress%20through%20the%20VPN"
