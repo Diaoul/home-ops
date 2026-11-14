@@ -60,6 +60,12 @@ def test_helmrelease_paths_skip_vendored_charts():
     assert seen
 
 
+@pytest.mark.parametrize("name", ["helmrelease.yaml", "helmrelease.yml",
+                                  "helm-release.yaml", "helm-release.yml"])
+def test_helmrelease_paths_accept_every_spelling(name):
+    assert survey.app_helmrelease_paths([f"k/immich/app/{name}"], "immich")[0]
+
+
 def test_helmrelease_paths_tell_no_app_from_no_release():
     assert survey.app_helmrelease_paths(["apps/radarr/ks.yaml"], "immich") == ([], False)
     assert survey.app_helmrelease_paths(["apps/immich/ks.yaml"], "immich") == ([], True)

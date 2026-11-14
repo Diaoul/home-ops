@@ -71,9 +71,9 @@ costs no API quota. `auto`, the default, falls back to the clone when the API re
 ## What is counted
 
 A repository runs the app when its tree has a path segment equal to the app name with a
-`helmrelease.yaml` or `helm-release.yml` under it, outside `charts/**/templates`. It stays in the
-denominator even when that document cannot be read as the app's; the script says so and counts no
-values for it. A helper release beside it (`immich/restic/`) is counted only when its own name or
+`helmrelease.yaml` or `helm-release.yaml` (either extension) under it, outside
+`charts/**/templates`. It stays in the denominator even when that document cannot be read as the
+app's; the script says so and counts no values for it. A helper release beside it (`immich/restic/`) is counted only when its own name or
 path says it is the app.
 
 Keys are `spec.values` flattened to dotted paths. Lists of objects with a `name` (`env`, `ports`,

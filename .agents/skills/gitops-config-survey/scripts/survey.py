@@ -42,7 +42,7 @@ YAML_SUFFIXES = (".yaml", ".yml")
 CLONE_BASE = "https://github.com"
 API_BASE = "https://api.github.com"
 RAW_BASE = "https://raw.githubusercontent.com"
-HELMRELEASE_NAMES = ("helmrelease.yaml", "helm-release.yml")
+HELMRELEASE_NAMES = ("helmrelease.yaml", "helmrelease.yml", "helm-release.yaml", "helm-release.yml")
 TOPIC = "topic:kubesearch"
 # Chart libraries / templates: they publish charts, they do not run the app.
 CHART_LIB_REPOS = {
@@ -450,10 +450,9 @@ def looks_like_app(doc: dict, app: str, path: str, chart: str | None) -> bool:
 
 
 def app_helmrelease_paths(paths: list[str], app: str) -> tuple[list[str], bool]:
-    """(paths whose tree contains the app's HelmRelease, whether the app dir exists).
+    """(the app's HelmRelease files, whether a directory named after the app exists).
 
-    Directory rule, same as the crawler: a path segment equal to the app name,
-    basename helmrelease.yaml / helm-release.yml, charts/**/templates excluded.
+    Vendored charts are skipped: their templates would otherwise dominate the counts.
     """
     hits: list[str] = []
     app_seen = False
