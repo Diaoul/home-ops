@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: docker.io/alpine/curl
-              tag: 8.23.0@sha256:423fe846edd6e4d3181e3092f2c322c85861871d0dc1e774346e1d02684e5e4c
+              tag: 8.23.0@sha256:c8df739636f42117e358bdffb4c243c460b31cbba8cc69241a22ab519546f34d
             command:
               - /scripts/probe.sh
             envFrom:
