@@ -263,27 +263,6 @@ class GitHub:
                   file=sys.stderr)
             return self.list_tree_git(slug, branch)
 
-    def list_tree_walk(self, slug: str, branch: str) -> list[dict]:
-        """Fallback for `truncated: true`: BFS the contents API (one call per dir)."""
-        entries: list[dict] = []
-        queue = [""]
-        seen = 0
-        while queue:
-            d = queue.pop(0)
-            path = f"/repos/{slug}/contents/{d}?ref={branch}"
-            data = self.get_json(path, f"contents {slug}:{d or '/'}")
-            if not isinstance(data, list):
-                continue
-            for item in data:
-                seen += 1
-                if seen > 20000:
-                    return entries
-                if item.get("type") == "dir":
-                    queue.append(item["path"])
-                elif item.get("type") == "file":
-                    entries.append({"path": item["path"], "sha": item.get("sha", ""), "type": "blob"})
-        return entries
-
     # -- blobs ------------------------------------------------------------- #
     def blob(self, slug: str, rev: str, path: str, sha: str) -> str | None:
         cache = self.workdir / "blobs" / sha[:2] / sha if sha else None
@@ -543,8 +522,9 @@ def discover(args, gh: GitHub) -> tuple[list[dict], list[dict], list[dict], int]
             continue
 
         if truncated:
+            # The trees API stops at 100,000 entries; the git listing does not.
             try:
-                entries = gh.list_tree_walk(slug, branch)
+                entries, _ = gh.list_tree_git(slug, branch)
             except GitHubError as exc:
                 skipped.append({"repo": slug, "reason": "truncated-tree", "detail": str(exc)[:120]})
                 continue
@@ -1044,11 +1024,9 @@ def hpa_paths(mat: Material, app_root: str, component_dirs: list[str]) -> list[s
 def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict) -> dict:
     """Which Postgres the app talks to, and what that cluster is.
 
-    Order of evidence: a literal host in DB_*/POSTGRES_* env, then the secret
-    name a `valueFrom` points at (a CNPG cluster's `<name>-rw`/`<name>-pguser-*
-    secrets name it), then envFrom secretRefs (unresolved unless the name
-    identifies a cluster), then a Cluster CR in the app's own directory, then
-    one named after the app, then the repo's only cluster.
+    `match` records how the cluster was found, strongest first: the host, a secret name
+    (CNPG names its secrets after the cluster), the app's directory or name, a
+    `postgresVector` label, or the repo having a single cluster.
     """
     env_hits = [(k, v) for k, v in walk_env(values) if k in DB_HOST_KEYS]
     host_raw = next((v for k, v in env_hits
@@ -1213,8 +1191,6 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
                 db["class"] = "other-operator"
                 return db
 
-    if db.get("class"):
-        return db
     db["class"] = "unresolved" if source in ("secret-ref", "envFrom-secret", "template") else "none"
     return db
 

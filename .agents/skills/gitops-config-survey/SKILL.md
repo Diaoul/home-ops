@@ -34,8 +34,9 @@ uv run $survey --app immich --facts --markdown survey.md      # the pull request
 uv run $survey --app immich --facts --offline                 # instant rerun from the cache
 ```
 
-The search API needs a token: the script reads `GITHUB_TOKEN`, `GH_TOKEN` or `gh auth token`, and
-fails with an explanation rather than an empty list without one. A cold run takes a few minutes.
+Give it a token: it reads `GITHUB_TOKEN`, `GH_TOKEN` or `gh auth token`. Without one, the search
+API allows ten calls a minute shared with everything else on the address, and once refused the
+script stops with an explanation rather than an empty list. A cold run takes a few minutes.
 
 - `--want N` — the denominator to reach (default 20).
 - `--facts` — the per-repository table and its counts, described below.
