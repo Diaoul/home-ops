@@ -394,3 +394,17 @@ def test_a_failed_facts_row_still_renders(tmp_path, capsys):
     assert "unresolved 1/1" in text
     assert "unknown 1/1" in text and "no 1/1" not in text
     assert "N=1 repos" in capsys.readouterr().out
+
+
+def test_git_blob_sha_matches_git():
+    # `printf 'hello\\n' | git hash-object --stdin`
+    assert survey.git_blob_sha(b"hello\n") == "ce013625030ba8dba906f756967f9e9ca394464a"
+
+
+def test_a_fetched_blob_is_filed_under_its_own_hash(tmp_path, monkeypatch):
+    monkeypatch.setattr(survey, "_open", lambda _req, _what: (b"new\n", {}))
+    gh = survey.GitHub(tmp_path)
+    assert gh.blob("o/r", "main", "a.yaml", "0" * 40) == "new\n"
+    actual = survey.git_blob_sha(b"new\n")
+    assert (tmp_path / "blobs" / actual[:2] / actual).read_bytes() == b"new\n"
+    assert not (tmp_path / "blobs" / "00").exists()

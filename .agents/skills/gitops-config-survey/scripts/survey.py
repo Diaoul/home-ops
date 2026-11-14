@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import hashlib
 import http.client
 import json
 import os
@@ -75,6 +76,10 @@ class RateLimited(GitHubError):
 
 
 RETRIES = 3
+
+
+def git_blob_sha(body: bytes) -> str:
+    return hashlib.sha1(b"blob %d\0" % len(body) + body).hexdigest()  # noqa: S324 - git's id
 
 
 def _git(args: list[str], what: str, timeout: int) -> str:
@@ -281,10 +286,9 @@ class GitHub:
 
     # -- blobs ------------------------------------------------------------- #
     def blob(self, slug: str, rev: str, path: str, sha: str) -> str | None:
-        # Keyed by the git blob sha, so a cached file can never be stale.
         cache = self.workdir / "blobs" / sha[:2] / sha if sha else None
         if cache and cache.exists():
-            return cache.read_text(encoding="utf-8", errors="replace")
+            return cache.read_bytes().decode("utf-8", "replace")
         if self.offline:
             print(f"  ! {slug}:{path} not cached and --offline is set", file=sys.stderr)
             return None
@@ -296,18 +300,19 @@ class GitHub:
             req = urllib.request.Request(url, headers={"User-Agent": "home-ops-survey"})
             try:
                 body, _ = _open(req, f"blob {slug}:{path}")
-                text = body.decode("utf-8", "replace")
                 break
             except (urllib.error.HTTPError, GitHubError) as exc:
                 last_exc = exc
-                continue
         else:
             print(f"  ! blob fetch failed {slug}:{path}: {last_exc}", file=sys.stderr)
             return None
-        if cache:
-            cache.parent.mkdir(parents=True, exist_ok=True)
-            cache.write_text(text, encoding="utf-8")
-        return text
+        # A branch fetch can be newer than the listing it came from: file the content
+        # under its own hash, so a cached blob is always the content its sha names.
+        actual = git_blob_sha(body)
+        dest = self.workdir / "blobs" / actual[:2] / actual
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(body)
+        return body.decode("utf-8", "replace")
 
 
 # --------------------------------------------------------------------------- #
