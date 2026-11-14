@@ -26,7 +26,7 @@ silently shrinks. A published immich answer was computed this way from a radarr-
 `repos_scanned=20 matched=10` and read as "20 repos surveyed" when it was 10, chosen by accident.
 
 So: never reuse a repo list across apps, never report the candidate count as N, and always print
-`n/N` on every prevalence line. `--discover` enforces this by construction — it keeps scanning
+`n/N` on every prevalence line. Discovery enforces this by construction — it keeps scanning
 candidates until `--want N` repos contain the app.
 
 ## When to Use
@@ -45,18 +45,18 @@ there is nothing to install.
 survey=.agents/skills/gitops-config-survey/scripts/survey.py
 
 # app-first discovery, then the table and the counts
-uv run $survey --app immich --discover --want 20 --facts
+uv run $survey --app immich --want 20 --facts
 
 # keys/values only, filtered
-uv run $survey --app immich --discover --want 20 --filter persistence,DB_ --top 40
+uv run $survey --app immich --want 20 --filter persistence,DB_ --top 40
 
 # instant rerun from the cache, no API calls
-uv run $survey --app immich --discover --want 20 --facts --offline
+uv run $survey --app immich --want 20 --facts --offline
 ```
 
 Flags that matter:
 
-- `--discover` — app-first. Enumerates `topic:kubesearch` (paginated, star-sorted), drops forks,
+- Discovery is app-first. It enumerates `topic:kubesearch` (paginated, star-sorted), drops forks,
   archived repos and chart libraries, then tests each candidate for the app's HelmRelease with one
   `GET /repos/{o}/{r}/git/trees/{branch}?recursive=1`. Keeps going until `--want N` matches
   (default 20). Nothing is cloned: only the matched blobs are fetched from
@@ -87,11 +87,6 @@ Flags that matter:
 - `--listing auto|api|git` — how a repo's tree is listed. `api` is the trees endpoint; `git` is a
   quota-free equivalent (`git clone --filter=blob:none --no-checkout` + `ls-tree -r`, a few hundred
   KB, one second); `auto` (default) uses the API and falls back to git when the API refuses.
-- `--repos FILE` — legacy clone mode, one `owner/name` per line, shallow-clones each repo. Kept only
-  because its key flattening is what earlier answers were computed from: on the same clone cache the
-  published script and this one produce identical `matched` and `keys` (radarr 18 matched/403 keys,
-  sonarr 19/448). It does **not** fix the denominator — a hand-written list is a candidate set — so do
-  not present its `repos_that_run_app` as a prevalence denominator for a new app.
 - `--chart`, `--filter`, `--top`, `--min-repos`, `--refresh` — as before (chart name substring,
   dotted-key substring filter, values per key, drop singletons, re-fetch).
 
@@ -204,8 +199,6 @@ Report the denominator with every count, and name the match reason when it matte
   image tags as consensus, only as "the current line".
 - `--filter` matches the whole dotted path, so `--filter auth` also catches `DB_USERNAME`. Narrow
   with two or three `__`-qualified substrings when it matters.
-- A cold `--repos` run clones ~190 MB; `--discover` fetches tens of small files instead. Prefer it
-  for anything new.
 
 ## Extending
 

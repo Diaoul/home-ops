@@ -5,28 +5,16 @@
 # ///
 """Survey how homelab GitOps repos configure one app's HelmRelease values.
 
-kubesearch.dev-style: discover repos that actually run an app, read that app's
-HelmRelease, flatten spec.values into dotted key paths, count how often each
-key -> value pair appears, and (with --facts) derive the topology facts that
-live outside spec.values: Kustomization components, persistence types, the
-CNPG cluster behind the app, HPA / scale-to-zero / ext-auth.
-
-Two ways to get the repo set:
-
-  --discover           app-first: enumerate the `kubesearch` topic, test each
-                       candidate for the app's HelmRelease with the git trees
-                       API (no clone), fetch only the matched blobs, stop once
-                       --want repos run the app. This is the default answer to
-                       "how do the N repos that run this app configure it".
-  --repos FILE         legacy: one owner/name per line, shallow-cloned. Kept
-                       because it is what earlier runs used; it does NOT fix
-                       the denominator, so never report `repos_scanned` as N.
+Finds the repos in the `kubesearch` GitHub topic that run the app (a tree
+listing per repo, no checkout), flattens each one's HelmRelease spec.values
+into dotted keys and counts every key -> value pair. --facts adds what lives
+outside spec.values: Kustomization components, where the app's data is
+stored, the CNPG cluster behind it, HPA, scale-to-zero and ext-auth.
 
 Usage:
-  survey.py --app immich --discover --want 20 --facts
-  survey.py --app immich --discover --want 20 --filter persistence --top 40
-  survey.py --app immich --discover --offline --facts      # instant rerun
-  survey.py --repos repos.txt --app radarr                 # legacy clone mode
+  survey.py --app immich --facts
+  survey.py --app immich --filter persistence --top 40
+  survey.py --app immich --facts --offline --markdown survey.md
 """
 
 from __future__ import annotations
@@ -92,6 +80,7 @@ RETRIES = 3
 def _git(args: list[str], what: str, timeout: int) -> str:
     try:
         proc = subprocess.run(["git", *args], capture_output=True, text=True, timeout=timeout,
+                              check=False,
                               # a missing or private repo would otherwise prompt for credentials
                               env={**os.environ, "GIT_TERMINAL_PROMPT": "0"})
     except subprocess.TimeoutExpired as exc:
@@ -124,7 +113,8 @@ def github_token() -> str | None:
             return tok.strip()
     gh = shutil.which("gh")
     if gh:
-        proc = subprocess.run([gh, "auth", "token"], capture_output=True, text=True)
+        proc = subprocess.run([gh, "auth", "token"], capture_output=True, text=True,
+                              timeout=30, check=False)
         if proc.returncode == 0 and proc.stdout.strip():
             return proc.stdout.strip()
     return None
@@ -138,10 +128,6 @@ class GitHub:
         self.offline = offline
         self.max_age = max_age
         self.token = github_token()
-        self.core_left: int | None = None
-        self.core_reset: int | None = None
-        self.api_calls = 0
-        self.git_calls = 0
         # ref the last tree listing belongs to: a commit sha when we listed via git,
         # the branch name when we listed via the API. raw.githubusercontent.com
         # accepts both, but not a blob sha.
@@ -159,34 +145,23 @@ class GitHub:
             return False
         return self.offline or time.time() - path.stat().st_mtime < self.max_age
 
-    def _request(self, url: str, what: str) -> tuple[int, dict | list | None, dict]:
+    def _request(self, url: str, what: str) -> dict | list | None:
         headers = {"Accept": "application/vnd.github+json", "User-Agent": "home-ops-survey"}
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
         req = urllib.request.Request(url, headers=headers)
         try:
-            body, resp_headers = _open(req, what)
-            self.api_calls += 1
-            hdrs = dict(resp_headers)
-            self.core_left = int(hdrs.get("x-ratelimit-remaining", -1))
-            self.core_reset = int(hdrs.get("x-ratelimit-reset", 0) or 0)
-            try:
-                return 200, json.loads(body or b"null"), hdrs
-            except ValueError as exc:
-                raise GitHubError(f"{what}: response is not JSON") from exc
+            body, _ = _open(req, what)
         except urllib.error.HTTPError as exc:
             body = exc.read().decode("utf-8", "replace")[:300]
-            self.api_calls += 1
-            hdrs = dict(exc.headers or {})
-            left = hdrs.get("x-ratelimit-remaining")
-            if left is not None and str(left).isdigit():
-                self.core_left = int(left)
-            reset = hdrs.get("x-ratelimit-reset")
-            if reset is not None and str(reset).isdigit():
-                self.core_reset = int(reset)
+            left = exc.headers.get("x-ratelimit-remaining") if exc.headers else None
             if exc.code in (403, 429) and ("rate limit" in body.lower() or left == "0"):
                 raise RateLimited(f"{what}: GitHub rate limit hit ({body})") from exc
             raise GitHubError(f"{what}: HTTP {exc.code}: {body}") from exc
+        try:
+            return json.loads(body or b"null")
+        except ValueError as exc:
+            raise GitHubError(f"{what}: response is not JSON") from exc
 
     def get_json(self, path: str, what: str, refresh: bool = False,
                  cache_key: str | None = None) -> dict | list:
@@ -195,7 +170,7 @@ class GitHub:
             return json.loads(cache.read_text())
         if self.offline:
             raise GitHubError(f"{what}: no cached response and --offline is set")
-        status, data, _ = self._request(f"{API_BASE}{path}", what)
+        data = self._request(f"{API_BASE}{path}", what)
         cache.write_text(json.dumps(data))
         return data
 
@@ -261,7 +236,6 @@ class GitHub:
             except GitHubError:
                 shutil.rmtree(dest, ignore_errors=True)
                 raise
-        self.git_calls += 1
         self.last_rev = _git(["-C", str(dest), "rev-parse", "HEAD"], f"git {slug}", 60).strip()
         listing = _git(["-C", str(dest), "ls-tree", "-r", "-z", "HEAD"], f"git ls-tree {slug}", 120)
         entries = []
@@ -372,38 +346,27 @@ def _dedupe_anchors(text: str) -> str:
 
 
 def yaml_docs_of(text: str) -> list[dict]:
-    docs: list[dict] = []
     for attempt in (text, _dedupe_anchors(text)):
         try:
-            docs = [d for d in yaml.safe_load_all(attempt) if isinstance(d, dict)]
-            return docs
+            return [d for d in yaml.safe_load_all(attempt) if isinstance(d, dict)]
         except yaml.YAMLError:
-            docs = []
             continue
-    return docs
+    return []
 
 
 class Material:
-    def __init__(self, slug: str, paths: list[str] | None = None, root: Path | None = None,
-                 shas: dict[str, str] | None = None, gh: GitHub | None = None,
-                 branch: str = "", rev: str = ""):
+    """One repository's files: the tree listing, read lazily through the blob cache."""
+
+    def __init__(self, slug: str, shas: dict[str, str], gh: GitHub, rev: str):
         self.slug = slug
-        self.paths = paths or []
-        self.root = root
-        self.shas = shas or {}
+        self.paths = list(shas)
+        self.shas = shas
         self.gh = gh
-        self.branch = branch
         self.rev = rev
         self._docs: dict[str, list[dict]] = {}
 
     def read(self, path: str) -> str | None:
-        if self.root is not None:
-            f = self.root / path
-            try:
-                return f.read_text(encoding="utf-8", errors="replace")
-            except OSError:
-                return None
-        if self.gh is None or path not in self.shas:
+        if path not in self.shas:
             return None
         return self.gh.blob(self.slug, self.rev, path, self.shas[path])
 
@@ -416,8 +379,6 @@ class Material:
         return docs
 
     def has(self, path: str) -> bool:
-        if self.root is not None:
-            return (self.root / path).is_file()
         return path in self.shas
 
 
@@ -523,9 +484,8 @@ def discover(args, gh: GitHub) -> tuple[list[dict], list[dict], list[dict], int]
     candidates: list[dict] = []
 
     if args.candidates:
-        lines = Path(args.candidates).read_text().splitlines()
-        for line in lines:
-            line = line.split("#", 1)[0].strip()
+        for raw in Path(args.candidates).read_text().splitlines():
+            line = raw.split("#", 1)[0].strip()
             if not line or "/" not in line:
                 continue
             slug = line.split()[0]
@@ -591,9 +551,8 @@ def discover(args, gh: GitHub) -> tuple[list[dict], list[dict], list[dict], int]
                 skipped.append({"repo": slug, "reason": "truncated-tree", "detail": str(exc)[:120]})
                 continue
 
-        paths = [e["path"] for e in entries if e.get("type") in ("blob", "")]
         shas = {e["path"]: e["sha"] for e in entries if e.get("type") in ("blob", "")}
-        hits, app_seen = app_helmrelease_paths(paths, app)
+        hits, app_seen = app_helmrelease_paths(list(shas), app)
         if not app_seen:
             skipped.append({"repo": slug, "reason": "no-app"})
             continue
@@ -601,8 +560,7 @@ def discover(args, gh: GitHub) -> tuple[list[dict], list[dict], list[dict], int]
             skipped.append({"repo": slug, "reason": "no-helmrelease"})
             continue
 
-        matched.append({**cand, "branch": branch, "rev": gh.last_rev or branch,
-                        "paths": paths, "shas": shas,
+        matched.append({**cand, "rev": gh.last_rev or branch, "shas": shas,
                         "helmrelease_paths": hits, "scanned_at": idx})
         print(f"  + [{len(matched)}/{args.want}] {slug}  ({'; '.join(hits[:3])})", file=sys.stderr)
 
@@ -1351,56 +1309,10 @@ def facts_for(mat: Material, app: str, release_paths: list[str]) -> dict:
         "hpa": bool(hpas),
         "hpa_paths": hpas,
         "zeroscaler": any("zeroscale" in c for c in comps),
-        "ext_auth": any(("ext-auth" in c or "extauth" in c or "ext-auth" in d.lower())
-                        for c in comps for d in [c]) or any(
-                            "ext-auth" in d.lower() or "extauth" in d.lower()
-                            for d in comp["components"] + comp["dirs"]),
-        "postgres_controller": "postgres" in [str(k).lower() for k in (controllers or {})],
-        "postgres_strategy": str(_get(doc, "spec", "strategy", "name") or ""),
+        "ext_auth": any("ext-auth" in c or "extauth" in c
+                        for c in comps + [d.lower() for d in comp["dirs"]]),
+        "postgres_controller": "postgres" in [str(k).lower() for k in controllers],
     }
-
-
-# --------------------------------------------------------------------------- #
-# legacy clone mode
-# --------------------------------------------------------------------------- #
-def clone(repo: str, workdir: Path, refresh: bool = False) -> Path | None:
-    dest = workdir / repo.replace("/", "__")
-    if refresh and dest.exists():
-        subprocess.run(["rm", "-rf", str(dest)], check=False)
-    if dest.exists():
-        return dest
-    url = f"{CLONE_BASE}/{repo}.git"
-    proc = subprocess.run(
-        ["git", "clone", "--depth", "1", "--quiet", "--no-tags", url, str(dest)],
-        capture_output=True, text=True, timeout=300,
-    )
-    if proc.returncode != 0:
-        print(f"  ! clone failed for {repo}: {proc.stderr.strip()[:200]}", file=sys.stderr)
-        return None
-    return dest
-
-
-def clone_material(repo: str, root: Path) -> Material:
-    paths = []
-    for p in root.rglob("*"):
-        if p.is_file():
-            rel = p.relative_to(root).as_posix()
-            if "/charts/" in f"/{rel}" and "/templates/" in f"/{rel}":
-                continue
-            paths.append(rel)
-    return Material(repo, paths=paths, root=root)
-
-
-def iter_helmreleases(mat: Material):
-    for path in mat.paths:
-        if not path.lower().endswith(YAML_SUFFIXES):
-            continue
-        text = mat.read(path) or ""
-        if "HelmRelease" not in text:
-            continue
-        for doc in mat.yaml_docs(path):
-            if doc.get("kind") == "HelmRelease":
-                yield path, doc
 
 
 # --------------------------------------------------------------------------- #
@@ -1438,12 +1350,6 @@ def _clip(text, width):
     return text if len(text) <= width else text[: width - 1] + "…"
 
 
-def _short_repo(slug: str) -> str:
-    """`owner/repo`, with the `home-ops`-ish tail dropped when it is ambiguous-free."""
-    owner, _, repo = slug.partition("/")
-    return f"{owner}/{repo}"
-
-
 def _db_label(db: dict) -> str:
     if db.get("cluster"):
         return db["cluster"] + (" (shared)" if db.get("dedicated") is False else "")
@@ -1471,7 +1377,7 @@ def report_facts(rows: list[dict], app: str):
         db = r["db"]
         cls = _db_label(db)
         table.append([
-            _short_repo(r["repo"]),
+            r["repo"],
             ",".join(r["components"] + [d for d in r["components_extra"] if d not in r["components"]]) or "-",
             lib_s,
             cls,
@@ -1488,7 +1394,7 @@ def report_facts(rows: list[dict], app: str):
     print(fmt.format(*header))
     print("-+-".join("-" * w for w in widths))
     for row in table:
-        print(fmt.format(*[_clip(c, w) for c, w in zip(row, widths)]))
+        print(fmt.format(*[_clip(c, w) for c, w in zip(row, widths, strict=True)]))
 
     print("\naggregate (n/N):")
     def tally(label, values):
@@ -1611,11 +1517,12 @@ def write_markdown(path: str, rows: list[dict], skipped: list[dict], discovery: 
 # --------------------------------------------------------------------------- #
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
-                                formatter_class=argparse.RawDescriptionHelpFormatter)
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--app", required=True, help="app name, e.g. immich")
     ap.add_argument("--discover", action="store_true",
-                    help="app-first discovery over the kubesearch topic (no clones)")
-    ap.add_argument("--want", type=int, default=20, help="stop at N repos that run the app (default 20)")
+                    help="no-op: discovery is the only mode, accepted for older commands")
+    ap.add_argument("--want", type=int, default=20,
+                    help="stop at N repos that run the app (default 20)")
     ap.add_argument("--facts", action="store_true", help="derive topology facts per repo")
     ap.add_argument("--candidates", default=None,
                     help="file of owner/name candidates instead of the topic search")
@@ -1623,22 +1530,26 @@ def main() -> int:
                     help="how to list a repo's tree (default auto: API, git when the API refuses)")
     ap.add_argument("--max-candidates", type=int, default=400)
     ap.add_argument("--search-pages", type=int, default=5)
-    ap.add_argument("--offline", action="store_true", help="use only cached API/blob responses")
-    ap.add_argument("--workdir", default=None, help="cache dir (default: $XDG_CACHE_HOME/gitops-config-survey/<app>)")
+    ap.add_argument("--offline", action="store_true", help="use only cached responses")
+    ap.add_argument("--workdir", default=None,
+                    help="cache dir (default: $XDG_CACHE_HOME/gitops-config-survey/<app>)")
     ap.add_argument("--refresh", action="store_true", help="ignore cached API responses")
     ap.add_argument("--max-age", type=float, default=24,
                     help="hours a cached search, tree or git listing stays valid (default 24)")
     ap.add_argument("--out-repos", default=None, help="write matched owner/name lines here")
     ap.add_argument("--out-skipped", default=None, help="write skipped candidates (json) here")
-    ap.add_argument("--repos", default=None, help="legacy: file with one owner/name per line")
-    ap.add_argument("--chart", default=None, help="only HelmReleases whose chart name contains this")
-    ap.add_argument("--filter", default=None, help="only report keys containing one of these substrings")
+    ap.add_argument("--chart", default=None,
+                    help="only HelmReleases whose chart name contains this")
+    ap.add_argument("--filter", default=None,
+                    help="only report keys containing one of these substrings")
     ap.add_argument("--top", type=int, default=8, help="values shown per key (default 8)")
     ap.add_argument("--min-repos", type=int, default=2, help="drop keys seen in fewer repos")
     ap.add_argument("--json", default=None, help="write the full result here")
     ap.add_argument("--markdown", default=None,
                     help="write the PR's <details> peer-survey block here (needs --facts)")
     args = ap.parse_args()
+    if args.markdown and not args.facts:
+        ap.error("--markdown needs --facts")
 
     app = args.app.lower()
     cache_home = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
@@ -1649,94 +1560,49 @@ def main() -> int:
     agg: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
     matched: list[tuple[str, str]] = []
     facts: list[dict] = []
-    skipped: list[dict] = []
-    candidates: list[dict] = []
-    materials: list[Material] = []
-    discovery: dict = {}
-    if args.markdown and not args.facts:
-        ap.error("--markdown needs --facts")
-
-    if args.repos and not args.discover:
-        # ---- legacy clone mode (unchanged flattening behaviour) ---------- #
-        repos = [line.strip() for line in Path(args.repos).read_text().splitlines()
-                 if line.strip() and not line.startswith("#")]
-        for repo in repos:
-            dest = clone(repo, workdir / "clones", args.refresh)
-            if dest is None:
-                continue
-            mat = clone_material(repo, dest)
-            hit_paths = []
-            for relpath, doc in iter_helmreleases(mat):
+    matched_c, skipped, candidates, examined = discover(args, gh)
+    for cand in matched_c:
+        slug = cand["full_name"]
+        mat = Material(slug, cand["shas"], gh, cand["rev"])
+        hit_paths = []
+        for relpath in cand["helmrelease_paths"]:
+            for doc in mat.yaml_docs(relpath):
                 if not looks_like_app(doc, app, f"/{relpath}", args.chart):
                     continue
-                values = (doc.get("spec") or {}).get("values") or {}
-                flat = flatten(values)
-                if not flat:
-                    continue
                 hit_paths.append(relpath)
-                matched.append((repo, relpath))
-                for key, val in flat.items():
-                    text = "" if val is None else str(val)
-                    agg[key][text].add(repo)
-            if hit_paths and args.facts:
-                try:
-                    facts.append(facts_for(mat, app, hit_paths))
-                except Exception as exc:  # pragma: no cover - defensive
-                    print(f"  ! facts failed for {repo}: {exc}", file=sys.stderr)
-            materials.append(mat)
-    else:
-        # ---- app-first discovery ----------------------------------------- #
-        if args.offline and not args.discover:
-            args.discover = True
-        matched_c, skipped, candidates, examined = discover(args, gh)
-        for cand in matched_c:
-            mat = Material(cand["full_name"], paths=cand["paths"], shas=cand["shas"],
-                           gh=gh, branch=cand["branch"], rev=cand.get("rev", ""))
-            hit_paths = []
-            for relpath in cand["helmrelease_paths"]:
-                for doc in mat.yaml_docs(relpath):
-                    if not looks_like_app(doc, app, f"/{relpath}", args.chart):
-                        continue
-                    values = (doc.get("spec") or {}).get("values") or {}
-                    flat = flatten(values)
-                    hit_paths.append(relpath)
-                    matched.append((cand["full_name"], relpath))
-                    for key, val in flat.items():
-                        text = "" if val is None else str(val)
-                        agg[key][text].add(cand["full_name"])
-            if not hit_paths:
-                # The tree has the app's HelmRelease, so the repo runs the app: it
-                # belongs in the denominator even when the document does not parse
-                # (a duplicate YAML anchor, a kustomize patch, an unusual release
-                # name). Nothing is aggregated for it, and the facts row says so.
-                relpath = cand["helmrelease_paths"][0]
-                hit_paths = [relpath]
-                matched.append((cand["full_name"], relpath))
-                print(f"  ~ {cand['full_name']}: release document not readable as the app's "
-                      f"({relpath}); counted in the denominator, no values", file=sys.stderr)
-            if args.facts:
-                try:
-                    facts.append(facts_for(mat, app, hit_paths))
-                except Exception as exc:  # pragma: no cover - defensive
-                    print(f"  ! facts failed for {cand['full_name']}: {exc}", file=sys.stderr)
-            materials.append(mat)
+                matched.append((slug, relpath))
+                for key, val in flatten((doc.get("spec") or {}).get("values") or {}).items():
+                    agg[key]["" if val is None else str(val)].add(slug)
+        if not hit_paths:
+            # The tree has the app's HelmRelease, so the repo runs the app and stays in
+            # the denominator, even when the document cannot be read as the app's.
+            relpath = cand["helmrelease_paths"][0]
+            hit_paths = [relpath]
+            matched.append((slug, relpath))
+            print(f"  ~ {slug}: release document not readable as the app's "
+                  f"({relpath}); counted in the denominator, no values", file=sys.stderr)
+        if args.facts:
+            try:
+                facts.append(facts_for(mat, app, hit_paths))
+            except Exception as exc:  # one odd repo must not sink the survey
+                print(f"  ! facts failed for {slug}: {exc!r}", file=sys.stderr)
 
-        out_repos = Path(args.out_repos or (workdir / f"{app}-repos.txt"))
-        out_repos.write_text("\n".join(sorted({c["full_name"] for c in matched_c})) + "\n")
-        out_skipped = Path(args.out_skipped or (workdir / f"{app}-skipped.json"))
-        out_skipped.write_text(json.dumps(skipped, indent=2))
-        prefiltered = len(matched_c) + len(skipped) - examined
-        discovery = {"candidates": len(candidates), "looked_at": len(matched_c) + len(skipped),
-                     "prefiltered": prefiltered, "tree_checked": examined,
-                     "matched": len(matched_c), "left_out": len(skipped), "wanted": args.want}
-        print(f"discovery: candidates={len(candidates)} looked-at={discovery['looked_at']} "
-              f"(prefiltered={prefiltered} fork/archived/chart-library, tree-checked={examined}) "
-              f"= matched={len(matched_c)} + left-out={len(skipped)}; wanted={args.want}",
-              file=sys.stderr)
-        print(f"  repos -> {out_repos}\n  skipped -> {out_skipped}", file=sys.stderr)
-        reasons = Counter(s["reason"] for s in skipped)
-        print("  skipped reasons: " + ", ".join(f"{k}={v}" for k, v in reasons.items()),
-              file=sys.stderr)
+    out_repos = Path(args.out_repos or (workdir / f"{app}-repos.txt"))
+    out_repos.write_text("\n".join(sorted({c["full_name"] for c in matched_c})) + "\n")
+    out_skipped = Path(args.out_skipped or (workdir / f"{app}-skipped.json"))
+    out_skipped.write_text(json.dumps(skipped, indent=2))
+    discovery = {"candidates": len(candidates), "looked_at": len(matched_c) + len(skipped),
+                 "prefiltered": len(matched_c) + len(skipped) - examined,
+                 "tree_checked": examined, "matched": len(matched_c),
+                 "left_out": len(skipped), "wanted": args.want}
+    print(f"discovery: candidates={discovery['candidates']} looked-at={discovery['looked_at']} "
+          f"(prefiltered={discovery['prefiltered']} fork/archived/chart-library, "
+          f"tree-checked={examined}) = matched={len(matched_c)} + left-out={len(skipped)}; "
+          f"wanted={args.want}", file=sys.stderr)
+    print(f"  repos -> {out_repos}\n  skipped -> {out_skipped}", file=sys.stderr)
+    reasons = Counter(s["reason"] for s in skipped)
+    print("  skipped reasons: " + ", ".join(f"{k}={v}" for k, v in reasons.items()),
+          file=sys.stderr)
 
     if matched:
         report_keys(agg, matched, app, args.chart, args)
@@ -1753,7 +1619,6 @@ def main() -> int:
         payload = {
             "app": app,
             "chart": args.chart,
-            "mode": "discover" if not (args.repos and not args.discover) else "clone",
             "n": len({repo for repo, _ in matched}),
             "candidates": [c["full_name"] for c in candidates],
             "matched": [{"repo": r, "path": p} for r, p in matched],
