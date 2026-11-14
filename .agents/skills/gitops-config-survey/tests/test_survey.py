@@ -371,3 +371,15 @@ def test_a_kustomize_kustomization_is_not_a_flux_one():
         "resources: [./ks.yaml]\n")})
     assert survey.app_kustomizations(
         mat, ["k/media/immich/kustomization.yaml"], "immich", "k/media/immich") == []
+
+
+def test_a_templated_db_host_matches_its_cluster():
+    mat = FakeMaterial({"k/database/cluster.yaml": (
+        "apiVersion: postgresql.cnpg.io/v1\nkind: Cluster\nmetadata: {name: postgres-immich}\n"
+        "spec: {imageName: ghcr.io/tensorchord/cloudnative-vectorchord:17}\n"),
+        "k/database/other.yaml": (
+        "apiVersion: postgresql.cnpg.io/v1\nkind: Cluster\nmetadata: {name: postgres}\nspec: {}\n")})
+    values = {"env": {"DB_HOSTNAME": "postgres-${APP}-rw.database.svc"}}
+    db = survey.resolve_db(values, mat, "photos", "k/media/photos", {"APP": "immich"})
+    assert db["cluster"] == "postgres-immich"
+    assert db["match"] == "host-match"

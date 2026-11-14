@@ -1053,6 +1053,8 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
         host_raw = next((v for k, v in env_hits
                          if k in ("DB_URL", "DATABASE_URL", "POSTGRES_URL",
                                   "DB_CONNECTION_STRING", "DATABASE_HOST")), None)
+    if isinstance(host_raw, str):
+        host_raw = render(host_raw, subs)
     service, source = service_of(host_raw) if host_raw is not None else ("", "none")
     if source == "none":
         refs = [v.get("secretRef", {}).get("name") for v in _env_from_secret_refs(values)]
@@ -1099,7 +1101,7 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
                 or (len(tok) > 3 and tok in name_of(c))]
         if hits:
             chosen = pick(hits)
-            db_match = "host-match" if source == "literal" else "secret-name"
+            db_match = "host-match" if source in ("literal", "template") else "secret-name"
             break
 
     if chosen is None:
