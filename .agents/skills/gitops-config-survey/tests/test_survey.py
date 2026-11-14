@@ -270,3 +270,33 @@ def test_library_store_follows_a_claim_to_its_nfs_pv():
 ])
 def test_library_store_by_mount(library, store):
     assert survey.library_store(FakeMaterial({}), library, "k/immich", [], {}, "immich")["store"] == store
+
+
+def _entry(typ="persistentVolumeClaim", mounts=(), sc=""):
+    return {"type": typ, "mounts": list(mounts), "storage_class": sc}
+
+
+def test_pick_library_skips_config_cache_and_scratch():
+    persistence = {
+        "config": _entry("existingClaim", ["/config"]),
+        "cache": _entry("emptyDir", ["/cache"]),
+        "metadata": _entry(mounts=["/config/metadata"]),
+        "media2": _entry(mounts=["/media2/library"]),
+    }
+    assert survey.pick_library(persistence) == "media2"
+
+
+def test_pick_library_prefers_a_named_data_volume_over_any_nfs_mount():
+    persistence = {
+        "tv-guides": _entry("nfs", ["/tv-guides"]),
+        "media": _entry("existingClaim", ["/media"]),
+    }
+    assert survey.pick_library(persistence) == "media"
+
+
+def test_pick_library_hint_wins():
+    persistence = {"library": _entry(mounts=["/usr/src/app/upload"]),
+                   "thumbs": _entry(mounts=["/usr/src/app/upload/thumbs"])}
+    assert survey.pick_library(persistence, "thumbs") == "thumbs"
+    assert survey.pick_library(persistence, "/usr/src/app/upload") == "library"
+    assert survey.pick_library(persistence, "missing") == ""

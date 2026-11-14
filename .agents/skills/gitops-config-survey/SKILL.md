@@ -120,13 +120,12 @@ One row per repo, then counts with `n/N`:
 - **ks components** — `spec.components` (basenames, e.g. `zeroscaler`, `ext-auth`, `dragonfly`) plus
   the sub-directories the Kustomizations point at (`app`, `database`, `cache`). Components are
   resolved relative to `spec.path`, which is repo-root relative — not relative to the `ks.yaml`.
-- **library** — the persistence entry that holds the photo library, found by mount path
-  (`/usr/src/app/upload`, `/data`, `/photos`, `/library`) and then by name keyword
-  (`library`, `photos`, `media`, `upload`, …), with its `type` (`nfs`, `persistentVolumeClaim`,
-  `existingClaim`, `emptyDir`, `secret`, `configMap`, `hostPath`) and storage class. This is what
-  separates "library on NFS" from "library on a PVC"; a chart that keeps `persistence` under
-  `values.<chart>.persistence` is handled too. The mount paths are Immich's: for another app, check
-  that the picked entry is the one the question is about.
+- **library** — the persistence entry holding the app's bulk data, as opposed to its config, cache
+  or scratch space: entries named or mounted like `config`, `cache`, `tmp`, `log`, `metadata` are
+  skipped, then a data-like name or mount (`media`, `library`, `data`, `photos`, `upload`, …) wins,
+  with an NFS mount as the tie-break. `--library NAME_OR_MOUNT` names it outright when the guess is
+  wrong for the app. Its `type` (`nfs`, `persistentVolumeClaim`, `existingClaim`, …) is how it is
+  mounted; a chart that keeps `persistence` under `values.<chart>.persistence` is handled too.
 - **library store** — where that data lives, as opposed to how it is mounted: `nas`, `network`
   (replicated block), `node-local`, `ephemeral` or `unknown`, with the evidence in `via`. An
   `existingClaim` is followed to its PVC and PV in git (by `volumeName`, `claimRef`, or a static PV

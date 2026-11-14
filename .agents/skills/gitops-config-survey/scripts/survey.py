@@ -941,6 +941,36 @@ def library_store(mat: Material, library: dict, app_root: str, component_dirs: l
     return {"store": "unknown", "via": f"claim {claim} not declared in git"}
 
 
+# Matched as word prefixes, so `media2` and `logs` count.
+DATA_HINTS = ("library", "media", "photos", "upload", "data", "books", "music", "movies",
+              "downloads", "pictures", "images", "storage", "nas", "files", "documents")
+NOT_DATA_HINTS = ("config", "cache", "tmp", "temp", "log", "transcode", "metadata", "backup",
+                  "secret", "run", "dev", "shm")
+
+
+def pick_library(persistence: dict[str, dict], hint: str | None = None) -> str:
+    """The entry holding the app's bulk data, as opposed to its config, cache or scratch.
+
+    `hint` names the entry or a mount path substring and wins outright.
+    """
+    if hint:
+        low = hint.lower()
+        return next((n for n, e in persistence.items()
+                     if n.lower() == low or any(low in m.lower() for m in e["mounts"])), "")
+    best, best_score = "", 0
+    for name, entry in persistence.items():
+        if entry["type"] in ("emptyDir", "configMap", "secret"):
+            continue
+        words = re.split(r"[^a-z0-9]+", " ".join([name, *entry["mounts"]]).lower())
+        if any(w.startswith(NOT_DATA_HINTS) for w in words if w):
+            continue
+        score = 2 * any(w.startswith(DATA_HINTS) for w in words if w)
+        score += entry["type"] == "nfs" or store_kind(entry["storage_class"]) == "nas"
+        if score > best_score:
+            best, best_score = name, score
+    return best
+
+
 def ext_names(spec: dict) -> list[str]:
     names: list[str] = []
     pg = spec.get("postgresql") or {}
@@ -1196,7 +1226,8 @@ def _env_from_secret_refs(values) -> list[dict]:
     return found
 
 
-def facts_for(mat: Material, app: str, release_paths: list[str]) -> dict:
+def facts_for(mat: Material, app: str, release_paths: list[str],
+              library_hint: str | None = None) -> dict:
     app_root = app_root_of(release_paths[0], app)
     release_path = release_paths[0]
     releases = [d for d in mat.yaml_docs(release_path)
@@ -1278,18 +1309,8 @@ def facts_for(mat: Material, app: str, release_paths: list[str]) -> dict:
     else:
         db["vchord_source"] = "none"
 
-    lib_name = ""
-    for n, spec in persistence.items():
-        mounts = " ".join(spec.get("mounts") or [])
-        if any(p in mounts for p in ("/usr/src/app/upload", "/data", "/photos", "/library")):
-            lib_name = n
-            break
-    if not lib_name:
-        for keyword in ("library", "photos", "media", "upload", "images", "pictures", "storage"):
-            lib_name = next((n for n in persistence if keyword in n.lower()), "")
-            if lib_name:
-                break
-    library = {"name": lib_name, **persistence.get(lib_name, {})} if lib_name else {}
+    lib_name = pick_library(persistence, library_hint)
+    library = {"name": lib_name, **persistence[lib_name]} if lib_name else {}
     release_name = str(_get(doc, "metadata", "name") or app)
     library.update(library_store(mat, library, app_root, component_dirs, subs, release_name))
 
@@ -1546,6 +1567,9 @@ def main() -> int:
                     help="only report keys containing one of these substrings")
     ap.add_argument("--top", type=int, default=8, help="values shown per key (default 8)")
     ap.add_argument("--min-repos", type=int, default=2, help="drop keys seen in fewer repos")
+    ap.add_argument("--library", default=None,
+                    help="persistence entry name or mount path that holds the app's data "
+                         "(default: guessed from names, mounts and type)")
     ap.add_argument("--json", default=None, help="write the full result here")
     ap.add_argument("--markdown", default=None,
                     help="write the PR's <details> peer-survey block here (needs --facts)")
@@ -1585,7 +1609,7 @@ def main() -> int:
                   f"({relpath}); counted in the denominator, no values", file=sys.stderr)
         if args.facts:
             try:
-                facts.append(facts_for(mat, app, hit_paths))
+                facts.append(facts_for(mat, app, hit_paths, args.library))
             except Exception as exc:  # one odd repo must not sink the survey
                 print(f"  ! facts failed for {slug}: {exc!r}", file=sys.stderr)
 
