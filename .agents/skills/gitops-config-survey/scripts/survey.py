@@ -40,6 +40,7 @@ import re
 import shutil
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -100,9 +101,10 @@ def github_token() -> str | None:
 class GitHub:
     """Tiny cached GitHub client (REST + raw)."""
 
-    def __init__(self, workdir: Path, offline: bool = False):
+    def __init__(self, workdir: Path, offline: bool = False, max_age: float = 86400):
         self.workdir = workdir
         self.offline = offline
+        self.max_age = max_age
         self.token = github_token()
         self.core_left: int | None = None
         self.core_reset: int | None = None
@@ -118,6 +120,12 @@ class GitHub:
         p = self.workdir / kind / name
         p.parent.mkdir(parents=True, exist_ok=True)
         return p
+
+    def _fresh(self, path: Path) -> bool:
+        """Listings move as repos change; --offline takes whatever is cached."""
+        if not path.exists():
+            return False
+        return self.offline or time.time() - path.stat().st_mtime < self.max_age
 
     def _request(self, url: str, what: str) -> tuple[int, dict | list | None, dict]:
         headers = {"Accept": "application/vnd.github+json", "User-Agent": "home-ops-survey"}
@@ -149,7 +157,7 @@ class GitHub:
     def get_json(self, path: str, what: str, refresh: bool = False,
                  cache_key: str | None = None) -> dict | list:
         cache = self._cache_path("api", (cache_key or path).replace("/", "_") + ".json")
-        if cache.exists() and not refresh:
+        if not refresh and self._fresh(cache):
             return json.loads(cache.read_text())
         if self.offline:
             raise GitHubError(f"{what}: no cached response and --offline is set")
@@ -206,6 +214,8 @@ class GitHub:
         sha) pairs the trees API returns. Used when the API quota is spent.
         """
         dest = self.workdir / "git" / slug.replace("/", "__")
+        if (dest / ".git").exists() and not self._fresh(dest / ".git"):
+            shutil.rmtree(dest)
         if not (dest / ".git").exists():
             dest.parent.mkdir(parents=True, exist_ok=True)
             url = f"{CLONE_BASE}/{slug}.git"
@@ -257,9 +267,10 @@ class GitHub:
         return entries
 
     # -- blobs ------------------------------------------------------------- #
-    def blob(self, slug: str, rev: str, path: str) -> str | None:
-        cache = self.workdir / "blobs" / slug.replace("/", "__") / path
-        if cache.exists():
+    def blob(self, slug: str, rev: str, path: str, sha: str) -> str | None:
+        # Keyed by the git blob sha, so a cached file can never be stale.
+        cache = self.workdir / "blobs" / sha[:2] / sha if sha else None
+        if cache and cache.exists():
             return cache.read_text(encoding="utf-8", errors="replace")
         if self.offline:
             return None
@@ -279,8 +290,9 @@ class GitHub:
         else:
             print(f"  ! blob fetch failed {slug}:{path}: {last_exc}", file=sys.stderr)
             return None
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        cache.write_text(text, encoding="utf-8")
+        if cache:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(text, encoding="utf-8")
         return text
 
 
@@ -348,7 +360,7 @@ class Material:
                 return None
         if self.gh is None or path not in self.shas:
             return None
-        return self.gh.blob(self.slug, self.rev, path)
+        return self.gh.blob(self.slug, self.rev, path, self.shas[path])
 
     def yaml_docs(self, path: str) -> list[dict]:
         if path in self._docs:
@@ -1579,6 +1591,8 @@ def main() -> int:
     ap.add_argument("--offline", action="store_true", help="use only cached API/blob responses")
     ap.add_argument("--workdir", default=None, help="cache dir (default: $XDG_CACHE_HOME/gitops-config-survey/<app>)")
     ap.add_argument("--refresh", action="store_true", help="ignore cached API responses")
+    ap.add_argument("--max-age", type=float, default=24,
+                    help="hours a cached search, tree or git listing stays valid (default 24)")
     ap.add_argument("--out-repos", default=None, help="write matched owner/name lines here")
     ap.add_argument("--out-skipped", default=None, help="write skipped candidates (json) here")
     ap.add_argument("--repos", default=None, help="legacy: file with one owner/name per line")
@@ -1595,7 +1609,7 @@ def main() -> int:
     cache_home = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
     workdir = Path(args.workdir or cache_home / "gitops-config-survey" / app).expanduser().resolve()
     workdir.mkdir(parents=True, exist_ok=True)
-    gh = GitHub(workdir, offline=args.offline)
+    gh = GitHub(workdir, offline=args.offline, max_age=args.max_age * 3600)
 
     agg: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
     matched: list[tuple[str, str]] = []
