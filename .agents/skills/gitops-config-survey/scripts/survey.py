@@ -1031,7 +1031,7 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
     env_hits = [(k, v) for k, v in walk_env(values) if k in DB_HOST_KEYS]
     host_raw = next((v for k, v in env_hits
                      if k in ("DB_HOSTNAME", "DB_HOST", "POSTGRES_HOST",
-                              "POSTGRES_HOSTNAME", "PGHOST")), None)
+                              "POSTGRES_HOSTNAME", "POSTGRESQL_HOST", "PGHOST")), None)
     if host_raw is None:
         host_raw = next((v for k, v in env_hits
                          if k in ("DB_URL", "DATABASE_URL", "POSTGRES_URL",
