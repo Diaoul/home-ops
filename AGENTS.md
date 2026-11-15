@@ -1,380 +1,74 @@
 # AGENTS.md — AI Agent Guide for home-ops
 
-This is a Kubernetes homelab GitOps monorepo managed with Flux v2 on Talos Linux.
-Read this file before making any changes.
-
----
-
-## Project Overview
+A Kubernetes homelab GitOps monorepo: Flux v2 on Talos Linux. Read this file before making
+any change.
 
 | Layer | Technology |
 |---|---|
-| OS | Talos Linux (immutable, API-driven) |
-| Kubernetes | upgraded in-place by tuppr |
+| OS | Talos Linux, upgraded with Kubernetes in place by tuppr |
 | GitOps | Flux v2 (flux-operator + flux-instance) |
 | CNI | Cilium (BGP, native routing, kube-proxy replacement) |
-| Ingress | Envoy Gateway (Kubernetes Gateway API) |
+| Ingress | Envoy Gateway (Gateway API only) |
 | Storage | Rook-Ceph (block) + miroir (node-local / DRBD-replicated) |
 | Backup | kopiur (Kopia) → Garage S3 on the NAS (singularity.milkyway) |
-| Database | CloudNative-PG (PostgreSQL 18, HA) |
+| Database | CloudNative-PG (PostgreSQL, HA) |
 | Secrets | SOPS + Age + PGP |
 | Helm charts | bjw-s/app-template (OCI) for nearly all apps |
 | Updates | Renovate (hourly GitHub Actions) |
 | Auth | Kanidm (kaniop); oauth2-proxy for ext-auth |
 
-Versions are deliberately absent: Renovate and tuppr move them, and a number written
-here goes stale silently. Read the live values instead — `kubectl version`,
-`talosctl version`, or the pinned tag in the relevant `helmrelease.yaml`.
+Versions are deliberately absent: they go stale. Read the live value (`kubectl version`,
+`talosctl version`, the pinned tag in a `helmrelease.yaml`).
 
----
+Layout: `kubernetes/flux/cluster/ks.yaml` is the Flux entrypoint;
+`kubernetes/apps/<namespace>/<app>/` holds a `ks.yaml` and an `app/` directory;
+`kubernetes/components/` holds reusable Kustomize components; `talos/` the node configs.
 
-## Repository Layout
+## Skills
 
-```
-kubernetes/
-├── flux/cluster/ks.yaml        # Flux entrypoint → kubernetes/apps/
-├── components/                 # Reusable Kustomize components
-│   ├── common/                 # Namespace, OCI repos, SOPS secret, Flux alerts
-│   ├── ext-auth/               # Kanidm login via oauth2-proxy (Envoy SecurityPolicy)
-│   ├── persistence/            # PVC + kopiur snapshot/restore templates
-│   ├── replacements/           # Shared variable substitution
-│   └── zeroscaler/             # HPA: scale to 0 while the NAS NFS port is down
-└── apps/<namespace>/<app>/
-    ├── ks.yaml                 # Flux Kustomization
-    └── app/
-        ├── kustomization.yaml
-        ├── helmrelease.yaml
-        └── secret.sops.yaml    # (optional) SOPS-encrypted secret
-```
+`.agents/skills/` holds the procedures; load the one that fits before starting:
 
-### Namespaces
+- `adding-an-app`: app templates, routes, ext-auth, persistence, PostgreSQL, network policies
+- `creating-a-sops-secret`: a new encrypted Secret, without seeing its values
+- `writing-a-pull-request` / `reviewing-pull-requests`
+- `cluster-health`, `gitops-config-survey`
 
-`cert-manager`, `database`, `default`, `downloads`, `flux-system`, `home-automation`,
-`kube-system`, `media`, `miroir-system`, `network`, `observability`, `rook-ceph`,
-`security`, `system-upgrade`
+## Conventions
 
----
-
-## Universal App Pattern
-
-Every app follows this exact two-file pattern. Study an existing app (e.g.,
-`kubernetes/apps/default/vaultwarden/`) before adding a new one.
-
-### `ks.yaml` — Flux Kustomization
-
-```yaml
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: <app>                              # no namespace: apps/<namespace>/kustomization.yaml sets it
-spec:
-  targetNamespace: <namespace>
-  interval: 1h
-  retryInterval: 1m
-  timeout: 5m
-  path: ./kubernetes/apps/<namespace>/<app>/app
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  wait: false                              # true only if another Kustomization dependsOn this one being healthy
-  # Include ONLY the components that this app actually needs:
-  components:
-    - ../../../../components/persistence   # if app needs PVC + kopiur backup
-    - ../../../../components/ext-auth      # if app needs a Kanidm login
-    - ../../../../components/zeroscaler    # if app mounts NFS (media/downloads)
-  dependsOn:
-    - name: rook-ceph-cluster              # if using ceph-block storage
-      namespace: rook-ceph
-    - name: kopiur-repository              # if using persistence component
-      namespace: kopiur-system
-    - name: cloudnative-pg-databases       # if using PostgreSQL
-      namespace: database
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
-    substitute:
-      APP: <app>
-      CAPACITY: 5Gi                        # if using persistence component
-```
-
-### `app/helmrelease.yaml` — HelmRelease (app-template)
-
-```yaml
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: <app>
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: app-template                     # per-namespace copy from components/common
-  values:
-    controllers:
-      <app>:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: <registry>/<image>
-              tag: <version>@sha256:<digest>   # ALWAYS pin both tag AND digest
-            env:
-              TZ: Europe/Paris
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 512Mi
-        pod:
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        controller: <app>
-        ports:
-          http:
-            port: <port>
-    route:
-      app:
-        hostnames:
-          - <app>.${DOMAIN}
-        parentRefs:
-          - name: envoy-internal           # or envoy-external
-            namespace: network
-```
-
-### `app/kustomization.yaml`
-
-```yaml
-# yaml-language-server: $schema=https://json.schemastore.org/kustomization
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - ./helmrelease.yaml
-  - ./secret.sops.yaml   # only if secrets exist
-```
-
----
-
-## Networking
-
-**Do NOT use `Ingress` resources.** This cluster uses Kubernetes Gateway API exclusively.
-
-### Gateways
-
-| Gateway | IP | Use for |
-|---|---|---|
-| `envoy-external` | `10.44.0.1` | Publicly accessible services (via Cloudflare Tunnel) |
-| `envoy-internal` | `10.44.0.2` | LAN-only services |
-
-Both gateways are in namespace `network`.
-
-### Routes
-
-For an app-template app, declare the route in the HelmRelease's `route:` values (see
-the template above); the chart renders the HTTPRoute and points it at the app's Service.
-
-Write a standalone `app/httproute.yaml` only when the backend is not an app-template
-release (e.g. `flux-system/flux-instance`, `network/singularity`), and reference it in
-`app/kustomization.yaml`:
-
-```yaml
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: <app>
-spec:
-  parentRefs:
-    - name: envoy-internal          # or envoy-external
-      namespace: network
-  hostnames:
-    - <app>.${DOMAIN}
-  rules:
-    - backendRefs:
-        - name: <service>
-          port: <port>
-```
-
-### ext-auth (Kanidm via oauth2-proxy)
-
-To put an app behind a Kanidm login, add the `ext-auth` component in `ks.yaml`. It attaches
-a SecurityPolicy to the `${APP}` HTTPRoute that sends each request to oauth2-proxy, which
-bypasses `/api` and `/ping`. Logins finish on `auth.${DOMAIN}` and return to the app, so
-nothing else changes, unless the app lives in a namespace missing from
-`kubernetes/apps/security/oauth2-proxy/app/referencegrant.yaml`.
-
----
-
-## Secrets Management (SOPS)
-
-**CRITICAL: Never commit unencrypted secrets.** All secret files must be named
-`*.sops.yaml` and encrypted before committing.
-
-Encrypt a new secret:
-```sh
-sops --encrypt --in-place kubernetes/apps/<namespace>/<app>/app/secret.sops.yaml
-```
-
-Secret template before encryption:
-```yaml
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
-apiVersion: v1
-kind: Secret
-metadata:
-  name: <app>
-stringData:
-  SECRET_KEY: "value"
-```
-
-### Global variables (injected into all Kustomizations via `cluster-secrets`)
-
-These are available via `postBuild.substituteFrom` and can be used as `${VAR}`:
-- `${DOMAIN}` — homelab domain
-- `${CLOUDFLARE_TUNNEL_ID}`
-- `${EMAIL_ADDRESS_1}`
-
----
-
-## Persistence (kopiur + PVC)
-
-For apps that need persistent storage with automatic backups, add the `persistence`
-component in `ks.yaml` and set:
-
-```yaml
-substitute:
-  APP: <app>          # Used as PVC name and kopiur resource names
-  CAPACITY: 5Gi       # PVC size (default if omitted)
-```
-
-The component creates:
-- A `PersistentVolumeClaim` named `<app>` using `ceph-block` StorageClass, populated
-  from a `Restore`
-- A `SnapshotPolicy` + `SnapshotSchedule` (snapshot every 3 hours to the NAS via kopiur/Kopia)
-- A `Restore` (populates the PVC from the latest snapshot)
-
-Note the PVC's `dataSourceRef` is immutable: changing it requires deleting and
-recreating the PVC.
-
-For NFS-mounted media (downloads/media namespace), use `miroir-local` StorageClass
-and add the `zeroscaler` component. It is a native HPA (min 0, max 1) driven by the
-blackbox `nfs_probe` via prometheus-adapter; set `CONTROLLER: StatefulSet` when the
-workload is not a Deployment.
-
-Storage classes: `ceph-block` (default, replicated RBD), `miroir-local` (node-local
-LVM thin, no DRBD traffic), `miroir-replicated` (2-way DRBD, keep it off control
-planes; their system disks are already the etcd fdatasync bottleneck).
-
----
-
-## PostgreSQL Pattern
-
-Databases are declared with the CNPG `Database`/`DatabaseRole` CRDs, not with a
-`postgres-init` init container. All three resources must live in the cluster's
-namespace, so they sit together in `kubernetes/apps/database/cloudnative-pg/databases/`
-and the postgres superuser password never leaves the `database` namespace.
-
-For an app needing a database:
-
-1. Add `<app>.yaml` to `databases/` with a `DatabaseRole` (`login: true`,
-   `passwordSecret: <app>-db`) and a `Database` (`owner: <app>`).
-2. Add `<app>.sops.yaml` there too: a `kubernetes.io/basic-auth` Secret named
-   `<app>-db`, labelled `cnpg.io/reload: "true"`, holding `username` and `password`.
-3. Reference both from `databases/kustomization.yaml`.
-4. Put the app's own connection string or password in its usual app secret — the same
-   password, since there are no cross-namespace secrets, so a rotation touches both
-   files.
-5. `dependsOn: cloudnative-pg-databases` (namespace `database`) in the app's `ks.yaml`.
-
-Reference: `kubernetes/apps/database/cloudnative-pg/databases/` plus any of its
-consumers (`ai/litellm`, `downloads/autobrr`, `default/miniflux`, `media/romm`).
-
-Do not write a `failed:` health expression for these kinds. A new `passwordSecret`
-reaches the cluster's Role only on CNPG's next reconcile, so a fresh `DatabaseRole`
-sits at `applied: false` with an RBAC error for a few seconds; treating that as a
-failure makes Flux fail the Kustomization early and every dependent app alert.
-
-Reclaim policies default to `retain` — leave them out.
-
----
-
-## Key Conventions — Always Follow These
-
-1. **Image pinning**: Always use both tag AND digest: `tag: 1.2.3@sha256:<digest>`
-2. **Schema comments**: Every YAML file must start with `# yaml-language-server: $schema=...`
-3. **Security context**: All containers need `allowPrivilegeEscalation: false`,
-   `readOnlyRootFilesystem: true`, `capabilities: { drop: ["ALL"] }`, `runAsNonRoot: true`
-4. **Reloader annotation**: Add `reloader.stakater.com/auto: "true"` on controllers
-   that use ConfigMaps or Secrets
-5. **OCI charts**: Use `chartRef` (OCIRepository) not inline `chart:` in HelmReleases
-6. **No Ingress**: Use HTTPRoute + Envoy Gateway (Gateway API)
-7. **Timezone**: Always set `TZ: Europe/Paris` in container env, except in a container that
-   never reads local time
-8. **UID/GID**: Default is `568` for all app containers unless image requires otherwise
-
----
+- **Images** pinned by tag and digest: `tag: 1.2.3@sha256:<digest>`; never `latest`.
+- **Schema comment** first in every YAML file: `# yaml-language-server: $schema=...`.
+- **Hardened containers**: `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`,
+  `capabilities: { drop: ["ALL"] }`, `runAsNonRoot: true`, UID/GID `568` unless the image
+  needs otherwise.
+- `reloader.stakater.com/auto: "true"` on controllers that use ConfigMaps or Secrets.
+- `TZ: Europe/Paris` in every container that reads local time.
+- `chartRef` to an `OCIRepository`, never inline `chart:`; app-template uses the shared one
+  from `components/common/`.
+- HTTPRoute through Envoy Gateway; never `Ingress`.
+- Name objects after the app, never with their kind (`myapp`, not `myapp-configmap`).
+- Never commit an unencrypted `*.sops.yaml`.
+- Before a new app or configuration pattern, check how [onedr0p/home-ops](https://github.com/onedr0p/home-ops)
+  does it: `git show onedr0p/main:<path>`.
+- No `NetworkPolicy` without a capability to fence; see `adding-an-app` before writing or
+  deleting one.
+- `kubernetes/flux/cluster/ks.yaml` patches every HelmRelease (CRD upgrades, remediation,
+  rollback, history). Grep it before adding an `install:`/`upgrade:` block or flagging one as
+  missing; an app sets one only to differ from it.
 
 ## Comments
 
-Comments explain a decision the YAML cannot. Nothing else.
+A comment names a non-obvious constraint that outlives the change: an upstream bug worked
+around, a value that looks wrong but is deliberate. Never a restatement of the YAML below it,
+migration narration (steps, "now that X", previous values: that is the commit message), or
+session leakage (what was tried, what an agent concluded). Delete the comment and read the
+YAML: if nothing is lost, it should not exist.
 
-Write one only for a **non-obvious constraint that outlives the change**: an upstream
-bug being worked around, a value that looks wrong but is deliberate, a port that must
-avoid another service. Name the constraint, not the story.
+## YAML
 
-Never write:
-
-- **Restatements.** `# Backing store for miroir's LVM thin pool` above
-  `kind: RawVolumeConfig / name: miroir` says nothing the next two lines don't.
-- **Migration narration.** Steps, orderings, "now that X", "replacing Y", what a
-  previous value used to be. Procedures belong in the commit message, which is where
-  someone looks when asking *why did this change*. A comment describing a one-off
-  procedure ages into a lie.
-- **Session or reasoning leakage.** Notes to self, what was tried, what an agent
-  concluded. Git history holds this.
-
-Rule of thumb: delete the comment and read the YAML. If nothing is lost, it should not
-have been written.
-
-## YAML Formatting
-
-All YAML is formatted with **yamlfmt** (config in `.yamlfmt.yaml`). The formatter runs
-automatically via lefthook on staged files before every commit.
-
-### Quote style
-
-Do **not** add unnecessary double quotes around plain string values. Only quote when
-YAML would misparse the value without them:
-
-| Value type | Example | Quoted? |
-|---|---|---|
-| Plain string | `sync`, `enabled`, `get` | No |
-| Boolean lookalike | `"true"`, `"false"`, `"off"` | Yes — unquoted becomes a boolean |
-| Integer lookalike | `"0"`, `"1"`, `"9090"` | Yes — unquoted becomes a number |
-| Empty string | `""` | Yes — unquoted becomes null |
-| `@`-prefixed | `"@daily"`, `"@hourly"` | Yes — `@` is a reserved YAML indicator |
-| `*`-prefixed | `"*.example.com"` | Yes — `*` is a reserved YAML indicator |
-| PromQL / LogQL | `'absent(up{job="foo"})'` | Yes — contains special characters |
-
-Note: yamlfmt cannot remove unnecessary quotes automatically. Existing files may have
-legacy quoted strings that are safe but not worth bulk-editing. Write new files
-without unnecessary quotes from the start.
-
----
+yamlfmt (`.yamlfmt.yaml`) formats staged YAML in a lefthook pre-commit hook. Quote a string
+only when YAML would misparse it: boolean or number lookalikes (`"true"`, `"9090"`), `""`,
+values starting with `@` or `*`, PromQL/LogQL. yamlfmt cannot drop needless quotes, so write
+new files without them.
 
 ## Validation
 
@@ -400,139 +94,26 @@ just talos render                  # render to talos/rendered/ (gitignored)
 talosctl validate -m metal -c talos/rendered/<node>.yaml
 ```
 
----
+Talos recipes (`just talos apply-node`, `upgrade-node`) take a node name (`k8s-node-1`), not
+an IP.
 
-## Just Commands
+## Cluster access
 
-```sh
-just talos diff                 # Show pending Talos config changes (dry-run)
-just talos apply                # Apply Talos config to all nodes (diffs and asks first)
-just talos apply-node <name>    # Apply Talos config to a node
-just talos upgrade-node <name>  # Upgrade Talos on a node (normally tuppr's job)
-just bootstrap <step>           # Bootstrap steps (talos/k8s/namespaces/resources/apps)
-```
+- Plain `kubectl`, not `just kube`, with `-n <namespace>` at the end:
+  `kubectl logs -l app=foo -n media`. A hook blocks `kubectl -n <ns> ...`.
+- Read state with `kubectl get`, `kubectl logs` or the Prometheus HTTP API; never exec into a
+  pod for it.
+- Reach an app's API through its route (`https://<app>.${DOMAIN}`); port-forward only when it
+  has no route or sits behind ext-auth.
+- Flux reconciles on push through a GitHub webhook: never tell the user to wait for it.
 
-Talos recipes take a node **name** (`k8s-node-1`), not an IP — they map to topf's
-`--nodes-filter`. See `talos/README.md`.
+## Git
 
----
+[Conventional Commits](https://www.conventionalcommits.org/): `feat:` adds or removes an app
+or feature, `fix:`, `docs:` (this file included), `refactor:` changes no behaviour, `chore:`
+for maintenance such as bumps and formatting, never for adding or removing an app.
 
-## kubectl Conventions
-
-- Use plain `kubectl` directly — do not use `just kube` wrapper
-- Put `-n <namespace>` at the **end** of kubectl commands, not immediately after `kubectl`
-  - Correct: `kubectl logs -l app=foo -n media`
-  - Wrong: `kubectl -n media logs -l app=foo`
-- Do not exec into pods to retrieve cluster info — use `kubectl get`, `kubectl logs`, or the Prometheus HTTP API
-- Reach an app's API through its HTTPRoute hostname (`https://<app>.${DOMAIN}`), not
-  `kubectl port-forward`. Only port-forward when the app has no route or its route is behind
-  ext-auth. E.g. the zigbee2mqtt WebSocket API is `wss://zigbee2mqtt.${DOMAIN}/api` (and
-  `zigbee2mqtt-secondary`), on `envoy-internal` with no ext-auth
-- A PreToolUse hook enforces the `-n` placement rule and will block `kubectl -n <ns> ...` commands
-
----
-
-## Git Conventions
-
-Use [Conventional Commits](https://www.conventionalcommits.org/):
-- `feat:` for adding or removing apps/features
-- `fix:` for bug fixes
-- `docs:` for documentation, including this file
-- `refactor:` for changes that alter no behaviour
-- `chore:` for maintenance (dependency bumps, formatting) — **not** for adding/removing apps
-
-### One concern per commit
-
-A commit carries a single semantic change. If the subject line needs "and", or the
-body explains two unrelated things, it is two commits. A `fix(ai):` to a HelmRelease
-and an edit to this file are never the same commit, however close together they
-happened.
-
-Stage deliberately: `git add <specific paths>`, never `git add -A` or `git add .`.
-Only the files belonging to the change being committed, even when other edits are
-sitting in the tree — they may be someone else's work in progress.
-
-Split before committing rather than after. Once pushed, fixing it means rewriting
-published history, which needs the repo owner's say-so.
-
-Before implementing a new app or configuration pattern, check the
-[onedr0p/home-ops](https://github.com/onedr0p/home-ops) repo as a reference.
-
-### Writing the pull request description
-
-`.agents/skills/writing-a-pull-request` holds the description's five sections and the rules
-behind them — when to stack pull requests, keeping their history, and which changes are one-way
-doors. Load it before opening one.
-
----
-
-## Flux Reconciliation
-
-Flux is configured with a GitHub webhook — reconciliation triggers immediately on push. Do not tell the user to "wait X minutes for Flux to reconcile."
-
-### Cluster-wide HelmRelease defaults
-
-`kubernetes/flux/cluster/ks.yaml` patches **every** HelmRelease in the cluster, so
-these are already set everywhere and must not be added per-app or reported as missing:
-
-```yaml
-install:
-  crds: CreateReplace
-maxHistory: 3
-rollback:
-  cleanupOnFail: true
-upgrade:
-  cleanupOnFail: true
-  crds: CreateReplace
-  strategy:
-    name: RemediateOnFailure
-  remediation:
-    remediateLastFailure: true
-    retries: 2
-```
-
-Before flagging any HelmRelease field as absent, grep that file — a chart whose upgrade
-notes demand `upgrade.crds: CreateReplace` (miroir, cert-manager, CNPG) already has it,
-and telling the user otherwise is wrong. The same goes for remediation and history
-limits: an app-level `install:`/`upgrade:` block only needs to appear when it *differs*
-from the defaults above.
-
----
-
-## What NOT to Do
-
-- Do not use `Ingress` resources — use `HTTPRoute`
-- Do not commit `*.sops.yaml` files without encrypting them first
-- Do not use `chart:` inline in HelmReleases — use `chartRef` pointing to an `OCIRepository`
-- Do not pin images by tag only — always include the SHA256 digest
-- Do not add `runAsRoot: true` or skip security context — harden all containers
-- Do not create a new `OCIRepository` for app-template — use the shared one in `components/common/`
-- Do not skip `# yaml-language-server: $schema=...` headers on YAML files
-- Do not use `latest` tags for any container image
-- Do not add a `NetworkPolicy` or `CiliumNetworkPolicy` by default. Access control in
-  this cluster is the gateway plus ext-auth; a policy that only restates that adds
-  drift risk and maintenance for no security gain.
-
-  Add one only when a workload holds a **network capability the rest of the cluster
-  should not be able to borrow**, and state which one in a comment on the policy:
-  - it fetches arbitrary URLs on request, so it doubles as an open proxy (SSRF,
-    egress laundering)
-  - it holds credentials or privileges that make it worth pivoting through
-
-  "Defence in depth" on its own is not a justification — name the capability or
-  don't write the policy.
-
-  Prefer `egressDeny` layered on open egress (`enableDefaultDeny.egress: false`)
-  over allow-listing: it fails open on the path you forgot rather than breaking the
-  app, and it keeps the diff readable. Every CIDR is site-specific — see
-  `network_mtu_topology` / the VLAN map before copying one from upstream.
-
-  Existing policies, all justified under that test — do not delete as drift:
-  - `actions-runner-system/.../runners/home-ops/networkpolicy.yaml` — the runner
-    keeps cluster-admin and `os:admin` and executes fork PRs; fenced off the LAN
-  - `default/searxng/app/ciliumnetworkpolicy.yaml` — unauthenticated and fetches
-    arbitrary URLs; restricts who may call it and fences it off the LAN
-  - `security/kanidm/app/ciliumnetworkpolicy.yaml` — the IdP, trusting
-    X-Forwarded-For from any source; only envoy-external and kaniop may reach it
-- Do not put the kind in an object's name (`-secret`, `-configmap`, `-pvc`…) — name it after
-  the app (`name: myapp`, not `myapp-configmap`); `kind:` already says what it is
+One concern per commit: if the subject needs "and", it is two commits. A `fix(ai):` to a
+HelmRelease and an edit to this file are never the same commit. Stage named paths only
+(`git add <path>`, never `-A` or `.`): other edits in the tree may be someone else's work.
+Split before pushing; rewriting published history needs the repo owner's say-so.

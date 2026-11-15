@@ -113,7 +113,7 @@ credential, then push the new encrypted value as an ordinary commit.
 Four changes do not roll back by reverting the commit. They belong under `⚠️ Beware`, in the
 change's own words, including what to do instead:
 
-- **A PVC's `dataSourceRef` is immutable** — `AGENTS.md` already says so under Persistence;
+- **A PVC's `dataSourceRef` is immutable** — the `adding-an-app` skill says so under Persistence;
   changing it means a new PVC and a copy of the data.
 - **A PVC cannot move between storage classes** — the move is a copy into a new volume, or
   starting over.

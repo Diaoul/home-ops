@@ -41,7 +41,7 @@ Check the result by its metadata only: `grep -cE 'recipient: age1|fp: ' "$path"`
 ## A value shared by two files
 
 A CNPG database password lives in both `kubernetes/apps/database/cloudnative-pg/databases/<app>.sops.yaml`
-and the app's own secret (see AGENTS.md, PostgreSQL Pattern). Write both files in the same
+and the app's own secret (see the `adding-an-app` skill, PostgreSQL). Write both files in the same
 shell, from the same `$pw`; generated separately, they will not match, and nothing shows it
 until the app fails to log in.
 
