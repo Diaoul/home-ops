@@ -1025,8 +1025,8 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
     """Which Postgres the app talks to, and what that cluster is.
 
     `match` records how the cluster was found, strongest first: the host, a secret name
-    (CNPG names its secrets after the cluster), the app's directory or name, a
-    `postgresVector` label, or the repo having a single cluster.
+    (CNPG names its secrets after the cluster), the app's directory or name, or the repo
+    having a single cluster.
     """
     env_hits = [(k, v) for k, v in walk_env(values) if k in DB_HOST_KEYS]
     host_raw = next((v for k, v in env_hits
@@ -1096,18 +1096,8 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
         chosen = pick([c for c in clusters if app in name_of(c).lower()])
         if chosen:
             db_match = "app-name"
-    if chosen is None:
-        # `postgresVector: "true"` on the controller is the app declaring it wants a
-        # vector-capable cluster; take it when the repo has exactly one.
-        wants_vector = any(
-            str(k).lower() in ("postgresvector", "postgres_vector") and str(v).lower() == "true"
-            for k, v in _iter_labels(values)
-        )
-        if wants_vector:
-            vecs = [c for c in clusters if _is_vector_cluster(c, subs)]
-            if len(vecs) == 1:
-                chosen, db_match = vecs[0], "vector-label"
-    if chosen is None and len(clusters) == 1:
+    # with no database setting at all, a lone cluster is more likely someone else's
+    if chosen is None and len(clusters) == 1 and source != "none":
         chosen, db_match = clusters[0], "single-cluster"
 
     db: dict = {"service": service, "source": source, "cluster": "",
@@ -1166,17 +1156,7 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
             "path": chosen["path"],
             "substituted": any("${" in str(v) for v in [cspec.get("imageName") or ""]),
         })
-        vectorish = db["extensions"] + db["preload"]
-        db["vector_capable"] = any("vchord" in x or "vector" in x for x in vectorish) \
-            or "vector" in (db.get("image") or "").lower()
-        if db["vector_capable"] and db["dedicated"]:
-            db["class"] = "vector-dedicated"
-        elif db["vector_capable"]:
-            db["class"] = "vector-shared"
-        elif db["dedicated"]:
-            db["class"] = "general-dedicated"
-        else:
-            db["class"] = "general-shared"
+        db["class"] = "dedicated" if db["dedicated"] else "shared"
         return db
 
     for path in mat.paths:
@@ -1193,29 +1173,6 @@ def resolve_db(values: dict, mat: Material, app: str, app_root: str, subs: dict)
 
     db["class"] = "unresolved" if source in ("secret-ref", "envFrom-secret", "template") else "none"
     return db
-
-
-def _iter_labels(values):
-    def visit(node):
-        if isinstance(node, dict):
-            for key, sub in node.items():
-                if key in ("labels", "annotations") and isinstance(sub, dict):
-                    for k, v in sub.items():
-                        yield str(k), v
-                yield from visit(sub)
-        elif isinstance(node, list):
-            for item in node:
-                yield from visit(item)
-
-    return visit(values)
-
-
-def _is_vector_cluster(c: dict, subs: dict) -> bool:
-    spec = c["doc"].get("spec") or {}
-    image = render(spec.get("imageName") or "", subs).lower()
-    if "vector" in image or "vchord" in image:
-        return True
-    return any("vchord" in x or "vector" in x for x in ext_names(spec))
 
 
 def _env_from_secret_refs(values) -> list[dict]:
@@ -1280,30 +1237,7 @@ def facts_for(mat: Material, app: str, release_paths: list[str],
     # --- database -------------------------------------------------------- #
     db = resolve_db(values, mat, app, app_root, subs)
 
-    if "vchord-scratch" in (db.get("image") or ""):
-        db["image_kind"] = "vchord-scratch"
-    elif "cloudnative-vectorchord" in (db.get("image") or ""):
-        db["image_kind"] = "cloudnative-vectorchord"
-    elif "cloudnative-pg/postgresql" in (db.get("image") or ""):
-        db["image_kind"] = "cloudnative-pg-postgresql"
-    elif db.get("image"):
-        db["image_kind"] = "other"
-    else:
-        db["image_kind"] = "none"
     db["sc_kind"] = storage_class_kind(db.get("storage_class") or "")
-
-    # where the vchord library comes from: an extension image volume (CNPG >= 1.28,
-    # ghcr.io/tensorchord/vchord-scratch) or baked into the cluster's base image
-    # (ghcr.io/tensorchord/cloudnative-vectorchord).
-    ext_images = db.get("ext_images") or []
-    if any("vchord" in e.lower() for e in ext_images):
-        db["vchord_source"] = "extension-image"
-    elif "cloudnative-vectorchord" in (db.get("image") or ""):
-        db["vchord_source"] = "base-image"
-    elif db.get("cluster") and any("vchord" in x for x in (db.get("extensions") or [])):
-        db["vchord_source"] = "other-base-image"
-    else:
-        db["vchord_source"] = "none"
 
     lib_name = pick_library(persistence, library_hint)
     library = {"name": lib_name, **persistence[lib_name]} if lib_name else {}
@@ -1331,7 +1265,26 @@ def facts_for(mat: Material, app: str, release_paths: list[str],
         "ext_auth": any("ext-auth" in c or "extauth" in c
                         for c in comps + [d.lower() for d in comp["dirs"]]),
         "postgres_controller": "postgres" in [str(k).lower() for k in controllers],
+        "review": review_items(release_paths, persistence, library, db),
     }
+
+
+def review_items(release_paths: list[str], persistence: dict, library: dict, db: dict) -> list[str]:
+    """The facts that rest on a guess, for an agent to check by reading the repository."""
+    out = []
+    if len(release_paths) > 1:
+        out.append(f"{len(release_paths)} releases of the app; facts are from {release_paths[0]}")
+    if not persistence:
+        out.append("no persistence block recognised; the chart may name it differently")
+    elif not library.get("name"):
+        out.append(f"no data volume among {', '.join(sorted(persistence))}; --library names one")
+    elif library.get("store") == "unknown":
+        out.append(f"library store unknown: {library.get('via')}")
+    if db.get("match") in ("single-cluster", "app-name"):
+        out.append(f"db cluster {db.get('cluster')} is a guess ({db['match']}), from {db.get('path')}")
+    elif db.get("class") == "unresolved":
+        out.append(f"db host not in git ({db.get('source')}: {db.get('service')})")
+    return out
 
 
 def unknown_facts(slug: str, release_paths: list[str], why: str) -> dict:
@@ -1344,7 +1297,7 @@ def unknown_facts(slug: str, release_paths: list[str], why: str) -> dict:
         "db": {"service": "", "source": "none", "cluster": "", "match": "none",
                "other_operator": "", "class": "unresolved"},
         "hpa": None, "hpa_paths": [], "zeroscaler": None, "ext_auth": None,
-        "postgres_controller": None,
+        "postgres_controller": None, "review": [why],
     }
 
 
@@ -1395,6 +1348,10 @@ def _db_label(db: dict) -> str:
     return "-"
 
 
+def _image_repo(db: dict) -> str:
+    return (db.get("image_short") or "none").split(":")[0]
+
+
 def _flag(value, yes: str, no: str) -> str:
     return "unknown" if value is None else yes if value else no
 
@@ -1440,7 +1397,7 @@ def report_facts(rows: list[dict], app: str):
         print(f"  {label:<28} {parts}")
 
     tally("db cluster role", [r["db"].get("class", "none") for r in rows])
-    tally("db image", [r["db"].get("image_kind", "none") for r in rows])
+    tally("db image", [_image_repo(r["db"]) for r in rows])
     tally("db storage class kind", [r["db"].get("sc_kind", "none") if r["db"].get("cluster") else "none"
                                     for r in rows])
     tally("db storage class", [(r["db"].get("storage_class") or "none") for r in rows])
@@ -1452,12 +1409,12 @@ def report_facts(rows: list[dict], app: str):
     tally("own postgres controller", [_flag(r["postgres_controller"], "yes", "no") for r in rows])
     tally("db extensions", [",".join(r["db"].get("extensions") or []) or "none" for r in rows])
     tally("db preload", [",".join(r["db"].get("preload") or []) or "none" for r in rows])
-    vec = [r for r in rows if r["db"].get("vector_capable")]
-    print(f"  {'vchord supplied by':<28} " + ", ".join(
-        f"{k} {v}/{len(vec)}" for k, v in sorted(
-            Counter(r["db"].get("vchord_source", "none") for r in vec).items(),
-            key=lambda kv: (-kv[1], kv[0]))) + f"   (of {len(vec)} vector-capable)")
-
+    flagged = [r for r in rows if r.get("review")]
+    if flagged:
+        print(f"\nneeds review ({len(flagged)}/{n}), guesses to check in the repository:")
+        for r in flagged:
+            for item in r["review"]:
+                print(f"  {r['repo']}: {item}")
 
 def _md_code(value) -> str:
     """A table cell as a code span that survives backticks and pipes in the value."""
@@ -1538,11 +1495,10 @@ def write_markdown(path: str, rows: list[dict], skipped: list[dict], discovery: 
     table("Postgres cluster", ["Cluster", "Role"],
           [(r["repo"], [_md_code(_db_label(r["db"])), _md_code(r["db"].get("class", "none"))])
            for r in rows], [r["db"].get("class", "none") for r in rows])
-    vec = [r for r in rows if r["db"].get("vector_capable")]
-    table(f"Vector extension source ({len(vec)} vector-capable)", ["Image", "Supplied by"],
+    table("Database image", ["Image", "Extensions"],
           [(r["repo"], [_md_code(r["db"].get("image_short") or "-"),
-                        _md_code(r["db"].get("vchord_source", "none"))]) for r in vec],
-          [r["db"].get("vchord_source", "none") for r in vec], len(vec))
+                        _md_code(",".join(r["db"].get("extensions") or []) or "-")]) for r in rows],
+          [_image_repo(r["db"]) for r in rows])
     table("Database storage", ["Storage class", "Size", "Kind"],
           [(r["repo"], [_md_code(r["db"].get("storage_class") or "-"),
                         _md_code(r["db"].get("storage_size") or "-"),
@@ -1640,6 +1596,7 @@ def main() -> int:
                 matched.append((slug, relpath))
                 for key, val in flatten((doc.get("spec") or {}).get("values") or {}).items():
                     agg[key]["" if val is None else str(val)].add(slug)
+        readable = bool(hit_paths)
         if not hit_paths:
             # The tree has the app's HelmRelease, so the repo runs the app and stays in
             # the denominator, even when the document cannot be read as the app's.
@@ -1654,6 +1611,8 @@ def main() -> int:
             except Exception as exc:  # one odd repo must not sink the survey
                 print(f"  ! facts failed for {slug}: {exc!r}", file=sys.stderr)
                 facts.append(unknown_facts(slug, hit_paths, f"facts failed: {exc!r}"))
+            if not readable:
+                facts[-1]["review"].insert(0, f"release {hit_paths[0]} not read as the app's: no values")
 
     out_repos = Path(args.out_repos or (workdir / f"{app}-repos.txt"))
     out_repos.write_text("\n".join(sorted({c["full_name"] for c in matched_c})) + "\n")

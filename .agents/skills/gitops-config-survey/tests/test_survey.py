@@ -408,3 +408,32 @@ def test_a_fetched_blob_is_filed_under_its_own_hash(tmp_path, monkeypatch):
     actual = survey.git_blob_sha(b"new\n")
     assert (tmp_path / "blobs" / actual[:2] / actual).read_bytes() == b"new\n"
     assert not (tmp_path / "blobs" / "00").exists()
+
+
+def _one_cluster():
+    return FakeMaterial({"k/database/cluster.yaml": (
+        "apiVersion: postgresql.cnpg.io/v1\nkind: Cluster\nmetadata: {name: postgres}\nspec: {}\n")})
+
+
+def test_a_lone_cluster_is_not_guessed_for_an_app_without_a_database():
+    db = survey.resolve_db({"env": {"TZ": "UTC"}}, _one_cluster(), "radarr", "k/media/radarr", {})
+    assert db["cluster"] == ""
+    assert db["class"] == "none"
+
+
+def test_a_lone_cluster_guess_is_flagged_for_review():
+    values = {"envFrom": [{"secretRef": {"name": "radarr-secret"}}]}
+    db = survey.resolve_db(values, _one_cluster(), "radarr", "k/media/radarr", {})
+    assert (db["cluster"], db["match"], db["class"]) == ("postgres", "single-cluster", "shared")
+    items = survey.review_items(["k/media/radarr/app/helmrelease.yaml"], {}, {}, db)
+    assert any("is a guess (single-cluster)" in i for i in items)
+    assert any("no persistence block" in i for i in items)
+
+
+def test_a_cluster_in_the_app_directory_is_dedicated():
+    mat = FakeMaterial({"k/media/radarr/db/cluster.yaml": (
+        "apiVersion: postgresql.cnpg.io/v1\nkind: Cluster\nmetadata: {name: radarr-pg}\nspec: {}\n")})
+    values = {"env": {"DB_HOST": "radarr-pg-rw"}}
+    db = survey.resolve_db(values, mat, "radarr", "k/media/radarr", {})
+    assert (db["match"], db["class"]) == ("host-match", "dedicated")
+    assert survey.review_items(["x"], {"config": {}}, {"name": "config", "store": "nas"}, db) == []

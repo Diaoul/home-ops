@@ -76,8 +76,8 @@ A repository runs the app when its tree has a path segment equal to the app name
 `helmrelease.yaml` or `helm-release.yaml` (either extension) under it, outside
 `charts/**/templates`. It stays in the denominator even when that document cannot be read as the
 app's; the script says so and counts no values for it. A repository whose facts cannot be derived
-stays too, as `unknown` in every fact table. A helper release beside it (`immich/restic/`) is counted only when its own name or
-path says it is the app.
+stays too, as `unknown` in every fact table. A helper release beside it (`immich/restic/`) is
+counted only when its own name or path says it is the app.
 
 Keys are `spec.values` flattened to dotted paths. Lists of objects with a `name` (`env`, `ports`,
 `volumes`) are keyed by that name, so `controllers.immich.containers.app.env.DB_HOSTNAME` lines up
@@ -98,18 +98,30 @@ a finding.
   decision on this, not on the mount type.
 - **db cluster** — the database host from the app's env (`DB_HOSTNAME`, `DB_URL`, `POSTGRES_*`),
   matched to a CNPG `Cluster` in the repository by host, by the secret a `valueFrom` names, by a
-  Cluster in the app's directory or named after it, by a `postgresVector` label, or as the
-  repository's only cluster. `unresolved (secret-ref:…)` means the host is in a Secret that is not
-  in git: say so rather than guess.
-- **db image, extensions, storage** — `imageName`, `postgresql.extensions` plus the app's
+  Cluster in the app's directory or named after it, or, when the app has some database setting,
+  as the repository's only cluster. `unresolved (secret-ref:…)` means the host is in a Secret that
+  is not in git: say so rather than guess.
+- **db image, extensions, storage** — the image repository, `postgresql.extensions` plus the app's
   `Database` CR extensions on a shared cluster, `shared_preload_libraries`, storage class and size.
   Flux substitutions are resolved, `${VAR:=default}` included, with `APP` as the app name.
-- **vchord supplied by** — `extension-image` (a `vchord-scratch` extension image volume) or
-  `base-image` (baked into `cloudnative-vectorchord`): two designs `spec.values` cannot tell apart.
-- **db cluster role** — `vector-dedicated`, `vector-shared`, `general-dedicated`,
-  `general-shared`, `other-operator` (Crunchy, Zalando), `unresolved` or `none`.
+- **db cluster role** — `dedicated` (in the app's directory or named after it), `shared`,
+  `other-operator` (Crunchy, Zalando), `unresolved` or `none`.
 - **HPA, zeroscaler, ext-auth, own postgres controller** — an HPA in the app's tree or its
   components, a component of that name, or a `postgres` controller in the release.
+
+## Needs review
+
+The facts are generic: nothing in the script knows one app from another. Where a fact rests on a
+guess, `--facts` ends with a `needs review` list, also in `--json` as each row's `review`: a
+database cluster taken because it is the repository's only one or carries the app's name, a host
+held in a Secret, no data volume or no `persistence` block recognised, a library whose store is
+unknown, a repository running several releases of the app, a release that could not be read.
+
+Before quoting a count that a flagged repository is part of, open the file the item names and
+settle it. A wrong data volume is fixed with `--library`; anything else is a correction under the
+table it changes, giving the repository and the fact as read. Anything the decision needs that no
+fact covers (whether a shared cluster carries the extension the app needs, a chart-specific
+setting) is the same manual read, in the repositories the tables already list.
 
 ## Reading the output
 
@@ -118,7 +130,6 @@ a finding.
 - Repositories descended from `onedr0p/home-ops` share values, so eight agreeing can be one
   opinion copied. Say so when the `[who]` lists are one family.
 - A key nobody sets usually means the chart default already does the job.
-- A weak match is weaker evidence: `single-cluster` or `vector-label` against a host match.
 - The survey says what people wrote, not what is valid: check a promising value against the
   upstream chart or app before proposing it.
 - Image tags differ by Renovate pin (`7.0.2.10888`, `7.0.2@sha256:…`); they show the current
