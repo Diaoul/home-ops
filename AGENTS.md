@@ -378,39 +378,27 @@ without unnecessary quotes from the start.
 
 ## Validation
 
-Before committing, validate your YAML:
+`.github/workflows/validate.yaml` runs these on every pull request to `main`; a direct push
+to `main` skips it, so run them yourself before pushing:
 
 ```sh
-# Validate Kubernetes manifests against schemas
-bash scripts/kubeconform.sh kubernetes
-
-# Check for SOPS files that should be encrypted but aren't
-bash scripts/sops-mismatch.sh
-
-# Lint YAML
+bash scripts/kubeconform.sh kubernetes   # schemas
+bash scripts/sops-encrypted.sh           # every Kubernetes *.sops.yaml is encrypted
 yamllint .
-
-# Full Flux validation: renders every Kustomization and HelmRelease offline
-flate test all --path kubernetes
+yamlfmt -lint "**/*.yaml"
+flate test all --path kubernetes         # renders every Kustomization and HelmRelease offline
 ```
 
 All of these come from `.mise.toml`; Python CLIs are `pypi:` tools, not a project venv.
+Konflate also posts a status check with the rendered diff of Flux changes under `kubernetes/`.
 
-For changes under `talos/`, validate against the live cluster instead — see
-`talos/README.md`:
+Nothing checks `talos/`; validate it against the live cluster (see `talos/README.md`):
 
 ```sh
 just talos diff                    # topf apply --dry-run, shows the live diff per node
 just talos render                  # render to talos/rendered/ (gitignored)
 talosctl validate -m metal -c talos/rendered/<node>.yaml
 ```
-
-**Run these yourself — they are not enforced anywhere.** The only automation is a
-lefthook pre-commit hook that runs `yamlfmt` on staged YAML and `just --fmt` on staged
-justfiles. There are no manifest-validation workflows in `.github/workflows/` (only
-`image-pull`, `label-sync`, `renovate`, `tag`), so a PR gets no `kubeconform`,
-`yamllint`, or `flate` signal. Konflate posts a status check, but it reviews Flux
-changes under `kubernetes/` and says nothing about `talos/`.
 
 ---
 
