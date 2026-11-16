@@ -171,6 +171,20 @@ check_renovate() {
         | sed -E 's/<!--[^>]*-->//g; s/^ *- (\[ \] )?//')
 }
 
+# Hermes cron runs are invisible elsewhere: a job delivering to `local` sends no failure notice.
+check_hermes() {
+    local incidents
+    # shellcheck disable=SC2016 # expanded by the pod's shell
+    incidents=$(kubectl exec deploy/hermes -c app -n ai -- sh -c '
+        for profile in default $(ls /opt/data/profiles); do
+            hermes -p "$profile" cron incidents 2>/dev/null | sed "s/^/$profile /"
+        done' 2>/dev/null) || { report WARN hermes "cron incidents unreadable"; return 0; }
+    each WARN hermes < <(awk '
+        $3 ~ /^(detected|alerted)$/ { profile = $1; id = $2; state = $3; next }
+        id && $2 == "Error:" { $1 = $2 = ""; sub(/^ +/, ""); print profile " " id " " state ": " $0; id = "" }
+    ' <<<"$incidents")
+}
+
 check_alerts
 check_prometheus
 check_gatus
@@ -181,8 +195,9 @@ if kubectl version --request-timeout=5s >/dev/null 2>&1; then
     check_miroir
     check_cilium
     check_gateway
+    check_hermes
 else
-    report FAIL kubernetes "API server unreachable, skipped flux/pods/miroir/bgp/cilium/gateway"
+    report FAIL kubernetes "API server unreachable, skipped flux/pods/miroir/bgp/cilium/gateway/hermes"
 fi
 check_csi
 check_renovate
