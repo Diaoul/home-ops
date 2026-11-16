@@ -9,8 +9,12 @@
       // cannot load. Mapping PostgreSQL to `major` and the extension to `minor.patch.build`
       // makes `pg19-v1.1.1` a major update and `pg18-v1.1.2` a patch one.
       //
-      // This override can go once the preset carries the same rule upstream; the issue is filed
-      // there (2026-11-16) and this file has no other reason to exist.
+      // This file stays for as long as the PostgreSQL major is grouped here. The upstream fix
+      // (home-operations/renovate-presets#172) captures the prefix as `compatibility` instead,
+      // which filters another major's builds out rather than reporting them as major updates, so
+      // a PostgreSQL 19 build would never reach the group rule in `.renovate/groups.json5` and
+      // the major upgrade would need a hand-edited tag. It can go once the major stops being
+      // grouped here, or once the preset reports the major as an update.
       description: "vchord-scratch images carry a `pg<major>-v` prefix",
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/tensorchord/vchord-scratch"],
