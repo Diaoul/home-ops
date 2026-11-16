@@ -1,0 +1,38 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  customManagers: [
+    {
+      // Tracks `Database.spec.extensions[].version` for pgvector so it bumps alongside the
+      // pgvector extension image — CNPG only runs `ALTER EXTENSION ... UPDATE` when this pin
+      // moves. Modelled on the vchord manager in home-operations/renovate-presets
+      // `apps/cnpg.json5`, which this repo extends: that one hardcodes the vchord depName, so
+      // the pgvector pin needs its own manager here rather than a variant of it.
+      //
+      // Two match strings cover either field order (name-then-version and version-then-name);
+      // each skips continuation lines, comments and blank lines, but never a new `- ` item, so
+      // a sibling extension's version is never mis-attributed. No lookahead, so RE2 compiles both.
+      description: "Detect CNPG Database CRD pgvector extension version pin",
+      customType: "regex",
+      managerFilePatterns: ["/.+\\.ya?ml(?:\\.j2)?$/"],
+      matchStrings: [
+        "name:\\s+vector\\b(?:\\n[ \\t]*|\\n +[^-\\s][^\\n]*)*?\\n +version:\\s*[\"']?(?<currentValue>\\d+\\.\\d+\\.\\d+)[\"']?",
+        "version:\\s*[\"']?(?<currentValue>\\d+\\.\\d+\\.\\d+)[\"']?(?:\\n[ \\t]*|\\n +[^-\\s][^\\n]*)*?\\n +name:\\s+vector\\b",
+      ],
+      depNameTemplate: "ghcr.io/cloudnative-pg/pgvector",
+      datasourceTemplate: "docker",
+    },
+  ],
+  packageRules: [
+    {
+      // The image tag (`0.8.7-18-trixie`) and the Database pin (`0.8.7`) both parse to 0.8.7:
+      // the optional `-<pgmajor>-<debian>` suffix is what lets one rule cover the two fields and
+      // keep them in the same update. Per-build `0.8.7-<timestamp>-18-trixie` tags are excluded,
+      // the same way the frigate and jellyfin rules in overrides.json5 exclude theirs, so
+      // updates stay on the stable tag this repo pins.
+      description: "pgvector tags carry a `-<pgmajor>-<debian>` suffix",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/cloudnative-pg/pgvector"],
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-\\d+-(?:trixie|bookworm))?$",
+    },
+  ],
+}
