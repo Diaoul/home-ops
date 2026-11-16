@@ -60,6 +60,16 @@
       minimumGroupSize: 2,
     },
     {
+      description: "Talos Group",
+      groupName: "talos",
+      matchDatasources: ["custom.talos-factory", "github-releases", "github-tags"],
+      matchPackageNames: ["/siderolabs\\/talos/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
+    },
+    {
       // A PostgreSQL major is a cluster upgrade, not an extension release: the base image and
       // both extension images have to move together, and a wrong one leaves a cluster that will
       // not start. Never automerge it. An extension release on the current major is not a major
