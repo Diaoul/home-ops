@@ -15,5 +15,12 @@ configMapGenerator:
   - name: hermes-mise
     files:
       - ./resources/mise.toml
+  - name: hermes-scripts
+    files:
+      - ./resources/teuzig-mentions.py
+    options:
+      annotations:
+        # Keeps Flux from substituting the GraphQL query's $id.
+        kustomize.toolkit.fluxcd.io/substitute: disabled
 generatorOptions:
   disableNameSuffixHash: true

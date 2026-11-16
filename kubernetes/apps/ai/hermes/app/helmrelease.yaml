@@ -195,6 +195,16 @@ spec:
             app:
               - path: /mnt/secrets/litellm
                 readOnly: true
+      # Read-only so the agent cannot loosen the sender check that gates its own wake-ups.
+      scripts:
+        type: configMap
+        name: hermes-scripts
+        advancedMounts:
+          hermes:
+            app:
+              - path: /opt/data/profiles/dev/scripts/teuzig-mentions.py
+                subPath: teuzig-mentions.py
+                readOnly: true
       mise:
         type: image
         image: ghcr.io/jdx/mise:2026.11.9@sha256:9a182adba2584a6f5b29ddc1f2c7651c93694a5f829d74452b90214616baacf4
