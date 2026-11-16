@@ -24,15 +24,45 @@
   ],
   packageRules: [
     {
-      // The image tag (`0.8.7-18-trixie`) and the Database pin (`0.8.7`) both parse to 0.8.7:
-      // the optional `-<pgmajor>-<debian>` suffix is what lets one rule cover the two fields and
-      // keep them in the same update. Per-build `0.8.7-<timestamp>-18-trixie` tags are excluded,
-      // the same way the frigate and jellyfin rules in overrides.json5 exclude theirs, so
-      // updates stay on the stable tag this repo pins.
-      description: "pgvector tags carry a `-<pgmajor>-<debian>` suffix",
+      // A pgvector tag is `<extension>-<pgmajor>-<debian>`, such as `0.8.7-18-trixie`. Read as
+      // plain semver, `0.8.8-18-trixie`, `0.8.8-18-bookworm` and `0.8.8-19-trixie` are the same
+      // version, and Renovate may offer a build for another PostgreSQL major or another Debian
+      // base. Mapping PostgreSQL to `major`, the extension to `minor.patch.build` and the Debian
+      // base to `compatibility` separates them: a `-19-` build is a major update while a new
+      // extension build on 18 is not, and a release whose `compatibility` differs from the
+      // current one is filtered out, so `bookworm` is never proposed for a trixie cluster.
+      //
+      // `matchCurrentValue` scopes this to the image tags; the Database pin below carries no
+      // PostgreSQL major and has a rule of its own.
+      description: "pgvector images carry a `-<pgmajor>-<debian>` suffix",
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/cloudnative-pg/pgvector"],
-      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-\\d+-(?:trixie|bookworm))?$",
+      matchCurrentValue: "/-\\d+-(?:trixie|bookworm)$/",
+      versioning: "regex:^(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-(?<major>\\d+)-(?<compatibility>trixie|bookworm)$",
+    },
+    {
+      // The Database pin is the bare extension version (`0.8.7`), so it cannot carry the
+      // PostgreSQL major and the rule above does not parse it. `extractVersion` strips
+      // `-<pgmajor>-trixie` from every published tag and leaves the extension version, which
+      // plain semver then reads: the pin resolves to the release the image ships, writes `0.8.8`
+      // rather than a tag, and never picks up a `bookworm` build. `matchCurrentValue` keeps this
+      // rule to the pin, because the image tags start with a digit too.
+      description: "pgvector Database pins carry the bare extension version",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/cloudnative-pg/pgvector"],
+      matchCurrentValue: "/^\\d+\\.\\d+\\.\\d+$/",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)-\\d+-trixie$",
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+    },
+    {
+      // The two versionings above produce different branch topics, so `groupName` is what keeps
+      // the image and its pin in one pull request: CNPG would refuse to install an extension the
+      // image no longer carries if they moved apart. `.renovate/groups.json5` is applied after
+      // this file and regroups a PostgreSQL major onto the cluster upgrade.
+      description: "Move the pgvector image and its Database pin together",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/cloudnative-pg/pgvector"],
+      groupName: "pgvector",
     },
   ],
 }
