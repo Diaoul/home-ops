@@ -43,7 +43,7 @@
       description: "Auto-merge GitHub Releases",
       matchDatasources: ["github-releases"],
       automerge: true,
-      automergeType: "branch",
+      automergeType: "pr",
       matchUpdateTypes: ["minor", "patch"],
       // zer0ver: 0.x minors are breaking, hold them for review
       matchCurrentVersion: "!/^v?0/",
@@ -52,7 +52,7 @@
         "/gateway-api/",
         "/prometheus-operator/",
       ],
-      ignoreTests: true,
+      ignoreTests: false,
     },
     {
       description: "Auto-merge Renovate Presets",
@@ -66,11 +66,11 @@
       description: "Auto-merge Mise Tools",
       matchManagers: ["mise"],
       automerge: true,
-      automergeType: "branch",
+      automergeType: "pr",
       matchUpdateTypes: ["minor", "patch"],
       // zer0ver: 0.x minors are breaking, hold them for review
       matchCurrentVersion: "!/^v?0/",
-      ignoreTests: true,
+      ignoreTests: false,
     },
     {
       description: "Auto-merge Grafana dashboards",
