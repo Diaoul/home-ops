@@ -22,12 +22,22 @@
       versioning: "regex:^pg(?<major>\\d+)-v(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$",
     },
     {
-      // The Database pin is the bare extension version (`1.1.1`) and the preset's manager strips
-      // the prefix from every release before it reaches this rule, so it keeps plain semver.
+      // The Database pin is the bare extension version (`1.1.1`), so the rule above does not
+      // parse it. The preset's manager already strips the prefix from every release before it
+      // reaches a package rule, which is why plain semver reads the pin — but `pg\d+-v` accepts
+      // every major, so a vchord release published only for PostgreSQL 19 would bump the pin
+      // while the pg18 image stayed behind, and the Database would ask for a version its image
+      // does not ship. `extractVersion` here overrides the preset's, keeps only the `pg18-v`
+      // builds, and strips that prefix: the pin moves with the 18 image and with nothing else.
+      //
+      // The major is pinned deliberately. When the cluster's PostgreSQL major moves, this `18`
+      // moves to `19` — and the pin with it — in the same change as the major upgrade, which is
+      // why the major upgrade is one grouped pull request and not an image-only bump.
       description: "vchord Database pins carry the bare extension version",
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/tensorchord/vchord-scratch"],
       matchCurrentValue: "/^\\d+\\.\\d+\\.\\d+$/",
+      extractVersion: "^pg18-v(?<version>\\d+\\.\\d+\\.\\d+)$",
       versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
     },
     {

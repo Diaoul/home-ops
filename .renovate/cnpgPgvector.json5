@@ -42,16 +42,24 @@
     },
     {
       // The Database pin is the bare extension version (`0.8.7`), so it cannot carry the
-      // PostgreSQL major and the rule above does not parse it. `extractVersion` strips
-      // `-<pgmajor>-trixie` from every published tag and leaves the extension version, which
-      // plain semver then reads: the pin resolves to the release the image ships, writes `0.8.8`
-      // rather than a tag, and never picks up a `bookworm` build. `matchCurrentValue` keeps this
-      // rule to the pin, because the image tags start with a digit too.
+      // PostgreSQL major and the rule above does not parse it. `extractVersion` keeps only the
+      // `-18-trixie` builds and strips that suffix, leaving the extension version, which plain
+      // semver then reads: the pin resolves to the release the image ships, writes `0.8.8` rather
+      // than a tag, and never picks up a `bookworm` build or a build for another major.
+      //
+      // The major is pinned deliberately. Accepting `-\d+-trixie` would let a release published
+      // only for PostgreSQL 19 bump this pin while the 18 image stayed behind, leaving the
+      // Database asking for an extension version its image does not ship. When the cluster's
+      // PostgreSQL major moves, this `18` moves to `19` — and the pin with it — in the same change
+      // as the major upgrade, which is why the major upgrade is one grouped pull request and not
+      // an image-only bump.
+      // `matchCurrentValue` keeps this rule to the pin, because the image tags start with a digit
+      // too.
       description: "pgvector Database pins carry the bare extension version",
       matchDatasources: ["docker"],
       matchPackageNames: ["ghcr.io/cloudnative-pg/pgvector"],
       matchCurrentValue: "/^\\d+\\.\\d+\\.\\d+$/",
-      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)-\\d+-trixie$",
+      extractVersion: "^(?<version>\\d+\\.\\d+\\.\\d+)-18-trixie$",
       versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
     },
     {
