@@ -1552,7 +1552,7 @@ def main() -> int:
     ap.add_argument("--search-pages", type=int, default=5)
     ap.add_argument("--offline", action="store_true", help="use only cached responses")
     ap.add_argument("--workdir", default=None,
-                    help="cache dir (default: $XDG_CACHE_HOME/gitops-config-survey/<app>)")
+                    help="cache dir (default: $TMPDIR or $XDG_CACHE_HOME, then /gitops-config-survey/<app>)")
     ap.add_argument("--refresh", action="store_true", help="ignore cached API responses")
     ap.add_argument("--max-age", type=float, default=24,
                     help="hours a cached search, tree or git listing stays valid (default 24)")
@@ -1575,7 +1575,9 @@ def main() -> int:
         ap.error("--markdown needs --facts")
 
     app = args.app.lower()
-    cache_home = Path(os.environ.get("XDG_CACHE_HOME") or Path.home() / ".cache")
+    # A set $TMPDIR is a scratch dir its owner prunes, so the cache goes away with the session.
+    cache_home = Path(os.environ.get("TMPDIR") or os.environ.get("XDG_CACHE_HOME")
+                      or Path.home() / ".cache")
     workdir = Path(args.workdir or cache_home / "gitops-config-survey" / app).expanduser().resolve()
     workdir.mkdir(parents=True, exist_ok=True)
     gh = GitHub(workdir, offline=args.offline, max_age=args.max_age * 3600)

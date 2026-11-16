@@ -61,11 +61,12 @@ recomputing it.
 
 ### Cache
 
-Under `$XDG_CACHE_HOME/gitops-config-survey/<app>` (`--workdir` moves it, never into the
-repository). Search results, tree listings and clones are reused for `--max-age` hours (default
-24); `--refresh` refetches the API ones now. Files are cached by their git blob sha, so they are
-never stale. `--offline` uses only the cache, whatever its age, and never touches the network;
-anything missing is reported.
+Under `$TMPDIR/gitops-config-survey/<app>` when `TMPDIR` is set, as in Hermes, whose scratch
+directory is pruned a day after its last use; otherwise under `$XDG_CACHE_HOME` (`~/.cache`).
+`--workdir` moves it, never into the repository. Search results, tree listings and clones are
+reused for `--max-age` hours (default 24); `--refresh` refetches the API ones now. Files are
+cached by their git blob sha, so they are never stale. `--offline` uses only the cache, whatever
+its age, and never touches the network; anything missing is reported.
 
 `--listing auto|api|git` chooses how a tree is listed: the trees API, or a blob-less clone that
 costs no API quota. `auto`, the default, falls back to the clone when the API refuses.
