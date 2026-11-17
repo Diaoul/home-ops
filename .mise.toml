@@ -29,5 +29,5 @@ crane = "0.22.1"
 "github:postfinance/topf" = "0.6.2"
 # python makes uv use mise's interpreter, not Arch's /usr/bin/python, which pacman
 # removes on a minor upgrade. 3.14 is the newest controller Python ansible-core supports.
-"pypi:ansible" = { version = "14.6.0", expose = ["ansible-core", "ansible-lint"], python = "3.14" }
+"pypi:ansible" = { version = "15.0.0", expose = ["ansible-core", "ansible-lint"], python = "3.14" }
 "pypi:yamllint" = { version = "1.38.0", python = "3.14" }
