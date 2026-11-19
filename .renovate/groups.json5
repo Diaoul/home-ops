@@ -80,6 +80,8 @@
       matchDatasources: ["docker"],
       matchUpdateTypes: ["major"],
       automerge: false,
+      // Gives the extension images time to publish builds for the new major, so the PR has all three.
+      minimumReleaseAge: "14 days",
     },
   ],
 }
