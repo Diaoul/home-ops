@@ -148,12 +148,11 @@ spec:
       library:
         type: nfs
         server: singularity.milkyway
-        path: /volume1/media
+        path: /volume1/immich
         advancedMounts:
           server:
             app:
               - path: /data
-                subPath: photos/immich
       model-cache:
         existingClaim: immich-ml-cache
         advancedMounts:
