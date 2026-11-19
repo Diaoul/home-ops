@@ -6,4 +6,5 @@ resources:
   - ./helmrelease.yaml
   - ./kanidmoauth2client.yaml
   - ./pvc.yaml
+  - ./resourceclaimtemplate.yaml
   - ./secret.sops.yaml
