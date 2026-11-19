@@ -8,6 +8,8 @@
     "github>home-operations/renovate-presets//apps/talosFactory.json5#12.0.0",
     "github>Diaoul/home-ops//.renovate/autoMerge.json5",
     "github>Diaoul/home-ops//.renovate/changelogs.json5",
+    "github>Diaoul/home-ops//.renovate/cnpgPgvector.json5",
+    "github>Diaoul/home-ops//.renovate/cnpgVchord.json5",
     "github>Diaoul/home-ops//.renovate/groups.json5",
     "github>Diaoul/home-ops//.renovate/labels.json5",
     "github>Diaoul/home-ops//.renovate/overrides.json5",

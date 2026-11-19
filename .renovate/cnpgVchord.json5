@@ -1,0 +1,53 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      // `ghcr.io/tensorchord/vchord-scratch` publishes `<pgmajor>-v<extension>`, pg14 through
+      // pg18 today. The rule in the home-operations preset this repo extends
+      // (`apps/cnpg.json5`) folds the `pg<N>` prefix away, so a build for one PostgreSQL major
+      // and a build for another compare equal and Renovate can offer a library this cluster
+      // cannot load. Mapping PostgreSQL to `major` and the extension to `minor.patch.build`
+      // makes `pg19-v1.1.1` a major update and `pg18-v1.1.2` a patch one.
+      //
+      // This file stays for as long as the PostgreSQL major is grouped here. The upstream fix
+      // (home-operations/renovate-presets#172) captures the prefix as `compatibility` instead,
+      // which filters another major's builds out rather than reporting them as major updates, so
+      // a PostgreSQL 19 build would never reach the group rule in `.renovate/groups.json5` and
+      // the major upgrade would need a hand-edited tag. It can go once the major stops being
+      // grouped here, or once the preset reports the major as an update.
+      description: "vchord-scratch images carry a `pg<major>-v` prefix",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/tensorchord/vchord-scratch"],
+      matchCurrentValue: "/^pg\\d+-v/",
+      versioning: "regex:^pg(?<major>\\d+)-v(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$",
+    },
+    {
+      // The Database pin is the bare extension version (`1.1.1`), so the rule above does not
+      // parse it. The preset's manager already strips the prefix from every release before it
+      // reaches a package rule, which is why plain semver reads the pin — but `pg\d+-v` accepts
+      // every major, so a vchord release published only for PostgreSQL 19 would bump the pin
+      // while the pg18 image stayed behind, and the Database would ask for a version its image
+      // does not ship. `extractVersion` here overrides the preset's, keeps only the `pg18-v`
+      // builds, and strips that prefix: the pin moves with the 18 image and with nothing else.
+      //
+      // The major is pinned deliberately. When the cluster's PostgreSQL major moves, this `18`
+      // moves to `19` — and the pin with it — in the same change as the major upgrade, which is
+      // why the major upgrade is one grouped pull request and not an image-only bump.
+      description: "vchord Database pins carry the bare extension version",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/tensorchord/vchord-scratch"],
+      matchCurrentValue: "/^\\d+\\.\\d+\\.\\d+$/",
+      extractVersion: "^pg18-v(?<version>\\d+\\.\\d+\\.\\d+)$",
+      versioning: "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+    },
+    {
+      // Same reason as the pgvector group: the two versionings name different branches, and the
+      // image and its pin have to move in one pull request. A PostgreSQL major is regrouped onto
+      // the cluster upgrade in `.renovate/groups.json5`, applied after this file.
+      description: "Move the vchord image and its Database pin together",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/tensorchord/vchord-scratch"],
+      groupName: "vchord",
+    },
+  ],
+}

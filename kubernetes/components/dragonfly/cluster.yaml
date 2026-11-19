@@ -17,6 +17,7 @@ spec:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2
     - --cluster_mode=emulated
+    - --default_lua_flags=${DRAGONFLY_LUA_FLAGS:=}
   resources:
     requests:
       cpu: 25m

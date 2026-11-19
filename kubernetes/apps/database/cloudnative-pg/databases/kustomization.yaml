@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - ./autobrr.yaml
   - ./autobrr.sops.yaml
+  - ./immich.yaml
+  - ./immich.sops.yaml
   - ./litellm.yaml
   - ./litellm.sops.yaml
   - ./miniflux.yaml
