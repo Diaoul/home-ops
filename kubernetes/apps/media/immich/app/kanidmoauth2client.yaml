@@ -24,3 +24,14 @@ spec:
   preferShortUsername: true
   strictRedirectUrl: true
   disableConsentPrompt: true
+  # Immich grants admin when any value is admin; an account without the claim keeps its role.
+  claimMap:
+    - name: immich_role
+      joinStrategy: array
+      valuesMap:
+        - group: family
+          values:
+            - user
+        - group: admins
+          values:
+            - admin
