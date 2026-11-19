@@ -8,8 +8,8 @@ description: >
 
 # Writing a pull request
 
-There is no template: this file carries both the shape and the rules behind it. Five sections,
-three of them optional, and each one has a rule for when it earns its place.
+The shared template in `Diaoul/.github` carries the shape; this file carries the rules behind
+it. Five sections, three of them optional, and each one has a rule for when it earns its place.
 
 ## The shape
 
