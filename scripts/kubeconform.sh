@@ -8,12 +8,17 @@ KUBERNETES_DIR=$1
 
 kustomize_args=("--load-restrictor=LoadRestrictionsNone")
 kustomize_config="kustomization.yaml"
+cache_dir=$(mktemp -d)
+trap 'rm -rf "${cache_dir}"' EXIT
+
 # DNSEndpoint: the schema checks dnsName against DNS-1123, which an unsubstituted ${DOMAIN} fails.
 # Kanidm*: kaniop ships no CRD files, so no schema location serves them, and every lookup is a
 # request that fails the run when a host errors instead of answering 404.
 kubeconform_args=(
     "-strict"
     "-ignore-missing-schemas"
+    "-cache"
+    "${cache_dir}"
     "-skip"
     "Gateway,HTTPRoute,Secret,DNSEndpoint,Kanidm,KanidmBackupRepository,KanidmBackupSchedule,KanidmGroup,KanidmOAuth2Client,KanidmPersonAccount"
     "-schema-location"
