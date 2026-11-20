@@ -35,7 +35,7 @@ spec:
                 cpu: 100m
                 memory: 1Gi
               limits:
-                memory: 1Gi
+                memory: 2Gi
             env:
               TZ: Europe/Paris
           code-server:
@@ -57,6 +57,7 @@ spec:
             resources:
               requests:
                 cpu: 10m
+                memory: 128Mi
               limits:
                 memory: 512Mi
             env:

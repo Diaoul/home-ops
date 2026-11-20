@@ -43,7 +43,7 @@ spec:
             resources:
               requests:
                 cpu: 500m
-                memory: 1Gi
+                memory: 3Gi
               limits:
                 memory: 4Gi
                 devic.es/coral: 1

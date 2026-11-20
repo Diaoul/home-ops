@@ -81,6 +81,9 @@ spec:
       serviceMonitor:
         enabled: true
         trustCRDsExist: true
+    resources:
+      requests:
+        memory: 768Mi
     rollOutCiliumPods: true
     routingMode: native
     securityContext:

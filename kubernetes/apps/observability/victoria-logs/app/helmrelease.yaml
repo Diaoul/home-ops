@@ -20,6 +20,9 @@ spec:
         enabled: true
         storageClassName: ceph-block
         size: 20Gi
+      resources:
+        requests:
+          memory: 448Mi
       route:
         enabled: true
         hostnames:

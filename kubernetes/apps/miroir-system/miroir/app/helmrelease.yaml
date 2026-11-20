@@ -10,6 +10,12 @@ spec:
     name: miroir
   interval: 1h
   values:
+    agent:
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 256Mi
     autoEvictAfter: 1h
     drbd:
       alExtents: 6007

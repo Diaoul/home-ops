@@ -35,8 +35,9 @@ spec:
   resources:
     requests:
       cpu: 200m
+      memory: 1Gi
     limits:
-      memory: 2Gi
+      memory: 1Gi
   affinity:
     enablePodAntiAffinity: true
     podAntiAffinityType: required

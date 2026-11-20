@@ -10,6 +10,9 @@ spec:
     name: flux-operator
   interval: 1h
   values:
+    resources:
+      requests:
+        memory: 320Mi
     serviceMonitor:
       create: true
     web:

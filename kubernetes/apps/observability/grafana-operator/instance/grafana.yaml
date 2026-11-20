@@ -74,6 +74,12 @@ spec:
                     secretKeyRef:
                       name: grafana-kanidm-oauth2-credentials
                       key: CLIENT_SECRET
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 640Mi
+                limits:
+                  memory: 1Gi
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
