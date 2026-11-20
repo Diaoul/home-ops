@@ -40,7 +40,7 @@ extraArgs:
 resources:
   requests:
     cpu: 200m
-    memory: 2560Mi
+    memory: 2.5Gi
 ---
 apiVersion: v1alpha1
 kind: KubeControllerManagerConfig
@@ -50,7 +50,7 @@ extraArgs:
 resources:
   requests:
     cpu: 50m
-    memory: 448Mi
+    memory: 512Mi
 ---
 apiVersion: v1alpha1
 kind: KubeCoreDNSConfig

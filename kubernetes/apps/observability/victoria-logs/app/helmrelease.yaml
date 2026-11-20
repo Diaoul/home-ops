@@ -22,7 +22,7 @@ spec:
         size: 20Gi
       resources:
         requests:
-          memory: 448Mi
+          memory: 512Mi
       route:
         enabled: true
         hostnames:

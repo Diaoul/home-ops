@@ -12,7 +12,7 @@ spec:
   values:
     resources:
       requests:
-        memory: 320Mi
+        memory: 512Mi
     serviceMonitor:
       create: true
     web:
