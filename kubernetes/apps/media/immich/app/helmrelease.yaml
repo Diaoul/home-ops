@@ -35,7 +35,7 @@ spec:
             env:
               TZ: Europe/Paris
               IMMICH_PORT: &port 2283
-              IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning:3003
+              IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.media.svc.cluster.local:3003
               IMMICH_TRUSTED_PROXIES: 10.42.0.0/16
               DB_HOSTNAME: postgres18-immich-rw.database.svc.cluster.local
               DB_PORT: "5432"
