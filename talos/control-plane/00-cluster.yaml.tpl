@@ -37,20 +37,12 @@ extraArgs:
   enable-aggregator-routing: "true"
   feature-gates: HPAScaleToZero=true,MutatingAdmissionPolicy=true,ResourceHealthStatus=true
   runtime-config: admissionregistration.k8s.io/v1beta1=true
-resources:
-  requests:
-    cpu: 200m
-    memory: 2.5Gi
 ---
 apiVersion: v1alpha1
 kind: KubeControllerManagerConfig
 extraArgs:
   bind-address: 0.0.0.0
   feature-gates: HPAScaleToZero=true
-resources:
-  requests:
-    cpu: 50m
-    memory: 512Mi
 ---
 apiVersion: v1alpha1
 kind: KubeCoreDNSConfig
