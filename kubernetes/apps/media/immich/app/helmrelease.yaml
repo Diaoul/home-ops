@@ -72,7 +72,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 1Gi
+                memory: 4Gi
               limits:
                 memory: 6Gi
               claims:
@@ -127,9 +127,9 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 3Gi
+                memory: 8Gi
               limits:
-                memory: 12Gi
+                memory: 10Gi
               claims:
                 - name: gpu
 
