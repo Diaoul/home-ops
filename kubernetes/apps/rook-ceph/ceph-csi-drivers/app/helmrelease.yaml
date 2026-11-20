@@ -21,3 +21,35 @@ spec:
         enabled: true
         name: rook-ceph.rbd.csi.ceph.com
         snapshotPolicy: volumeSnapshot
+        # Memory requests stay explicit: the Driver CR still carries rook 1.19's old requests,
+        # which would outlive an omitted request and exceed the new limits.
+        controllerPlugin:
+          resources:
+            plugin:
+              requests:
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+            provisioner: &sidecar
+              requests:
+                cpu: 100m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
+            resizer: *sidecar
+            attacher: *sidecar
+            snapshotter: *sidecar
+        nodePlugin:
+          resources:
+            plugin:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 512Mi
+            registrar:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 64Mi
