@@ -38,7 +38,7 @@ merge type="":
         fi
         types=("{{ type }}")
     else
-        types=("digest" "patch" "minor" "major")
+        types=("digest" "patch" "minor")
     fi
 
     merged=0 hold=0 failing=0 pending=0 errors=0
@@ -72,3 +72,9 @@ merge type="":
     done
 
     echo "Merged ${merged}. Not merged: ${hold} on hold, ${failing} failing CI, ${pending} CI still running, ${errors} merge errors."
+    if [[ -z "{{ type }}" ]]; then
+        majors=$(gh pr list --author app/kornandon --label type/major --state open --json number --jq length)
+        if (( majors > 0 )); then
+            echo "Skipped ${majors} major updates; merge them with: just merge major"
+        fi
+    fi
