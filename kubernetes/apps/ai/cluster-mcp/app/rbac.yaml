@@ -65,14 +65,12 @@ rules:
       - cilium.io
       - coordination.k8s.io
       - csi.ceph.io
-      - deviceplugin.intel.com
       - discovery.k8s.io
       - dragonflydb.io
       - events.k8s.io
       - externaldns.k8s.io
       - flowcontrol.apiserver.k8s.io
       - fluxcd.controlplane.io
-      - fpga.intel.com
       - gateway.envoyproxy.io
       - gateway.networking.k8s.io
       - gateway.networking.x-k8s.io
@@ -106,7 +104,6 @@ rules:
       - storagemigration.k8s.io
       - talos.dev
       - tuppr.home-operations.com
-      - upgrade.cattle.io
     resources:
       - "*"
     verbs:
