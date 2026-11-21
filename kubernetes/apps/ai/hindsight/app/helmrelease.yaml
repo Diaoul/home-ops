@@ -14,6 +14,8 @@ spec:
       hindsight:
         annotations:
           reloader.stakater.com/auto: "true"
+        # Two pods sharing the stable worker id would claim each other's tasks.
+        strategy: Recreate
         containers:
           app:
             image:
@@ -29,6 +31,8 @@ spec:
                     name: hindsight-litellm
                     key: key
               HINDSIGHT_API_MCP_STATELESS: "true"
+              # Tasks are recovered by worker id, which defaults to the pod name.
+              HINDSIGHT_API_WORKER_ID: hindsight
               HINDSIGHT_API_TENANT_EXTENSION: hindsight_api.extensions.builtin.tenant:ApiKeyTenantExtension
               # The embedding and reranking models are baked into the image.
               HF_HUB_OFFLINE: "1"
