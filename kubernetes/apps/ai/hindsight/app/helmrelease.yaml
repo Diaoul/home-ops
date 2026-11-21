@@ -80,6 +80,8 @@ spec:
               limits:
                 memory: 4Gi
         pod:
+          # The in-process worker drains for about 27s on shutdown.
+          terminationGracePeriodSeconds: 60
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
