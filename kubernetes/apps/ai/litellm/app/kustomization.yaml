@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - ./kanidmoauth2client.yaml
   - ./litellmproxy.yaml
+  - ./litellmteam.yaml
+  - ./litellmvirtualkey.yaml
   - ./servicemonitor.yaml
   - ./secret.sops.yaml
   - ./models

@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmteam_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMTeam
+metadata:
+  name: workstation
+spec:
+  alias: workstation
+  mcpServers:
+    - ha_mcp
+    - kubernetes
+    - flux
+    - github
+    - unifi
+    - prometheus
+    - victorialogs
+    - victoriametrics
+  models:
+    - glm-5-3-flash-openrouter
+    - deepseek-v4-1-flash-openrouter
+    - deepseek-v4-1-flash-1017-openrouter
+    - gpt-6-luna-openrouter
+    - minimax-m3-1-flash-openrouter
+    - kimi-k3-1-pro-openrouter
+    - claude-haiku-5-5
+    - claude-sonnet-5-5
+    - claude-opus-5-5
+  proxyRef: litellm
