@@ -83,5 +83,15 @@
       // Gives the extension images time to publish builds for the new major, so the PR has all three.
       minimumReleaseAge: "14 days",
     },
+    {
+      // Same reason as the Immich group, with pgvector as the only extension image.
+      description: "Hindsight Postgres major upgrade",
+      groupName: "hindsight-postgresql-major",
+      matchFileNames: ["kubernetes/apps/database/cloudnative-pg/cluster/cluster-hindsight.yaml"],
+      matchDatasources: ["docker"],
+      matchUpdateTypes: ["major"],
+      automerge: false,
+      minimumReleaseAge: "14 days",
+    },
   ],
 }
