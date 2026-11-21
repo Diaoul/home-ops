@@ -25,6 +25,16 @@
       minimumGroupSize: 2,
     },
     {
+      description: "Firecrawl Group",
+      // nuq-postgres carries the queue schema the api expects; they ship together.
+      groupName: "firecrawl",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/^ghcr\\.io\\/firecrawl\\//"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
       description: "Flux Operator Group",
       groupName: "flux-operator",
       matchDatasources: ["docker"],

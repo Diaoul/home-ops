@@ -26,8 +26,8 @@ spec:
               type: RuntimeDefault
           terminationGracePeriodSeconds: 60
         initContainers:
-          # The image's own boot hook runs this through `s6-setuidgid`, which needs
-          # CAP_SETGID; it has nothing to migrate before the first config exists.
+          # The image's own boot hook runs this through `s6-setuidgid`, which needs CAP_SETGID
+          # (NousResearch/hermes-agent#118265); nothing to migrate before the first config exists.
           config-migrate:
             image: &image
               repository: docker.io/nousresearch/hermes-agent
@@ -68,6 +68,37 @@ spec:
               limits:
                 memory: 512Mi
             securityContext: *securityContext
+          # Rebuilds the volume's dependency environment for a new image, which the image's boot
+          # hook cannot do here: it needs CAP_SETGID for `s6-setuidgid` (NousResearch/hermes-agent#118265).
+          # Fails the pod rather than boot the image's own environment, which lacks the plugins'
+          # dependencies and extras.
+          refresh-dependencies:
+            image: *image
+            command:
+              - /opt/hermes/.venv/bin/python
+              - -c
+              - |
+                from pathlib import Path
+                from hermes_cli.runtime_state import collect_generations
+                from pm.environments import install_state_dir
+                from pm.recovery import refresh_dependencies
+                from pm.runtime import collect_runtime_generations
+                root = Path("/opt/hermes")
+                result = refresh_dependencies(root)
+                print("dependency environment:", result)
+                if result == "fallback":
+                    raise SystemExit(1)
+                collect_generations(root)
+                collect_runtime_generations(install_state_dir(root) / "pm-runtime")
+            env:
+              HERMES_HOME: /opt/data
+              HOME: /opt/data
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext: *securityContext
         containers:
           app:
             image: *image
@@ -87,7 +118,6 @@ spec:
                   secretKeyRef:
                     name: hermes-kanidm-oauth2-credentials
                     key: CLIENT_SECRET
-              HERMES_DISABLE_LAZY_INSTALLS: "true"
               HERMES_HOME: /opt/data
               HERMES_WRITE_SAFE_ROOT: /opt/data
               HOME: /opt/data
@@ -96,6 +126,7 @@ spec:
                   secretKeyRef:
                     name: hermes-litellm
                     key: key
+              FIRECRAWL_API_URL: http://firecrawl-api.ai.svc.cluster.local:3002
               SEARXNG_URL: http://searxng.default.svc.cluster.local:8080
               TZ: Europe/Paris
             probes:
@@ -184,6 +215,9 @@ spec:
         advancedMounts:
           hermes:
             app:
+              - path: /etc/hermes
+                readOnly: true
+            refresh-dependencies:
               - path: /etc/hermes
                 readOnly: true
       # Read by each profile's secrets.command: multiplexed profiles don't see the pod env.
