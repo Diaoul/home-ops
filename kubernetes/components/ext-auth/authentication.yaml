@@ -14,7 +14,7 @@ spec:
       - accept
       - authorization
       - cookie
-    # No path: oauth2-proxy must see the request's own path to serve /oauth2/* and skip /api.
+    # No path: oauth2-proxy must see the request's own path to serve /oauth2/* and skip /ping.
     http:
       backendRefs:
         - group: ""
