@@ -1,0 +1,8 @@
+{
+  "mode": "local_external",
+  "api_url": "http://hindsight.ai.svc.cluster.local:8888",
+  "bank_id_template": "hermes-{profile}",
+  "banks": {"hermes": {"bankId": "hermes-dev"}},
+  "recall_additional_banks": ["home"],
+  "recall_sync": true
+}
