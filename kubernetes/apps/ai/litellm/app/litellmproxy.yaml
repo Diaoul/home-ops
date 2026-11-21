@@ -81,7 +81,6 @@ spec:
       value: https://idm.${DOMAIN}/oauth2/openid/litellm/userinfo
     - name: GENERIC_SCOPE
       value: openid email profile
-  # Startup takes ~30s on an idle node and far longer on a busy one, past the default 40s.
   livenessProbe:
     httpGet:
       path: /health/liveliness

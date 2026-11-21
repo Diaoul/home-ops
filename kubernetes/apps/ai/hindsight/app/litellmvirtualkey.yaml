@@ -5,7 +5,6 @@ kind: LiteLLMVirtualKey
 metadata:
   name: hindsight
 spec:
-  # Retain runs unattended after every turn, so a loop would spend with nobody watching.
   maxBudget: "5"
   budgetDuration: 30d
   keyAlias: hindsight
