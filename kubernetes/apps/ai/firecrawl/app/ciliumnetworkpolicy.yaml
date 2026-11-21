@@ -47,3 +47,22 @@ spec:
     - toCIDR:
         - 172.16.0.0/12
         - 192.168.0.0/16
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# The Dragonfly component admits every firecrawl pod; the browser has no use for its queues.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: firecrawl-playwright
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: firecrawl
+      app.kubernetes.io/controller: playwright
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  egressDeny:
+    - toEndpoints:
+        - matchLabels:
+            app: firecrawl-dragonfly
