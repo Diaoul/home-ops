@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: prometheus-mcp
+spec:
+  alias: prometheus
+  proxyRef: litellm
+  transport: http
+  workload:
+    image: ghcr.io/prometheus/prometheus-mcp:v0.19.0-rc.0@sha256:5f482413be181560d454b88458f8e4ce65c0713501ef827d314ec267ebc71d84
+    port: 8080
+    path: /mcp
+    env:
+      - name: PROMETHEUS_MCP_PROMETHEUS_URL
+        value: http://prometheus-operated.observability.svc.cluster.local:9090
+      - name: PROMETHEUS_MCP_MCP_TRANSPORT
+        value: http
+      - name: PROMETHEUS_MCP_MCP_ENABLE_TOON_OUTPUT
+        value: "true"
+      - name: TZ
+        value: Europe/Paris
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65534
+      runAsGroup: 65534
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: {drop: ["ALL"]}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 256Mi
