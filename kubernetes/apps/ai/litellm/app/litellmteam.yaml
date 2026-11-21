@@ -15,6 +15,7 @@ spec:
     - prometheus
     - victorialogs
     - victoriametrics
+    - hindsight
   models:
     - glm-5-3-flash-openrouter
     - deepseek-v4-1-flash-openrouter
