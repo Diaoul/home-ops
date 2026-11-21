@@ -27,7 +27,7 @@ spec:
             image: &image
               repository: ghcr.io/firecrawl/firecrawl
               tag: 2.11.809@sha256:e12baea631bc48c30566403166192735c2e31b0232aed81274c9a6dea67d1d19
-            command:
+            args:
               - node
               - --max-old-space-size=384
               - dist/src/main.js
@@ -81,7 +81,7 @@ spec:
         containers:
           app:
             image: *image
-            command:
+            args:
               - node
               - --max-old-space-size=256
               - dist/src/main.js
@@ -113,7 +113,7 @@ spec:
         containers:
           app:
             image: *image
-            command:
+            args:
               - node
               - --max-old-space-size=384
               - dist/src/main.js
@@ -147,7 +147,7 @@ spec:
               repository: ghcr.io/firecrawl/playwright-service
               tag: latest@sha256:227ce3d8059173925a5a0697c63a1e947662cca934a609151651f578774edd5d
             # `pnpm start` has corepack fetch pnpm at every start: its cache is in /root.
-            command:
+            args:
               - node
               - dist/api.js
             env:
