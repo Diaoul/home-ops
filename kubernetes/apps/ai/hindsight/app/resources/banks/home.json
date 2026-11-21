@@ -1,6 +1,0 @@
-{
-  "version": "1",
-  "bank": {
-    "retain_mission": "Keep only durable knowledge about the household and its home: the people's preferences, habits and routines; decisions and the reasons behind them; how the house, its devices, its automations and the homelab are set up, and why. Leave out one-off operational detail: transient errors, debugging steps, command output, status checks, and anything that matters only to the task at hand."
-  }
-}
