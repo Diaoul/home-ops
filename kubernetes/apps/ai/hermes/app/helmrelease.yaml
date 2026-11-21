@@ -68,6 +68,35 @@ spec:
               limits:
                 memory: 512Mi
             securityContext: *securityContext
+          # The image's boot hook runs this through `s6-setuidgid` too. Fails the pod rather
+          # than fall back to the image's environment, which lacks the plugins' dependencies.
+          refresh-dependencies:
+            image: *image
+            command:
+              - /opt/hermes/.venv/bin/python
+              - -c
+              - |
+                from pathlib import Path
+                from hermes_cli.runtime_state import collect_generations
+                from pm.environments import install_state_dir
+                from pm.recovery import refresh_dependencies
+                from pm.runtime import collect_runtime_generations
+                root = Path("/opt/hermes")
+                result = refresh_dependencies(root)
+                print("dependency environment:", result)
+                if result == "fallback":
+                    raise SystemExit(1)
+                collect_generations(root)
+                collect_runtime_generations(install_state_dir(root) / "pm-runtime")
+            env:
+              HERMES_HOME: /opt/data
+              HOME: /opt/data
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+            securityContext: *securityContext
         containers:
           app:
             image: *image
@@ -184,6 +213,9 @@ spec:
         advancedMounts:
           hermes:
             app:
+              - path: /etc/hermes
+                readOnly: true
+            refresh-dependencies:
               - path: /etc/hermes
                 readOnly: true
       # Read by each profile's secrets.command: multiplexed profiles don't see the pod env.
