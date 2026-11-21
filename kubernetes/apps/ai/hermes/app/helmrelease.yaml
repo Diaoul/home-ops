@@ -68,8 +68,9 @@ spec:
               limits:
                 memory: 512Mi
             securityContext: *securityContext
-          # The image's boot hook runs this through `s6-setuidgid` too. Fails the pod rather
-          # than fall back to the image's environment, which lacks the plugins' dependencies.
+          # Rebuilds the volume's dependency environment for a new image, which the image's boot
+          # hook cannot do here: it needs CAP_SETGID for `s6-setuidgid`. Fails the pod rather than
+          # boot the image's own environment, which lacks the plugins' dependencies and extras.
           refresh-dependencies:
             image: *image
             command:
