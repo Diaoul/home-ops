@@ -14,7 +14,6 @@ spec:
       - accept
       - authorization
       - cookie
-    # A prefix keeps request paths off oauth2-proxy's own /ping, /ready and /robots.txt, which answer 200.
     http:
       path: /oauth2/auth
       backendRefs:
