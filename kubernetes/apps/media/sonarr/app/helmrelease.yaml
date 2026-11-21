@@ -85,6 +85,9 @@ spec:
             matches:
               - path:
                   value: /api
+              - path:
+                  type: Exact
+                  value: /ping
     persistence:
       config:
         existingClaim: sonarr
