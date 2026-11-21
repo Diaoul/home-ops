@@ -29,6 +29,11 @@ terminal:
     - MISE_STATE_DIR
     - SEARXNG_URL
 
+web:
+  extract_backend: firecrawl
+  keyless_fallback: false
+  search_backend: searxng
+
 webapp:
   enabled: true
   host: 0.0.0.0

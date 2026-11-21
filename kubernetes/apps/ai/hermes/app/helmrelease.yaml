@@ -96,6 +96,7 @@ spec:
                   secretKeyRef:
                     name: hermes-litellm
                     key: key
+              FIRECRAWL_API_URL: http://firecrawl-api.ai.svc.cluster.local:3002
               SEARXNG_URL: http://searxng.default.svc.cluster.local:8080
               TZ: Europe/Paris
             probes:
