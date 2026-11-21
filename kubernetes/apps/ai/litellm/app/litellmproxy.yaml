@@ -81,6 +81,14 @@ spec:
       value: https://idm.${DOMAIN}/oauth2/openid/litellm/userinfo
     - name: GENERIC_SCOPE
       value: openid email profile
+  livenessProbe:
+    httpGet:
+      path: /health/liveliness
+      port: 4000
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 12
   resources:
     requests:
       cpu: 100m

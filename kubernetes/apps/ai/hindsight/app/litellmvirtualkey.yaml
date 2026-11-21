@@ -5,6 +5,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: hindsight
 spec:
+  maxBudget: "5"
+  budgetDuration: 30d
   keyAlias: hindsight
   models:
     - deepseek-v4-1-flash-1017-openrouter
