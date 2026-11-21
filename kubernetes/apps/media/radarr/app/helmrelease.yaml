@@ -65,7 +65,8 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            url: https://radarr.${DOMAIN}/ping
+            url: https://radarr.${DOMAIN}/api/v3/system/status
+            conditions: ["[STATUS] == 401"]
         hostnames:
           - radarr.${DOMAIN}
         parentRefs:

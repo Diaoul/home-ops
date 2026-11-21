@@ -65,7 +65,8 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            url: https://prowlarr.${DOMAIN}/ping
+            url: https://prowlarr.${DOMAIN}/api/v1/system/status
+            conditions: ["[STATUS] == 401"]
         hostnames:
           - prowlarr.${DOMAIN}
         parentRefs:
