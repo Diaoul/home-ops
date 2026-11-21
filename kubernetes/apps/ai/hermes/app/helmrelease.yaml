@@ -90,15 +90,6 @@ spec:
               HERMES_DISABLE_LAZY_INSTALLS: "true"
               HERMES_HOME: /opt/data
               HERMES_WRITE_SAFE_ROOT: /opt/data
-              # Read by the hindsight memory provider plugin when a profile enables it.
-              HINDSIGHT_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: hindsight
-                    key: HINDSIGHT_API_TENANT_API_KEY
-              HINDSIGHT_API_URL: http://hindsight.ai.svc.cluster.local:8888
-              HINDSIGHT_BANK_ID: home
-              HINDSIGHT_MODE: local_external
               HOME: /opt/data
               LITELLM_API_KEY:
                 valueFrom:
@@ -203,6 +194,18 @@ spec:
           hermes:
             app:
               - path: /mnt/secrets/litellm
+                readOnly: true
+      # Only the tenant key: the same Secret holds Hindsight's database credentials.
+      hindsight-key:
+        type: secret
+        name: hindsight
+        items:
+          - key: HINDSIGHT_API_TENANT_API_KEY
+            path: key
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/hindsight
                 readOnly: true
       # Read-only so the agent cannot loosen the sender check that gates its own wake-ups.
       scripts:
