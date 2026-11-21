@@ -17,6 +17,7 @@ providers:
     transport: chat_completions
 
 security:
+  allow_lazy_installs: false
   redact_secrets: true
 
 terminal:

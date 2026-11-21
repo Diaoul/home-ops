@@ -87,7 +87,6 @@ spec:
                   secretKeyRef:
                     name: hermes-kanidm-oauth2-credentials
                     key: CLIENT_SECRET
-              HERMES_DISABLE_LAZY_INSTALLS: "true"
               HERMES_HOME: /opt/data
               HERMES_WRITE_SAFE_ROOT: /opt/data
               HOME: /opt/data
