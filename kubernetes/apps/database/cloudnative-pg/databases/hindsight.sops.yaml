@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+    name: hindsight-db
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:rOGybP152Zdk,iv:fTNXPH03d1JtD0/16+ZkuEJ4j18ynLK4wP34bLIAKv8=,tag:DTexqCJO8eYVTHxH0TEqhw==,type:str]
+    password: ENC[AES256_GCM,data:rFNlCrGKAPKCcsR3zFL0vz0IOt3w1M0WscaQGQoxohzBqM9EF5IBCA==,iv:2va8kcg3XWrBix9nV2uxRywqwMz6Cj/osMJU69k51qg=,tag:C7Mushc9LCWGDPKvHBijGQ==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAyZHlJZmtkMUsycGFuL2JG
+            RW10blFzRTcvVXVVQVBFN3dhd0ppUWRwQ20wClYrdmoxZ2hCMi9qb1ArVHdtNzlE
+            Mk15U1dRTkpneE95eFQzN0ZEMFI1aHMKLS0tIDg2My9WdElMVkVTSld2RXB0Wmc1
+            SnZnWDQzTGRRWXRqUnUrOEltSHpvWUEKEffLM5fXeD2Vcfc52qKlCVS65N/lRmot
+            16LD3117iV15jKbttDBLe2d1sfvLrYt99+bvv13zRTzS1ACLUYVWTw==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-21T10:55:53Z"
+    mac: ENC[AES256_GCM,data:SzS/Gx8P4t1mh0I2wf89N0H4FUpADSY2oGnh8f9FFXlMW6HLj2Dd7Deh2X/4wAC8PExjEEufGUeMw8WkDzGnJJadNsVXYwC3SyEzBkeeLzKuYwniWQ4T4HBpldMeIetH+Pu4NCRUK0zSQk1NyxHWtRXOasp60fUBz5OZNvPpfP0=,iv:Cn4szQexMjLYYnZmUQW5nHxir2/R2cAytkA52fJ+uYA=,tag:v3hGZH+dE5MryWng67Nj1A==,type:str]
+    mac_only_encrypted: true
+    pgp:
+        - created_at: "2026-11-21T10:55:53Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAOMltnLvsKUCEYFo+npA4SmoZVnlqrsbinA7CyKD2b0Uw
+            Pvav/C2PR9Q53imf3EQSi49BHLHHaRC6/aqaNwPRdwxaroE1f+oi1gXTrj3LDo/l
+            0lwBKYIERBK51Fjn53kkqtvQJjow9xuKwHrIF+ODDhmMlOhUZNeCsy3er4Mor2zc
+            GldOhyU/FhaA34FOHCCCVukJj08J+3rXJdtvyhbwAR+HTXsjoyO0R9ru/bkL7A==
+            =g0Nx
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    version: 3.13.3
