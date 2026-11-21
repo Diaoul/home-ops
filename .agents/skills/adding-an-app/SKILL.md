@@ -166,10 +166,15 @@ spec:
 ### ext-auth (Kanidm via oauth2-proxy)
 
 To put an app behind a Kanidm login, add the `ext-auth` component in `ks.yaml`. It attaches
-a SecurityPolicy to the `${APP}` HTTPRoute that sends each request to oauth2-proxy, which
-bypasses `/api` and `/ping`. Logins finish on `auth.${DOMAIN}` and return to the app, so
-nothing else changes, unless the app lives in a namespace missing from
-`kubernetes/apps/security/oauth2-proxy/app/referencegrant.yaml`.
+a SecurityPolicy to every HTTPRoute labelled `app.kubernetes.io/instance: ${APP}` (app-template
+sets it on each route it renders) that sends each request to oauth2-proxy. Logins finish on
+`auth.${DOMAIN}` and return to the app, so nothing else changes, unless the app lives in a
+namespace missing from `kubernetes/apps/security/oauth2-proxy/app/referencegrant.yaml`.
+
+To leave an app's API reachable without a login, and only when the app checks its own API
+key there (test it: an unauthenticated request must get a 401 or 403), add a second route
+labelled `ext-auth.home-ops/skip: "true"` matching only those paths; the policy skips routes
+with that label. See `media/sonarr` for the pattern.
 
 ## Secrets
 

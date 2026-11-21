@@ -14,15 +14,19 @@ spec:
       - accept
       - authorization
       - cookie
-    # No path: oauth2-proxy must see the request's own path to serve /oauth2/* and skip /api.
     http:
+      path: /oauth2/auth
       backendRefs:
         - group: ""
           kind: Service
           name: oauth2-proxy
           namespace: security
           port: 4180
-  targetRefs:
+  targetSelectors:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: ${APP}
+      matchLabels:
+        app.kubernetes.io/instance: ${APP}
+      matchExpressions:
+        - key: ext-auth.home-ops/skip
+          operator: DoesNotExist

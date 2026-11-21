@@ -66,11 +66,28 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             url: https://radarr.${DOMAIN}/ping
-        hostnames:
+        hostnames: &hostnames
           - radarr.${DOMAIN}
-        parentRefs:
+        parentRefs: &parentRefs
           - name: envoy-external
             namespace: network
+      api:
+        labels:
+          ext-auth.home-ops/skip: "true"
+        annotations:
+          gatus.home-operations.com/enabled: "false"
+        hostnames: *hostnames
+        parentRefs: *parentRefs
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+            matches:
+              - path:
+                  value: /api
+              - path:
+                  type: Exact
+                  value: /ping
     persistence:
       config:
         existingClaim: radarr
