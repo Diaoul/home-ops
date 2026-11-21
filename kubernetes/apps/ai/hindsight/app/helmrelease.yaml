@@ -70,7 +70,7 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 60
-            securityContext:
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
@@ -83,7 +83,7 @@ spec:
         pod:
           # The in-process worker drains for about 27s on shutdown.
           terminationGracePeriodSeconds: 60
-          securityContext:
+          securityContext: &podSecurityContext
             runAsNonRoot: true
             runAsUser: 1000
             runAsGroup: 1000
@@ -91,12 +91,67 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
             seccompProfile:
               type: RuntimeDefault
+      control-plane:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/vectorize-io/hindsight-control-plane
+              tag: 1.2.3@sha256:29c8fd38a6408b76f08219badc1e506b1b3bb77264d8e1cdfc327e4f955d99f8
+            # The image's start script insists on a writable embedded-database directory,
+            # which only the API uses.
+            command:
+              - node
+              - server.js
+            workingDir: /app/control-plane
+            env:
+              HINDSIGHT_CP_DATAPLANE_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: hindsight
+                    key: HINDSIGHT_API_TENANT_API_KEY
+              HINDSIGHT_CP_DATAPLANE_API_URL: http://hindsight.ai.svc.cluster.local:8888
+              HOSTNAME: 0.0.0.0
+              PORT: &cpPort 3000
+              TZ: Europe/Paris
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        pod:
+          securityContext: *podSecurityContext
     service:
       app:
         controller: hindsight
+        forceRename: "{{ .Release.Name }}"
         ports:
           http:
             port: *port
+      control-plane:
+        controller: control-plane
+        ports:
+          http:
+            port: *cpPort
+    route:
+      app:
+        hostnames:
+          - hindsight.${DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+        rules:
+          - backendRefs:
+              - identifier: control-plane
+                port: *cpPort
     persistence:
       tmp:
         type: emptyDir
