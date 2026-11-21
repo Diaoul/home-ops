@@ -195,6 +195,18 @@ spec:
             app:
               - path: /mnt/secrets/litellm
                 readOnly: true
+      # Only the tenant key: the same Secret holds Hindsight's database credentials.
+      hindsight-key:
+        type: secret
+        name: hindsight
+        items:
+          - key: HINDSIGHT_API_TENANT_API_KEY
+            path: key
+        advancedMounts:
+          hermes:
+            app:
+              - path: /mnt/secrets/hindsight
+                readOnly: true
       # Read-only so the agent cannot loosen the sender check that gates its own wake-ups.
       scripts:
         type: configMap

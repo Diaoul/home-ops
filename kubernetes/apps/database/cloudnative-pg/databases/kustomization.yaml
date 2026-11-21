@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - ./autobrr.yaml
   - ./autobrr.sops.yaml
+  - ./hindsight.yaml
+  - ./hindsight.sops.yaml
   - ./immich.yaml
   - ./immich.sops.yaml
   - ./litellm.yaml

@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmmcpserver_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMMCPServer
+metadata:
+  name: hindsight-mcp
+spec:
+  alias: hindsight
+  proxyRef: litellm
+  transport: http
+  url: http://hindsight.ai.svc.cluster.local:8888/mcp/home/
+  authType: bearer_token
+  authTokenRef:
+    name: hindsight
+    key: HINDSIGHT_API_TENANT_API_KEY

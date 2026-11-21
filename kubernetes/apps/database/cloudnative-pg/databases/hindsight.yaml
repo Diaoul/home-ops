@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: hindsight
+spec:
+  cluster:
+    name: postgres18-hindsight
+  name: hindsight
+  login: true
+  passwordSecret:
+    name: hindsight-db
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: hindsight
+spec:
+  cluster:
+    name: postgres18-hindsight
+  name: hindsight
+  owner: hindsight
+  # Hindsight connects as a non-superuser, and pgvector is not a trusted extension.
+  extensions:
+    - name: vector
+      ensure: present
+      version: 0.8.7
+    - name: pg_trgm
+      ensure: present
+    - name: btree_gin
+      ensure: present

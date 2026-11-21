@@ -71,16 +71,19 @@
     },
     {
       // A PostgreSQL major is a cluster upgrade, not an extension release: the base image and
-      // both extension images have to move together, and a wrong one leaves a cluster that will
+      // its extension images have to move together, and a wrong one leaves a cluster that will
       // not start. Never automerge it. An extension release on the current major is not a major
       // update, so it stays in its own pull request.
-      description: "Immich Postgres major upgrade",
-      groupName: "immich-postgresql-major",
-      matchFileNames: ["kubernetes/apps/database/cloudnative-pg/cluster/cluster-immich.yaml"],
+      description: "Postgres major upgrade for the clusters with extension images",
+      groupName: "postgresql-extensions-major",
+      matchFileNames: [
+        "kubernetes/apps/database/cloudnative-pg/cluster/cluster-hindsight.yaml",
+        "kubernetes/apps/database/cloudnative-pg/cluster/cluster-immich.yaml",
+      ],
       matchDatasources: ["docker"],
       matchUpdateTypes: ["major"],
       automerge: false,
-      // Gives the extension images time to publish builds for the new major, so the PR has all three.
+      // Gives the extension images time to publish builds for the new major, so the PR has them all.
       minimumReleaseAge: "14 days",
     },
   ],

@@ -14,6 +14,7 @@ spec:
       namespace: kopiur-system
     - name: kanidm
       namespace: security
+    - name: hindsight
     - name: litellm
   path: ./kubernetes/apps/ai/hermes/app
   sourceRef:

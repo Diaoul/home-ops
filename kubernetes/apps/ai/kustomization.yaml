@@ -13,5 +13,6 @@ resources:
   - ./github-mcp/ks.yaml
   - ./context7-mcp/ks.yaml
   - ./hermes/ks.yaml
+  - ./hindsight/ks.yaml
   - ./observability-mcp/ks.yaml
   - ./unifi-mcp/ks.yaml
