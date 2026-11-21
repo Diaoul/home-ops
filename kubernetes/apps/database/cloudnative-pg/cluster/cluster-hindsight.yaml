@@ -14,7 +14,6 @@ spec:
   enableSuperuserAccess: true
   superuserSecret:
     name: cloudnative-pg
-  # The standard image does not ship pgvector.
   postgresql:
     extensions:
       - name: pgvector
