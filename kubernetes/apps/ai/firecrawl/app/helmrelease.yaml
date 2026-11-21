@@ -1,0 +1,269 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: firecrawl
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  values:
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+
+    controllers:
+      api:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: &image
+              repository: ghcr.io/firecrawl/firecrawl
+              tag: 2.11.809@sha256:e12baea631bc48c30566403166192735c2e31b0232aed81274c9a6dea67d1d19
+            command:
+              - node
+              - --max-old-space-size=384
+              - dist/src/main.js
+              - api
+            env: &env
+              HOST: 0.0.0.0
+              NUQ_WAIT_MODE: listen
+              PORT: &port 3002
+              PLAYWRIGHT_MICROSERVICE_URL: http://firecrawl-playwright.ai.svc.cluster.local:3000/scrape
+              REDIS_RATE_LIMIT_URL: redis://firecrawl-dragonfly.ai.svc.cluster.local:6379
+              REDIS_URL: redis://firecrawl-dragonfly.ai.svc.cluster.local:6379
+              USE_DB_AUTHENTICATION: "false"
+            envFrom: &envFrom
+              - secretRef:
+                  name: firecrawl
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /v0/health/liveness
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /v0/health/readiness
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+
+      worker:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: *image
+            command:
+              - node
+              - --max-old-space-size=256
+              - dist/src/main.js
+              - queue-worker
+            env: *env
+            envFrom: *envFrom
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /liveness
+                    port: 3005
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 192Mi
+              limits:
+                memory: 384Mi
+
+      nuq-worker:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image: *image
+            command:
+              - node
+              - --max-old-space-size=384
+              - dist/src/main.js
+              - nuq-worker
+            env: *env
+            envFrom: *envFrom
+            probes:
+              liveness: &nuqProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 3000
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *nuqProbes
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+
+      playwright:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/firecrawl/playwright-service
+              tag: latest@sha256:227ce3d8059173925a5a0697c63a1e947662cca934a609151651f578774edd5d
+            # `pnpm start` has corepack fetch pnpm at every start: its cache is in /root.
+            command:
+              - node
+              - dist/api.js
+            env:
+              HOME: /tmp
+              PORT: &playwrightPort 3000
+            probes:
+              liveness: &playwrightProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *playwrightPort
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *playwrightProbes
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+
+      postgres:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        # The queue lives in an emptyDir; two pods would be two queues.
+        strategy: Recreate
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999
+            runAsGroup: 999
+            fsGroup: 999
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: ghcr.io/firecrawl/nuq-postgres
+              tag: latest@sha256:d719b36160eac2fcbe16dc7e7360ddb9c82c40ea5da183d07bf4a755c6a0b2ae
+            # The image's nuq.sql sizes WAL for production through ALTER SYSTEM;
+            # command-line settings take precedence over it.
+            args:
+              - postgres
+              - -c
+              - shared_buffers=32MB
+              - -c
+              - wal_buffers=1MB
+              - -c
+              - max_wal_size=256MB
+              - -c
+              - min_wal_size=64MB
+            env:
+              PGDATA: /var/lib/postgresql/data/pgdata
+            envFrom:
+              - secretRef:
+                  name: firecrawl
+            probes:
+              liveness: &postgresProbes
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - pg_isready
+                      - -q
+                      - -h
+                      - 127.0.0.1
+                      - -U
+                      - postgres
+                  periodSeconds: 15
+                  timeoutSeconds: 5
+                  failureThreshold: 4
+              readiness: *postgresProbes
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+
+    service:
+      api:
+        controller: api
+        ports:
+          http:
+            port: *port
+      playwright:
+        controller: playwright
+        ports:
+          http:
+            port: *playwrightPort
+      postgres:
+        controller: postgres
+        ports:
+          postgres:
+            port: 5432
+
+    persistence:
+      postgres:
+        type: emptyDir
+        sizeLimit: 1Gi
+        advancedMounts:
+          postgres:
+            app:
+              - path: /var/lib/postgresql/data
+      postgres-run:
+        type: emptyDir
+        advancedMounts:
+          postgres:
+            app:
+              - path: /var/run/postgresql
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

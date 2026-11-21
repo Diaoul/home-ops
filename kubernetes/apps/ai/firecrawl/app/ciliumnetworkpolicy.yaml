@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cilium.io/ciliumnetworkpolicy_v2.json
+# Firecrawl is unauthenticated and fetches arbitrary URLs on request: an open proxy.
+# Ingress limits who can use it, and keeps the browser that renders those URLs
+# away from postgres; egressDeny keeps a crafted URL off the LAN.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: firecrawl
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: firecrawl
+  enableDefaultDeny:
+    egress: false
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: ai
+            app.kubernetes.io/name: hermes
+      toPorts:
+        - ports:
+            - port: "3002"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: firecrawl
+          matchExpressions:
+            - key: app.kubernetes.io/controller
+              operator: In
+              values:
+                - api
+                - nuq-worker
+                - worker
+      toPorts:
+        - ports:
+            - port: "3000"
+              protocol: TCP
+            - port: "5432"
+              protocol: TCP
+  egressDeny:
+    - toCIDRSet:
+        - cidr: 10.0.0.0/8
+          except:
+            - 10.42.0.0/16 # pods, for postgres, playwright and firecrawl-dragonfly
+            - 10.43.0.0/16 # services, for kube-dns, postgres, playwright and firecrawl-dragonfly
+    - toCIDR:
+        - 172.16.0.0/12
+        - 192.168.0.0/16
