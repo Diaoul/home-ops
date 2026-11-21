@@ -8,9 +8,6 @@ dashboard:
       scopes: openid profile email
   public_url: https://hermes-dash.${DOMAIN}
 
-memory:
-  provider: hindsight
-
 providers:
   litellm:
     api: http://litellm.ai.svc.cluster.local:4000/v1
@@ -18,14 +15,6 @@ providers:
     key_env: LITELLM_API_KEY
     name: LiteLLM
     transport: chat_completions
-
-secrets:
-  command:
-    enabled: true
-    helper_timeout_seconds: 3
-    override_existing: true
-    # Multiplexed profiles don't see the pod env, so each key is read from its mounted file.
-    command: printf 'LITELLM_API_KEY=%s\nHINDSIGHT_API_KEY=%s\n' "$(cat /mnt/secrets/litellm/key)" "$(cat /mnt/secrets/hindsight/key)"
 
 security:
   allow_lazy_installs: false

@@ -12,8 +12,6 @@ configMapGenerator:
   - name: hermes-config
     files:
       - ./resources/config.yaml
-      - ./resources/hindsight.json
-      - ./resources/hindsight-home.json
       # Hermes merges the managed .env into every profile, which never sees the pod env.
       - .env=./resources/managed.env
   - name: hermes-mise

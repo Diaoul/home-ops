@@ -68,27 +68,6 @@ spec:
               limits:
                 memory: 512Mi
             securityContext: *securityContext
-          # The managed config selects Hindsight for every profile, so each one needs the plugin.
-          hindsight-plugin:
-            image: *image
-            command:
-              - /bin/sh
-              - -c
-              - |
-                for home in /opt/data /opt/data/profiles/*; do
-                  [ -f "$home/config.yaml" ] && [ ! -d "$home/plugins/hindsight" ] || continue
-                  if [ "$home" = /opt/data ]; then profile=""; else profile="-p $(basename "$home")"; fi
-                  /opt/hermes/bin/hermes $profile plugins install hindsight --enable --yes-deps || exit 1
-                done
-            env:
-              HERMES_HOME: /opt/data
-              HOME: /opt/data
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 1Gi
-            securityContext: *securityContext
           # Rebuilds the volume's dependency environment for a new image, which the image's boot
           # hook cannot do here: it needs CAP_SETGID for `s6-setuidgid` (NousResearch/hermes-agent#118265).
           # Fails the pod rather than boot the image's own environment, which lacks the plugins'
@@ -234,23 +213,6 @@ spec:
         advancedMounts:
           hermes:
             app:
-              - path: /etc/hermes
-                readOnly: true
-              # The plugin reads a shared config from $HOME, and a profile's own ahead of it:
-              # every profile recalls home, and only these three also write to it.
-              - path: /opt/data/.hindsight/config.json
-                subPath: hindsight.json
-                readOnly: true
-              - path: /opt/data/hindsight/config.json
-                subPath: hindsight-home.json
-                readOnly: true
-              - path: /opt/data/profiles/hass/hindsight/config.json
-                subPath: hindsight-home.json
-                readOnly: true
-              - path: /opt/data/profiles/ops/hindsight/config.json
-                subPath: hindsight-home.json
-                readOnly: true
-            hindsight-plugin:
               - path: /etc/hermes
                 readOnly: true
             refresh-dependencies:
