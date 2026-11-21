@@ -30,5 +30,5 @@ for manifest in sorted(pathlib.Path("/banks").glob("*.json")):
     with urllib.request.urlopen(request, timeout=60) as response:
         print(f"{manifest.stem}: {response.read().decode()}", flush=True)
 
-# A sidecar that exits is restarted; exiting only on failure retries the import.
+# Kubernetes restarts a sidecar that exits, so exit only on failure, to retry.
 signal.pause()

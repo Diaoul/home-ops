@@ -81,7 +81,8 @@ spec:
               limits:
                 memory: 4Gi
         initContainers:
-          # Banks are configured through the API only; this applies resources/banks once it is up.
+          # A native sidecar (restartPolicy: Always): it calls the API in this pod, which a plain
+          # init container would block. Banks are configured through that API only.
           import-banks:
             image: *image
             command:
