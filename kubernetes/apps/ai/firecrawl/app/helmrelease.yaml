@@ -27,6 +27,8 @@ spec:
             image: &image
               repository: ghcr.io/firecrawl/firecrawl
               tag: 2.11.809@sha256:e12baea631bc48c30566403166192735c2e31b0232aed81274c9a6dea67d1d19
+            # The default harness runs every role in one container, including a prefetch worker
+            # that strands jobs without RabbitMQ; these are the package's `*:production` scripts.
             args:
               - node
               - --max-old-space-size=384
@@ -190,8 +192,8 @@ spec:
             image:
               repository: ghcr.io/firecrawl/nuq-postgres
               tag: latest@sha256:d719b36160eac2fcbe16dc7e7360ddb9c82c40ea5da183d07bf4a755c6a0b2ae
-            # The image's nuq.sql sizes WAL for production through ALTER SYSTEM;
-            # command-line settings take precedence over it.
+            # The image's nuq.sql sizes WAL for production through ALTER SYSTEM: a write burst
+            # outgrows the memory limit and the emptyDir. Command-line settings take precedence.
             args:
               - postgres
               - -c
