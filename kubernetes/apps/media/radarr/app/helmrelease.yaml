@@ -63,8 +63,6 @@ spec:
             port: *port
     route:
       app:
-        # ext-auth targets the HTTPRoute named after the app; a second route would rename this one
-        forceRename: "{{ .Release.Name }}"
         annotations:
           gatus.home-operations.com/endpoint: |-
             url: https://radarr.${DOMAIN}/ping
@@ -73,8 +71,10 @@ spec:
         parentRefs: &parentRefs
           - name: envoy-external
             namespace: network
-      # Outside the ext-auth SecurityPolicy, which targets the app route: the API checks its own key.
+      # The app checks its own API key here.
       api:
+        labels:
+          ext-auth.home-ops/skip: "true"
         annotations:
           gatus.home-operations.com/enabled: "false"
         hostnames: *hostnames

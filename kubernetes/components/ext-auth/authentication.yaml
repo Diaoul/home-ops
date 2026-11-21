@@ -22,7 +22,11 @@ spec:
           name: oauth2-proxy
           namespace: security
           port: 4180
-  targetRefs:
+  targetSelectors:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: ${APP}
+      matchLabels:
+        app.kubernetes.io/instance: ${APP}
+      matchExpressions:
+        - key: ext-auth.home-ops/skip
+          operator: DoesNotExist
