@@ -6,7 +6,7 @@ metadata:
   name: hindsight
 spec:
   cluster:
-    name: postgres18
+    name: postgres18-hindsight
   name: hindsight
   login: true
   passwordSecret:
@@ -19,10 +19,10 @@ metadata:
   name: hindsight
 spec:
   cluster:
-    name: postgres18
+    name: postgres18-hindsight
   name: hindsight
   owner: hindsight
-  # Hindsight connects as a non-superuser, so it cannot create these itself.
+  # Hindsight connects as a non-superuser, and pgvector is not a trusted extension.
   extensions:
     - name: vector
       ensure: present
