@@ -105,6 +105,7 @@ spec:
               TRANSFORMERS_CACHE: /cache
               HF_XET_CACHE: /cache/huggingface-xet
               MPLCONFIGDIR: /cache/matplotlib-config
+              MACHINE_LEARNING_REQUEST_THREADS: "2"
             probes:
               liveness: &mlProbes
                 enabled: true
