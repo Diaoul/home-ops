@@ -236,12 +236,19 @@ spec:
             app:
               - path: /etc/hermes
                 readOnly: true
-              # The plugin reads a shared config from $HOME, and a profile's own ahead of it.
+              # The plugin reads a shared config from $HOME, and a profile's own ahead of it:
+              # every profile recalls home, and only these three also write to it.
               - path: /opt/data/.hindsight/config.json
                 subPath: hindsight.json
                 readOnly: true
-              - path: /opt/data/profiles/dev/hindsight/config.json
-                subPath: hindsight-dev.json
+              - path: /opt/data/hindsight/config.json
+                subPath: hindsight-home.json
+                readOnly: true
+              - path: /opt/data/profiles/hass/hindsight/config.json
+                subPath: hindsight-home.json
+                readOnly: true
+              - path: /opt/data/profiles/ops/hindsight/config.json
+                subPath: hindsight-home.json
                 readOnly: true
             hindsight-plugin:
               - path: /etc/hermes
