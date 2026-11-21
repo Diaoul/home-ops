@@ -26,8 +26,8 @@ spec:
               type: RuntimeDefault
           terminationGracePeriodSeconds: 60
         initContainers:
-          # The image's own boot hook runs this through `s6-setuidgid`, which needs
-          # CAP_SETGID; it has nothing to migrate before the first config exists.
+          # The image's own boot hook runs this through `s6-setuidgid`, which needs CAP_SETGID
+          # (NousResearch/hermes-agent#118265); nothing to migrate before the first config exists.
           config-migrate:
             image: &image
               repository: docker.io/nousresearch/hermes-agent
@@ -69,8 +69,9 @@ spec:
                 memory: 512Mi
             securityContext: *securityContext
           # Rebuilds the volume's dependency environment for a new image, which the image's boot
-          # hook cannot do here: it needs CAP_SETGID for `s6-setuidgid`. Fails the pod rather than
-          # boot the image's own environment, which lacks the plugins' dependencies and extras.
+          # hook cannot do here: it needs CAP_SETGID for `s6-setuidgid` (NousResearch/hermes-agent#118265).
+          # Fails the pod rather than boot the image's own environment, which lacks the plugins'
+          # dependencies and extras.
           refresh-dependencies:
             image: *image
             command:
