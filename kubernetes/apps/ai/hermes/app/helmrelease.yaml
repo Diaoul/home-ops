@@ -30,8 +30,8 @@ spec:
           # CAP_SETGID; it has nothing to migrate before the first config exists.
           config-migrate:
             image: &image
-              repository: ghcr.io/diaoul/hermes-agent
-              tag: 0.23.3@sha256:d0bdc44b8c02b7361d5c30333dba27c8bdd98b6a94292e054f4e841f54ff6354
+              repository: docker.io/nousresearch/hermes-agent
+              tag: v0.23.3@sha256:3e9fe4c6ef36490f43aa0d0d80f9df64e9c92a576eee3042f1a97c8813c05355
             command:
               - /bin/sh
               - -c
