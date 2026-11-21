@@ -80,7 +80,6 @@ spec:
         parentRefs: &parentRefs
           - name: envoy-external
             namespace: network
-      # The app checks its own API key here.
       api:
         labels:
           ext-auth.home-ops/skip: "true"
