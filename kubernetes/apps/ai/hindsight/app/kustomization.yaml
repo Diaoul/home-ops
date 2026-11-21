@@ -7,3 +7,10 @@ resources:
   - ./litellmvirtualkey.yaml
   - ./mcpserver.yaml
   - ./secret.sops.yaml
+configMapGenerator:
+  - name: hindsight-banks
+    files:
+      - ./resources/banks/home.json
+      - ./resources/import-banks.py
+generatorOptions:
+  disableNameSuffixHash: true

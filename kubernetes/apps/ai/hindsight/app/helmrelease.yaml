@@ -17,7 +17,7 @@ spec:
         strategy: Recreate # one pod per worker id
         containers:
           app:
-            image:
+            image: &image
               repository: ghcr.io/vectorize-io/hindsight-api
               tag: 1.2.3@sha256:2f318da3489f6493a5ec78f3d7019cd70835383fe4f4ffd1af9e080babd91d6c
             env:
@@ -70,7 +70,7 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 60
-            securityContext:
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
@@ -80,6 +80,23 @@ spec:
                 memory: 1Gi
               limits:
                 memory: 4Gi
+        initContainers:
+          # Banks are configured through the API only; this applies resources/banks once it is up.
+          import-banks:
+            image: *image
+            command:
+              - /app/api/.venv/bin/python
+              - /banks/import-banks.py
+            envFrom:
+              - secretRef:
+                  name: hindsight
+            restartPolicy: Always
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 5m
+              limits:
+                memory: 64Mi
         pod:
           # The in-process worker drains for about 27s on shutdown.
           terminationGracePeriodSeconds: 60
@@ -98,6 +115,14 @@ spec:
           http:
             port: *port
     persistence:
+      banks:
+        type: configMap
+        name: hindsight-banks
+        advancedMounts:
+          hindsight:
+            import-banks:
+              - path: /banks
+                readOnly: true
       tmp:
         type: emptyDir
         globalMounts:
