@@ -106,3 +106,19 @@ spec:
         parentRefs:
           - name: envoy-external
             namespace: network
+        rules:
+          - backendRefs: &backendRefs
+              - identifier: app
+                port: *port
+          # Envoy sets X-Auth-Request-Redirect to the current URL, so sign-out would redirect to itself.
+          - backendRefs: *backendRefs
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  set:
+                    - name: X-Auth-Request-Redirect
+                      value: https://idm.${DOMAIN}/
+            matches:
+              - path:
+                  type: Exact
+                  value: /oauth2/sign_out
