@@ -28,7 +28,7 @@ spec:
               tag: 5.0.0.2997@sha256:05acf764e72fa458b5edf236771d7a08d1f120fce509d4fb8a4e799fae29fda7
             env:
               SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__AUTH__REQUIRED: Enabled
               TZ: Europe/Paris
             envFrom:
               - secretRef:

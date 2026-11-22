@@ -28,7 +28,7 @@ spec:
               tag: 3.0.2.5780@sha256:58fa5dbed20738ce0a72077315e818eeb731cb4b4a5173c4a837d343a9573750
             env:
               PROWLARR__AUTH__METHOD: External
-              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              PROWLARR__AUTH__REQUIRED: Enabled
               TZ: Europe/Paris
             envFrom:
               - secretRef:
