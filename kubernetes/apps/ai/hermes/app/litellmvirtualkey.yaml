@@ -5,6 +5,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: hermes
 spec:
+  maxBudget: "20"
+  budgetDuration: 30d
   keyAlias: hermes
   models:
     - glm-5-3-flash-openrouter

@@ -5,6 +5,8 @@ kind: LiteLLMVirtualKey
 metadata:
   name: mars
 spec:
+  maxBudget: "20"
+  budgetDuration: 30d
   keyAlias: mars
   proxyRef: litellm
   secretName: mars-litellm
