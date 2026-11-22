@@ -48,6 +48,16 @@ spec:
             storage: 1Gi
         storageClassName: ceph-block
   tlsSecretName: kanidm-tls
+  mailSender:
+    image: kanidm/tools:1.12.1@sha256:3ebc97b50699f3952dcb6c3fa57a9ae833db959015a2c48807c669ce8cd196aa
+    relay: smtp://smtp.milkyway:25
+    fromAddress: admin@${DOMAIN}
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        memory: 128Mi
   gateway:
     annotations:
       gatus.home-operations.com/endpoint: |-
