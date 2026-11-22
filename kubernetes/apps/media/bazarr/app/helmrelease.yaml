@@ -28,11 +28,6 @@ spec:
               tag: 1.6.2@sha256:6c40dfa683f767d28d1dc502837ed0a5a57682a84231f03e704e2b3f61b25a46
             env:
               TZ: Europe/Paris
-              BAZARR__AUTH__METHOD: External
-              BAZARR__AUTH__REQUIRED: DisabledForLocalAddresses
-            envFrom:
-              - secretRef:
-                  name: bazarr
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
