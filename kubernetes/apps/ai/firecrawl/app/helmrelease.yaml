@@ -26,7 +26,7 @@ spec:
           app:
             image: &image
               repository: ghcr.io/firecrawl/firecrawl
-              tag: 2.11.819@sha256:2f602c945127066d582cc384a65e77d13c1ecbfa37dc17dab01495bd5e559d15
+              tag: 2.11.830@sha256:be597bec9ab5024a5ba0548433a32ccc0ad413862ecb38c37d062fb6bea01d08
             # The default harness runs every role in one container, including a prefetch worker
             # that strands jobs without RabbitMQ; these are the package's `*:production` scripts.
             args:
