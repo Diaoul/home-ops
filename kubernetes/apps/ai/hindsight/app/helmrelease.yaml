@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/vectorize-io/hindsight-api
-              tag: 1.2.3@sha256:2f318da3489f6493a5ec78f3d7019cd70835383fe4f4ffd1af9e080babd91d6c
+              tag: 1.3.0@sha256:c054765e9196fb1fe63497be06bcb55256c9024cc9314f951dc59858985ab242
             env:
               HINDSIGHT_API_LLM_PROVIDER: openai
               HINDSIGHT_API_LLM_BASE_URL: http://litellm.ai.svc.cluster.local:4000/v1
