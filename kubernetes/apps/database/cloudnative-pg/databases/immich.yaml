@@ -4,9 +4,11 @@ apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
   name: immich
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   cluster:
-    name: postgres18-immich
+    name: postgres
   name: immich
   login: true
   passwordSecret:
@@ -17,9 +19,11 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: immich
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   cluster:
-    name: postgres18-immich
+    name: postgres
   name: immich
   owner: immich
   # Immich connects as a non-superuser, so it cannot create these itself.
@@ -29,7 +33,7 @@ spec:
       version: 0.8.7
     - name: vchord
       ensure: present
-      version: 1.3.0
+      version: 1.5.0
     - name: uuid-ossp
       ensure: present
     - name: unaccent
