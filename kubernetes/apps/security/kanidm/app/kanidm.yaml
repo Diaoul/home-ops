@@ -6,7 +6,7 @@ metadata:
   name: kanidm
 spec:
   domain: idm.${DOMAIN}
-  image: kanidm/server:1.12.1@sha256:77198131f28116203e105d2e42214203757d113a694f35de545669e75db5c96f
+  image: kanidm/server:1.12.2@sha256:555618fc71aa5cbbacf0041136f8a5430615ee215d677386594726abcc18dbf0
   disableUpgradeChecks: true
   replicaGroups:
     - name: default
@@ -49,7 +49,7 @@ spec:
         storageClassName: ceph-block
   tlsSecretName: kanidm-tls
   mailSender:
-    image: kanidm/tools:1.12.1@sha256:3ebc97b50699f3952dcb6c3fa57a9ae833db959015a2c48807c669ce8cd196aa
+    image: kanidm/tools:1.12.2@sha256:75e07135412999b9517e61dd1c72328369cc1936299b91018b09d4f4066664f3
     relay: smtp://smtp.milkyway:25
     fromAddress: admin@${DOMAIN}
     resources:
