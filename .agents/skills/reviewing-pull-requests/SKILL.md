@@ -161,11 +161,10 @@ file and line in its explanation.
 
 ## What a check proves
 
-- Write an inference out, and only one the evidence carries. A render of
-  the new chart that succeeded proves the tag exists and the values fit
-  its schema. A default the release changes to a value this repository
-  already sets explicitly changes nothing here; a prerequisite that comes
-  with it, such as a kernel or Kubernetes version, is checked on its own.
+- Write an inference out, and only one the evidence carries. A default
+  the release changes to a value this repository already sets explicitly
+  changes nothing here; a prerequisite that comes with it, such as a
+  kernel or Kubernetes version, is checked on its own.
 - A version requirement is checked against the version this repository
   targets, read from where it pins it: Talos and Kubernetes in
   `kubernetes/apps/system-upgrade/tuppr/upgrades/`, Flux in
@@ -177,7 +176,11 @@ file and line in its explanation.
   the HelmRelease values" carries its proof; "auth checked" does not.
 - What the repository cannot show is not a check: say what could not be
   verified and what to look at after the merge.
-- The pull request's own checks: `Image Pull - Success` means a cluster
+- Don't redo what the pull request's checks prove; a failing one is
+  reported by its name, not rediscovered. `Validate - Manifests` runs
+  kubeconform, the SOPS encryption check, yamllint, yamlfmt and
+  `flate test all`, so schemas, encryption, formatting and whether every
+  HelmRelease renders are settled. `Image Pull - Success` means a cluster
   node pulled every changed image (`talosctl image pull`), so the tag,
   digest and platform exist. `Konflate` renders the cluster at the
   merge-base and the head with flate and puts the rendered changes,
