@@ -8,7 +8,7 @@ spec:
   alias: ha_mcp
   proxyRef: litellm
   workload:
-    image: ghcr.io/homeassistant-ai/ha-mcp:9.2.0@sha256:9de5bf6c4216142fdffe862900abe72dac8dfe9621dd0b2b050d132372b676ba
+    image: ghcr.io/homeassistant-ai/ha-mcp:9.3.0@sha256:8da893a58da84be7c6e2a8057dfac4fc74821bc5bf17676b5223e439e914db2b
     port: 8086
     command:
       - ha-mcp-web
