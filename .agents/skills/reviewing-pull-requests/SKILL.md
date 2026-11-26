@@ -1,6 +1,6 @@
 ---
 name: reviewing-pull-requests
-description: Use when reviewing a pull request or Renovate update in this Flux repository, or checking what a change under kubernetes/ affects. Covers finding a dependency's upstream, breaking changes, Renovate's rules here, searching what depends on a change, limits against load, and what a check proves. references/registry.md reads images and OCI charts with crane; references/rendering.md renders and diffs HelmReleases with flate.
+description: Use when reviewing a pull request or Renovate update in this Flux repository, or checking what a change under kubernetes/ affects. Covers finding a dependency's upstream, breaking changes, Renovate's rules here, searching what depends on a change, limits against load, security (routes and auth, privileges, egress, credentials), and what a check proves. references/registry.md reads images and OCI charts with crane; references/rendering.md renders and diffs HelmReleases with flate.
 ---
 
 # Reviewing pull requests in home-ops
@@ -167,6 +167,33 @@ what already runs here: the pull requests Renovate opens in a month for a
 per-pull-request reviewer, the live usage metric for a resource. Give the
 count, its source and what the limit leaves per unit. `gh pr list` stops at
 30 results without `--limit`.
+
+### Security
+
+Read these from the render, not the values, since a chart adds what the
+values never mention:
+
+- **Who can reach it.** An HTTPRoute on `envoy-external` is public through
+  the Cloudflare tunnel; `envoy-internal` is the LAN. For each path a new
+  or changed external route serves, name what checks the caller: the
+  `ext-auth` component in the app's `ks.yaml` (Kanidm), or the app's own
+  login, API key or webhook signature secret. Most external apps here use their own; a path with
+  neither is a finding. A route labelled `ext-auth.home-ops/skip` must
+  match only paths the app guards itself. Whether an unauthenticated
+  request gets a 401 or 403 is a check to do after the merge.
+- **What it runs as.** A departure from the hardened container defaults
+  in `AGENTS.md` (root, a writable root filesystem, added capabilities,
+  `privileged`, `hostNetwork`, `hostPID`, a `hostPath` volume) needs a
+  reason the image forces. So does RBAC beyond its own namespace: a
+  `ClusterRole` or `ClusterRoleBinding`, read access to `secrets`, `*`
+  verbs, `pods/exec`, a binding to `cluster-admin`.
+- **What it can reach.** A workload that runs untrusted code or fetches
+  URLs on request is the capability `adding-an-app` says to fence. In a
+  network policy, a chart's own included, an egress rule with ports and no
+  `to` is open to the whole internet and the LAN on those ports.
+- **Where its credentials sit.** A token or password in plaintext (HelmRelease
+  values, an env `value:`, a ConfigMap) is a finding; so is a Secret
+  given to a pod or namespace that does not use it.
 
 ## What a check proves
 
