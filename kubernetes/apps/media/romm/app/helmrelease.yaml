@@ -31,7 +31,7 @@ spec:
               HOME: /home/romm
               ROMM_BASE_PATH: /romm
               ROMM_DB_DRIVER: postgresql
-              DB_HOST: postgres18-rw.database.svc.cluster.local
+              DB_HOST: postgres-rw.database.svc.cluster.local
               DB_PORT: "5432"
               DB_NAME: romm
               DB_USER: romm
