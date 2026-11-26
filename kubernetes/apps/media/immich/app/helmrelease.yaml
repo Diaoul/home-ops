@@ -72,7 +72,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 4Gi
+                memory: 2Gi
               limits:
                 memory: 6Gi
               claims:
@@ -128,7 +128,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 8Gi
+                memory: 3Gi
               limits:
                 memory: 10Gi
               claims:
