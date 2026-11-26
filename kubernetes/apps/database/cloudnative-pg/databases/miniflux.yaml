@@ -4,9 +4,11 @@ apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
   name: miniflux
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   cluster:
-    name: postgres18
+    name: postgres
   name: miniflux
   login: true
   passwordSecret:
@@ -17,8 +19,10 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: miniflux
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   cluster:
-    name: postgres18
+    name: postgres
   name: miniflux
   owner: miniflux

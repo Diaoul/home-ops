@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+spec:
+  instances: 3
+  primaryUpdateMethod: switchover
+  imageName: ghcr.io/cloudnative-pg/postgresql:19.0-standard-trixie@sha256:6f17393bf934a41fec47439306a17e087c5c2f419ddd5bf4b8dc0241da4bceb0
+  storage:
+    size: 20Gi
+    storageClass: miroir-local
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: cloudnative-pg
+  postgresql:
+    parameters:
+      max_connections: "200"
+    # vchord builds on pgvector, which the standard image ships.
+    extensions:
+      - name: vchord
+        image:
+          reference: ghcr.io/home-operations/vchord:1.5.0@sha256:97b4a1aa15b65c29fa97e84b4270cb235e7bd39e80d4a4b2e91d9fa17997566d
+        dynamic_library_path:
+          - /usr/lib/postgresql/19/lib/
+        extension_control_path:
+          - /usr/share/postgresql/19/
+    shared_preload_libraries:
+      - vchord
+  resources:
+    requests:
+      cpu: 300m
+      memory: 2Gi
+    limits:
+      memory: 2Gi
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: required
+    topologyKey: kubernetes.io/hostname
+  monitoring:
+    enablePodMonitor: true
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: nas
+        serverName: postgres-0
+  bootstrap:
+    initdb: {}
