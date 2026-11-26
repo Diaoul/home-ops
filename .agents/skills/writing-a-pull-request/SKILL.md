@@ -2,8 +2,9 @@
 name: writing-a-pull-request
 description: >
   Use when opening a pull request in home-ops or writing its description. Covers the five
-  sections and the rules behind them: counting peer practice, when to stack pull requests,
-  keeping a pull request's history, and which changes are one-way doors.
+  sections and the rules behind them: counting peer practice, stating the security surface it
+  adds, when to stack pull requests, keeping a pull request's history, and which changes are
+  one-way doors.
 ---
 
 # Writing a pull request
@@ -45,6 +46,22 @@ it. Five sections, three of them optional, and each one has a rule for when it e
   behaviour that is irreversible or destructive. Drop the section when there is nothing; never
   write a line saying there is nothing to beware of.
 - **`🔗 Related`** — only when applicable: `Closes #123`, depends on #456, or the stack order.
+
+## Security surface
+
+A pull request that adds or widens one of these says so in `🔎 What to review`, one bullet each,
+with what guards it:
+
+- **who can reach it**: each path on `envoy-external` and what checks the caller there (Kanidm
+  through `ext-auth`, or the app's own login, API key or webhook signature);
+- **what it runs as**: a departure from the hardened container defaults in `AGENTS.md`, or RBAC
+  beyond its own namespace;
+- **what it can reach**: open egress from a workload that runs untrusted code or fetches URLs on
+  request, and the fence on it, or why there is none;
+- **where its credentials sit**: a new secret, and every pod or namespace given it.
+
+These are the items `reviewing-pull-requests` checks under Security. A pull request that touches
+none of them leaves them out.
 
 ## Counting peer practice
 
