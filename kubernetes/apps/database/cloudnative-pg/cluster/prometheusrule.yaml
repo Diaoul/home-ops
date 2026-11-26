@@ -13,10 +13,12 @@ spec:
       rules:
         - alert: LongRunningTransaction
           annotations:
-            description: Pod {{ $labels.pod }} is taking more than 5 minutes (300 seconds) for a query.
-            summary: A query is taking longer than 5 minutes.
+            description: Pod {{ $labels.pod }} has held a {{ $labels.application_name }} transaction on {{ $labels.datname }} for {{ $value | humanizeDuration }}.
+            summary: A transaction has been open for too long.
+          # Immich's nightly checksum job streams in one transaction up to its 1h timeLimit: https://github.com/immich-app/immich/issues/32712
           expr: |-
-            cnpg_backends_max_tx_duration_seconds > 300
+            cnpg_backends_max_tx_duration_seconds{datname="immich", application_name="postgres.js"} > 4500
+            or (cnpg_backends_max_tx_duration_seconds unless cnpg_backends_max_tx_duration_seconds{datname="immich", application_name="postgres.js"}) > 300
           for: 1m
           labels:
             severity: warning
