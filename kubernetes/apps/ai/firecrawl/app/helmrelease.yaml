@@ -51,7 +51,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /v0/health/liveness
+                    path: /health/liveness
                     port: *port
                   periodSeconds: 30
                   timeoutSeconds: 5
@@ -61,7 +61,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /v0/health/readiness
+                    path: /health/readiness
                     port: *port
                   periodSeconds: 30
                   timeoutSeconds: 5
