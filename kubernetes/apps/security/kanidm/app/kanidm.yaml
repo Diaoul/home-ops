@@ -52,6 +52,9 @@ spec:
     image: kanidm/tools:1.12.2@sha256:75e07135412999b9517e61dd1c72328369cc1936299b91018b09d4f4066664f3
     relay: smtp://smtp.milkyway:25
     fromAddress: admin@${DOMAIN}
+    smtpCaBundleRef:
+      name: milkyway-ca
+      key: ca.crt
     resources:
       requests:
         cpu: 10m
