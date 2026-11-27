@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./cluster-hindsight.yaml
   - ./cluster-immich.yaml
-  - ./cluster-restore.yaml
   - ./cluster.yaml
   - ./cluster18.yaml
   - ./objectstore.yaml
