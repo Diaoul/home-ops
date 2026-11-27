@@ -1,0 +1,79 @@
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+    name: kritika-db
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:68OyltZn9w==,iv:Inmac3sDM3bK1hiDvrgkVe5JCzmyISh9vGp7GJTQR7Q=,tag:C4cj5XYpS2QgNbnTCqnarw==,type:str]
+    password: ENC[AES256_GCM,data:l6ULXCmc6HbhztqGPAp0STY1TevVF/ebiWARWvHFiyJtIrmQvvpSR68b,iv:k+yLFUqeMyTq/eZGJP1CIzA1BaHO16ZmTxGHHkcGNoE=,tag:PXNGJ1PABRDuwGUax875mg==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRNEFCejVHY3p0TjVadnpR
+            TUNWZC9kaWRQYk5Ta3IzUUc2aEc2WkgyaWdZCmNqVUNwUGpKTVFpb2hPUXlaVG1M
+            eXdaRmlTZ3EySk9tb2d2b01GZ3NQcHMKLS0tIHZLMWRNOE5FVXJMSlNJTUU0ZnNo
+            NWRwTWNObU9MTmVINVA3UGM0bGRJNlUKOKeXaTXpQfDQ2BkXi5LKg3on+kmqVl7P
+            Fh3fvKbz2Sv1XscAXv8lz4HXuy2/tS/xBHXfr8Dmr4b/N+VNt1BXTA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-22T22:19:31Z"
+    mac: ENC[AES256_GCM,data:p8Ny1NQ1i7JKXa8mTETFX2rPhxTxpsjhk4V7I1g/Z9CC/WKo1athNv/niphksFQ5rLCu/vJihebAUU9qhWELP+XKpvy7wvbnTPpHn86JscAj+UVnfmOaZLoXGDMivfG0+BdQrlI2M6u4nyfvA/Khx6INk4ve/5dPy04e71ebnx4=,iv:gVezB8Q4t0Dx1+QEmh/xO2mY3rmoNcazptAfkDg7gHQ=,tag:sAbdjXM95bS03CABc1yKJA==,type:str]
+    mac_only_encrypted: true
+    pgp:
+        - created_at: "2026-11-22T22:19:31Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAeGqlIry3htmUgBvliMbbM4KcSWdEDiTv4nR4a/6sSX0w
+            0uTApoXMGZkdnkx6LotqZrN7OQMWT8ZlhMt9fldalimViGXZ7Dg6j0XuGPVbY9P/
+            0lwBv8rlmokIf8oZ+RvW8emCnDvzOZJHiK49IRCaSgg00mvAR2kpUzd7JRZNMA6p
+            /GDMVnf7eQA/dGzObxEYhLmcsfExmBW/McJQ0VyhXjU39PoTmSlO6fgZuFIC/A==
+            =zP95
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    version: 3.13.3
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/core/secret_v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+    name: kritika-app-db
+    labels:
+        cnpg.io/reload: "true"
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:JgijX4eHzEpjbic=,iv:0t6fo3hzPF/15Cy9egOs7GKK7+Kq2eter2pLvJyYIjw=,tag:76NhHSnkfyWx1q3X+gDt5w==,type:str]
+    password: ENC[AES256_GCM,data:myMOE+1FAj3kZF2kQkmEP8Rix8YWQQSYDs/etG3xK+ckmYrylzAeJ/Gmug==,iv:4GcL87j6v4LpnUst5OqtH+u+tZ6xyicNyqJHaTTfiNQ=,tag:3/7OShUGs1taBgDD3tbPzA==,type:str]
+sops:
+    age:
+        - enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBRNEFCejVHY3p0TjVadnpR
+            TUNWZC9kaWRQYk5Ta3IzUUc2aEc2WkgyaWdZCmNqVUNwUGpKTVFpb2hPUXlaVG1M
+            eXdaRmlTZ3EySk9tb2d2b01GZ3NQcHMKLS0tIHZLMWRNOE5FVXJMSlNJTUU0ZnNo
+            NWRwTWNObU9MTmVINVA3UGM0bGRJNlUKOKeXaTXpQfDQ2BkXi5LKg3on+kmqVl7P
+            Fh3fvKbz2Sv1XscAXv8lz4HXuy2/tS/xBHXfr8Dmr4b/N+VNt1BXTA==
+            -----END AGE ENCRYPTED FILE-----
+          recipient: age1xrxcj4d3zj8pnnyysph9qpve8stj8wr9dk7y0nq8ns4nukcruyxq5cc5at
+    encrypted_regex: ^(data|stringData)$
+    lastmodified: "2026-11-22T22:19:31Z"
+    mac: ENC[AES256_GCM,data:p8Ny1NQ1i7JKXa8mTETFX2rPhxTxpsjhk4V7I1g/Z9CC/WKo1athNv/niphksFQ5rLCu/vJihebAUU9qhWELP+XKpvy7wvbnTPpHn86JscAj+UVnfmOaZLoXGDMivfG0+BdQrlI2M6u4nyfvA/Khx6INk4ve/5dPy04e71ebnx4=,iv:gVezB8Q4t0Dx1+QEmh/xO2mY3rmoNcazptAfkDg7gHQ=,tag:sAbdjXM95bS03CABc1yKJA==,type:str]
+    mac_only_encrypted: true
+    pgp:
+        - created_at: "2026-11-22T22:19:31Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hF4DopS/VjtMxJoSAQdAeGqlIry3htmUgBvliMbbM4KcSWdEDiTv4nR4a/6sSX0w
+            0uTApoXMGZkdnkx6LotqZrN7OQMWT8ZlhMt9fldalimViGXZ7Dg6j0XuGPVbY9P/
+            0lwBv8rlmokIf8oZ+RvW8emCnDvzOZJHiK49IRCaSgg00mvAR2kpUzd7JRZNMA6p
+            /GDMVnf7eQA/dGzObxEYhLmcsfExmBW/McJQ0VyhXjU39PoTmSlO6fgZuFIC/A==
+            =zP95
+            -----END PGP MESSAGE-----
+          fp: 86170CE5CB464ADDC6BE8E597450F180356132B6
+    version: 3.13.3
