@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/litellm.home-operations.com/litellmvirtualkey_v1alpha1.json
+apiVersion: litellm.home-operations.com/v1alpha1
+kind: LiteLLMVirtualKey
+metadata:
+  name: kritika
+spec:
+  maxBudget: "5"
+  budgetDuration: 30d
+  keyAlias: kritika
+  models:
+    - deepseek-v4-1-flash-1017-openrouter
+    - minimax-m3-1-flash-openrouter
+  proxyRef: litellm
+  proxyNamespace: ai
+  secretName: kritika-litellm
