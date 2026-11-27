@@ -4,8 +4,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
   name: immich
-  annotations:
-    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   cluster:
     name: postgres
@@ -19,8 +17,6 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: immich
-  annotations:
-    kustomize.toolkit.fluxcd.io/force: Enabled
 spec:
   cluster:
     name: postgres

@@ -4,6 +4,8 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres
+  annotations:
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
   primaryUpdateMethod: switchover
@@ -43,8 +45,16 @@ spec:
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
-      parameters:
+      parameters: &barmanParameters
         barmanObjectName: nas
         serverName: postgres-0
   bootstrap:
-    initdb: {}
+    recovery:
+      source: source
+  externalClusters:
+    - name: source
+      plugin:
+        enabled: true
+        isWALArchiver: false
+        name: barman-cloud.cloudnative-pg.io
+        parameters: *barmanParameters
