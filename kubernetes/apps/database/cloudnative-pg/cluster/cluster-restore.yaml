@@ -1,0 +1,45 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-restore
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:19.0-standard-trixie@sha256:6f17393bf934a41fec47439306a17e087c5c2f419ddd5bf4b8dc0241da4bceb0
+  storage:
+    size: 20Gi
+    storageClass: miroir-local
+  postgresql:
+    # Recovery refuses to start below the source's max_connections.
+    parameters:
+      max_connections: "200"
+    extensions:
+      - name: vchord
+        image:
+          reference: ghcr.io/home-operations/vchord:1.5.0@sha256:97b4a1aa15b65c29fa97e84b4270cb235e7bd39e80d4a4b2e91d9fa17997566d
+        dynamic_library_path:
+          - /usr/lib/postgresql/19/lib/
+        extension_control_path:
+          - /usr/share/postgresql/19/
+    shared_preload_libraries:
+      - vchord
+  resources:
+    requests:
+      cpu: 100m
+      memory: 1Gi
+    limits:
+      memory: 1Gi
+  # No WAL archiver: this cluster must never write into the archive it restores from.
+  bootstrap:
+    recovery:
+      source: postgres
+  externalClusters:
+    - name: postgres
+      plugin:
+        enabled: true
+        isWALArchiver: false
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: nas
+          serverName: postgres-0
