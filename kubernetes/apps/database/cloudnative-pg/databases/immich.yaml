@@ -26,7 +26,6 @@ spec:
   extensions:
     - name: vector
       ensure: present
-      version: 0.8.7
     - name: vchord
       ensure: present
       version: 1.5.0

@@ -26,7 +26,6 @@ spec:
   extensions:
     - name: vector
       ensure: present
-      version: 0.8.7
     - name: pg_trgm
       ensure: present
     - name: btree_gin
