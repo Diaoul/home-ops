@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kaniop.rs/kanidmoauth2client_v1beta1.json
+apiVersion: kaniop.rs/v1beta1
+kind: KanidmOAuth2Client
+metadata:
+  name: kritika
+spec:
+  kanidmRef:
+    name: kanidm
+    namespace: security
+  displayname: kritika
+  origin: https://kritika.${DOMAIN}/
+  redirectUrl:
+    - https://kritika.${DOMAIN}/auth/callback/oidc
+  scopeMap:
+    - group: admins
+      scopes:
+        - openid
+        - profile
+        - email
+  preferShortUsername: true
+  strictRedirectUrl: true
+  disableConsentPrompt: true
+  claimMap:
+    - name: kritika_role
+      joinStrategy: array
+      valuesMap:
+        - group: admins
+          values:
+            - admin

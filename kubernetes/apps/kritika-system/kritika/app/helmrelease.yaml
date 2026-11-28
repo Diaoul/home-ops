@@ -15,8 +15,13 @@ spec:
     config:
       webUrl: https://kritika.${DOMAIN}
       auth:
-        admin:
-          password: {env: KRITIKA_AUTH_ADMIN_PASSWORD}
+        oidc:
+          name: Kanidm
+          issuer: https://idm.${DOMAIN}/oauth2/openid/kritika
+          clientId: {env: KRITIKA_OIDC_CLIENT_ID}
+          clientSecret: {env: KRITIKA_OIDC_CLIENT_SECRET}
+          rolesClaim: kritika_role
+          roleMappingExpr: '"admin" in roles ? "admin" : ""'
       review:
         model: litellm/deepseek-v4-1-flash-1017-openrouter
         fallback: litellm/minimax-m3-1-flash-openrouter
@@ -56,6 +61,16 @@ spec:
           - name: renovate-digest-minor
             expr: 'pr.labels.exists(l, l.name in ["type/digest", "type/minor"])'
     env:
+      KRITIKA_OIDC_CLIENT_ID:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-kanidm-oauth2-credentials
+            key: CLIENT_ID
+      KRITIKA_OIDC_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-kanidm-oauth2-credentials
+            key: CLIENT_SECRET
       KRITIKA_LITELLM_API_KEY:
         valueFrom:
           secretKeyRef:
