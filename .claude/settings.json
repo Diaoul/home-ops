@@ -112,8 +112,9 @@
       "Bash(cat *age.key*)",
       "Bash(rtk cat *age.key*)",
       "Read(.venv/)",
-      "Read(talos/rendered)",
-      "Read(talos/talosconfig)"
+      "Read(talos/talosconfig)",
+      "Read(./talos/rendered/**)",
+      "Edit(./talos/rendered/**)"
     ]
   },
   "hooks": {
@@ -128,6 +129,10 @@
           {
             "type": "command",
             "command": "cmd=$(jq -r '.tool_input.command'); if printf '%s' \"$cmd\" | grep -q 'age\\.key'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\",\"permissionDecisionReason\":\"Commands referencing age.key are blocked in this repo\"}}'; fi"
+          },
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r .tool_input.command); if printf \"%s\" \"$cmd\" | grep -qE \"(^|[^[:alnum:]_-])rendered(/|[[:space:]]|$)|topf[[:space:]]+render|just[[:space:]]+talos[[:space:]]+render\"; then echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"permissionDecision\\\":\\\"deny\\\",\\\"permissionDecisionReason\\\":\\\"Rendered Talos configs hold the cluster secrets: never render, read or write them\\\"}}\"; fi"
           }
         ]
       }
