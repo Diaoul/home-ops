@@ -72,16 +72,9 @@ new files without them.
 
 ## Validation
 
-`.github/workflows/validate.yaml` runs these on every pull request to `main`; a direct push
-to `main` skips it, so run them yourself before pushing:
-
-```sh
-bash scripts/kubeconform.sh kubernetes   # schemas
-bash scripts/sops-encrypted.sh           # every Kubernetes *.sops.yaml is encrypted
-yamllint .
-yamlfmt -lint "**/*.yaml"
-flate test all --path kubernetes         # renders every Kustomization and HelmRelease offline
-```
+`just validate` runs the checks `.github/workflows/validate.yaml` runs on every pull request
+to `main`; a direct push to `main` skips CI, so run it yourself before pushing. Run checks
+through `just` recipes and the lefthook hooks, never by retyping their commands.
 
 All of these come from `.mise.toml`; Python CLIs are `pypi:` tools, not a project venv.
 Konflate also posts a status check with the rendered diff of Flux changes under `kubernetes/`.
