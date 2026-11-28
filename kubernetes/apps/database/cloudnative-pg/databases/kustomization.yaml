@@ -9,6 +9,8 @@ resources:
   - ./hindsight.sops.yaml
   - ./immich.yaml
   - ./immich.sops.yaml
+  - ./kritika.yaml
+  - ./kritika.sops.yaml
   - ./litellm.yaml
   - ./litellm.sops.yaml
   - ./miniflux.yaml

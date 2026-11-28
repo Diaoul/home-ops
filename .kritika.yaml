@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://kritika.home-operations.com/kritika.schema.json
+skills:
+  scope:
+    reviewing-pull-requests:
+      load: true
+tools:
+  # renovate: datasource=github-releases depName=home-operations/flate
+  aqua:home-operations/flate: v0.8.0

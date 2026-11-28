@@ -1,0 +1,136 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kritika
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: kritika
+  interval: 1h
+  values:
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    config:
+      webUrl: https://kritika.${DOMAIN}
+      auth:
+        oidc:
+          name: Kanidm
+          issuer: https://idm.${DOMAIN}/oauth2/openid/kritika
+          clientId: {env: KRITIKA_OIDC_CLIENT_ID}
+          clientSecret: {env: KRITIKA_OIDC_CLIENT_SECRET}
+          rolesClaim: kritika_role
+          roleMappingExpr: '"admin" in roles ? "admin" : ""'
+      review:
+        model: litellm/deepseek-v4-1-flash-1017-openrouter
+        fallback: litellm/minimax-m3-1-flash-openrouter
+        approve: true
+      confidence:
+        model: litellm/deepseek-v4-1-flash-1017-openrouter
+        fallback: litellm/minimax-m3-1-flash-openrouter
+      apps:
+        github:
+          accounts:
+            - Diaoul
+          clientId: {env: KRITIKA_GITHUB_CLIENT_ID}
+          privateKey: {env: KRITIKA_GITHUB_PRIVATE_KEY}
+          webhookSecret: {env: KRITIKA_GITHUB_WEBHOOK_SECRET}
+      providers:
+        litellm:
+          type: openai
+          baseUrl: http://litellm.ai.svc.cluster.local:4000/v1
+          apiKey: {env: KRITIKA_LITELLM_API_KEY}
+          headers:
+            x-litellm-session-id: "{session}"
+          # OpenRouter's off-peak list prices; DeepSeek doubles on weekdays 01:00-04:00 and 06:00-10:00 UTC.
+          pricing:
+            deepseek-v4-1-flash-1017-openrouter: {input: 0.15, output: 0.6, cacheRead: 0.003}
+            minimax-m3-1-flash-openrouter: {input: 0.15, output: 0.6, cacheRead: 0.015}
+      egress:
+        allow:
+          - "*"
+        deny:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - "*.internal"
+      trigger:
+        exclude:
+          - {name: forks, expr: pr.fork}
+          - name: renovate-digest-minor
+            expr: 'pr.labels.exists(l, l.name in ["type/digest", "type/minor"])'
+    env:
+      KRITIKA_OIDC_CLIENT_ID:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-kanidm-oauth2-credentials
+            key: CLIENT_ID
+      KRITIKA_OIDC_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-kanidm-oauth2-credentials
+            key: CLIENT_SECRET
+      KRITIKA_LITELLM_API_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: kritika-litellm
+            key: key
+    envFrom:
+      - secretRef:
+          name: kritika
+    database:
+      app:
+        existingSecret: kritika-app-db
+      owner:
+        existingSecret: kritika-db
+    runner:
+      podTemplate:
+        spec:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 512Mi
+            limits:
+              memory: 2Gi
+    httpRoute:
+      enabled: true
+      annotations:
+        gatus.home-operations.com/endpoint: |-
+          conditions: ["[STATUS] == 200"]
+          path: /api/v1/meta
+      parentRefs:
+        - name: envoy-external
+          namespace: network
+      hostnames:
+        - kritika.${DOMAIN}
+    monitoring:
+      dashboards:
+        enabled: true
+        grafanaOperator:
+          enabled: true
+          matchLabels:
+            dashboards: grafana
+      prometheusRule:
+        enabled: true
+      serviceMonitor:
+        enabled: true
+    networkPolicy:
+      extraEgress:
+        - to:
+            - namespaceSelector:
+                matchLabels:
+                  kubernetes.io/metadata.name: ai
+              podSelector:
+                matchLabels:
+                  app.kubernetes.io/name: litellm
+          ports:
+            - port: 4000
+      postgres:
+        namespace: database
+        podSelector:
+          cnpg.io/cluster: postgres
+    resources:
+      requests:
+        cpu: 10m
+        memory: 64Mi

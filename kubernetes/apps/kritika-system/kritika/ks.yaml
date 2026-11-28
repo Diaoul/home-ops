@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kritika
+spec:
+  path: ./kubernetes/apps/kritika-system/kritika/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  dependsOn:
+    - name: litellm
+      namespace: ai
+    - name: cloudnative-pg-databases
+      namespace: database
+  prune: true
+  wait: false
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  targetNamespace: kritika-system
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret

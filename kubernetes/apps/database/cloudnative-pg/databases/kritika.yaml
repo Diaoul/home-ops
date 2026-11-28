@@ -1,0 +1,44 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: kritika
+spec:
+  cluster:
+    name: postgres
+  name: kritika
+  login: true
+  passwordSecret:
+    name: kritika-db
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: kritika-app
+spec:
+  cluster:
+    name: postgres
+  # kritika refuses an application role that owns a table: row-level security would not apply.
+  name: kritika_app
+  login: true
+  passwordSecret:
+    name: kritika-app-db
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/database_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: kritika
+spec:
+  cluster:
+    name: postgres
+  name: kritika
+  owner: kritika
+  extensions:
+    - name: vector
+      ensure: present
+    - name: vchord
+      ensure: present
+      version: 1.5.0
