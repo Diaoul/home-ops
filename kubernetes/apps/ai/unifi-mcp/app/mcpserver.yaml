@@ -9,7 +9,7 @@ spec:
   proxyRef: litellm
   transport: http
   workload:
-    image: ghcr.io/sirkirby/unifi-network-mcp:0.50.3@sha256:33ceb50cf878b80250d56f259ea73b08de54e689a217a0ae780c7c1441fd02a2
+    image: ghcr.io/sirkirby/unifi-network-mcp:0.53.0@sha256:84c4221880d97d05a989b341a6f733d17f001a0451a049f03587855ff59e5787
     port: 3000
     path: /mcp
     env:
