@@ -29,19 +29,7 @@ jobs:
         with:
           cache: false
           # uv: the pypi backend builds yamllint with it.
-          install_args: uv kubeconform kustomize sops yamlfmt yq pypi:yamllint github:home-operations/flate
+          install_args: uv just kubeconform kustomize sops yamlfmt yq pypi:yamllint github:home-operations/flate
 
-      - name: Validate Manifests
-        run: bash scripts/kubeconform.sh kubernetes
-
-      - name: Check SOPS Encryption
-        run: bash scripts/sops-encrypted.sh
-
-      - name: Lint YAML
-        run: yamllint .
-
-      - name: Check YAML Formatting
-        run: yamlfmt -lint "**/*.yaml"
-
-      - name: Render Flux Resources
-        run: flate test all --path kubernetes
+      - name: Validate
+        run: just validate
