@@ -24,6 +24,14 @@ template file *args:
 health:
     bash "{{ justfile_dir() }}/scripts/health.sh"
 
+[doc('Run the checks CI runs on every pull request')]
+validate:
+    bash scripts/kubeconform.sh kubernetes
+    bash scripts/sops-encrypted.sh
+    yamllint .
+    yamlfmt -lint "**/*.yaml"
+    flate test all --path kubernetes
+
 hold pr:
     gh pr edit "{{ pr }}" --add-label hold
 
