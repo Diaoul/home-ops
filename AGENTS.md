@@ -87,6 +87,9 @@ just talos render                  # render to talos/rendered/ (gitignored)
 talosctl validate -m metal -c talos/rendered/<node>.yaml
 ```
 
+`talos/rendered/` holds the cluster's secrets in plain text: agents never render into it, read
+it or write to it, by any tool. Ask the user to run the last two commands.
+
 Talos recipes (`just talos apply-node`, `upgrade-node`) take a node name (`k8s-node-1`), not
 an IP.
 
